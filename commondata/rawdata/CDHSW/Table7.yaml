@@ -1,0 +1,598 @@
+dependent_variables:
+- header: {name: (1/E(P=1))*(D2(SIG)/D(X)/D(Y)), units: CM**2/GEV/NUCLEON}
+  qualifiers:
+  - {name: E(P=1), units: GeV, value: '111.0'}
+  - {name: RE, value: NUMU NUCLEON --> MU- X}
+  - {name: SQRT(S), units: GeV, value: '14.461'}
+  - {name: Y(DEF=E(P=4)/E(P=1)), value: 0.054 TO 0.070}
+  - {name: SYS, value: The systematic error given does not include the uncertainties
+      in the total cross section used for normalization}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.168}
+    - {label: sys, symerror: 0.107}
+    value: 1.137
+  - errors:
+    - {label: stat, symerror: 0.231}
+    - {label: sys, symerror: 0.145}
+    value: 2.042
+  - errors:
+    - {label: stat, symerror: 0.176}
+    - {label: sys, symerror: 0.135}
+    value: 1.367
+  - errors:
+    - {label: stat, symerror: 0.18}
+    - {label: sys, symerror: 0.082}
+    value: 1.817
+  - errors:
+    - {label: stat, symerror: 0.177}
+    - {label: sys, symerror: 0.126}
+    value: 1.789
+  - errors:
+    - {label: stat, symerror: 0.157}
+    - {label: sys, symerror: 0.133}
+    value: 1.436
+  - errors:
+    - {label: stat, symerror: 0.149}
+    - {label: sys, symerror: 0.102}
+    value: 1.311
+  - errors:
+    - {label: stat, symerror: 0.089}
+    - {label: sys, symerror: 0.066}
+    value: 0.957
+  - errors:
+    - {label: stat, symerror: 0.074}
+    - {label: sys, symerror: 0.097}
+    value: 0.718
+  - errors:
+    - {label: stat, symerror: 0.055}
+    - {label: sys, symerror: 0.05}
+    value: 0.442
+  - errors:
+    - {label: stat, symerror: 0.039}
+    - {label: sys, symerror: 0.06}
+    value: 0.25
+- header: {name: (1/E(P=1))*(D2(SIG)/D(X)/D(Y)), units: CM**2/GEV/NUCLEON}
+  qualifiers:
+  - {name: E(P=1), units: GeV, value: '111.0'}
+  - {name: RE, value: NUMU NUCLEON --> MU- X}
+  - {name: SQRT(S), units: GeV, value: '14.461'}
+  - {name: Y(DEF=E(P=4)/E(P=1)), value: 0.070 TO 0.091}
+  - {name: SYS, value: The systematic error given does not include the uncertainties
+      in the total cross section used for normalization}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.15}
+    - {label: sys, symerror: 0.106}
+    value: 1.166
+  - errors:
+    - {label: stat, symerror: 0.182}
+    - {label: sys, symerror: 0.142}
+    value: 1.639
+  - errors:
+    - {label: stat, symerror: 0.186}
+    - {label: sys, symerror: 0.132}
+    value: 1.987
+  - errors:
+    - {label: stat, symerror: 0.192}
+    - {label: sys, symerror: 0.081}
+    value: 2.355
+  - errors:
+    - {label: stat, symerror: 0.167}
+    - {label: sys, symerror: 0.122}
+    value: 1.736
+  - errors:
+    - {label: stat, symerror: 0.145}
+    - {label: sys, symerror: 0.127}
+    value: 1.575
+  - errors:
+    - {label: stat, symerror: 0.122}
+    - {label: sys, symerror: 0.098}
+    value: 1.149
+  - errors:
+    - {label: stat, symerror: 0.084}
+    - {label: sys, symerror: 0.064}
+    value: 1.113
+  - errors:
+    - {label: stat, symerror: 0.064}
+    - {label: sys, symerror: 0.091}
+    value: 0.702
+  - errors:
+    - {label: stat, symerror: 0.045}
+    - {label: sys, symerror: 0.048}
+    value: 0.388
+  - errors:
+    - {label: stat, symerror: 0.032}
+    - {label: sys, symerror: 0.063}
+    value: 0.229
+- header: {name: (1/E(P=1))*(D2(SIG)/D(X)/D(Y)), units: CM**2/GEV/NUCLEON}
+  qualifiers:
+  - {name: E(P=1), units: GeV, value: '111.0'}
+  - {name: RE, value: NUMU NUCLEON --> MU- X}
+  - {name: SQRT(S), units: GeV, value: '14.461'}
+  - {name: Y(DEF=E(P=4)/E(P=1)), value: 0.091 TO 0.119}
+  - {name: SYS, value: The systematic error given does not include the uncertainties
+      in the total cross section used for normalization}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.129}
+    - {label: sys, symerror: 0.104}
+    value: 1.11
+  - errors:
+    - {label: stat, symerror: 0.152}
+    - {label: sys, symerror: 0.139}
+    value: 1.471
+  - errors:
+    - {label: stat, symerror: 0.165}
+    - {label: sys, symerror: 0.129}
+    value: 2.055
+  - errors:
+    - {label: stat, symerror: 0.139}
+    - {label: sys, symerror: 0.081}
+    value: 1.838
+  - errors:
+    - {label: stat, symerror: 0.141}
+    - {label: sys, symerror: 0.117}
+    value: 1.926
+  - errors:
+    - {label: stat, symerror: 0.125}
+    - {label: sys, symerror: 0.119}
+    value: 1.54
+  - errors:
+    - {label: stat, symerror: 0.126}
+    - {label: sys, symerror: 0.093}
+    value: 1.345
+  - errors:
+    - {label: stat, symerror: 0.076}
+    - {label: sys, symerror: 0.062}
+    value: 1.162
+  - errors:
+    - {label: stat, symerror: 0.055}
+    - {label: sys, symerror: 0.083}
+    value: 0.662
+  - errors:
+    - {label: stat, symerror: 0.04}
+    - {label: sys, symerror: 0.045}
+    value: 0.384
+  - errors:
+    - {label: stat, symerror: 0.029}
+    - {label: sys, symerror: 0.059}
+    value: 0.244
+- header: {name: (1/E(P=1))*(D2(SIG)/D(X)/D(Y)), units: CM**2/GEV/NUCLEON}
+  qualifiers:
+  - {name: E(P=1), units: GeV, value: '111.0'}
+  - {name: RE, value: NUMU NUCLEON --> MU- X}
+  - {name: SQRT(S), units: GeV, value: '14.461'}
+  - {name: Y(DEF=E(P=4)/E(P=1)), value: 0.119 TO 0.154}
+  - {name: SYS, value: The systematic error given does not include the uncertainties
+      in the total cross section used for normalization}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.114}
+    - {label: sys, symerror: 0.102}
+    value: 1.126
+  - errors:
+    - {label: stat, symerror: 0.144}
+    - {label: sys, symerror: 0.136}
+    value: 1.707
+  - errors:
+    - {label: stat, symerror: 0.141}
+    - {label: sys, symerror: 0.125}
+    value: 1.958
+  - errors:
+    - {label: stat, symerror: 0.121}
+    - {label: sys, symerror: 0.08}
+    value: 1.807
+  - errors:
+    - {label: stat, symerror: 0.119}
+    - {label: sys, symerror: 0.112}
+    value: 1.787
+  - errors:
+    - {label: stat, symerror: 0.114}
+    - {label: sys, symerror: 0.109}
+    value: 1.637
+  - errors:
+    - {label: stat, symerror: 0.1}
+    - {label: sys, symerror: 0.087}
+    value: 1.298
+  - errors:
+    - {label: stat, symerror: 0.069}
+    - {label: sys, symerror: 0.06}
+    value: 1.073
+  - errors:
+    - {label: stat, symerror: 0.053}
+    - {label: sys, symerror: 0.075}
+    value: 0.702
+  - errors:
+    - {label: stat, symerror: 0.034}
+    - {label: sys, symerror: 0.042}
+    value: 0.36
+  - errors:
+    - {label: stat, symerror: 0.024}
+    - {label: sys, symerror: 0.043}
+    value: 0.203
+- header: {name: (1/E(P=1))*(D2(SIG)/D(X)/D(Y)), units: CM**2/GEV/NUCLEON}
+  qualifiers:
+  - {name: E(P=1), units: GeV, value: '111.0'}
+  - {name: RE, value: NUMU NUCLEON --> MU- X}
+  - {name: SQRT(S), units: GeV, value: '14.461'}
+  - {name: Y(DEF=E(P=4)/E(P=1)), value: 0.154 TO 0.201}
+  - {name: SYS, value: The systematic error given does not include the uncertainties
+      in the total cross section used for normalization}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.11}
+    - {label: sys, symerror: 0.1}
+    value: 1.324
+  - errors:
+    - {label: stat, symerror: 0.128}
+    - {label: sys, symerror: 0.132}
+    value: 1.713
+  - errors:
+    - {label: stat, symerror: 0.131}
+    - {label: sys, symerror: 0.12}
+    value: 2.005
+  - errors:
+    - {label: stat, symerror: 0.111}
+    - {label: sys, symerror: 0.08}
+    value: 1.827
+  - errors:
+    - {label: stat, symerror: 0.11}
+    - {label: sys, symerror: 0.106}
+    value: 1.819
+  - errors:
+    - {label: stat, symerror: 0.109}
+    - {label: sys, symerror: 0.098}
+    value: 1.538
+  - errors:
+    - {label: stat, symerror: 0.098}
+    - {label: sys, symerror: 0.08}
+    value: 1.317
+  - errors:
+    - {label: stat, symerror: 0.057}
+    - {label: sys, symerror: 0.057}
+    value: 1.025
+  - errors:
+    - {label: stat, symerror: 0.043}
+    - {label: sys, symerror: 0.065}
+    value: 0.645
+  - errors:
+    - {label: stat, symerror: 0.029}
+    - {label: sys, symerror: 0.038}
+    value: 0.352
+  - errors:
+    - {label: stat, symerror: 0.021}
+    - {label: sys, symerror: 0.046}
+    value: 0.204
+- header: {name: (1/E(P=1))*(D2(SIG)/D(X)/D(Y)), units: CM**2/GEV/NUCLEON}
+  qualifiers:
+  - {name: E(P=1), units: GeV, value: '111.0'}
+  - {name: RE, value: NUMU NUCLEON --> MU- X}
+  - {name: SQRT(S), units: GeV, value: '14.461'}
+  - {name: Y(DEF=E(P=4)/E(P=1)), value: 0.201 TO 0.261}
+  - {name: SYS, value: The systematic error given does not include the uncertainties
+      in the total cross section used for normalization}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.091}
+    - {label: sys, symerror: 0.097}
+    value: 1.496
+  - errors:
+    - {label: stat, symerror: 0.1}
+    - {label: sys, symerror: 0.128}
+    value: 1.8
+  - errors:
+    - {label: stat, symerror: 0.09}
+    - {label: sys, symerror: 0.115}
+    value: 1.855
+  - errors:
+    - {label: stat, symerror: 0.086}
+    - {label: sys, symerror: 0.079}
+    value: 1.806
+  - errors:
+    - {label: stat, symerror: 0.072}
+    - {label: sys, symerror: 0.099}
+    value: 1.545
+  - errors:
+    - {label: stat, symerror: 0.071}
+    - {label: sys, symerror: 0.086}
+    value: 1.484
+  - errors:
+    - {label: stat, symerror: 0.065}
+    - {label: sys, symerror: 0.072}
+    value: 1.249
+  - errors:
+    - {label: stat, symerror: 0.04}
+    - {label: sys, symerror: 0.054}
+    value: 0.96
+  - errors:
+    - {label: stat, symerror: 0.03}
+    - {label: sys, symerror: 0.054}
+    value: 0.59
+  - errors:
+    - {label: stat, symerror: 0.023}
+    - {label: sys, symerror: 0.034}
+    value: 0.314
+  - errors:
+    - {label: stat, symerror: 0.015}
+    - {label: sys, symerror: 0.039}
+    value: 0.171
+- header: {name: (1/E(P=1))*(D2(SIG)/D(X)/D(Y)), units: CM**2/GEV/NUCLEON}
+  qualifiers:
+  - {name: E(P=1), units: GeV, value: '111.0'}
+  - {name: RE, value: NUMU NUCLEON --> MU- X}
+  - {name: SQRT(S), units: GeV, value: '14.461'}
+  - {name: Y(DEF=E(P=4)/E(P=1)), value: 0.261 TO 0.339}
+  - {name: SYS, value: The systematic error given does not include the uncertainties
+      in the total cross section used for normalization}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.06}
+    - {label: sys, symerror: 0.094}
+    value: 1.318
+  - errors:
+    - {label: stat, symerror: 0.073}
+    - {label: sys, symerror: 0.123}
+    value: 1.839
+  - errors:
+    - {label: stat, symerror: 0.069}
+    - {label: sys, symerror: 0.11}
+    value: 1.924
+  - errors:
+    - {label: stat, symerror: 0.061}
+    - {label: sys, symerror: 0.078}
+    value: 1.965
+  - errors:
+    - {label: stat, symerror: 0.057}
+    - {label: sys, symerror: 0.092}
+    value: 1.673
+  - errors:
+    - {label: stat, symerror: 0.052}
+    - {label: sys, symerror: 0.074}
+    value: 1.497
+  - errors:
+    - {label: stat, symerror: 0.05}
+    - {label: sys, symerror: 0.064}
+    value: 1.347
+  - errors:
+    - {label: stat, symerror: 0.031}
+    - {label: sys, symerror: 0.051}
+    value: 1.02
+  - errors:
+    - {label: stat, symerror: 0.022}
+    - {label: sys, symerror: 0.044}
+    value: 0.592
+  - errors:
+    - {label: stat, symerror: 0.015}
+    - {label: sys, symerror: 0.03}
+    value: 0.312
+  - errors:
+    - {label: stat, symerror: 0.01}
+    - {label: sys, symerror: 0.031}
+    value: 0.151
+- header: {name: (1/E(P=1))*(D2(SIG)/D(X)/D(Y)), units: CM**2/GEV/NUCLEON}
+  qualifiers:
+  - {name: E(P=1), units: GeV, value: '111.0'}
+  - {name: RE, value: NUMU NUCLEON --> MU- X}
+  - {name: SQRT(S), units: GeV, value: '14.461'}
+  - {name: Y(DEF=E(P=4)/E(P=1)), value: 0.339 TO 0.441}
+  - {name: SYS, value: The systematic error given does not include the uncertainties
+      in the total cross section used for normalization}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.057}
+    - {label: sys, symerror: 0.092}
+    value: 1.421
+  - errors:
+    - {label: stat, symerror: 0.064}
+    - {label: sys, symerror: 0.119}
+    value: 1.782
+  - errors:
+    - {label: stat, symerror: 0.06}
+    - {label: sys, symerror: 0.105}
+    value: 1.997
+  - errors:
+    - {label: stat, symerror: 0.054}
+    - {label: sys, symerror: 0.077}
+    value: 1.919
+  - errors:
+    - {label: stat, symerror: 0.051}
+    - {label: sys, symerror: 0.086}
+    value: 1.684
+  - errors:
+    - {label: stat, symerror: 0.046}
+    - {label: sys, symerror: 0.063}
+    value: 1.49
+  - errors:
+    - {label: stat, symerror: 0.044}
+    - {label: sys, symerror: 0.057}
+    value: 1.324
+  - errors:
+    - {label: stat, symerror: 0.027}
+    - {label: sys, symerror: 0.049}
+    value: 0.961
+  - errors:
+    - {label: stat, symerror: 0.02}
+    - {label: sys, symerror: 0.033}
+    value: 0.566
+  - errors:
+    - {label: stat, symerror: 0.013}
+    - {label: sys, symerror: 0.026}
+    value: 0.298
+  - errors:
+    - {label: stat, symerror: 0.009}
+    - {label: sys, symerror: 0.025}
+    value: 0.149
+- header: {name: (1/E(P=1))*(D2(SIG)/D(X)/D(Y)), units: CM**2/GEV/NUCLEON}
+  qualifiers:
+  - {name: E(P=1), units: GeV, value: '111.0'}
+  - {name: RE, value: NUMU NUCLEON --> MU- X}
+  - {name: SQRT(S), units: GeV, value: '14.461'}
+  - {name: Y(DEF=E(P=4)/E(P=1)), value: 0.441 TO 0.573}
+  - {name: SYS, value: The systematic error given does not include the uncertainties
+      in the total cross section used for normalization}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.051}
+    - {label: sys, symerror: 0.09}
+    value: 1.459
+  - errors:
+    - {label: stat, symerror: 0.063}
+    - {label: sys, symerror: 0.116}
+    value: 1.967
+  - errors:
+    - {label: stat, symerror: 0.055}
+    - {label: sys, symerror: 0.102}
+    value: 1.917
+  - errors:
+    - {label: stat, symerror: 0.049}
+    - {label: sys, symerror: 0.077}
+    value: 1.917
+  - errors:
+    - {label: stat, symerror: 0.045}
+    - {label: sys, symerror: 0.081}
+    value: 1.65
+  - errors:
+    - {label: stat, symerror: 0.043}
+    - {label: sys, symerror: 0.054}
+    value: 1.496
+  - errors:
+    - {label: stat, symerror: 0.038}
+    - {label: sys, symerror: 0.052}
+    value: 1.252
+  - errors:
+    - {label: stat, symerror: 0.025}
+    - {label: sys, symerror: 0.046}
+    value: 0.954
+  - errors:
+    - {label: stat, symerror: 0.019}
+    - {label: sys, symerror: 0.026}
+    value: 0.578
+  - errors:
+    - {label: stat, symerror: 0.012}
+    - {label: sys, symerror: 0.023}
+    value: 0.277
+  - errors:
+    - {label: stat, symerror: 0.007}
+    - {label: sys, symerror: 0.019}
+    value: 0.12
+- header: {name: (1/E(P=1))*(D2(SIG)/D(X)/D(Y)), units: CM**2/GEV/NUCLEON}
+  qualifiers:
+  - {name: E(P=1), units: GeV, value: '111.0'}
+  - {name: RE, value: NUMU NUCLEON --> MU- X}
+  - {name: SQRT(S), units: GeV, value: '14.461'}
+  - {name: Y(DEF=E(P=4)/E(P=1)), value: 0.573 TO 0.745}
+  - {name: SYS, value: The systematic error given does not include the uncertainties
+      in the total cross section used for normalization}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.049}
+    - {label: sys, symerror: 0.089}
+    value: 1.54
+  - errors:
+    - {label: stat, symerror: 0.057}
+    - {label: sys, symerror: 0.114}
+    value: 1.917
+  - errors:
+    - {label: stat, symerror: 0.051}
+    - {label: sys, symerror: 0.099}
+    value: 1.946
+  - errors:
+    - {label: stat, symerror: 0.047}
+    - {label: sys, symerror: 0.077}
+    value: 1.916
+  - errors:
+    - {label: stat, symerror: 0.043}
+    - {label: sys, symerror: 0.078}
+    value: 1.679
+  - errors:
+    - {label: stat, symerror: 0.04}
+    - {label: sys, symerror: 0.049}
+    value: 1.541
+  - errors:
+    - {label: stat, symerror: 0.036}
+    - {label: sys, symerror: 0.048}
+    value: 1.249
+  - errors:
+    - {label: stat, symerror: 0.023}
+    - {label: sys, symerror: 0.045}
+    value: 0.924
+  - errors:
+    - {label: stat, symerror: 0.017}
+    - {label: sys, symerror: 0.021}
+    value: 0.544
+  - errors:
+    - {label: stat, symerror: 0.011}
+    - {label: sys, symerror: 0.021}
+    value: 0.292
+  - errors:
+    - {label: stat, symerror: 0.007}
+    - {label: sys, symerror: 0.016}
+    value: 0.128
+- header: {name: (1/E(P=1))*(D2(SIG)/D(X)/D(Y)), units: CM**2/GEV/NUCLEON}
+  qualifiers:
+  - {name: E(P=1), units: GeV, value: '111.0'}
+  - {name: RE, value: NUMU NUCLEON --> MU- X}
+  - {name: SQRT(S), units: GeV, value: '14.461'}
+  - {name: Y(DEF=E(P=4)/E(P=1)), value: 0.745 TO 0.969}
+  - {name: SYS, value: The systematic error given does not include the uncertainties
+      in the total cross section used for normalization}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.045}
+    - {label: sys, symerror: 0.088}
+    value: 1.394
+  - errors:
+    - {label: stat, symerror: 0.052}
+    - {label: sys, symerror: 0.114}
+    value: 1.73
+  - errors:
+    - {label: stat, symerror: 0.049}
+    - {label: sys, symerror: 0.099}
+    value: 1.867
+  - errors:
+    - {label: stat, symerror: 0.044}
+    - {label: sys, symerror: 0.077}
+    value: 1.828
+  - errors:
+    - {label: stat, symerror: 0.04}
+    - {label: sys, symerror: 0.077}
+    value: 1.647
+  - errors:
+    - {label: stat, symerror: 0.039}
+    - {label: sys, symerror: 0.048}
+    value: 1.479
+  - errors:
+    - {label: stat, symerror: 0.036}
+    - {label: sys, symerror: 0.048}
+    value: 1.226
+  - errors:
+    - {label: stat, symerror: 0.022}
+    - {label: sys, symerror: 0.045}
+    value: 0.854
+  - errors:
+    - {label: stat, symerror: 0.017}
+    - {label: sys, symerror: 0.02}
+    value: 0.54
+  - errors:
+    - {label: stat, symerror: 0.012}
+    - {label: sys, symerror: 0.021}
+    value: 0.264
+  - errors:
+    - {label: stat, symerror: 0.006}
+    - {label: sys, symerror: 0.015}
+    value: 0.106
+independent_variables:
+- header: {name: X(DEF=Q**2/2M*MU)}
+  values:
+  - {high: 0.03, low: 0.0}
+  - {high: 0.06, low: 0.03}
+  - {high: 0.1, low: 0.06}
+  - {high: 0.15, low: 0.1}
+  - {high: 0.2, low: 0.15}
+  - {high: 0.25, low: 0.2}
+  - {high: 0.3, low: 0.25}
+  - {high: 0.4, low: 0.3}
+  - {high: 0.5, low: 0.4}
+  - {high: 0.6, low: 0.5}
+  - {high: 0.7, low: 0.6}

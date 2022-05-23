@@ -1,0 +1,72 @@
+dependent_variables:
+- header: {name: F2}
+  qualifiers:
+  - {name: P, units: GEV, value: 30 TO 230}
+  - {name: RE, value: NUMU FE --> MU- X}
+  - {name: RE, value: NUMUBAR FE --> MU+ X}
+  - {name: X, value: '0.65'}
+  values:
+  - errors:
+    - {symerror: 0.0127}
+    - {label: 'sys,OVERALL NORMALIZATION ERROR', symerror: 3.1%}
+    value: 0.1446
+  - errors:
+    - {symerror: 0.0081}
+    - {label: 'sys,OVERALL NORMALIZATION ERROR', symerror: 3.1%}
+    value: 0.1213
+  - errors:
+    - {symerror: 0.0075}
+    - {label: 'sys,OVERALL NORMALIZATION ERROR', symerror: 3.1%}
+    value: 0.1164
+  - errors:
+    - {symerror: 0.0077}
+    - {label: 'sys,OVERALL NORMALIZATION ERROR', symerror: 3.1%}
+    value: 0.092
+  - errors:
+    - {symerror: 0.0086}
+    - {label: 'sys,OVERALL NORMALIZATION ERROR', symerror: 3.1%}
+    value: 0.0824
+  - errors:
+    - {symerror: 0.0084}
+    - {label: 'sys,OVERALL NORMALIZATION ERROR', symerror: 3.1%}
+    value: 0.0758
+- header: {name: X*F3}
+  qualifiers:
+  - {name: P, units: GEV, value: 30 TO 230}
+  - {name: RE, value: NUMU FE --> MU- X}
+  - {name: RE, value: NUMUBAR FE --> MU+ X}
+  - {name: X, value: '0.65'}
+  values:
+  - errors:
+    - {symerror: 0.069}
+    - {label: 'sys,OVERALL NORMALIZATION ERROR', symerror: 3.1%}
+    value: 0.204
+  - errors:
+    - {symerror: 0.0272}
+    - {label: 'sys,OVERALL NORMALIZATION ERROR', symerror: 3.1%}
+    value: 0.1384
+  - errors:
+    - {symerror: 0.0167}
+    - {label: 'sys,OVERALL NORMALIZATION ERROR', symerror: 3.1%}
+    value: 0.1081
+  - errors:
+    - {symerror: 0.0143}
+    - {label: 'sys,OVERALL NORMALIZATION ERROR', symerror: 3.1%}
+    value: 0.0719
+  - errors:
+    - {symerror: 0.0155}
+    - {label: 'sys,OVERALL NORMALIZATION ERROR', symerror: 3.1%}
+    value: 0.0464
+  - errors:
+    - {symerror: 0.0112}
+    - {label: 'sys,OVERALL NORMALIZATION ERROR', symerror: 3.1%}
+    value: 0.0725
+independent_variables:
+- header: {name: Q2, units: GEV**2}
+  values:
+  - {value: 12.59}
+  - {value: 19.95}
+  - {value: 31.62}
+  - {value: 50.12}
+  - {value: 79.43}
+  - {value: 125.89}

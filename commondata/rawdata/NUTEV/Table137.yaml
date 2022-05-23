@@ -1,0 +1,166 @@
+dependent_variables:
+- header: {name: ((10**38)/E)*D2(SIG)/DX/DY, units: CM**2/GEV}
+  qualifiers:
+  - {name: E, units: GeV, value: '190.0'}
+  - {name: RE, value: NUMUBAR FE --> MU+ X}
+  - {name: X, value: '0.015'}
+  values:
+  - {value: '-'}
+  - {value: '-'}
+  - errors:
+    - {label: stat, symerror: 0.0965}
+    - {label: sys, symerror: 0.0941}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 1.4007
+  - errors:
+    - {label: stat, symerror: 0.096}
+    - {label: sys, symerror: 0.0869}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 1.4049
+  - errors:
+    - {label: stat, symerror: 0.0874}
+    - {label: sys, symerror: 0.0714}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 1.2066
+  - errors:
+    - {label: stat, symerror: 0.0894}
+    - {label: sys, symerror: 0.0197}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 1.3098
+  - errors:
+    - {label: stat, symerror: 0.082}
+    - {label: sys, symerror: 0.0333}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 1.0885
+  - errors:
+    - {label: stat, symerror: 0.0804}
+    - {label: sys, symerror: 0.0387}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 1.0606
+  - errors:
+    - {label: stat, symerror: 0.069}
+    - {label: sys, symerror: 0.0264}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.7981
+  - errors:
+    - {label: stat, symerror: 0.153}
+    - {label: sys, symerror: 0.3601}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.7251
+- header: {name: ((10**38)/E)*D2(SIG)/DX/DY, units: CM**2/GEV}
+  qualifiers:
+  - {name: E, units: GeV, value: '190.0'}
+  - {name: RE, value: NUMUBAR FE --> MU+ X}
+  - {name: X, value: '0.045'}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.1467}
+    - {label: sys, symerror: 0.1023}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 1.7384
+  - errors:
+    - {label: stat, symerror: 0.1002}
+    - {label: sys, symerror: 0.032}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 1.649
+  - errors:
+    - {label: stat, symerror: 0.0959}
+    - {label: sys, symerror: 0.0178}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 1.5476
+  - errors:
+    - {label: stat, symerror: 0.0951}
+    - {label: sys, symerror: 0.058}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 1.5386
+  - errors:
+    - {label: stat, symerror: 0.0877}
+    - {label: sys, symerror: 0.0326}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 1.3099
+  - errors:
+    - {label: stat, symerror: 0.0862}
+    - {label: sys, symerror: 0.0387}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 1.2496
+  - errors:
+    - {label: stat, symerror: 0.0802}
+    - {label: sys, symerror: 0.081}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 1.0826
+  - errors:
+    - {label: stat, symerror: 0.073}
+    - {label: sys, symerror: 0.0409}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.8611
+  - errors:
+    - {label: stat, symerror: 0.0808}
+    - {label: sys, symerror: 0.033}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.9348
+  - {value: '-'}
+- header: {name: ((10**38)/E)*D2(SIG)/DX/DY, units: CM**2/GEV}
+  qualifiers:
+  - {name: E, units: GeV, value: '190.0'}
+  - {name: RE, value: NUMUBAR FE --> MU+ X}
+  - {name: X, value: '0.08'}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.1173}
+    - {label: sys, symerror: 0.0702}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 1.4889
+  - errors:
+    - {label: stat, symerror: 0.0875}
+    - {label: sys, symerror: 0.044}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 1.6282
+  - errors:
+    - {label: stat, symerror: 0.0838}
+    - {label: sys, symerror: 0.0597}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 1.5217
+  - errors:
+    - {label: stat, symerror: 0.0748}
+    - {label: sys, symerror: 0.0266}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 1.2448
+  - errors:
+    - {label: stat, symerror: 0.075}
+    - {label: sys, symerror: 0.0433}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 1.2013
+  - errors:
+    - {label: stat, symerror: 0.0728}
+    - {label: sys, symerror: 0.0332}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 1.1167
+  - errors:
+    - {label: stat, symerror: 0.0619}
+    - {label: sys, symerror: 0.0326}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.7878
+  - errors:
+    - {label: stat, symerror: 0.0589}
+    - {label: sys, symerror: 0.037}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.6691
+  - errors:
+    - {label: stat, symerror: 0.0599}
+    - {label: sys, symerror: 0.0409}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.6082
+  - {value: '-'}
+independent_variables:
+- header: {name: Y}
+  values:
+  - {value: 0.075}
+  - {value: 0.15}
+  - {value: 0.25}
+  - {value: 0.35}
+  - {value: 0.45}
+  - {value: 0.55}
+  - {value: 0.65}
+  - {value: 0.75}
+  - {value: 0.85}
+  - {value: 0.935}

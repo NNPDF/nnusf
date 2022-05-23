@@ -1,0 +1,87 @@
+dependent_variables:
+- header: {name: F2}
+  qualifiers:
+  - {name: Q**2, units: GeV^2, value: '5.73'}
+  - {name: RE, value: NU NE --> MU- X}
+  - {name: RE, value: NUBAR NE --> MU+ X}
+  - {name: SQRT(S), units: GeV, value: '0.0'}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.174}
+    - {label: sys, symerror: 0.021}
+    value: 1.433
+  - errors:
+    - {label: stat, symerror: 0.086}
+    - {label: sys, symerror: 0.015}
+    value: 1.6
+  - errors:
+    - {label: stat, symerror: 0.044}
+    - {label: sys, symerror: 0.016}
+    value: 1.389
+  - errors:
+    - {label: stat, symerror: 0.038}
+    - {label: sys, symerror: 0.015}
+    value: 1.085
+  - errors:
+    - {label: stat, symerror: 0.035}
+    - {label: sys, symerror: 0.013}
+    value: 0.837
+  - errors:
+    - {label: stat, symerror: 0.027}
+    - {label: sys, symerror: 0.012}
+    value: 0.465
+  - errors:
+    - {label: stat, symerror: 0.024}
+    - {label: sys, symerror: 0.011}
+    value: 0.267
+  - errors:
+    - {label: stat, symerror: 0.019}
+    - {label: sys, symerror: 0.008}
+    value: 0.127
+- header: {name: XF3}
+  qualifiers:
+  - {name: Q**2, units: GeV^2, value: '5.73'}
+  - {name: RE, value: NU NE --> MU- X}
+  - {name: RE, value: NUBAR NE --> MU+ X}
+  - {name: SQRT(S), units: GeV, value: '0.0'}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.17}
+    - {label: sys, symerror: 0.006}
+    value: 0.512
+  - errors:
+    - {label: stat, symerror: 0.114}
+    - {label: sys, symerror: 0.007}
+    value: 0.661
+  - errors:
+    - {label: stat, symerror: 0.071}
+    - {label: sys, symerror: 0.011}
+    value: 0.767
+  - errors:
+    - {label: stat, symerror: 0.076}
+    - {label: sys, symerror: 0.018}
+    value: 0.86
+  - errors:
+    - {label: stat, symerror: 0.086}
+    - {label: sys, symerror: 0.022}
+    value: 0.699
+  - errors:
+    - {label: stat, symerror: 0.081}
+    - {label: sys, symerror: 0.021}
+    value: 0.298
+  - errors:
+    - {label: stat, symerror: 0.082}
+    - {label: sys, symerror: 0.018}
+    value: 0.257
+  - {value: '-'}
+independent_variables:
+- header: {name: X}
+  values:
+  - {value: 0.028}
+  - {value: 0.076}
+  - {value: 0.149}
+  - {value: 0.248}
+  - {value: 0.347}
+  - {value: 0.447}
+  - {value: 0.545}
+  - {value: 0.649}

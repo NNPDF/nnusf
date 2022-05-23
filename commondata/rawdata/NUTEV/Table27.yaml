@@ -1,0 +1,62 @@
+dependent_variables:
+- header: {name: ((10**38)/E)*D2(SIG)/DX/DY, units: CM**2/GEV}
+  qualifiers:
+  - {name: E, units: GeV, value: '35.0'}
+  - {name: RE, value: NUMU FE --> MU- X}
+  - {name: X, value: '0.275'}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.0618}
+    - {label: sys, symerror: 0.1015}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 1.2423
+  - errors:
+    - {label: stat, symerror: 0.0723}
+    - {label: sys, symerror: 0.0417}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 1.412
+  - errors:
+    - {label: stat, symerror: 0.0891}
+    - {label: sys, symerror: 0.0842}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 1.1829
+- header: {name: ((10**38)/E)*D2(SIG)/DX/DY, units: CM**2/GEV}
+  qualifiers:
+  - {name: E, units: GeV, value: '35.0'}
+  - {name: RE, value: NUMU FE --> MU- X}
+  - {name: X, value: '0.35'}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.0428}
+    - {label: sys, symerror: 0.0288}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 1.0156
+  - errors:
+    - {label: stat, symerror: 0.0482}
+    - {label: sys, symerror: 0.0256}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 1.0206
+  - {value: '-'}
+- header: {name: ((10**38)/E)*D2(SIG)/DX/DY, units: CM**2/GEV}
+  qualifiers:
+  - {name: E, units: GeV, value: '35.0'}
+  - {name: RE, value: NUMU FE --> MU- X}
+  - {name: X, value: '0.45'}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.0362}
+    - {label: sys, symerror: 0.0167}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.6162
+  - errors:
+    - {label: stat, symerror: 0.0461}
+    - {label: sys, symerror: 0.039}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.6328
+  - {value: '-'}
+independent_variables:
+- header: {name: Y}
+  values:
+  - {value: 0.35}
+  - {value: 0.45}
+  - {value: 0.55}

@@ -1,0 +1,81 @@
+dependent_variables:
+- header: {name: F2}
+  qualifiers:
+  - {name: Q**2, units: GeV^2, value: '11.28'}
+  - {name: RE, value: NU NE --> MU- X}
+  - {name: RE, value: NUBAR NE --> MU+ X}
+  - {name: SQRT(S), units: GeV, value: '0.0'}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.127}
+    - {label: sys, symerror: 0.014}
+    value: 1.626
+  - errors:
+    - {label: stat, symerror: 0.058}
+    - {label: sys, symerror: 0.019}
+    value: 1.412
+  - errors:
+    - {label: stat, symerror: 0.042}
+    - {label: sys, symerror: 0.023}
+    value: 1.071
+  - errors:
+    - {label: stat, symerror: 0.031}
+    - {label: sys, symerror: 0.021}
+    value: 0.674
+  - errors:
+    - {label: stat, symerror: 0.025}
+    - {label: sys, symerror: 0.017}
+    value: 0.42
+  - errors:
+    - {label: stat, symerror: 0.02}
+    - {label: sys, symerror: 0.013}
+    value: 0.246
+  - errors:
+    - {label: stat, symerror: 0.014}
+    - {label: sys, symerror: 0.008}
+    value: 0.122
+- header: {name: XF3}
+  qualifiers:
+  - {name: Q**2, units: GeV^2, value: '11.28'}
+  - {name: RE, value: NU NE --> MU- X}
+  - {name: RE, value: NUBAR NE --> MU+ X}
+  - {name: SQRT(S), units: GeV, value: '0.0'}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.143}
+    - {label: sys, symerror: 0.007}
+    value: 0.715
+  - errors:
+    - {label: stat, symerror: 0.078}
+    - {label: sys, symerror: 0.012}
+    value: 0.851
+  - errors:
+    - {label: stat, symerror: 0.064}
+    - {label: sys, symerror: 0.02}
+    value: 0.812
+  - errors:
+    - {label: stat, symerror: 0.053}
+    - {label: sys, symerror: 0.023}
+    value: 0.585
+  - errors:
+    - {label: stat, symerror: 0.047}
+    - {label: sys, symerror: 0.021}
+    value: 0.384
+  - errors:
+    - {label: stat, symerror: 0.042}
+    - {label: sys, symerror: 0.017}
+    value: 0.207
+  - errors:
+    - {label: stat, symerror: 0.034}
+    - {label: sys, symerror: 0.01}
+    value: 0.087
+independent_variables:
+- header: {name: X}
+  values:
+  - {value: 0.076}
+  - {value: 0.149}
+  - {value: 0.248}
+  - {value: 0.347}
+  - {value: 0.447}
+  - {value: 0.545}
+  - {value: 0.649}

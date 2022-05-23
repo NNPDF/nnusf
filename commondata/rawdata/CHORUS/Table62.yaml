@@ -1,0 +1,81 @@
+dependent_variables:
+- header: {name: (1/E(P=1))*D(SIG)/DX/DY, units: FB/GEV}
+  qualifiers:
+  - {name: E(P=1), units: GeV, value: '55.0'}
+  - {name: RE, value: NUMU NUCLEON --> MU- X}
+  - {name: SQRT(S), units: GeV, value: '10.201'}
+  - {name: X, value: '0.275'}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.595}
+    - {label: sys, symerror: 0.545}
+    value: 14.995
+  - errors:
+    - {label: stat, symerror: 0.6}
+    - {label: sys, symerror: 0.55}
+    value: 14.796
+  - errors:
+    - {label: stat, symerror: 0.577}
+    - {label: sys, symerror: 0.405}
+    value: 14.398
+  - errors:
+    - {label: stat, symerror: 0.566}
+    - {label: sys, symerror: 0.34}
+    value: 14.184
+  - errors:
+    - {label: stat, symerror: 0.546}
+    - {label: sys, symerror: 0.479}
+    value: 14.0
+  - errors:
+    - {label: stat, symerror: 0.523}
+    - {label: sys, symerror: 0.476}
+    value: 13.31
+  - errors:
+    - {label: stat, symerror: 0.52}
+    - {label: sys, symerror: 0.657}
+    value: 13.44
+- header: {name: (1/E(P=1))*D(SIG)/DX/DY, units: FB/GEV}
+  qualifiers:
+  - {name: E(P=1), units: GeV, value: '55.0'}
+  - {name: RE, value: NUMUBAR NUCLEON --> MU+ X}
+  - {name: SQRT(S), units: GeV, value: '10.201'}
+  - {name: X, value: '0.275'}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.802}
+    - {label: sys, symerror: 0.524}
+    value: 9.809
+  - errors:
+    - {label: stat, symerror: 0.732}
+    - {label: sys, symerror: 0.398}
+    value: 8.095
+  - errors:
+    - {label: stat, symerror: 0.666}
+    - {label: sys, symerror: 0.237}
+    value: 6.914
+  - errors:
+    - {label: stat, symerror: 0.501}
+    - {label: sys, symerror: 0.2}
+    value: 4.224
+  - errors:
+    - {label: stat, symerror: 0.425}
+    - {label: sys, symerror: 0.262}
+    value: 3.113
+  - errors:
+    - {label: stat, symerror: 0.302}
+    - {label: sys, symerror: 0.144}
+    value: 1.812
+  - errors:
+    - {label: stat, symerror: 0.273}
+    - {label: sys, symerror: 0.118}
+    value: 1.491
+independent_variables:
+- header: {name: Y}
+  values:
+  - {value: 0.2}
+  - {value: 0.3}
+  - {value: 0.4}
+  - {value: 0.5}
+  - {value: 0.6}
+  - {value: 0.7}
+  - {value: 0.8}

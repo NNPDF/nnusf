@@ -1,0 +1,91 @@
+dependent_variables:
+- header: {name: XF3}
+  qualifiers:
+  - {name: E(P=1), units: GEV, value: 30 TO 500}
+  - {name: RE, value: (NUMU + NUMUBAR) NUCLEON --> (MU- + MU+) X}
+  - {name: X, value: '0.225'}
+  - {name: SYS, value: 'The sources of the other systematic (DSYS) errors in the table
+      are (in order)://(1) Muon energy scale//(2) Hadron energy scale//(3) Charm mass//(4)
+      Uncertainty in B/A//(5) Muon energy smearing//(6) Hadron energy smearing//(7)
+      R_model//(8) dxF3_model//Note: (7) and (8) apply only to F2.'}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.0467}
+    - {label: sys, symerror: 0.0126}
+    - {label: sys, symerror: 0.0034}
+    - {label: sys, symerror: 0.0265}
+    - {label: sys, symerror: 0.0034}
+    - {label: sys, symerror: 0.0282}
+    - {label: sys, symerror: 0.0073}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.7818
+  - errors:
+    - {label: stat, symerror: 0.0239}
+    - {label: sys, symerror: 0.0032}
+    - {label: sys, symerror: 0.0029}
+    - {label: sys, symerror: 0.0047}
+    - {label: sys, symerror: 0.0012}
+    - {label: sys, symerror: 0.0038}
+    - {label: sys, symerror: 0.0011}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.7667
+  - errors:
+    - {label: stat, symerror: 0.0156}
+    - {label: sys, symerror: 0.0039}
+    - {label: sys, symerror: 0.0046}
+    - {label: sys, symerror: 0.0023}
+    - {label: sys, symerror: 0.0002}
+    - {label: sys, symerror: 0.0015}
+    - {label: sys, symerror: 0.0054}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.76
+  - errors:
+    - {label: stat, symerror: 0.0136}
+    - {label: sys, symerror: 0.0004}
+    - {label: sys, symerror: 0.0034}
+    - {label: sys, symerror: 0.003}
+    - {label: sys, symerror: 0.012}
+    - {label: sys, symerror: 0.0164}
+    - {label: sys, symerror: 0.0016}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.7871
+  - errors:
+    - {label: stat, symerror: 0.0137}
+    - {label: sys, symerror: 0.0039}
+    - {label: sys, symerror: 0.0057}
+    - {label: sys, symerror: 0.0003}
+    - {label: sys, symerror: 0.0015}
+    - {label: sys, symerror: 0.0032}
+    - {label: sys, symerror: 0.0009}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.7413
+  - errors:
+    - {label: stat, symerror: 0.0131}
+    - {label: sys, symerror: 0.0085}
+    - {label: sys, symerror: 0.0008}
+    - {label: sys, symerror: 0.0013}
+    - {label: sys, symerror: 0.0069}
+    - {label: sys, symerror: 0.0039}
+    - {label: sys, symerror: 0.0009}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.7149
+  - errors:
+    - {label: stat, symerror: 0.0177}
+    - {label: sys, symerror: 0.0095}
+    - {label: sys, symerror: 0.01}
+    - {label: sys, symerror: 0.01}
+    - {label: sys, symerror: 0.0078}
+    - {label: sys, symerror: 0.0073}
+    - {label: sys, symerror: 0.0026}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.6968
+independent_variables:
+- header: {name: Q**2, units: GEV**2}
+  values:
+  - {value: 5.012}
+  - {value: 7.943}
+  - {value: 12.589}
+  - {value: 19.952}
+  - {value: 31.622}
+  - {value: 50.118}
+  - {value: 79.432}

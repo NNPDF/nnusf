@@ -1,0 +1,39 @@
+---
+comment: |
+  STRUCTURE FUNCTIONS FROM THE CHARM COLLABORATION AT CERN. F2 AND XF3 . MARBLE TARGET(CACO3). RANGES ARE 0.18 & lt; Q**2 & lt; 80. AND 0.01 & lt; X & lt; 0.9 VALUES FOR ANTIQUARK DISTRIBUTIONS ALSO GIVEN.
+dateupdated: 01/01/1970 00:00:00
+record_ids:
+- {id: 181908, type: inspire}
+
+---
+data_file: Table1.yaml
+description: No description provided.
+keywords:
+- name: reactions
+  values: [NUBAR NUCLEON --> MU+ X, NU NUCLEON --> MU- X]
+- name: observables
+  values: [F2, XF3]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+- name: cmenergies
+  values: [0.0]
+location: Data from 1
+name: Table 1
+
+---
+data_file: Table2.yaml
+description: |
+  HERE THE QBAR IS D2(SIG(ANU))/DX/DY - (1-Y)**2*D2(SIG(NU))/DX/DY.
+keywords:
+- name: reactions
+  values: [NUBAR NUCLEON --> MU+ X, NU NUCLEON --> MU- X]
+- name: observables
+  values: [QBAR]
+- name: phrases
+  values: [Inclusive, Muon production, Charged Current, Deep Inelastic Scattering]
+- name: cmenergies
+  values: [0.0]
+location: Data from 2
+name: Table 2
+

@@ -1,0 +1,72 @@
+dependent_variables:
+- header: {name: F2}
+  qualifiers:
+  - {name: P, units: GEV, value: 30 TO 230}
+  - {name: RE, value: NUMU FE --> MU- X}
+  - {name: RE, value: NUMUBAR FE --> MU+ X}
+  - {name: X, value: '0.08'}
+  values:
+  - errors:
+    - {symerror: 0.0386}
+    - {label: 'sys,OVERALL NORMALIZATION ERROR', symerror: 3.1%}
+    value: 1.3805
+  - errors:
+    - {symerror: 0.0327}
+    - {label: 'sys,OVERALL NORMALIZATION ERROR', symerror: 3.1%}
+    value: 1.4177
+  - errors:
+    - {symerror: 0.0305}
+    - {label: 'sys,OVERALL NORMALIZATION ERROR', symerror: 3.1%}
+    value: 1.4244
+  - errors:
+    - {symerror: 0.0351}
+    - {label: 'sys,OVERALL NORMALIZATION ERROR', symerror: 3.1%}
+    value: 1.5256
+  - errors:
+    - {symerror: 0.0512}
+    - {label: 'sys,OVERALL NORMALIZATION ERROR', symerror: 3.1%}
+    value: 1.5654
+  - errors:
+    - {symerror: 0.069}
+    - {label: 'sys,OVERALL NORMALIZATION ERROR', symerror: 3.1%}
+    value: 1.5362
+- header: {name: X*F3}
+  qualifiers:
+  - {name: P, units: GEV, value: 30 TO 230}
+  - {name: RE, value: NUMU FE --> MU- X}
+  - {name: RE, value: NUMUBAR FE --> MU+ X}
+  - {name: X, value: '0.08'}
+  values:
+  - errors:
+    - {symerror: 0.1589}
+    - {label: 'sys,OVERALL NORMALIZATION ERROR', symerror: 3.1%}
+    value: 0.7043
+  - errors:
+    - {symerror: 0.0818}
+    - {label: 'sys,OVERALL NORMALIZATION ERROR', symerror: 3.1%}
+    value: 0.7671
+  - errors:
+    - {symerror: 0.0483}
+    - {label: 'sys,OVERALL NORMALIZATION ERROR', symerror: 3.1%}
+    value: 0.6416
+  - errors:
+    - {symerror: 0.0447}
+    - {label: 'sys,OVERALL NORMALIZATION ERROR', symerror: 3.1%}
+    value: 0.7038
+  - errors:
+    - {symerror: 0.07}
+    - {label: 'sys,OVERALL NORMALIZATION ERROR', symerror: 3.1%}
+    value: 0.7736
+  - errors:
+    - {symerror: 0.0721}
+    - {label: 'sys,OVERALL NORMALIZATION ERROR', symerror: 3.1%}
+    value: 0.7226
+independent_variables:
+- header: {name: Q2, units: GEV**2}
+  values:
+  - {value: 2.0}
+  - {value: 3.16}
+  - {value: 5.01}
+  - {value: 7.94}
+  - {value: 12.59}
+  - {value: 19.95}

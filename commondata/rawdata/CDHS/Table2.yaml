@@ -1,0 +1,281 @@
+dependent_variables:
+- header: {name: 1/E*D2(SIG)/D(X)/D(Y), units: FB/GEV}
+  qualifiers:
+  - {name: P, units: GEV, value: 80 (BIN=40 TO 160)}
+  - {name: RE, value: NUMU P --> MU- X}
+  - {name: SQRT(S), units: GeV, value: 8.713-17.35}
+  - {name: X, value: '0.05'}
+  - {name: SYS, value: FOR ENERGY SMEARING}
+  - {name: SYS, value: RADIATIVE CORRECTIONS}
+  values:
+  - errors:
+    - {label: stat, symerror: 1.36}
+    - {label: sys, symerror: 1.6}
+    value: 13.17
+  - errors:
+    - {label: stat, symerror: 1.25}
+    - {label: sys, symerror: 1.2}
+    value: 13.88
+  - errors:
+    - {label: stat, symerror: 1.35}
+    - {label: sys, symerror: 1.1}
+    value: 14.91
+  - errors:
+    - {label: stat, symerror: 1.15}
+    - {label: sys, symerror: 1.0}
+    value: 11.7
+  - errors:
+    - {label: stat, symerror: 1.15}
+    - {label: sys, symerror: 1.0}
+    value: 12.76
+  - errors:
+    - {label: stat, symerror: 0.99}
+    - {label: sys, symerror: 1.0}
+    value: 10.0
+  - errors:
+    - {label: stat, symerror: 1.04}
+    - {label: sys, symerror: 0.8}
+    value: 9.99
+  - errors:
+    - {label: stat, symerror: 1.1}
+    - {label: sys, symerror: 0.8}
+    value: 7.55
+- header: {name: 1/E*D2(SIG)/D(X)/D(Y), units: FB/GEV}
+  qualifiers:
+  - {name: P, units: GEV, value: 80 (BIN=40 TO 160)}
+  - {name: RE, value: NUMU P --> MU- X}
+  - {name: SQRT(S), units: GeV, value: 8.713-17.35}
+  - {name: X, value: '0.15'}
+  - {name: SYS, value: FOR ENERGY SMEARING}
+  - {name: SYS, value: RADIATIVE CORRECTIONS}
+  values:
+  - errors:
+    - {label: stat, symerror: 1.41}
+    - {label: sys, symerror: 1.0}
+    value: 13.66
+  - errors:
+    - {label: stat, symerror: 1.23}
+    - {label: sys, symerror: 1.0}
+    value: 12.66
+  - errors:
+    - {label: stat, symerror: 1.22}
+    - {label: sys, symerror: 0.9}
+    value: 12.65
+  - errors:
+    - {label: stat, symerror: 1.01}
+    - {label: sys, symerror: 0.7}
+    value: 9.05
+  - errors:
+    - {label: stat, symerror: 1.1}
+    - {label: sys, symerror: 0.7}
+    value: 11.05
+  - errors:
+    - {label: stat, symerror: 1.01}
+    - {label: sys, symerror: 0.5}
+    value: 8.85
+  - errors:
+    - {label: stat, symerror: 1.06}
+    - {label: sys, symerror: 0.5}
+    value: 8.98
+  - errors:
+    - {label: stat, symerror: 1.31}
+    - {label: sys, symerror: 0.8}
+    value: 10.6
+- header: {name: 1/E*D2(SIG)/D(X)/D(Y), units: FB/GEV}
+  qualifiers:
+  - {name: P, units: GEV, value: 80 (BIN=40 TO 160)}
+  - {name: RE, value: NUMU P --> MU- X}
+  - {name: SQRT(S), units: GeV, value: 8.713-17.35}
+  - {name: X, value: '0.25'}
+  - {name: SYS, value: FOR ENERGY SMEARING}
+  - {name: SYS, value: RADIATIVE CORRECTIONS}
+  values:
+  - errors:
+    - {label: stat, symerror: 1.18}
+    - {label: sys, symerror: 0.8}
+    value: 9.53
+  - errors:
+    - {label: stat, symerror: 0.97}
+    - {label: sys, symerror: 0.7}
+    value: 7.75
+  - errors:
+    - {label: stat, symerror: 0.91}
+    - {label: sys, symerror: 0.7}
+    value: 6.82
+  - errors:
+    - {label: stat, symerror: 0.97}
+    - {label: sys, symerror: 0.7}
+    value: 8.09
+  - errors:
+    - {label: stat, symerror: 0.91}
+    - {label: sys, symerror: 0.6}
+    value: 6.98
+  - errors:
+    - {label: stat, symerror: 0.96}
+    - {label: sys, symerror: 0.5}
+    value: 7.51
+  - errors:
+    - {label: stat, symerror: 1.04}
+    - {label: sys, symerror: 0.5}
+    value: 7.34
+  - errors:
+    - {label: stat, symerror: 1.21}
+    - {label: sys, symerror: 0.8}
+    value: 7.25
+- header: {name: 1/E*D2(SIG)/D(X)/D(Y), units: FB/GEV}
+  qualifiers:
+  - {name: P, units: GEV, value: 80 (BIN=40 TO 160)}
+  - {name: RE, value: NUMU P --> MU- X}
+  - {name: SQRT(S), units: GeV, value: 8.713-17.35}
+  - {name: X, value: '0.35'}
+  - {name: SYS, value: FOR ENERGY SMEARING}
+  - {name: SYS, value: RADIATIVE CORRECTIONS}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.87}
+    - {label: sys, symerror: 0.7}
+    value: 5.56
+  - errors:
+    - {label: stat, symerror: 0.9}
+    - {label: sys, symerror: 0.6}
+    value: 6.63
+  - errors:
+    - {label: stat, symerror: 0.74}
+    - {label: sys, symerror: 0.5}
+    value: 4.58
+  - errors:
+    - {label: stat, symerror: 0.8}
+    - {label: sys, symerror: 0.5}
+    value: 5.23
+  - errors:
+    - {label: stat, symerror: 0.69}
+    - {label: sys, symerror: 0.4}
+    value: 3.87
+  - errors:
+    - {label: stat, symerror: 0.7}
+    - {label: sys, symerror: 0.5}
+    value: 3.78
+  - errors:
+    - {label: stat, symerror: 0.73}
+    - {label: sys, symerror: 0.6}
+    value: 3.31
+  - errors:
+    - {label: stat, symerror: 1.23}
+    - {label: sys, symerror: 0.8}
+    value: 4.73
+- header: {name: 1/E*D2(SIG)/D(X)/D(Y), units: FB/GEV}
+  qualifiers:
+  - {name: P, units: GEV, value: 80 (BIN=40 TO 160)}
+  - {name: RE, value: NUMU P --> MU- X}
+  - {name: SQRT(S), units: GeV, value: 8.713-17.35}
+  - {name: X, value: '0.45'}
+  - {name: SYS, value: FOR ENERGY SMEARING}
+  - {name: SYS, value: RADIATIVE CORRECTIONS}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.69}
+    - {label: sys, symerror: 0.7}
+    value: 4.1
+  - errors:
+    - {label: stat, symerror: 0.69}
+    - {label: sys, symerror: 0.6}
+    value: 3.85
+  - errors:
+    - {label: stat, symerror: 0.65}
+    - {label: sys, symerror: 0.5}
+    value: 3.6
+  - errors:
+    - {label: stat, symerror: 0.7}
+    - {label: sys, symerror: 0.5}
+    value: 3.72
+  - errors:
+    - {label: stat, symerror: 0.57}
+    - {label: sys, symerror: 0.4}
+    value: 2.48
+  - errors:
+    - {label: stat, symerror: 0.52}
+    - {label: sys, symerror: 0.4}
+    value: 1.8
+  - errors:
+    - {label: stat, symerror: 0.59}
+    - {label: sys, symerror: 0.6}
+    value: 1.55
+  - {value: '-'}
+- header: {name: 1/E*D2(SIG)/D(X)/D(Y), units: FB/GEV}
+  qualifiers:
+  - {name: P, units: GEV, value: 80 (BIN=40 TO 160)}
+  - {name: RE, value: NUMU P --> MU- X}
+  - {name: SQRT(S), units: GeV, value: 8.713-17.35}
+  - {name: X, value: '0.55'}
+  - {name: SYS, value: FOR ENERGY SMEARING}
+  - {name: SYS, value: RADIATIVE CORRECTIONS}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.44}
+    - {label: sys, symerror: 0.6}
+    value: 1.74
+  - errors:
+    - {label: stat, symerror: 0.5}
+    - {label: sys, symerror: 0.4}
+    value: 2.27
+  - errors:
+    - {label: stat, symerror: 0.41}
+    - {label: sys, symerror: 0.4}
+    value: 1.65
+  - errors:
+    - {label: stat, symerror: 0.36}
+    - {label: sys, symerror: 0.3}
+    value: 1.22
+  - errors:
+    - {label: stat, symerror: 0.32}
+    - {label: sys, symerror: 0.3}
+    value: 1.09
+  - errors:
+    - {label: stat, symerror: 0.35}
+    - {label: sys, symerror: 0.3}
+    value: 0.95
+  - {value: '-'}
+  - {value: '-'}
+- header: {name: 1/E*D2(SIG)/D(X)/D(Y), units: FB/GEV}
+  qualifiers:
+  - {name: P, units: GEV, value: 80 (BIN=40 TO 160)}
+  - {name: RE, value: NUMU P --> MU- X}
+  - {name: SQRT(S), units: GeV, value: 8.713-17.35}
+  - {name: X, value: '0.65'}
+  - {name: SYS, value: FOR ENERGY SMEARING}
+  - {name: SYS, value: RADIATIVE CORRECTIONS}
+  values:
+  - {value: '-'}
+  - errors:
+    - {label: stat, symerror: 0.22}
+    - {label: sys, symerror: 0.4}
+    value: 0.77
+  - errors:
+    - {label: stat, symerror: 0.22}
+    - {label: sys, symerror: 0.3}
+    value: 0.71
+  - errors:
+    - {label: stat, symerror: 0.19}
+    - {label: sys, symerror: 0.2}
+    value: 0.44
+  - errors:
+    - {label: stat, symerror: 0.23}
+    - {label: sys, symerror: 0.2}
+    value: 0.58
+  - errors:
+    - {label: stat, symerror: 0.2}
+    - {label: sys, symerror: 0.2}
+    value: 0.44
+  - {value: '-'}
+  - {value: '-'}
+independent_variables:
+- header: {name: Y}
+  values:
+  - {value: 0.15}
+  - {value: 0.25}
+  - {value: 0.35}
+  - {value: 0.45}
+  - {value: 0.55}
+  - {value: 0.65}
+  - {value: 0.75}
+  - {value: 0.85}

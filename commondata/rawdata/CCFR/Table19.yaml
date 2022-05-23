@@ -1,0 +1,60 @@
+dependent_variables:
+- header: {name: F2}
+  qualifiers:
+  - {name: ELAB, units: GEV, value: 120 TO 250}
+  - {name: RE, value: NU NUCLEON --> MU- X}
+  - {name: SQRT(S), units: GeV, value: 15.033-21.677}
+  - {name: X, value: '0.35'}
+  values:
+  - errors:
+    - {symerror: 0.0209}
+    value: 0.6887
+  - errors:
+    - {symerror: 0.0167}
+    value: 0.6593
+  - errors:
+    - {symerror: 0.0155}
+    value: 0.6415
+  - errors:
+    - {symerror: 0.0171}
+    value: 0.6519
+  - errors:
+    - {symerror: 0.0212}
+    value: 0.6019
+  - errors:
+    - {symerror: 0.0219}
+    value: 0.6018
+- header: {name: XF3}
+  qualifiers:
+  - {name: ELAB, units: GEV, value: 120 TO 250}
+  - {name: RE, value: NU NUCLEON --> MU- X}
+  - {name: SQRT(S), units: GeV, value: 15.033-21.677}
+  - {name: X, value: '0.35'}
+  values:
+  - errors:
+    - {symerror: 0.0956}
+    value: 0.6838
+  - errors:
+    - {symerror: 0.0466}
+    value: 0.6378
+  - errors:
+    - {symerror: 0.0283}
+    value: 0.5701
+  - errors:
+    - {symerror: 0.0268}
+    value: 0.586
+  - errors:
+    - {symerror: 0.033}
+    value: 0.5045
+  - errors:
+    - {symerror: 0.0256}
+    value: 0.532
+independent_variables:
+- header: {name: Q**2, units: GEV}
+  values:
+  - {value: 7.94}
+  - {value: 12.59}
+  - {value: 19.95}
+  - {value: 31.62}
+  - {value: 50.12}
+  - {value: 79.43}

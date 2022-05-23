@@ -1,0 +1,90 @@
+dependent_variables:
+- header: {name: (1/E(P=1))*D(SIG)/DX/DY, units: FB/GEV}
+  qualifiers:
+  - {name: E(P=1), units: GeV, value: '90.0'}
+  - {name: RE, value: NUMU NUCLEON --> MU- X}
+  - {name: SQRT(S), units: GeV, value: '13.028'}
+  - {name: X, value: '0.02'}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.766}
+    - {label: sys, symerror: 0.616}
+    value: 12.825
+  - errors:
+    - {label: stat, symerror: 0.866}
+    - {label: sys, symerror: 0.849}
+    value: 15.434
+  - errors:
+    - {label: stat, symerror: 0.816}
+    - {label: sys, symerror: 0.708}
+    value: 14.872
+  - errors:
+    - {label: stat, symerror: 0.843}
+    - {label: sys, symerror: 0.815}
+    value: 16.087
+  - errors:
+    - {label: stat, symerror: 0.768}
+    - {label: sys, symerror: 0.769}
+    value: 14.31
+  - errors:
+    - {label: stat, symerror: 0.768}
+    - {label: sys, symerror: 0.76}
+    value: 14.739
+  - errors:
+    - {label: stat, symerror: 0.774}
+    - {label: sys, symerror: 1.111}
+    value: 15.04
+  - errors:
+    - {label: stat, symerror: 0.709}
+    - {label: sys, symerror: 0.958}
+    value: 13.127
+- header: {name: (1/E(P=1))*D(SIG)/DX/DY, units: FB/GEV}
+  qualifiers:
+  - {name: E(P=1), units: GeV, value: '90.0'}
+  - {name: RE, value: NUMUBAR NUCLEON --> MU+ X}
+  - {name: SQRT(S), units: GeV, value: '13.028'}
+  - {name: X, value: '0.02'}
+  values:
+  - errors:
+    - {label: stat, symerror: 1.538}
+    - {label: sys, symerror: 1.003}
+    value: 11.961
+  - errors:
+    - {label: stat, symerror: 1.513}
+    - {label: sys, symerror: 0.544}
+    value: 11.843
+  - errors:
+    - {label: stat, symerror: 1.385}
+    - {label: sys, symerror: 0.388}
+    value: 10.611
+  - errors:
+    - {label: stat, symerror: 1.385}
+    - {label: sys, symerror: 0.649}
+    value: 10.98
+  - errors:
+    - {label: stat, symerror: 1.417}
+    - {label: sys, symerror: 0.829}
+    value: 11.83
+  - errors:
+    - {label: stat, symerror: 1.34}
+    - {label: sys, symerror: 0.754}
+    value: 10.214
+  - errors:
+    - {label: stat, symerror: 1.089}
+    - {label: sys, symerror: 0.542}
+    value: 7.408
+  - errors:
+    - {label: stat, symerror: 0.991}
+    - {label: sys, symerror: 0.509}
+    value: 6.242
+independent_variables:
+- header: {name: Y}
+  values:
+  - {value: 0.1}
+  - {value: 0.2}
+  - {value: 0.3}
+  - {value: 0.4}
+  - {value: 0.5}
+  - {value: 0.6}
+  - {value: 0.7}
+  - {value: 0.8}

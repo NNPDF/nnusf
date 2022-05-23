@@ -1,0 +1,63 @@
+dependent_variables:
+- header: {name: (1/E(P=1))*D(SIG)/DX/DY, units: FB/GEV}
+  qualifiers:
+  - {name: E(P=1), units: GeV, value: '25.0'}
+  - {name: RE, value: NUMU NUCLEON --> MU- X}
+  - {name: SQRT(S), units: GeV, value: '6.912'}
+  - {name: X, value: '0.08'}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.327}
+    - {label: sys, symerror: 1.076}
+    value: 16.976
+  - errors:
+    - {label: stat, symerror: 0.333}
+    - {label: sys, symerror: 1.034}
+    value: 16.733
+  - errors:
+    - {label: stat, symerror: 0.34}
+    - {label: sys, symerror: 1.018}
+    value: 16.814
+  - errors:
+    - {label: stat, symerror: 0.339}
+    - {label: sys, symerror: 1.146}
+    value: 16.599
+  - errors:
+    - {label: stat, symerror: 0.342}
+    - {label: sys, symerror: 1.058}
+    value: 16.254
+- header: {name: (1/E(P=1))*D(SIG)/DX/DY, units: FB/GEV}
+  qualifiers:
+  - {name: E(P=1), units: GeV, value: '25.0'}
+  - {name: RE, value: NUMUBAR NUCLEON --> MU+ X}
+  - {name: SQRT(S), units: GeV, value: '6.912'}
+  - {name: X, value: '0.08'}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.412}
+    - {label: sys, symerror: 0.634}
+    value: 12.428
+  - errors:
+    - {label: stat, symerror: 0.404}
+    - {label: sys, symerror: 0.591}
+    value: 11.304
+  - errors:
+    - {label: stat, symerror: 0.374}
+    - {label: sys, symerror: 0.606}
+    value: 9.467
+  - errors:
+    - {label: stat, symerror: 0.344}
+    - {label: sys, symerror: 0.451}
+    value: 7.89
+  - errors:
+    - {label: stat, symerror: 0.321}
+    - {label: sys, symerror: 0.334}
+    value: 6.493
+independent_variables:
+- header: {name: Y}
+  values:
+  - {value: 0.3}
+  - {value: 0.4}
+  - {value: 0.5}
+  - {value: 0.6}
+  - {value: 0.7}

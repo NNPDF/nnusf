@@ -1,0 +1,60 @@
+dependent_variables:
+- header: {name: F2}
+  qualifiers:
+  - {name: Q**2, units: GeV^2, value: '0.79'}
+  - {name: RE, value: NU NE --> MU- X}
+  - {name: RE, value: NUBAR NE --> MU+ X}
+  - {name: SQRT(S), units: GeV, value: '0.0'}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.071}
+    - {label: sys, symerror: 0.018}
+    value: 1.161
+  - errors:
+    - {label: stat, symerror: 0.068}
+    - {label: sys, symerror: 0.022}
+    value: 1.231
+  - errors:
+    - {label: stat, symerror: 0.062}
+    - {label: sys, symerror: 0.045}
+    value: 1.307
+  - errors:
+    - {label: stat, symerror: 0.072}
+    - {label: sys, symerror: 0.079}
+    value: 1.044
+  - errors:
+    - {label: stat, symerror: 0.081}
+    - {label: sys, symerror: 0.104}
+    value: 0.866
+  - errors:
+    - {label: stat, symerror: 0.085}
+    - {label: sys, symerror: 0.114}
+    value: 0.739
+- header: {name: XF3}
+  qualifiers:
+  - {name: Q**2, units: GeV^2, value: '0.79'}
+  - {name: RE, value: NU NE --> MU- X}
+  - {name: RE, value: NUBAR NE --> MU+ X}
+  - {name: SQRT(S), units: GeV, value: '0.0'}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.125}
+    - {label: sys, symerror: 0.005}
+    value: 0.313
+  - errors:
+    - {label: stat, symerror: 0.23}
+    - {label: sys, symerror: 0.009}
+    value: 0.529
+  - {value: '-'}
+  - {value: '-'}
+  - {value: '-'}
+  - {value: '-'}
+independent_variables:
+- header: {name: X}
+  values:
+  - {value: 0.028}
+  - {value: 0.076}
+  - {value: 0.149}
+  - {value: 0.248}
+  - {value: 0.347}
+  - {value: 0.447}

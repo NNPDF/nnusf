@@ -1,0 +1,90 @@
+dependent_variables:
+- header: {name: ((10**38)/E)*D2(SIG)/DX/DY, units: CM**2/GEV}
+  qualifiers:
+  - {name: E, units: GeV, value: '275.0'}
+  - {name: RE, value: NUMUBAR FE --> MU+ X}
+  - {name: X, value: '0.55'}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.1054}
+    - {label: sys, symerror: 0.2033}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.373
+  - errors:
+    - {label: stat, symerror: 0.0409}
+    - {label: sys, symerror: 0.031}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.2222
+  - errors:
+    - {label: stat, symerror: 0.0317}
+    - {label: sys, symerror: 0.009}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.2244
+  - errors:
+    - {label: stat, symerror: 0.0249}
+    - {label: sys, symerror: 0.0172}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.1311
+  - errors:
+    - {label: stat, symerror: 0.0268}
+    - {label: sys, symerror: 0.023}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.128
+  - errors:
+    - {label: stat, symerror: 0.0176}
+    - {label: sys, symerror: 0.0089}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.0599
+- header: {name: ((10**38)/E)*D2(SIG)/DX/DY, units: CM**2/GEV}
+  qualifiers:
+  - {name: E, units: GeV, value: '275.0'}
+  - {name: RE, value: NUMUBAR FE --> MU+ X}
+  - {name: X, value: '0.65'}
+  values:
+  - {value: '-'}
+  - errors:
+    - {label: stat, symerror: 0.0225}
+    - {label: sys, symerror: 0.0177}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.0913
+  - errors:
+    - {label: stat, symerror: 0.0167}
+    - {label: sys, symerror: 0.0053}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.089
+  - errors:
+    - {label: stat, symerror: 0.0161}
+    - {label: sys, symerror: 0.02}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.0766
+  - {value: '-'}
+  - {value: '-'}
+- header: {name: ((10**38)/E)*D2(SIG)/DX/DY, units: CM**2/GEV}
+  qualifiers:
+  - {name: E, units: GeV, value: '275.0'}
+  - {name: RE, value: NUMUBAR FE --> MU+ X}
+  - {name: X, value: '0.75'}
+  values:
+  - {value: '-'}
+  - errors:
+    - {label: stat, symerror: 0.0135}
+    - {label: sys, symerror: 0.0103}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.0496
+  - errors:
+    - {label: stat, symerror: 0.0076}
+    - {label: sys, symerror: 0.0048}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.0306
+  - {value: '-'}
+  - {value: '-'}
+  - {value: '-'}
+independent_variables:
+- header: {name: Y}
+  values:
+  - {value: 0.025}
+  - {value: 0.075}
+  - {value: 0.15}
+  - {value: 0.25}
+  - {value: 0.35}
+  - {value: 0.45}

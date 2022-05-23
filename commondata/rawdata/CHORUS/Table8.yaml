@@ -1,0 +1,74 @@
+dependent_variables:
+- header: {name: F2}
+  qualifiers:
+  - {name: E(P=1), units: GEV, value: 10 TO 200}
+  - {name: RE, value: NUMU NUCLEON --> MU- X}
+  - {name: RE, value: NUMUBAR NUCLEON --> MU+ X}
+  - {name: SQRT(S), units: GeV, value: 4.432-19.393}
+  - {name: X, value: '0.35'}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.0077}
+    - {label: sys, symerror: 0.0403}
+    value: 0.7531
+  - errors:
+    - {label: stat, symerror: 0.0049}
+    - {label: sys, symerror: 0.0252}
+    value: 0.711
+  - errors:
+    - {label: stat, symerror: 0.006}
+    - {label: sys, symerror: 0.0245}
+    value: 0.662
+  - errors:
+    - {label: stat, symerror: 0.0057}
+    - {label: sys, symerror: 0.0188}
+    value: 0.6338
+  - errors:
+    - {label: stat, symerror: 0.0063}
+    - {label: sys, symerror: 0.0183}
+    value: 0.6219
+  - errors:
+    - {label: stat, symerror: 0.0095}
+    - {label: sys, symerror: 0.022}
+    value: 0.5809
+- header: {name: XF3}
+  qualifiers:
+  - {name: E(P=1), units: GEV, value: 10 TO 200}
+  - {name: RE, value: NUMU NUCLEON --> MU- X}
+  - {name: RE, value: NUMUBAR NUCLEON --> MU+ X}
+  - {name: SQRT(S), units: GeV, value: 4.432-19.393}
+  - {name: X, value: '0.35'}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.0282}
+    - {label: sys, symerror: 0.0219}
+    value: 0.582
+  - errors:
+    - {label: stat, symerror: 0.0097}
+    - {label: sys, symerror: 0.0215}
+    value: 0.6051
+  - errors:
+    - {label: stat, symerror: 0.0114}
+    - {label: sys, symerror: 0.0211}
+    value: 0.5819
+  - errors:
+    - {label: stat, symerror: 0.0083}
+    - {label: sys, symerror: 0.0171}
+    value: 0.5753
+  - errors:
+    - {label: stat, symerror: 0.008}
+    - {label: sys, symerror: 0.0149}
+    value: 0.5781
+  - errors:
+    - {label: stat, symerror: 0.0118}
+    - {label: sys, symerror: 0.0174}
+    value: 0.5391
+independent_variables:
+- header: {name: Q**2, units: GEV**2}
+  values:
+  - {value: 5.146}
+  - {value: 8.155}
+  - {value: 12.925}
+  - {value: 20.52}
+  - {value: 32.5}
+  - {value: 51.455}

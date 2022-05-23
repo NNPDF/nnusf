@@ -1,0 +1,81 @@
+dependent_variables:
+- header: {name: (1/E(P=1))*D(SIG)/DX/DY, units: FB/GEV}
+  qualifiers:
+  - {name: E(P=1), units: GeV, value: '45.0'}
+  - {name: RE, value: NUMU NUCLEON --> MU- X}
+  - {name: SQRT(S), units: GeV, value: '9.236'}
+  - {name: X, value: '0.175'}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.514}
+    - {label: sys, symerror: 0.56}
+    value: 18.418
+  - errors:
+    - {label: stat, symerror: 0.529}
+    - {label: sys, symerror: 0.438}
+    value: 18.628
+  - errors:
+    - {label: stat, symerror: 0.528}
+    - {label: sys, symerror: 0.494}
+    value: 18.6
+  - errors:
+    - {label: stat, symerror: 0.51}
+    - {label: sys, symerror: 0.594}
+    value: 18.17
+  - errors:
+    - {label: stat, symerror: 0.486}
+    - {label: sys, symerror: 0.751}
+    value: 17.459
+  - errors:
+    - {label: stat, symerror: 0.463}
+    - {label: sys, symerror: 0.972}
+    value: 16.513
+  - errors:
+    - {label: stat, symerror: 0.482}
+    - {label: sys, symerror: 1.121}
+    value: 17.645
+- header: {name: (1/E(P=1))*D(SIG)/DX/DY, units: FB/GEV}
+  qualifiers:
+  - {name: E(P=1), units: GeV, value: '45.0'}
+  - {name: RE, value: NUMUBAR NUCLEON --> MU+ X}
+  - {name: SQRT(S), units: GeV, value: '9.236'}
+  - {name: X, value: '0.175'}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.693}
+    - {label: sys, symerror: 0.479}
+    value: 12.857
+  - errors:
+    - {label: stat, symerror: 0.675}
+    - {label: sys, symerror: 0.422}
+    value: 11.638
+  - errors:
+    - {label: stat, symerror: 0.621}
+    - {label: sys, symerror: 0.335}
+    value: 9.993
+  - errors:
+    - {label: stat, symerror: 0.513}
+    - {label: sys, symerror: 0.376}
+    value: 7.182
+  - errors:
+    - {label: stat, symerror: 0.395}
+    - {label: sys, symerror: 0.273}
+    value: 4.7
+  - errors:
+    - {label: stat, symerror: 0.356}
+    - {label: sys, symerror: 0.27}
+    value: 3.892
+  - errors:
+    - {label: stat, symerror: 0.297}
+    - {label: sys, symerror: 0.179}
+    value: 2.72
+independent_variables:
+- header: {name: Y}
+  values:
+  - {value: 0.2}
+  - {value: 0.3}
+  - {value: 0.4}
+  - {value: 0.5}
+  - {value: 0.6}
+  - {value: 0.7}
+  - {value: 0.8}

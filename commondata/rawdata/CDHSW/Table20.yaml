@@ -1,0 +1,151 @@
+dependent_variables:
+- header: {name: F2}
+  qualifiers:
+  - {name: RE, value: NUMU NUCLEON --> MU- X}
+  - {name: SQRT(S), units: GeV, value: 6.197-19.393}
+  - {name: X(DEF=Q**2/2M*NU), value: '0.045'}
+  - {name: SYS, value: The second systematic error is the uncertainty associated with
+      the total cross section normalization.}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.017}
+    - asymerror: {minus: -0.006, plus: 0.084}
+      label: sys
+    value: 0.834
+  - errors:
+    - {label: stat, symerror: 0.015}
+    - asymerror: {minus: -0.005, plus: 0.075}
+      label: sys
+    value: 0.889
+  - errors:
+    - {label: stat, symerror: 0.017}
+    - asymerror: {minus: -0.006, plus: 0.069}
+      label: sys
+    value: 0.968
+  - errors:
+    - {label: stat, symerror: 0.02}
+    - asymerror: {minus: -0.008, plus: 0.065}
+      label: sys
+    value: 1.074
+  - errors:
+    - {label: stat, symerror: 0.022}
+    - asymerror: {minus: -0.012, plus: 0.064}
+      label: sys
+    value: 1.159
+  - errors:
+    - {label: stat, symerror: 0.023}
+    - asymerror: {minus: -0.016, plus: 0.065}
+      label: sys
+    value: 1.233
+  - errors:
+    - {label: stat, symerror: 0.024}
+    - asymerror: {minus: -0.021, plus: 0.068}
+      label: sys
+    value: 1.286
+  - errors:
+    - {label: stat, symerror: 0.032}
+    - asymerror: {minus: -0.027, plus: 0.073}
+      label: sys
+    value: 1.329
+  - errors:
+    - {label: stat, symerror: 0.053}
+    - asymerror: {minus: -0.034, plus: 0.081}
+      label: sys
+    value: 1.511
+  - errors:
+    - {label: stat, symerror: 0.104}
+    - asymerror: {minus: -0.042, plus: 0.092}
+      label: sys
+    value: 1.54
+  - {value: '-'}
+  - {value: '-'}
+  - {value: '-'}
+- header: {name: XF3}
+  qualifiers:
+  - {name: RE, value: NUMU NUCLEON --> MU- X}
+  - {name: SQRT(S), units: GeV, value: 6.197-19.393}
+  - {name: X(DEF=Q**2/2M*NU), value: '0.045'}
+  - {name: SYS, value: The second systematic error is the uncertainty associated with
+      the total cross section normalization.}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.064}
+    - {label: sys, symerror: 0.059}
+    - {label: sys, symerror: 0.024}
+    value: 0.415
+  - errors:
+    - {label: stat, symerror: 0.045}
+    - {label: sys, symerror: 0.05}
+    - {label: sys, symerror: 0.02}
+    value: 0.328
+  - errors:
+    - {label: stat, symerror: 0.035}
+    - {label: sys, symerror: 0.043}
+    - {label: sys, symerror: 0.017}
+    value: 0.377
+  - errors:
+    - {label: stat, symerror: 0.026}
+    - {label: sys, symerror: 0.038}
+    - {label: sys, symerror: 0.016}
+    value: 0.425
+  - errors:
+    - {label: stat, symerror: 0.029}
+    - {label: sys, symerror: 0.034}
+    - {label: sys, symerror: 0.016}
+    value: 0.414
+  - errors:
+    - {label: stat, symerror: 0.029}
+    - {label: sys, symerror: 0.031}
+    - {label: sys, symerror: 0.017}
+    value: 0.436
+  - errors:
+    - {label: stat, symerror: 0.027}
+    - {label: sys, symerror: 0.031}
+    - {label: sys, symerror: 0.02}
+    value: 0.457
+  - errors:
+    - {label: stat, symerror: 0.028}
+    - {label: sys, symerror: 0.032}
+    - {label: sys, symerror: 0.024}
+    value: 0.441
+  - errors:
+    - {label: stat, symerror: 0.025}
+    - {label: sys, symerror: 0.034}
+    - {label: sys, symerror: 0.03}
+    value: 0.562
+  - errors:
+    - {label: stat, symerror: 0.026}
+    - {label: sys, symerror: 0.039}
+    - {label: sys, symerror: 0.037}
+    value: 0.542
+  - errors:
+    - {label: stat, symerror: 0.034}
+    - {label: sys, symerror: 0.045}
+    - {label: sys, symerror: 0.045}
+    value: 0.558
+  - errors:
+    - {label: stat, symerror: 0.053}
+    - {label: sys, symerror: 0.053}
+    - {label: sys, symerror: 0.055}
+    value: 0.518
+  - errors:
+    - {label: stat, symerror: 0.096}
+    - {label: sys, symerror: 0.062}
+    - {label: sys, symerror: 0.067}
+    value: 0.55
+independent_variables:
+- header: {name: Q**2, units: GEV**2}
+  values:
+  - {value: 0.58}
+  - {value: 0.76}
+  - {value: 0.99}
+  - {value: 1.28}
+  - {value: 1.67}
+  - {value: 2.17}
+  - {value: 2.82}
+  - {value: 3.66}
+  - {value: 4.76}
+  - {value: 6.19}
+  - {value: 8.04}
+  - {value: 10.45}
+  - {value: 13.59}

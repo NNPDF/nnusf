@@ -1,0 +1,85 @@
+---
+comment: |
+  COMPARISON OF STRUCTURE FUNCTIONS OF IRON AND DEUTERIUM BY THE CDHS COLLABORATION AT CERN USING NEUTRINO AND ANTINEUTRINO BEAMS.
+dateupdated: 22/08/1985 00:00:00
+modifications:
+- {action: Encoded, date: 22 AUG 1985, who: SIA}
+record_ids:
+- {id: 201386, type: inspire}
+
+---
+data_file: Table1.yaml
+description: No description provided.
+keywords:
+- name: reactions
+  values: [NUBAR NUCLEON --> MU+ X, NU NUCLEON --> MU- X]
+- name: observables
+  values: [F2]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+- name: cmenergies
+  values: [0.0]
+location: Data from 1
+name: Table 1
+
+---
+data_file: Table2.yaml
+description: No description provided.
+keywords:
+- name: reactions
+  values: [NUMU P --> MU- X]
+- name: observables
+  values: [D2SIG/DE/DOMEGA]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+- name: cmenergies
+  values: [8.713-17.35]
+location: Data from T 4
+name: Table 2
+
+---
+data_file: Table3.yaml
+description: No description provided.
+keywords:
+- name: reactions
+  values: [NUMUBAR P --> MU+ X]
+- name: observables
+  values: [D2SIG/DE/DOMEGA]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+- name: cmenergies
+  values: [8.713-17.35]
+location: Data from T 5
+name: Table 3
+
+---
+data_file: Table4.yaml
+description: No description provided.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DE/DOMEGA]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from T 6
+name: Table 4
+
+---
+data_file: Table5.yaml
+description: No description provided.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DE/DOMEGA]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from T 7
+name: Table 5
+

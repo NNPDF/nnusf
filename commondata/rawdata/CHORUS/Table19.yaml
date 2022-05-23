@@ -1,0 +1,37 @@
+dependent_variables:
+- header: {name: SIG(L)/SIG(T)}
+  qualifiers:
+  - {name: E(P=1), units: GEV, value: 10 TO 200}
+  - {name: RE, value: NUMU NUCLEON --> MU- X}
+  - {name: RE, value: NUMUBAR NUCLEON --> MU+ X}
+  - {name: SQRT(S), units: GeV, value: 4.432-19.393}
+  - {name: X, value: '0.35'}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.0603}
+    - {label: sys, symerror: 0.1949}
+    value: -0.0325
+  - errors:
+    - {label: stat, symerror: 0.0899}
+    - {label: sys, symerror: 0.2792}
+    value: 0.0431
+  - errors:
+    - {label: stat, symerror: 0.0709}
+    - {label: sys, symerror: 0.2405}
+    value: 0.2
+  - errors:
+    - {label: stat, symerror: 0.0542}
+    - {label: sys, symerror: 0.1288}
+    value: 0.0677
+  - errors:
+    - {label: stat, symerror: 0.0957}
+    - {label: sys, symerror: 0.0564}
+    value: 0.0169
+independent_variables:
+- header: {name: Q**2, units: GEV**2}
+  values:
+  - {value: 8.155}
+  - {value: 12.925}
+  - {value: 20.52}
+  - {value: 32.5}
+  - {value: 51.455}

@@ -1,0 +1,38 @@
+dependent_variables:
+- header: {name: F2(Q=IRON)/F2(Q=DEUT)}
+  qualifiers:
+  - {name: RE(Q=DEUT), value: (NU + NUBAR) DEUT --> (MU- + MU+) X}
+  - {name: RE(Q=IRON), value: (NU + NUBAR) FE --> (MU- + MU+) X}
+  - {name: SQRT(S), units: GeV, value: '0.0'}
+  values:
+  - errors:
+    - {symerror: 0.054}
+    value: 0.804
+  - errors:
+    - {symerror: 0.071}
+    value: 0.985
+  - errors:
+    - {symerror: 0.082}
+    value: 1.102
+  - errors:
+    - {symerror: 0.051}
+    value: 0.964
+  - errors:
+    - {symerror: 0.058}
+    value: 0.865
+  - errors:
+    - {symerror: 0.094}
+    value: 0.916
+  - errors:
+    - {symerror: 0.162}
+    value: 0.964
+independent_variables:
+- header: {name: X}
+  values:
+  - {high: 0.1, low: 0.0}
+  - {high: 0.2, low: 0.1}
+  - {high: 0.3, low: 0.2}
+  - {high: 0.4, low: 0.3}
+  - {high: 0.5, low: 0.4}
+  - {high: 0.6, low: 0.5}
+  - {high: 0.7, low: 0.6}

@@ -1,0 +1,2397 @@
+---
+comment: |
+  Fermilab Tevatron. Measurement of the differential cross sections for charged current neutrino and antineutrino interactions on iron, and the determination of the structure functions F2 and xF3 using a one-parameter fit to the inelasticity Y distributions. The data were collected during 1996-97 using separate high-purity neutrino and antineutrino beams with energies from 30 to 500 GeV.. This part (1) contains the F2 and xF3 distributions corrected to an isoscalar (iron) target. Parts 2 and 3 contain the differential cross sections themselves for neutrino an antineutrino beams respectively.. Numerical values of F2 and xF3 supplied by M. Tzanov.
+  Fermilab Tevatron. Measurement of the differential cross sections for charged current neutrino and antineutrino interactions on iron, and the determination of the structure functions F2 and xF3 using a one-parameter fit to the inelasticity Y distributions. The data were collected during 1996-97 using separate high-purity neutrino and antineutrino beams with energies from 30 to 500 GeV.. This part (2) contains the neutrino differential cross sections determined from the code downloaded from the NuTev web site & lt;a href=http://www-nutev.phyast.pitt.edu/results_2005/nutev_sf.html& gt; http://www-nutev.phyast.pitt.edu/results_2005/nutev_sf.html& lt;/a& gt; which also contains code for generating the point-to-point covariance matrix for detailed handling of errors.
+  Fermilab Tevatron. Measurement of the differential cross sections for charged current neutrino and antineutrino interactions on iron, and the determination of the structure functions F2 and xF3 using a one-parameter fit to the inelasticity Y distributions. The data were collected during 1996-97 using separate high-purity neutrino and antineutrino beams with energies from 30 to 500 GeV.. This part (3) contains the antineutrino differential cross sections determined from the code downloaded from the NuTev web site & lt;a href=http://www-nutev.phyast.pitt.edu/results_2005/nutev_sf.html& gt; http://www-nutev.phyast.pitt.edu/results_2005/nutev_sf.html& lt;/a& gt; which also contains code for generating the point-to-point covariance matrix for detailed handling of errors.
+dateupdated: 10/11/2005 00:00:00
+modifications:
+- {action: Encoded, date: 10 Nov 2005, who: Mike Whalley}
+record_ids:
+- {id: 691719, type: inspire}
+- {id: 3423, type: red}
+
+---
+data_file: Table1.yaml
+description: |
+  Measurement of F2 at X = 0.015.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [F2]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+location: Data from F 9
+name: Table 1
+
+---
+data_file: Table2.yaml
+description: |
+  Measurement of F2 at X = 0.045.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [F2]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+location: Data from F 9
+name: Table 2
+
+---
+data_file: Table3.yaml
+description: |
+  Measurement of F2 at X = 0.080.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [F2]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+location: Data from F 9
+name: Table 3
+
+---
+data_file: Table4.yaml
+description: |
+  Measurement of F2 at X = 0.125.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [F2]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+location: Data from F 9
+name: Table 4
+
+---
+data_file: Table5.yaml
+description: |
+  Measurement of F2 at X = 0.175.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [F2]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+location: Data from F 9
+name: Table 5
+
+---
+data_file: Table6.yaml
+description: |
+  Measurement of F2 at X = 0.225.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [F2]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+location: Data from F 9
+name: Table 6
+
+---
+data_file: Table7.yaml
+description: |
+  Measurement of F2 at X = 0.275.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [F2]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+location: Data from F 9
+name: Table 7
+
+---
+data_file: Table8.yaml
+description: |
+  Measurement of F2 at X = 0.350.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [F2]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+location: Data from F 9
+name: Table 8
+
+---
+data_file: Table9.yaml
+description: |
+  Measurement of F2 at X = 0.450.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [F2]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+location: Data from F 9
+name: Table 9
+
+---
+data_file: Table10.yaml
+description: |
+  Measurement of F2 at X = 0.550.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [F2]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+location: Data from F 9
+name: Table 10
+
+---
+data_file: Table11.yaml
+description: |
+  Measurement of F2 at X = 0.650.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [F2]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+location: Data from F 9
+name: Table 11
+
+---
+data_file: Table12.yaml
+description: |
+  Measurement of F2 at X = 0.750.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [F2]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+location: Data from F 9
+name: Table 12
+
+---
+data_file: Table13.yaml
+description: |
+  Measurement of XF3 at X = 0.015.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [XF3]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+location: Data from F 9
+name: Table 13
+
+---
+data_file: Table14.yaml
+description: |
+  Measurement of XF3 at X = 0.045.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [XF3]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+location: Data from F 9
+name: Table 14
+
+---
+data_file: Table15.yaml
+description: |
+  Measurement of XF3 at X = 0.080.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [XF3]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+location: Data from F 9
+name: Table 15
+
+---
+data_file: Table16.yaml
+description: |
+  Measurement of XF3 at X = 0.125.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [XF3]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+location: Data from F 9
+name: Table 16
+
+---
+data_file: Table17.yaml
+description: |
+  Measurement of XF3 at X = 0.175.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [XF3]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+location: Data from F 9
+name: Table 17
+
+---
+data_file: Table18.yaml
+description: |
+  Measurement of XF3 at X = 0.225.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [XF3]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+location: Data from F 9
+name: Table 18
+
+---
+data_file: Table19.yaml
+description: |
+  Measurement of XF3 at X = 0.275.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [XF3]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+location: Data from F 9
+name: Table 19
+
+---
+data_file: Table20.yaml
+description: |
+  Measurement of XF3 at X = 0.350.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [XF3]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+location: Data from F 9
+name: Table 20
+
+---
+data_file: Table21.yaml
+description: |
+  Measurement of XF3 at X = 0.450.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [XF3]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+location: Data from F 9
+name: Table 21
+
+---
+data_file: Table22.yaml
+description: |
+  Measurement of XF3 at X = 0.550.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [XF3]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+location: Data from F 9
+name: Table 22
+
+---
+data_file: Table23.yaml
+description: |
+  Measurement of XF3 at X = 0.650.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [XF3]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+location: Data from F 9
+name: Table 23
+
+---
+data_file: Table24.yaml
+description: |
+  Measurement of XF3 at X = 0.750.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [XF3]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+location: Data from F 9
+name: Table 24
+
+---
+data_file: Table25.yaml
+description: |
+  Differential cross sections at neutrino energy 35.0 GeV as a function of inelasticity Y for X values 0.015, 0.045 and 0.080.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 25
+
+---
+data_file: Table26.yaml
+description: |
+  Differential cross sections at neutrino energy 35.0 GeV as a function of inelasticity Y for X values 0.125, 0.175 and 0.225.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 26
+
+---
+data_file: Table27.yaml
+description: |
+  Differential cross sections at neutrino energy 35.0 GeV as a function of inelasticity Y for X values 0.275, 0.350 and 0.450.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 27
+
+---
+data_file: Table28.yaml
+description: |
+  Differential cross sections at neutrino energy 35.0 GeV as a function of inelasticity Y for X values 0.550, 0.650 and 0.750.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 28
+
+---
+data_file: Table29.yaml
+description: |
+  Differential cross sections at neutrino energy 45.0 GeV as a function of inelasticity Y for X values 0.015, 0.045 and 0.080.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 29
+
+---
+data_file: Table30.yaml
+description: |
+  Differential cross sections at neutrino energy 45.0 GeV as a function of inelasticity Y for X values 0.125, 0.175 and 0.225.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 30
+
+---
+data_file: Table31.yaml
+description: |
+  Differential cross sections at neutrino energy 45.0 GeV as a function of inelasticity Y for X values 0.275, 0.350 and 0.450.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 31
+
+---
+data_file: Table32.yaml
+description: |
+  Differential cross sections at neutrino energy 45.0 GeV as a function of inelasticity Y for X values 0.550, 0.650 and 0.750.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 32
+
+---
+data_file: Table33.yaml
+description: |
+  Differential cross sections at neutrino energy 55.0 GeV as a function of inelasticity Y for X values 0.015, 0.045 and 0.080.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 33
+
+---
+data_file: Table34.yaml
+description: |
+  Differential cross sections at neutrino energy 55.0 GeV as a function of inelasticity Y for X values 0.125, 0.175 and 0.225.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 34
+
+---
+data_file: Table35.yaml
+description: |
+  Differential cross sections at neutrino energy 55.0 GeV as a function of inelasticity Y for X values 0.275, 0.350 and 0.450.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 35
+
+---
+data_file: Table36.yaml
+description: |
+  Differential cross sections at neutrino energy 55.0 GeV as a function of inelasticity Y for X values 0.550, 0.650 and 0.750.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 36
+
+---
+data_file: Table37.yaml
+description: |
+  Differential cross sections at neutrino energy 65.0 GeV as a function of inelasticity Y for X values 0.015, 0.045 and 0.080.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 37
+
+---
+data_file: Table38.yaml
+description: |
+  Differential cross sections at neutrino energy 65.0 GeV as a function of inelasticity Y for X values 0.125, 0.175 and 0.225.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 38
+
+---
+data_file: Table39.yaml
+description: |
+  Differential cross sections at neutrino energy 65.0 GeV as a function of inelasticity Y for X values 0.275, 0.350 and 0.450.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 39
+
+---
+data_file: Table40.yaml
+description: |
+  Differential cross sections at neutrino energy 65.0 GeV as a function of inelasticity Y for X values 0.550, 0.650 and 0.750.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 40
+
+---
+data_file: Table41.yaml
+description: |
+  Differential cross sections at neutrino energy 75.0 GeV as a function of inelasticity Y for X values 0.015, 0.045 and 0.080.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 41
+
+---
+data_file: Table42.yaml
+description: |
+  Differential cross sections at neutrino energy 75.0 GeV as a function of inelasticity Y for X values 0.125, 0.175 and 0.225.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 42
+
+---
+data_file: Table43.yaml
+description: |
+  Differential cross sections at neutrino energy 75.0 GeV as a function of inelasticity Y for X values 0.275, 0.350 and 0.450.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 43
+
+---
+data_file: Table44.yaml
+description: |
+  Differential cross sections at neutrino energy 75.0 GeV as a function of inelasticity Y for X values 0.550, 0.650 and 0.750.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 44
+
+---
+data_file: Table45.yaml
+description: |
+  Differential cross sections at neutrino energy 85.0 GeV as a function of inelasticity Y for X values 0.015, 0.045 and 0.080.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 45
+
+---
+data_file: Table46.yaml
+description: |
+  Differential cross sections at neutrino energy 85.0 GeV as a function of inelasticity Y for X values 0.125, 0.175 and 0.225.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 46
+
+---
+data_file: Table47.yaml
+description: |
+  Differential cross sections at neutrino energy 85.0 GeV as a function of inelasticity Y for X values 0.275, 0.350 and 0.450.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 47
+
+---
+data_file: Table48.yaml
+description: |
+  Differential cross sections at neutrino energy 85.0 GeV as a function of inelasticity Y for X values 0.550, 0.650 and 0.750.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 48
+
+---
+data_file: Table49.yaml
+description: |
+  Differential cross sections at neutrino energy 95.0 GeV as a function of inelasticity Y for X values 0.015, 0.045 and 0.080.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 49
+
+---
+data_file: Table50.yaml
+description: |
+  Differential cross sections at neutrino energy 95.0 GeV as a function of inelasticity Y for X values 0.125, 0.175 and 0.225.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 50
+
+---
+data_file: Table51.yaml
+description: |
+  Differential cross sections at neutrino energy 95.0 GeV as a function of inelasticity Y for X values 0.275, 0.350 and 0.450.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 51
+
+---
+data_file: Table52.yaml
+description: |
+  Differential cross sections at neutrino energy 95.0 GeV as a function of inelasticity Y for X values 0.550, 0.650 and 0.750.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 52
+
+---
+data_file: Table53.yaml
+description: |
+  Differential cross sections at neutrino energy 110.0 GeV as a function of inelasticity Y for X values 0.015, 0.045 and 0.080.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 53
+
+---
+data_file: Table54.yaml
+description: |
+  Differential cross sections at neutrino energy 110.0 GeV as a function of inelasticity Y for X values 0.125, 0.175 and 0.225.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 54
+
+---
+data_file: Table55.yaml
+description: |
+  Differential cross sections at neutrino energy 110.0 GeV as a function of inelasticity Y for X values 0.275, 0.350 and 0.450.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 55
+
+---
+data_file: Table56.yaml
+description: |
+  Differential cross sections at neutrino energy 110.0 GeV as a function of inelasticity Y for X values 0.550, 0.650 and 0.750.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 56
+
+---
+data_file: Table57.yaml
+description: |
+  Differential cross sections at neutrino energy 130.0 GeV as a function of inelasticity Y for X values 0.015, 0.045 and 0.080.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 57
+
+---
+data_file: Table58.yaml
+description: |
+  Differential cross sections at neutrino energy 130.0 GeV as a function of inelasticity Y for X values 0.125, 0.175 and 0.225.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 58
+
+---
+data_file: Table59.yaml
+description: |
+  Differential cross sections at neutrino energy 130.0 GeV as a function of inelasticity Y for X values 0.275, 0.350 and 0.450.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 59
+
+---
+data_file: Table60.yaml
+description: |
+  Differential cross sections at neutrino energy 130.0 GeV as a function of inelasticity Y for X values 0.550, 0.650 and 0.750.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 60
+
+---
+data_file: Table61.yaml
+description: |
+  Differential cross sections at neutrino energy 150.0 GeV as a function of inelasticity Y for X values 0.015, 0.045 and 0.080.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 61
+
+---
+data_file: Table62.yaml
+description: |
+  Differential cross sections at neutrino energy 150.0 GeV as a function of inelasticity Y for X values 0.125, 0.175 and 0.225.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 62
+
+---
+data_file: Table63.yaml
+description: |
+  Differential cross sections at neutrino energy 150.0 GeV as a function of inelasticity Y for X values 0.275, 0.350 and 0.450.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 63
+
+---
+data_file: Table64.yaml
+description: |
+  Differential cross sections at neutrino energy 150.0 GeV as a function of inelasticity Y for X values 0.550, 0.650 and 0.750.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 64
+
+---
+data_file: Table65.yaml
+description: |
+  Differential cross sections at neutrino energy 170.0 GeV as a function of inelasticity Y for X values 0.015, 0.045 and 0.080.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 65
+
+---
+data_file: Table66.yaml
+description: |
+  Differential cross sections at neutrino energy 170.0 GeV as a function of inelasticity Y for X values 0.125, 0.175 and 0.225.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 66
+
+---
+data_file: Table67.yaml
+description: |
+  Differential cross sections at neutrino energy 170.0 GeV as a function of inelasticity Y for X values 0.275, 0.350 and 0.450.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 67
+
+---
+data_file: Table68.yaml
+description: |
+  Differential cross sections at neutrino energy 170.0 GeV as a function of inelasticity Y for X values 0.550, 0.650 and 0.750.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 68
+
+---
+data_file: Table69.yaml
+description: |
+  Differential cross sections at neutrino energy 190.0 GeV as a function of inelasticity Y for X values 0.015, 0.045 and 0.080.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 69
+
+---
+data_file: Table70.yaml
+description: |
+  Differential cross sections at neutrino energy 190.0 GeV as a function of inelasticity Y for X values 0.125, 0.175 and 0.225.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 70
+
+---
+data_file: Table71.yaml
+description: |
+  Differential cross sections at neutrino energy 190.0 GeV as a function of inelasticity Y for X values 0.275, 0.350 and 0.450.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 71
+
+---
+data_file: Table72.yaml
+description: |
+  Differential cross sections at neutrino energy 190.0 GeV as a function of inelasticity Y for X values 0.550, 0.650 and 0.750.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 72
+
+---
+data_file: Table73.yaml
+description: |
+  Differential cross sections at neutrino energy 215.0 GeV as a function of inelasticity Y for X values 0.015, 0.045 and 0.080.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 73
+
+---
+data_file: Table74.yaml
+description: |
+  Differential cross sections at neutrino energy 215.0 GeV as a function of inelasticity Y for X values 0.125, 0.175 and 0.225.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 74
+
+---
+data_file: Table75.yaml
+description: |
+  Differential cross sections at neutrino energy 215.0 GeV as a function of inelasticity Y for X values 0.275, 0.350 and 0.450.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 75
+
+---
+data_file: Table76.yaml
+description: |
+  Differential cross sections at neutrino energy 215.0 GeV as a function of inelasticity Y for X values 0.550, 0.650 and 0.750.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 76
+
+---
+data_file: Table77.yaml
+description: |
+  Differential cross sections at neutrino energy 245.0 GeV as a function of inelasticity Y for X values 0.015, 0.045 and 0.080.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 77
+
+---
+data_file: Table78.yaml
+description: |
+  Differential cross sections at neutrino energy 245.0 GeV as a function of inelasticity Y for X values 0.125, 0.175 and 0.225.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 78
+
+---
+data_file: Table79.yaml
+description: |
+  Differential cross sections at neutrino energy 245.0 GeV as a function of inelasticity Y for X values 0.275, 0.350 and 0.450.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 79
+
+---
+data_file: Table80.yaml
+description: |
+  Differential cross sections at neutrino energy 245.0 GeV as a function of inelasticity Y for X values 0.550, 0.650 and 0.750.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 80
+
+---
+data_file: Table81.yaml
+description: |
+  Differential cross sections at neutrino energy 275.0 GeV as a function of inelasticity Y for X values 0.015, 0.045 and 0.080.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 81
+
+---
+data_file: Table82.yaml
+description: |
+  Differential cross sections at neutrino energy 275.0 GeV as a function of inelasticity Y for X values 0.125, 0.175 and 0.225.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 82
+
+---
+data_file: Table83.yaml
+description: |
+  Differential cross sections at neutrino energy 275.0 GeV as a function of inelasticity Y for X values 0.275, 0.350 and 0.450.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 83
+
+---
+data_file: Table84.yaml
+description: |
+  Differential cross sections at neutrino energy 275.0 GeV as a function of inelasticity Y for X values 0.550, 0.650 and 0.750.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 84
+
+---
+data_file: Table85.yaml
+description: |
+  Differential cross sections at neutrino energy 305.0 GeV as a function of inelasticity Y for X values 0.015, 0.045 and 0.080.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 85
+
+---
+data_file: Table86.yaml
+description: |
+  Differential cross sections at neutrino energy 305.0 GeV as a function of inelasticity Y for X values 0.125, 0.175 and 0.225.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 86
+
+---
+data_file: Table87.yaml
+description: |
+  Differential cross sections at neutrino energy 305.0 GeV as a function of inelasticity Y for X values 0.275, 0.350 and 0.450.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 87
+
+---
+data_file: Table88.yaml
+description: |
+  Differential cross sections at neutrino energy 305.0 GeV as a function of inelasticity Y for X values 0.550, 0.650 and 0.750.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 88
+
+---
+data_file: Table89.yaml
+description: |
+  Differential cross sections at neutrino energy 340.0 GeV as a function of inelasticity Y for X values 0.015, 0.045 and 0.080.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 89
+
+---
+data_file: Table90.yaml
+description: |
+  Differential cross sections at neutrino energy 340.0 GeV as a function of inelasticity Y for X values 0.125, 0.175 and 0.225.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 90
+
+---
+data_file: Table91.yaml
+description: |
+  Differential cross sections at neutrino energy 340.0 GeV as a function of inelasticity Y for X values 0.275, 0.350 and 0.450.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 91
+
+---
+data_file: Table92.yaml
+description: |
+  Differential cross sections at neutrino energy 340.0 GeV as a function of inelasticity Y for X values 0.550, 0.650 and 0.750.
+keywords:
+- name: reactions
+  values: [NUMU FE --> MU- X, NUMU NUCLEUS --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 92
+
+---
+data_file: Table93.yaml
+description: |
+  Differential cross sections at antineutrino energy 35.0 GeV as a function of inelasticity Y for X values 0.015, 0.045 and 0.080.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 93
+
+---
+data_file: Table94.yaml
+description: |
+  Differential cross sections at antineutrino energy 35.0 GeV as a function of inelasticity Y for X values 0.125, 0.175 and 0.225.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 94
+
+---
+data_file: Table95.yaml
+description: |
+  Differential cross sections at antineutrino energy 35.0 GeV as a function of inelasticity Y for X values 0.275, 0.350 and 0.450.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 95
+
+---
+data_file: Table96.yaml
+description: |
+  Differential cross sections at antineutrino energy 35.0 GeV as a function of inelasticity Y for X values 0.550, 0.650 and 0.750.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 96
+
+---
+data_file: Table97.yaml
+description: |
+  Differential cross sections at antineutrino energy 45.0 GeV as a function of inelasticity Y for X values 0.015, 0.045 and 0.080.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 97
+
+---
+data_file: Table98.yaml
+description: |
+  Differential cross sections at antineutrino energy 45.0 GeV as a function of inelasticity Y for X values 0.125, 0.175 and 0.225.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 98
+
+---
+data_file: Table99.yaml
+description: |
+  Differential cross sections at antineutrino energy 45.0 GeV as a function of inelasticity Y for X values 0.275, 0.350 and 0.450.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 99
+
+---
+data_file: Table100.yaml
+description: |
+  Differential cross sections at antineutrino energy 45.0 GeV as a function of inelasticity Y for X values 0.550, 0.650 and 0.750.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 100
+
+---
+data_file: Table101.yaml
+description: |
+  Differential cross sections at antineutrino energy 55.0 GeV as a function of inelasticity Y for X values 0.015, 0.045 and 0.080.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 101
+
+---
+data_file: Table102.yaml
+description: |
+  Differential cross sections at antineutrino energy 55.0 GeV as a function of inelasticity Y for X values 0.125, 0.175 and 0.225.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 102
+
+---
+data_file: Table103.yaml
+description: |
+  Differential cross sections at antineutrino energy 55.0 GeV as a function of inelasticity Y for X values 0.275, 0.350 and 0.450.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 103
+
+---
+data_file: Table104.yaml
+description: |
+  Differential cross sections at antineutrino energy 55.0 GeV as a function of inelasticity Y for X values 0.550, 0.650 and 0.750.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 104
+
+---
+data_file: Table105.yaml
+description: |
+  Differential cross sections at antineutrino energy 65.0 GeV as a function of inelasticity Y for X values 0.015, 0.045 and 0.080.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 105
+
+---
+data_file: Table106.yaml
+description: |
+  Differential cross sections at antineutrino energy 65.0 GeV as a function of inelasticity Y for X values 0.125, 0.175 and 0.225.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 106
+
+---
+data_file: Table107.yaml
+description: |
+  Differential cross sections at antineutrino energy 65.0 GeV as a function of inelasticity Y for X values 0.275, 0.350 and 0.450.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 107
+
+---
+data_file: Table108.yaml
+description: |
+  Differential cross sections at antineutrino energy 65.0 GeV as a function of inelasticity Y for X values 0.550, 0.650 and 0.750.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 108
+
+---
+data_file: Table109.yaml
+description: |
+  Differential cross sections at antineutrino energy 75.0 GeV as a function of inelasticity Y for X values 0.015, 0.045 and 0.080.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 109
+
+---
+data_file: Table110.yaml
+description: |
+  Differential cross sections at antineutrino energy 75.0 GeV as a function of inelasticity Y for X values 0.125, 0.175 and 0.225.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 110
+
+---
+data_file: Table111.yaml
+description: |
+  Differential cross sections at antineutrino energy 75.0 GeV as a function of inelasticity Y for X values 0.275, 0.350 and 0.450.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 111
+
+---
+data_file: Table112.yaml
+description: |
+  Differential cross sections at antineutrino energy 75.0 GeV as a function of inelasticity Y for X values 0.550, 0.650 and 0.750.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 112
+
+---
+data_file: Table113.yaml
+description: |
+  Differential cross sections at antineutrino energy 85.0 GeV as a function of inelasticity Y for X values 0.015, 0.045 and 0.080.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 113
+
+---
+data_file: Table114.yaml
+description: |
+  Differential cross sections at antineutrino energy 85.0 GeV as a function of inelasticity Y for X values 0.125, 0.175 and 0.225.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 114
+
+---
+data_file: Table115.yaml
+description: |
+  Differential cross sections at antineutrino energy 85.0 GeV as a function of inelasticity Y for X values 0.275, 0.350 and 0.450.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 115
+
+---
+data_file: Table116.yaml
+description: |
+  Differential cross sections at antineutrino energy 85.0 GeV as a function of inelasticity Y for X values 0.550, 0.650 and 0.750.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 116
+
+---
+data_file: Table117.yaml
+description: |
+  Differential cross sections at antineutrino energy 95.0 GeV as a function of inelasticity Y for X values 0.015, 0.045 and 0.080.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 117
+
+---
+data_file: Table118.yaml
+description: |
+  Differential cross sections at antineutrino energy 95.0 GeV as a function of inelasticity Y for X values 0.125, 0.175 and 0.225.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 118
+
+---
+data_file: Table119.yaml
+description: |
+  Differential cross sections at antineutrino energy 95.0 GeV as a function of inelasticity Y for X values 0.275, 0.350 and 0.450.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 119
+
+---
+data_file: Table120.yaml
+description: |
+  Differential cross sections at antineutrino energy 95.0 GeV as a function of inelasticity Y for X values 0.550, 0.650 and 0.750.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 120
+
+---
+data_file: Table121.yaml
+description: |
+  Differential cross sections at antineutrino energy 110.0 GeV as a function of inelasticity Y for X values 0.015, 0.045 and 0.080.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 121
+
+---
+data_file: Table122.yaml
+description: |
+  Differential cross sections at antineutrino energy 110.0 GeV as a function of inelasticity Y for X values 0.125, 0.175 and 0.225.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 122
+
+---
+data_file: Table123.yaml
+description: |
+  Differential cross sections at antineutrino energy 110.0 GeV as a function of inelasticity Y for X values 0.275, 0.350 and 0.450.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 123
+
+---
+data_file: Table124.yaml
+description: |
+  Differential cross sections at antineutrino energy 110.0 GeV as a function of inelasticity Y for X values 0.550, 0.650 and 0.750.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 124
+
+---
+data_file: Table125.yaml
+description: |
+  Differential cross sections at antineutrino energy 130.0 GeV as a function of inelasticity Y for X values 0.015, 0.045 and 0.080.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 125
+
+---
+data_file: Table126.yaml
+description: |
+  Differential cross sections at antineutrino energy 130.0 GeV as a function of inelasticity Y for X values 0.125, 0.175 and 0.225.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 126
+
+---
+data_file: Table127.yaml
+description: |
+  Differential cross sections at antineutrino energy 130.0 GeV as a function of inelasticity Y for X values 0.275, 0.350 and 0.450.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 127
+
+---
+data_file: Table128.yaml
+description: |
+  Differential cross sections at antineutrino energy 130.0 GeV as a function of inelasticity Y for X values 0.550, 0.650 and 0.750.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 128
+
+---
+data_file: Table129.yaml
+description: |
+  Differential cross sections at antineutrino energy 150.0 GeV as a function of inelasticity Y for X values 0.015, 0.045 and 0.080.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 129
+
+---
+data_file: Table130.yaml
+description: |
+  Differential cross sections at antineutrino energy 150.0 GeV as a function of inelasticity Y for X values 0.125, 0.175 and 0.225.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 130
+
+---
+data_file: Table131.yaml
+description: |
+  Differential cross sections at antineutrino energy 150.0 GeV as a function of inelasticity Y for X values 0.275, 0.350 and 0.450.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 131
+
+---
+data_file: Table132.yaml
+description: |
+  Differential cross sections at antineutrino energy 150.0 GeV as a function of inelasticity Y for X values 0.550, 0.650 and 0.750.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 132
+
+---
+data_file: Table133.yaml
+description: |
+  Differential cross sections at antineutrino energy 170.0 GeV as a function of inelasticity Y for X values 0.015, 0.045 and 0.080.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 133
+
+---
+data_file: Table134.yaml
+description: |
+  Differential cross sections at antineutrino energy 170.0 GeV as a function of inelasticity Y for X values 0.125, 0.175 and 0.225.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 134
+
+---
+data_file: Table135.yaml
+description: |
+  Differential cross sections at antineutrino energy 170.0 GeV as a function of inelasticity Y for X values 0.275, 0.350 and 0.450.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 135
+
+---
+data_file: Table136.yaml
+description: |
+  Differential cross sections at antineutrino energy 170.0 GeV as a function of inelasticity Y for X values 0.550, 0.650 and 0.750.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 136
+
+---
+data_file: Table137.yaml
+description: |
+  Differential cross sections at antineutrino energy 190.0 GeV as a function of inelasticity Y for X values 0.015, 0.045 and 0.080.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 137
+
+---
+data_file: Table138.yaml
+description: |
+  Differential cross sections at antineutrino energy 190.0 GeV as a function of inelasticity Y for X values 0.125, 0.175 and 0.225.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 138
+
+---
+data_file: Table139.yaml
+description: |
+  Differential cross sections at antineutrino energy 190.0 GeV as a function of inelasticity Y for X values 0.275, 0.350 and 0.450.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 139
+
+---
+data_file: Table140.yaml
+description: |
+  Differential cross sections at antineutrino energy 190.0 GeV as a function of inelasticity Y for X values 0.550, 0.650 and 0.750.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 140
+
+---
+data_file: Table141.yaml
+description: |
+  Differential cross sections at antineutrino energy 215.0 GeV as a function of inelasticity Y for X values 0.015, 0.045 and 0.080.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 141
+
+---
+data_file: Table142.yaml
+description: |
+  Differential cross sections at antineutrino energy 215.0 GeV as a function of inelasticity Y for X values 0.125, 0.175 and 0.225.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 142
+
+---
+data_file: Table143.yaml
+description: |
+  Differential cross sections at antineutrino energy 215.0 GeV as a function of inelasticity Y for X values 0.275, 0.350 and 0.450.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 143
+
+---
+data_file: Table144.yaml
+description: |
+  Differential cross sections at antineutrino energy 215.0 GeV as a function of inelasticity Y for X values 0.550, 0.650 and 0.750.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 144
+
+---
+data_file: Table145.yaml
+description: |
+  Differential cross sections at antineutrino energy 245.0 GeV as a function of inelasticity Y for X values 0.015, 0.045 and 0.080.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 145
+
+---
+data_file: Table146.yaml
+description: |
+  Differential cross sections at antineutrino energy 245.0 GeV as a function of inelasticity Y for X values 0.125, 0.175 and 0.225.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 146
+
+---
+data_file: Table147.yaml
+description: |
+  Differential cross sections at antineutrino energy 245.0 GeV as a function of inelasticity Y for X values 0.275, 0.350 and 0.450.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 147
+
+---
+data_file: Table148.yaml
+description: |
+  Differential cross sections at antineutrino energy 245.0 GeV as a function of inelasticity Y for X values 0.550, 0.650 and 0.750.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 148
+
+---
+data_file: Table149.yaml
+description: |
+  Differential cross sections at antineutrino energy 275.0 GeV as a function of inelasticity Y for X values 0.015, 0.045 and 0.080.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 149
+
+---
+data_file: Table150.yaml
+description: |
+  Differential cross sections at antineutrino energy 275.0 GeV as a function of inelasticity Y for X values 0.125, 0.175 and 0.225.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 150
+
+---
+data_file: Table151.yaml
+description: |
+  Differential cross sections at antineutrino energy 275.0 GeV as a function of inelasticity Y for X values 0.275, 0.350 and 0.450.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 151
+
+---
+data_file: Table152.yaml
+description: |
+  Differential cross sections at antineutrino energy 275.0 GeV as a function of inelasticity Y for X values 0.550, 0.650 and 0.750.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 152
+
+---
+data_file: Table153.yaml
+description: |
+  Differential cross sections at antineutrino energy 305.0 GeV as a function of inelasticity Y for X values 0.015, 0.045 and 0.080.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 153
+
+---
+data_file: Table154.yaml
+description: |
+  Differential cross sections at antineutrino energy 305.0 GeV as a function of inelasticity Y for X values 0.125, 0.175 and 0.225.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 154
+
+---
+data_file: Table155.yaml
+description: |
+  Differential cross sections at antineutrino energy 305.0 GeV as a function of inelasticity Y for X values 0.275, 0.350 and 0.450.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 155
+
+---
+data_file: Table156.yaml
+description: |
+  Differential cross sections at antineutrino energy 305.0 GeV as a function of inelasticity Y for X values 0.550, 0.650 and 0.750.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 156
+
+---
+data_file: Table157.yaml
+description: |
+  Differential cross sections at antineutrino energy 340.0 GeV as a function of inelasticity Y for X values 0.015, 0.045 and 0.080.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 157
+
+---
+data_file: Table158.yaml
+description: |
+  Differential cross sections at antineutrino energy 340.0 GeV as a function of inelasticity Y for X values 0.125, 0.175 and 0.225.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 158
+
+---
+data_file: Table159.yaml
+description: |
+  Differential cross sections at antineutrino energy 340.0 GeV as a function of inelasticity Y for X values 0.275, 0.350 and 0.450.
+keywords:
+- name: reactions
+  values: [NUMUBAR FE --> MU+ X, NUMUBAR NUCLEUS --> MU+ X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+location: Data from F 6,7
+name: Table 159
+

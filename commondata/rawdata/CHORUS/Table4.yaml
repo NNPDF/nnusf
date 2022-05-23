@@ -1,0 +1,74 @@
+dependent_variables:
+- header: {name: F2}
+  qualifiers:
+  - {name: E(P=1), units: GEV, value: 10 TO 200}
+  - {name: RE, value: NUMU NUCLEON --> MU- X}
+  - {name: RE, value: NUMUBAR NUCLEON --> MU+ X}
+  - {name: SQRT(S), units: GeV, value: 4.432-19.393}
+  - {name: X, value: '0.125'}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.0102}
+    - {label: sys, symerror: 0.0462}
+    value: 1.2218
+  - errors:
+    - {label: stat, symerror: 0.0109}
+    - {label: sys, symerror: 0.0489}
+    value: 1.2995
+  - errors:
+    - {label: stat, symerror: 0.0102}
+    - {label: sys, symerror: 0.058}
+    value: 1.3024
+  - errors:
+    - {label: stat, symerror: 0.0115}
+    - {label: sys, symerror: 0.0637}
+    value: 1.3028
+  - errors:
+    - {label: stat, symerror: 0.0146}
+    - {label: sys, symerror: 0.0715}
+    value: 1.3013
+  - errors:
+    - {label: stat, symerror: 0.0302}
+    - {label: sys, symerror: 0.0923}
+    value: 1.2884
+- header: {name: XF3}
+  qualifiers:
+  - {name: E(P=1), units: GEV, value: 10 TO 200}
+  - {name: RE, value: NUMU NUCLEON --> MU- X}
+  - {name: RE, value: NUMUBAR NUCLEON --> MU+ X}
+  - {name: SQRT(S), units: GeV, value: 4.432-19.393}
+  - {name: X, value: '0.125'}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.0295}
+    - {label: sys, symerror: 0.0531}
+    value: 0.5793
+  - errors:
+    - {label: stat, symerror: 0.0211}
+    - {label: sys, symerror: 0.0386}
+    value: 0.6755
+  - errors:
+    - {label: stat, symerror: 0.0154}
+    - {label: sys, symerror: 0.044}
+    value: 0.7509
+  - errors:
+    - {label: stat, symerror: 0.0166}
+    - {label: sys, symerror: 0.0396}
+    value: 0.7823
+  - errors:
+    - {label: stat, symerror: 0.0189}
+    - {label: sys, symerror: 0.0423}
+    value: 0.7897
+  - errors:
+    - {label: stat, symerror: 0.0367}
+    - {label: sys, symerror: 0.0515}
+    value: 0.8431
+independent_variables:
+- header: {name: Q**2, units: GEV**2}
+  values:
+  - {value: 2.052}
+  - {value: 3.25}
+  - {value: 5.146}
+  - {value: 8.155}
+  - {value: 12.925}
+  - {value: 20.52}

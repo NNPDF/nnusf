@@ -1,0 +1,676 @@
+---
+comment: |
+  CERN-SPS. Upgrade CDHS detector. CDHSW Collaboration. Data on differential cross sections and nucleon structure functions in charged current neutrino interactions on iron using CERN wide bound neutrino beam 0.19 & lt;= Q**2 & lt;= 196.3 GeV**2. 0.0 & lt; X & lt; 0.7. Data obtained from 640,000 neutrino events and 550000 anti-neutrino events. Normalization of each bin is to the energy independent values SIG/E = 0.703 * 10**-38 (0.331 * 10**38) CM**2/GeV per nucleon for neutrinos (anti-neutrinos), as given in ZP C35 (87) 443. Target is iron. Data are corrected for radiative effects but not for Fermi Motion. This record and Part 2 contain the differential cross sections. Part 3 contains the structure functions F2 and XF3. Part 4 contains the structure functions FW and & lt;a& gt; used to determine F1 and F2 for any given value of R.
+  CERN-SPS. Upgrade CDHS detector. CDHSW Collaboration. Data on differential cross sections and nucleon structure functions in charged current neutrino interactions on iron using CERN wide bound neutrino beam 0.19 & lt;= Q**2 & lt;= 196.3 GeV**2. 0.0 & lt; X & lt; 0.7. Data obtained from 640,000 neutrino events and 550000 anti-neutrino events. Normalization of each bin is to the energy independent values SIG/E = 0.703 * 10**-38 (0.331 * 10**38) CM**2/GeV per nucleon for neutrinos (anti-neutrinos), as given in ZP C35 (87) 443. Target is iron. Data are corrected for radiative effects but not for Fermi Motion. This record and Part 1 contain the differential cross sections. Part 3 contains the structure functions F2 and XF3. Part 4 contains the stucture functions FW and & lt;a& gt; used to determine F1 and F2 for any given value of R.
+  CERN-SPS. Upgrade CDHS detector. CDHSW Collaboration. Data on differential cross sections and nucleon structure functions in charged current neutrino interactions on iron using CERN wide bound neutrino beam 0.19 & lt;= Q**2 & lt;= 196.3 GeV**2. 0.0 & lt; X & lt; 0.7. Data obtained from 640,000 neutrino events and 550000 anti-neutrino events. Normalization of each bin is to the energy independent values SIG/E= 0.703 * 10**-38 (0.331 * 10**38) CM**2/GeV per nucleon for neutrinos (anti-ne utrinos), as given in ZP C35 (87) 443. Target is iron. Data are corrected for radiative effects but not for Fermi Motion.. This record contains the structure functions F2 and XF3. Parts 1 and 2 contain the differential cross sections and Part 4 contains the structure functionsFW and & lt;a& gt; used to determine F1 and F2 for any given value of R.
+  CERN-SPS. Upgrade CDHS detector. CDHSW Collaboration. Data on differential cross sections and nucleon structure functions in charged current neutrino interactions on iron using CERN wide bound neutrino beam 0.19 & lt;= Q**2 & lt;= 196.3 GeV**2. 0.0 & lt; X & lt; 0.7. Data obtained from 640,000 neutrino events and 550000 anti-neutrino events. Normalization of each bin is to the energy independent values SIG/E = 0.703 * 10**-38 (0.331 * 10**38) CM**2/GeV per nucleon for neutrinos (anti-neutrinos), as given in ZP C35 (87) 443. Target is iron. Data are corrected for radiative effects but not for Fermi Motion. This record contains the structure functions FW and & lt;a& gt; used to determine F1 and F2 for any given R. See text of paper for details.
+dateupdated: 06/02/1990 00:00:00
+modifications:
+- {action: Encoded, date: 6 FEB 1990, who: HMD}
+- {action: Modified, date: 6 FEB 1990, who: Mike Whalley}
+record_ids:
+- {id: 281286, type: inspire}
+- {id: 3023, type: red}
+
+---
+data_file: Table1.yaml
+description: No description provided.
+keywords:
+- name: reactions
+  values: [NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+- name: cmenergies
+  values: [6.635]
+location: Data from T 3
+name: Table 1
+
+---
+data_file: Table2.yaml
+description: No description provided.
+keywords:
+- name: reactions
+  values: [NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+- name: cmenergies
+  values: [7.548]
+location: Data from T 3
+name: Table 2
+
+---
+data_file: Table3.yaml
+description: No description provided.
+keywords:
+- name: reactions
+  values: [NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+- name: cmenergies
+  values: [8.594]
+location: Data from T 3
+name: Table 3
+
+---
+data_file: Table4.yaml
+description: No description provided.
+keywords:
+- name: reactions
+  values: [NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+- name: cmenergies
+  values: [9.778]
+location: Data from T 3
+name: Table 4
+
+---
+data_file: Table5.yaml
+description: No description provided.
+keywords:
+- name: reactions
+  values: [NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+- name: cmenergies
+  values: [11.142]
+location: Data from T 3
+name: Table 5
+
+---
+data_file: Table6.yaml
+description: No description provided.
+keywords:
+- name: reactions
+  values: [NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+- name: cmenergies
+  values: [12.692]
+location: Data from T 3
+name: Table 6
+
+---
+data_file: Table7.yaml
+description: No description provided.
+keywords:
+- name: reactions
+  values: [NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+- name: cmenergies
+  values: [14.461]
+location: Data from T 3
+name: Table 7
+
+---
+data_file: Table8.yaml
+description: No description provided.
+keywords:
+- name: reactions
+  values: [NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+- name: cmenergies
+  values: [16.48]
+location: Data from T 3
+name: Table 8
+
+---
+data_file: Table9.yaml
+description: No description provided.
+keywords:
+- name: reactions
+  values: [NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+- name: cmenergies
+  values: [18.783]
+location: Data from T 3
+name: Table 9
+
+---
+data_file: Table10.yaml
+description: No description provided.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+- name: cmenergies
+  values: [6.635]
+location: Data from T 3
+name: Table 10
+
+---
+data_file: Table11.yaml
+description: No description provided.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+- name: cmenergies
+  values: [7.548]
+location: Data from T 3
+name: Table 11
+
+---
+data_file: Table12.yaml
+description: No description provided.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+- name: cmenergies
+  values: [8.594]
+location: Data from T 3
+name: Table 12
+
+---
+data_file: Table13.yaml
+description: No description provided.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+- name: cmenergies
+  values: [9.778]
+location: Data from T 3
+name: Table 13
+
+---
+data_file: Table14.yaml
+description: No description provided.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+- name: cmenergies
+  values: [11.142]
+location: Data from T 3
+name: Table 14
+
+---
+data_file: Table15.yaml
+description: No description provided.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+- name: cmenergies
+  values: [12.692]
+location: Data from T 3
+name: Table 15
+
+---
+data_file: Table16.yaml
+description: No description provided.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+- name: cmenergies
+  values: [14.461]
+location: Data from T 3
+name: Table 16
+
+---
+data_file: Table17.yaml
+description: No description provided.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+- name: cmenergies
+  values: [16.48]
+location: Data from T 3
+name: Table 17
+
+---
+data_file: Table18.yaml
+description: No description provided.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU- X]
+- name: observables
+  values: [D2SIG/DX/DY]
+- name: phrases
+  values: [Inclusive, Double Differential Cross Section, Muon production, Charged
+      Current, Deep Inelastic Scattering]
+- name: cmenergies
+  values: [18.783]
+location: Data from T 3
+name: Table 18
+
+---
+data_file: Table19.yaml
+description: |
+  Structure functions for neutrino and antineutrino combined.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [F2, XF3]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+- name: cmenergies
+  values: [6.197-19.393]
+location: Data from T 4
+name: Table 19
+
+---
+data_file: Table20.yaml
+description: |
+  Structure functions for neutrino and antineutrino combined.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [F2, XF3]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+- name: cmenergies
+  values: [6.197-19.393]
+location: Data from T 4
+name: Table 20
+
+---
+data_file: Table21.yaml
+description: |
+  Structure functions for neutrino and antineutrino combined.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [F2, XF3]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+- name: cmenergies
+  values: [6.197-19.393]
+location: Data from T 4
+name: Table 21
+
+---
+data_file: Table22.yaml
+description: |
+  Structure functions for neutrino and antineutrino combined.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [F2, XF3]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+- name: cmenergies
+  values: [6.197-19.393]
+location: Data from T 4
+name: Table 22
+
+---
+data_file: Table23.yaml
+description: |
+  Structure functions for neutrino and antineutrino combined.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [F2, XF3]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+- name: cmenergies
+  values: [6.197-19.393]
+location: Data from T 4
+name: Table 23
+
+---
+data_file: Table24.yaml
+description: |
+  Structure functions for neutrino and antineutrino combined.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [F2, XF3]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+- name: cmenergies
+  values: [6.197-19.393]
+location: Data from T 4
+name: Table 24
+
+---
+data_file: Table25.yaml
+description: |
+  Structure functions for neutrino and antineutrino combined.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [F2, XF3]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+- name: cmenergies
+  values: [6.197-19.393]
+location: Data from T 4
+name: Table 25
+
+---
+data_file: Table26.yaml
+description: |
+  Structure functions for neutrino and antineutrino combined.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [F2, XF3]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+- name: cmenergies
+  values: [6.197-19.393]
+location: Data from T 4
+name: Table 26
+
+---
+data_file: Table27.yaml
+description: |
+  Structure functions for neutrino and antineutrino combined.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [F2, XF3]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+- name: cmenergies
+  values: [6.197-19.393]
+location: Data from T 4
+name: Table 27
+
+---
+data_file: Table28.yaml
+description: |
+  Structure functions for neutrino and antineutrino combined.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [F2, XF3]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+- name: cmenergies
+  values: [6.197-19.393]
+location: Data from T 4
+name: Table 28
+
+---
+data_file: Table29.yaml
+description: |
+  Structure functions for neutrino and antineutrino combined.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [F2, XF3]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+- name: cmenergies
+  values: [6.197-19.393]
+location: Data from T 4
+name: Table 29
+
+---
+data_file: Table30.yaml
+description: |
+  Neutrino and Antineutrino data combined.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [F1, F2]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+- name: cmenergies
+  values: [6.197-19.393]
+location: Data from T 4
+name: Table 30
+
+---
+data_file: Table31.yaml
+description: |
+  Neutrino and Antineutrino data combined.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [F1, F2]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+- name: cmenergies
+  values: [6.197-19.393]
+location: Data from T 4
+name: Table 31
+
+---
+data_file: Table32.yaml
+description: |
+  Neutrino and Antineutrino data combined.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [F1, F2]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+- name: cmenergies
+  values: [6.197-19.393]
+location: Data from T 4
+name: Table 32
+
+---
+data_file: Table33.yaml
+description: |
+  Neutrino and Antineutrino data combined.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [F1, F2]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+- name: cmenergies
+  values: [6.197-19.393]
+location: Data from T 4
+name: Table 33
+
+---
+data_file: Table34.yaml
+description: |
+  Neutrino and Antineutrino data combined.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [F1, F2]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+- name: cmenergies
+  values: [6.197-19.393]
+location: Data from T 4
+name: Table 34
+
+---
+data_file: Table35.yaml
+description: |
+  Neutrino and Antineutrino data combined.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [F1, F2]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+- name: cmenergies
+  values: [6.197-19.393]
+location: Data from T 4
+name: Table 35
+
+---
+data_file: Table36.yaml
+description: |
+  Neutrino and Antineutrino data combined.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [F1, F2]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+- name: cmenergies
+  values: [6.197-19.393]
+location: Data from T 4
+name: Table 36
+
+---
+data_file: Table37.yaml
+description: |
+  Neutrino and Antineutrino data combined.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [F1, F2]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+- name: cmenergies
+  values: [6.197-19.393]
+location: Data from T 4
+name: Table 37
+
+---
+data_file: Table38.yaml
+description: |
+  Neutrino and Antineutrino data combined.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [F1, F2]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+- name: cmenergies
+  values: [6.197-19.393]
+location: Data from T 4
+name: Table 38
+
+---
+data_file: Table39.yaml
+description: |
+  Neutrino and Antineutrino data combined.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [F1, F2]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+- name: cmenergies
+  values: [6.197-19.393]
+location: Data from T 4
+name: Table 39
+
+---
+data_file: Table40.yaml
+description: |
+  Neutrino and Antineutrino data combined.
+keywords:
+- name: reactions
+  values: [NUMUBAR NUCLEON --> MU+ X, NUMU NUCLEON --> MU- X]
+- name: observables
+  values: [F1, F2]
+- name: phrases
+  values: [Inclusive, Structure Function, Muon production, Charged Current, Deep Inelastic
+      Scattering]
+- name: cmenergies
+  values: [6.197-19.393]
+location: Data from T 4
+name: Table 40
+

@@ -1,0 +1,81 @@
+dependent_variables:
+- header: {name: (1/E(P=1))*D(SIG)/DX/DY, units: FB/GEV}
+  qualifiers:
+  - {name: E(P=1), units: GeV, value: '70.0'}
+  - {name: RE, value: NUMU NUCLEON --> MU- X}
+  - {name: SQRT(S), units: GeV, value: '11.498'}
+  - {name: X, value: '0.35'}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.314}
+    - {label: sys, symerror: 0.69}
+    value: 11.166
+  - errors:
+    - {label: stat, symerror: 0.298}
+    - {label: sys, symerror: 0.567}
+    value: 10.472
+  - errors:
+    - {label: stat, symerror: 0.294}
+    - {label: sys, symerror: 0.518}
+    value: 10.461
+  - errors:
+    - {label: stat, symerror: 0.282}
+    - {label: sys, symerror: 0.361}
+    value: 10.073
+  - errors:
+    - {label: stat, symerror: 0.281}
+    - {label: sys, symerror: 0.314}
+    value: 10.354
+  - errors:
+    - {label: stat, symerror: 0.274}
+    - {label: sys, symerror: 0.318}
+    value: 10.093
+  - errors:
+    - {label: stat, symerror: 0.274}
+    - {label: sys, symerror: 0.45}
+    value: 10.244
+- header: {name: (1/E(P=1))*D(SIG)/DX/DY, units: FB/GEV}
+  qualifiers:
+  - {name: E(P=1), units: GeV, value: '70.0'}
+  - {name: RE, value: NUMUBAR NUCLEON --> MU+ X}
+  - {name: SQRT(S), units: GeV, value: '11.498'}
+  - {name: X, value: '0.35'}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.418}
+    - {label: sys, symerror: 0.44}
+    value: 6.582
+  - errors:
+    - {label: stat, symerror: 0.366}
+    - {label: sys, symerror: 0.258}
+    value: 4.915
+  - errors:
+    - {label: stat, symerror: 0.302}
+    - {label: sys, symerror: 0.162}
+    value: 3.769
+  - errors:
+    - {label: stat, symerror: 0.26}
+    - {label: sys, symerror: 0.103}
+    value: 2.718
+  - errors:
+    - {label: stat, symerror: 0.194}
+    - {label: sys, symerror: 0.072}
+    value: 1.644
+  - errors:
+    - {label: stat, symerror: 0.144}
+    - {label: sys, symerror: 0.07}
+    value: 0.963
+  - errors:
+    - {label: stat, symerror: 0.13}
+    - {label: sys, symerror: 0.051}
+    value: 0.801
+independent_variables:
+- header: {name: Y}
+  values:
+  - {value: 0.2}
+  - {value: 0.3}
+  - {value: 0.4}
+  - {value: 0.5}
+  - {value: 0.6}
+  - {value: 0.7}
+  - {value: 0.8}

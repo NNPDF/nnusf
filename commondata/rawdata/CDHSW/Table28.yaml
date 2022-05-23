@@ -1,0 +1,163 @@
+dependent_variables:
+- header: {name: F2}
+  qualifiers:
+  - {name: RE, value: NUMU NUCLEON --> MU- X}
+  - {name: SQRT(S), units: GeV, value: 6.197-19.393}
+  - {name: X(DEF=Q**2/2M*NU), value: '0.55'}
+  - {name: SYS, value: The second systematic error is the uncertainty associated with
+      the total cross section normalization.}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.006}
+    - {label: sys, symerror: 0.026}
+    - {label: sys, symerror: 0.002}
+    value: 0.292
+  - errors:
+    - {label: stat, symerror: 0.005}
+    - {label: sys, symerror: 0.024}
+    - {label: sys, symerror: 0.001}
+    value: 0.281
+  - errors:
+    - {label: stat, symerror: 0.004}
+    - {label: sys, symerror: 0.023}
+    - {label: sys, symerror: 0.002}
+    value: 0.248
+  - errors:
+    - {label: stat, symerror: 0.004}
+    - {label: sys, symerror: 0.021}
+    - {label: sys, symerror: 0.002}
+    value: 0.231
+  - errors:
+    - {label: stat, symerror: 0.004}
+    - {label: sys, symerror: 0.02}
+    - {label: sys, symerror: 0.002}
+    value: 0.217
+  - errors:
+    - {label: stat, symerror: 0.004}
+    - {label: sys, symerror: 0.019}
+    - {label: sys, symerror: 0.002}
+    value: 0.206
+  - errors:
+    - {label: stat, symerror: 0.003}
+    - {label: sys, symerror: 0.018}
+    - {label: sys, symerror: 0.003}
+    value: 0.197
+  - errors:
+    - {label: stat, symerror: 0.004}
+    - {label: sys, symerror: 0.016}
+    - {label: sys, symerror: 0.003}
+    value: 0.186
+  - errors:
+    - {label: stat, symerror: 0.004}
+    - {label: sys, symerror: 0.015}
+    - {label: sys, symerror: 0.004}
+    value: 0.175
+  - errors:
+    - {label: stat, symerror: 0.004}
+    - {label: sys, symerror: 0.014}
+    - {label: sys, symerror: 0.005}
+    value: 0.172
+  - errors:
+    - {label: stat, symerror: 0.005}
+    - {label: sys, symerror: 0.013}
+    - {label: sys, symerror: 0.006}
+    value: 0.161
+  - errors:
+    - {label: stat, symerror: 0.007}
+    - {label: sys, symerror: 0.012}
+    - {label: sys, symerror: 0.007}
+    value: 0.154
+  - errors:
+    - {label: stat, symerror: 0.014}
+    - {label: sys, symerror: 0.011}
+    - {label: sys, symerror: 0.008}
+    value: 0.157
+- header: {name: XF3}
+  qualifiers:
+  - {name: RE, value: NUMU NUCLEON --> MU- X}
+  - {name: SQRT(S), units: GeV, value: 6.197-19.393}
+  - {name: X(DEF=Q**2/2M*NU), value: '0.55'}
+  - {name: SYS, value: The second systematic error is the uncertainty associated with
+      the total cross section normalization.}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.021}
+    - {label: sys, symerror: 0.019}
+    - {label: sys, symerror: 0.006}
+    value: 0.257
+  - errors:
+    - {label: stat, symerror: 0.015}
+    - {label: sys, symerror: 0.019}
+    - {label: sys, symerror: 0.005}
+    value: 0.273
+  - errors:
+    - {label: stat, symerror: 0.01}
+    - {label: sys, symerror: 0.018}
+    - {label: sys, symerror: 0.005}
+    value: 0.235
+  - errors:
+    - {label: stat, symerror: 0.008}
+    - {label: sys, symerror: 0.017}
+    - {label: sys, symerror: 0.004}
+    value: 0.236
+  - errors:
+    - {label: stat, symerror: 0.007}
+    - {label: sys, symerror: 0.016}
+    - {label: sys, symerror: 0.004}
+    value: 0.212
+  - errors:
+    - {label: stat, symerror: 0.006}
+    - {label: sys, symerror: 0.016}
+    - {label: sys, symerror: 0.004}
+    value: 0.197
+  - errors:
+    - {label: stat, symerror: 0.006}
+    - {label: sys, symerror: 0.015}
+    - {label: sys, symerror: 0.004}
+    value: 0.192
+  - errors:
+    - {label: stat, symerror: 0.006}
+    - {label: sys, symerror: 0.014}
+    - {label: sys, symerror: 0.005}
+    value: 0.183
+  - errors:
+    - {label: stat, symerror: 0.006}
+    - {label: sys, symerror: 0.013}
+    - {label: sys, symerror: 0.005}
+    value: 0.171
+  - errors:
+    - {label: stat, symerror: 0.005}
+    - {label: sys, symerror: 0.013}
+    - {label: sys, symerror: 0.006}
+    value: 0.167
+  - errors:
+    - {label: stat, symerror: 0.006}
+    - {label: sys, symerror: 0.012}
+    - {label: sys, symerror: 0.008}
+    value: 0.158
+  - errors:
+    - {label: stat, symerror: 0.008}
+    - {label: sys, symerror: 0.011}
+    - {label: sys, symerror: 0.009}
+    value: 0.154
+  - errors:
+    - {label: stat, symerror: 0.015}
+    - {label: sys, symerror: 0.011}
+    - {label: sys, symerror: 0.011}
+    value: 0.126
+independent_variables:
+- header: {name: Q**2, units: GEV**2}
+  values:
+  - {value: 7.13}
+  - {value: 9.27}
+  - {value: 12.05}
+  - {value: 15.66}
+  - {value: 20.36}
+  - {value: 26.47}
+  - {value: 34.42}
+  - {value: 44.74}
+  - {value: 58.16}
+  - {value: 75.61}
+  - {value: 98.29}
+  - {value: 127.8}
+  - {value: 166.1}

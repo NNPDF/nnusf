@@ -1,0 +1,81 @@
+dependent_variables:
+- header: {name: (1/E(P=1))*D(SIG)/DX/DY, units: FB/GEV}
+  qualifiers:
+  - {name: E(P=1), units: GeV, value: '110.0'}
+  - {name: RE, value: NUMU NUCLEON --> MU- X}
+  - {name: SQRT(S), units: GeV, value: '14.396'}
+  - {name: X, value: '0.125'}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.768}
+    - {label: sys, symerror: 0.612}
+    value: 19.106
+  - errors:
+    - {label: stat, symerror: 0.772}
+    - {label: sys, symerror: 0.905}
+    value: 20.153
+  - errors:
+    - {label: stat, symerror: 0.745}
+    - {label: sys, symerror: 0.606}
+    value: 19.782
+  - errors:
+    - {label: stat, symerror: 0.737}
+    - {label: sys, symerror: 0.571}
+    value: 19.862
+  - errors:
+    - {label: stat, symerror: 0.717}
+    - {label: sys, symerror: 0.917}
+    value: 19.666
+  - errors:
+    - {label: stat, symerror: 0.682}
+    - {label: sys, symerror: 0.969}
+    value: 18.049
+  - errors:
+    - {label: stat, symerror: 0.707}
+    - {label: sys, symerror: 1.204}
+    value: 18.977
+- header: {name: (1/E(P=1))*D(SIG)/DX/DY, units: FB/GEV}
+  qualifiers:
+  - {name: E(P=1), units: GeV, value: '110.0'}
+  - {name: RE, value: NUMUBAR NUCLEON --> MU+ X}
+  - {name: SQRT(S), units: GeV, value: '14.396'}
+  - {name: X, value: '0.125'}
+  values:
+  - errors:
+    - {label: stat, symerror: 1.563}
+    - {label: sys, symerror: 0.736}
+    value: 17.186
+  - errors:
+    - {label: stat, symerror: 1.522}
+    - {label: sys, symerror: 0.696}
+    value: 15.941
+  - errors:
+    - {label: stat, symerror: 1.299}
+    - {label: sys, symerror: 0.48}
+    value: 12.866
+  - errors:
+    - {label: stat, symerror: 1.119}
+    - {label: sys, symerror: 0.459}
+    value: 9.687
+  - errors:
+    - {label: stat, symerror: 1.01}
+    - {label: sys, symerror: 0.478}
+    value: 8.679
+  - errors:
+    - {label: stat, symerror: 0.92}
+    - {label: sys, symerror: 0.414}
+    value: 6.731
+  - errors:
+    - {label: stat, symerror: 0.761}
+    - {label: sys, symerror: 0.521}
+    value: 4.921
+independent_variables:
+- header: {name: Y}
+  values:
+  - {value: 0.1}
+  - {value: 0.2}
+  - {value: 0.3}
+  - {value: 0.4}
+  - {value: 0.5}
+  - {value: 0.6}
+  - {value: 0.7}

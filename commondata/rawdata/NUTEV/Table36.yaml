@@ -1,0 +1,66 @@
+dependent_variables:
+- header: {name: ((10**38)/E)*D2(SIG)/DX/DY, units: CM**2/GEV}
+  qualifiers:
+  - {name: E, units: GeV, value: '55.0'}
+  - {name: RE, value: NUMU FE --> MU- X}
+  - {name: X, value: '0.55'}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.0177}
+    - {label: sys, symerror: 0.012}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.3783
+  - errors:
+    - {label: stat, symerror: 0.0201}
+    - {label: sys, symerror: 0.0138}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.3549
+  - errors:
+    - {label: stat, symerror: 0.0237}
+    - {label: sys, symerror: 0.0164}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.3332
+- header: {name: ((10**38)/E)*D2(SIG)/DX/DY, units: CM**2/GEV}
+  qualifiers:
+  - {name: E, units: GeV, value: '55.0'}
+  - {name: RE, value: NUMU FE --> MU- X}
+  - {name: X, value: '0.65'}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.0121}
+    - {label: sys, symerror: 0.01}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.187
+  - errors:
+    - {label: stat, symerror: 0.0143}
+    - {label: sys, symerror: 0.0122}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.1642
+  - errors:
+    - {label: stat, symerror: 0.0174}
+    - {label: sys, symerror: 0.0081}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.144
+- header: {name: ((10**38)/E)*D2(SIG)/DX/DY, units: CM**2/GEV}
+  qualifiers:
+  - {name: E, units: GeV, value: '55.0'}
+  - {name: RE, value: NUMU FE --> MU- X}
+  - {name: X, value: '0.75'}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.0077}
+    - {label: sys, symerror: 0.006}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.0866
+  - errors:
+    - {label: stat, symerror: 0.0081}
+    - {label: sys, symerror: 0.0083}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.0619
+  - {value: '-'}
+independent_variables:
+- header: {name: Y}
+  values:
+  - {value: 0.25}
+  - {value: 0.35}
+  - {value: 0.45}

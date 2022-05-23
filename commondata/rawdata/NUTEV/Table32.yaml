@@ -1,0 +1,62 @@
+dependent_variables:
+- header: {name: ((10**38)/E)*D2(SIG)/DX/DY, units: CM**2/GEV}
+  qualifiers:
+  - {name: E, units: GeV, value: '45.0'}
+  - {name: RE, value: NUMU FE --> MU- X}
+  - {name: X, value: '0.55'}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.0238}
+    - {label: sys, symerror: 0.0183}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.3848
+  - errors:
+    - {label: stat, symerror: 0.0243}
+    - {label: sys, symerror: 0.0199}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.3911
+  - errors:
+    - {label: stat, symerror: 0.0316}
+    - {label: sys, symerror: 0.0362}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.3882
+- header: {name: ((10**38)/E)*D2(SIG)/DX/DY, units: CM**2/GEV}
+  qualifiers:
+  - {name: E, units: GeV, value: '45.0'}
+  - {name: RE, value: NUMU FE --> MU- X}
+  - {name: X, value: '0.65'}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.0182}
+    - {label: sys, symerror: 0.0139}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.2255
+  - errors:
+    - {label: stat, symerror: 0.0174}
+    - {label: sys, symerror: 0.0129}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.1834
+  - {value: '-'}
+- header: {name: ((10**38)/E)*D2(SIG)/DX/DY, units: CM**2/GEV}
+  qualifiers:
+  - {name: E, units: GeV, value: '45.0'}
+  - {name: RE, value: NUMU FE --> MU- X}
+  - {name: X, value: '0.75'}
+  values:
+  - errors:
+    - {label: stat, symerror: 0.0094}
+    - {label: sys, symerror: 0.0039}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.0725
+  - errors:
+    - {label: stat, symerror: 0.0101}
+    - {label: sys, symerror: 0.0087}
+    - {label: 'sys,Overall normalization uncertainty', symerror: 2.1%}
+    value: 0.0655
+  - {value: '-'}
+independent_variables:
+- header: {name: Y}
+  values:
+  - {value: 0.25}
+  - {value: 0.35}
+  - {value: 0.45}
