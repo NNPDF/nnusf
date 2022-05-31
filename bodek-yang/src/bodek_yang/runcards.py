@@ -46,10 +46,8 @@ def main():
     with tempfile.TemporaryDirectory() as tmpdir:
         tmpdir = pathlib.Path(tmpdir)
 
-        (tmpdir / "theory.yaml").write_text(yaml.dump(theory()), encoding="utf-8")
-        (tmpdir / "observables.yaml").write_text(
-            yaml.dump(observables()), encoding="utf-8"
-        )
+        utils.write(theory(), tmpdir / "theory.yaml")
+        utils.write(observables(), tmpdir / "observables.yaml")
 
         with tarfile.open(pathlib.Path.cwd() / "runcards.tar", "w") as tar:
             for path in tmpdir.iterdir():
