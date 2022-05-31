@@ -10,4 +10,4 @@ def command():
 
 @command.command("runcards")
 def sub_runcards():
-    print(runcards.theory())
+    runcards.main()
