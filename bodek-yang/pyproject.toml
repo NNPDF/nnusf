@@ -1,3 +1,7 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
 [tool.poetry]
 name = "bodek-yang"
 version = "0.1.0"
@@ -15,6 +19,8 @@ pytest = "^5.2"
 ipython = "^8.4.0"
 pdbpp = "^0.10.3"
 
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+[tool.poetry.scripts]
+bygen = "bodek_yang:command"
+
+[tool.poe.tasks]
+by = "bygen"

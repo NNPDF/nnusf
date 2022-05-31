@@ -767,10 +767,13 @@ docs = ["Sphinx (>=4.1.1,<5.0.0)", "nbsphinx (>=0.8.6,<0.9.0)", "recommonmark (>
 mark = ["a3b2bbc3ced97675ac3a71df45f55ba (>=6.4.0,<7.0.0)", "banana-hep (>=0.6.0,<0.7.0)", "sqlalchemy (>=1.4.21,<2.0.0)"]
 pineappl = ["pineappl (==0.5.0)"]
 
+[extras]
+docs = []
+
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10,<3.11"
-content-hash = "07f381419fc105fff17266455d5c854cd7607d92167f928e98158b5248234fce"
+content-hash = "0f26244241636443a47cd7e1932260c0043a5236262e122fcd7e1c4d69dd7f96"
 
 [metadata.files]
 a3b2bbc3ced97675ac3a71df45f55ba = [
