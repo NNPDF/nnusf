@@ -1,10 +1,9 @@
-import pathlib
 import functools
 
 import h5py
 import numpy as np
 
-pkg = pathlib.Path(__file__).parent.absolute()
+from . import utils
 
 
 class Data:
@@ -35,7 +34,7 @@ class Data:
 
 @functools.cache
 def load() -> Data:
-    genie = h5py.File(pkg / "genie.hdf5", "r")
+    genie = h5py.File(utils.pkg / "genie.hdf5", "r")
 
     return Data(genie)
 
