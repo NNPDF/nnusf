@@ -38,6 +38,7 @@ def observables() -> dict:
         )[0]
     )
     runcard["prDIS"] = "CC"
+    runcard["interpolation_xgrid"] = xgrid.tolist()
 
     return runcard
 
