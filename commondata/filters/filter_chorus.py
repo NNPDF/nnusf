@@ -22,6 +22,9 @@ ERR_DESC = {
 
 console = Console()
 
+# Mass determined using scikithep/particle for Pb208 in GeV
+M_LEAD_PB = 193.729
+
 
 def write_to_csv(path: Path, exp_name:str, file: pd.DataFrame) -> None:
     file.to_csv(f"{path}/{exp_name}.csv", encoding="utf-8")
@@ -152,9 +155,13 @@ def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list) -> None:
         dsignuu_x_value = float(dep_var_dsig_nu["qualifiers"][3]["value"])
         dsignub_x_value = float(dep_vr_dsig_nub["qualifiers"][3]["value"])
         assert dsignuu_x_value == dsignub_x_value
+        # The x values should be the same for dsignu & dsignub
+        dsignuu_Enu_value = float(dep_var_dsig_nu["qualifiers"][3]["value"])
+        dsignub_Enu_value = float(dep_vr_dsig_nub["qualifiers"][3]["value"])
+        assert dsignuu_Enu_value == dsignub_Enu_value
         # Extract the value of the COM energy (should be the same for DXDY)
-        dsignuu_sqrts = float(dep_var_dsig_nu["qualifiers"][3]["value"])
-        dsignub_sqrts = float(dep_vr_dsig_nub["qualifiers"][3]["value"])
+        dsignuu_sqrts = float(dep_var_dsig_nu["qualifiers"][0]["value"])
+        dsignub_sqrts = float(dep_vr_dsig_nub["qualifiers"][0]["value"])
         assert dsignuu_sqrts == dsignub_sqrts
         # The numbers of bins should match the number of values 
         # contained in the `independent_variables`. Now we can 
@@ -162,7 +169,8 @@ def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list) -> None:
         for bin in range(len(indep_var_dic[0]["values"])):
             # ---- Extract only input kinematics ---- #
             y = indep_var_dic[0]["values"][bin]["value"]
-            q2_value = dsignuu_x_value * y * pow(dsignub_sqrts, 2)
+            # According to the paper Q2 = 2*x*y*M_N*E_nu
+            q2_value = 2 * dsignuu_x_value * y * M_LEAD_PB * dsignuu_Enu_value
             kin_dict = {
                 "x": {"min": None, "mid": dsignuu_x_value, "max": None},
                 "Q2": {"min": None, "mid": q2_value, "max": None},
