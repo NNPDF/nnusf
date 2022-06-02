@@ -9,10 +9,6 @@ import yadmark.data.observables
 
 from . import load, utils
 
-Q2MIN = 0.5**2
-Q2MAX = 5**2
-XMIN = 1e-3
-
 
 def theory() -> dict:
     runcard = yaml.safe_load(
@@ -22,15 +18,7 @@ def theory() -> dict:
 
 
 def observables() -> dict:
-    genie = load.load()
-
-    xgrid = np.array(list(filter(lambda x: XMIN < x, genie["xlist"])))
-    q2grid = np.array(list(filter(lambda q2: Q2MIN < q2 < Q2MAX, genie["q2list"])))
-
-    print(f"x: #{xgrid.size} {xgrid.min():4.3e} - {xgrid.max()}")
-    print(
-        f"Q: #{q2grid.size} {np.sqrt(q2grid.min()):4.3e} - {np.sqrt(q2grid.max()):4.3e}"
-    )
+    xgrid, q2grid = load.kin_grids()
 
     kinematics = np.array(np.meshgrid(xgrid, q2grid)).T.reshape(
         (xgrid.size * q2grid.size, 2)

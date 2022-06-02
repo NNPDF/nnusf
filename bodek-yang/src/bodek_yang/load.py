@@ -1,9 +1,13 @@
 import functools
+import logging
 
 import h5py
 import numpy as np
 
 from . import utils
+from .cuts import xcut, q2cut
+
+logger = logging.getLogger(__name__)
 
 
 class Data:
@@ -37,6 +41,29 @@ def load() -> Data:
     genie = h5py.File(utils.pkg / "genie.hdf5", "r")
 
     return Data(genie)
+
+
+def kin_grids() -> tuple[np.ndarray, np.ndarray]:
+    genie = load()
+
+    xgrid = np.array(list(filter(xcut, genie["xlist"])))
+    q2grid = np.array(list(filter(q2cut, genie["q2list"])))
+
+    logger.info(f"x: #{xgrid.size} {xgrid.min():4.3e} - {xgrid.max()}")
+    logger.info(
+        f"Q: #{q2grid.size} {np.sqrt(q2grid.min()):4.3e} - {np.sqrt(q2grid.max()):4.3e}"
+    )
+
+    return xgrid, q2grid
+
+
+def mask() -> np.ndarray:
+    genie = load()
+
+    xmask = xcut(genie["xlist"])
+    q2mask = q2cut(genie["q2list"])
+
+    return np.outer(xmask, q2mask)
 
 
 if __name__ == "__main__":

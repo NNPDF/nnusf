@@ -15,6 +15,8 @@ PyYAML = "^6.0"
 yadism = { version = "^0.11.0", extras = ["pineappl", "mark"] }
 pineappl = "^0.5.0"
 a3b2bbc3ced97675ac3a71df45f55ba = "^6.4.0"
+matplotlib = "^3.5.2"
+seaborn = "^0.11.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
