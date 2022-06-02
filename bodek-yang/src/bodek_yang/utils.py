@@ -1,5 +1,6 @@
 import pathlib
 import tarfile
+from typing import Optional
 
 import yaml
 
@@ -28,17 +29,18 @@ def write(content: dict, path: pathlib.Path, what=None):
         raise ValueError(f"Format to be read undetected (attempted for '{what}')")
 
 
-def extract_tar(path: pathlib.Path, dest: pathlib.Path):
+def extract_tar(path: pathlib.Path, dest: pathlib.Path, subdirs: Optional[int] = None):
     with tarfile.open(path) as tar:
         tar.extractall(dest)
 
-    content = iter(dest.iterdir())
-    cards_path = next(content)
-    try:
-        next(content)
+    if subdirs is not None:
+        count = len(list(dest.iterdir()))
+        if count == subdirs:
+            return
+
+        expected = f"{subdirs} folders are" if subdirs > 1 else "A single folder is"
+        found = f"{count} files" if count > 1 else "a single file"
         raise ValueError(
-            "A single folder is supposed to be contained by the tar file,"
-            " but more files have been detected"
+            f"{expected} supposed to be contained by the tar file,"
+            f" but more {found} have been detected"
         )
-    except StopIteration:
-        pass

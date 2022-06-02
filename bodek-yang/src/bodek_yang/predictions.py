@@ -18,8 +18,9 @@ def main(grids: pathlib.Path, pdf: str):
         # extract tar content
         if grids.suffix == ".tar":
             utils.extract_tar(grids, tmpdir)
+            grids = tmpdir / "grids"
 
-        for gpath in (tmpdir / "grids").iterdir():
+        for gpath in grids.iterdir():
             if "pineappl" not in gpath.name:
                 continue
 
