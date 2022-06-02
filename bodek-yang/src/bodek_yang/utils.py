@@ -1,4 +1,5 @@
 import pathlib
+import tarfile
 
 import yaml
 
@@ -25,3 +26,19 @@ def write(content: dict, path: pathlib.Path, what=None):
         path.write_text(yaml.dump(content), encoding="utf-8")
     else:
         raise ValueError(f"Format to be read undetected (attempted for '{what}')")
+
+
+def extract_tar(path: pathlib.Path, dest: pathlib.Path):
+    with tarfile.open(path) as tar:
+        tar.extractall(dest)
+
+    content = iter(dest.iterdir())
+    cards_path = next(content)
+    try:
+        next(content)
+        raise ValueError(
+            "A single folder is supposed to be contained by the tar file,"
+            " but more files have been detected"
+        )
+    except StopIteration:
+        pass

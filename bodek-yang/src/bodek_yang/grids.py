@@ -16,19 +16,7 @@ def main(cards_path: pathlib.Path):
 
         # extract tar content
         if cards_path.suffix == ".tar":
-            with tarfile.open(cards_path) as tar:
-                tar.extractall(tmpdir)
-
-            content = iter(tmpdir.iterdir())
-            cards_path = next(content)
-            try:
-                next(content)
-                raise ValueError(
-                    "A single folder is supposed to be contained by the tar file,"
-                    " but more files have been detected"
-                )
-            except StopIteration:
-                pass
+            utils.extract_tar(cards_path, tmpdir)
 
         theory = utils.read(cards_path / "theory.yaml")
         for cpath in cards_path.iterdir():
