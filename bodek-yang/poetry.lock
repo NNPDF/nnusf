@@ -473,6 +473,17 @@ docs = ["olefile", "sphinx (>=2.4)", "sphinx-copybutton", "sphinx-issues (>=3.0.
 tests = ["check-manifest", "coverage", "defusedxml", "markdown2", "olefile", "packaging", "pyroma", "pytest", "pytest-cov", "pytest-timeout"]
 
 [[package]]
+name = "pineappl"
+version = "0.5.0"
+description = "Python bindings to PineAPPL"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+numpy = ">=1.16.0,<2.0.0"
+
+[[package]]
 name = "pluggy"
 version = "0.13.1"
 description = "plugin and hook calling mechanisms for python"
@@ -763,6 +774,7 @@ LeProHQ = ">=0.2.3,<0.3.0"
 numba = ">=0.55.0,<0.56.0"
 numpy = ">=1.21.0,<2.0.0"
 pandas = ">=1.3.0,<2.0.0"
+pineappl = {version = "0.5.0", optional = true, markers = "extra == \"pineappl\""}
 rich = ">=10.6.0,<11.0.0"
 scipy = ">=1.7.0,<2.0.0"
 sqlalchemy = {version = ">=1.4.21,<2.0.0", optional = true, markers = "extra == \"mark\""}
@@ -775,7 +787,7 @@ pineappl = ["pineappl (==0.5.0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9,<3.11"
-content-hash = "08135a5f6923893e1854f20d219e4d39d89a0d5472b45706d646ead030e765c3"
+content-hash = "14a577b1bbb1325041d04bf05f18e43870757436c25d50a9845354c5dbf1b88e"
 
 [metadata.files]
 a3b2bbc3ced97675ac3a71df45f55ba = [
@@ -1238,6 +1250,22 @@ pillow = [
     {file = "Pillow-9.1.1-pp38-pypy38_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:937a54e5694684f74dcbf6e24cc453bfc5b33940216ddd8f4cd8f0f79167f765"},
     {file = "Pillow-9.1.1-pp38-pypy38_pp73-win_amd64.whl", hash = "sha256:baf3be0b9446a4083cc0c5bb9f9c964034be5374b5bc09757be89f5d2fa247b8"},
     {file = "Pillow-9.1.1.tar.gz", hash = "sha256:7502539939b53d7565f3d11d87c78e7ec900d3c72945d4ee0e2f250d598309a0"},
+]
+pineappl = [
+    {file = "pineappl-0.5.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:01731da882e4624159c51c90c661ecf766eed4bb6fa78bb50ddba15829d66480"},
+    {file = "pineappl-0.5.0-cp310-none-win_amd64.whl", hash = "sha256:6e072e18b1bcb105245ae2fa5d11a24fd00b540f4dc9b9bb6527c3b1c4d8792a"},
+    {file = "pineappl-0.5.0-cp36-cp36m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:7691b5ccc5953c97062b1693733fbf5976d498b9bf8268b2dc0d35530ef82a62"},
+    {file = "pineappl-0.5.0-cp36-none-win_amd64.whl", hash = "sha256:cedb1cf5af33ec32adf85a52b2815d6174ad03702a0de033f3273e250d8e03cf"},
+    {file = "pineappl-0.5.0-cp37-cp37m-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:3ea10e89f52992f0cf6e4ccb467a316f5e6ef5496aff085608667fab69f28f93"},
+    {file = "pineappl-0.5.0-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:218881a15b8c6f4cbc84847677004fa620ef7af210c5dddcf06627f4abffbbab"},
+    {file = "pineappl-0.5.0-cp37-none-win_amd64.whl", hash = "sha256:47d968c9d5052cf62e864576081513d1cdc772bb756ac45a3aecb3be78e9c9bf"},
+    {file = "pineappl-0.5.0-cp38-cp38-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:e6c931bc47619069a2029391c44a416d7d95ee340ee33ef8c03097ff422c218b"},
+    {file = "pineappl-0.5.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:fc0c2696f2645f1876fa22b631fabeb10067067e3fc3a3fa1edc9ed9d53bdf50"},
+    {file = "pineappl-0.5.0-cp38-none-win_amd64.whl", hash = "sha256:997822f02c3e2249bbcc215f80004e2c9c841b7879691ba4b20843e357680e87"},
+    {file = "pineappl-0.5.0-cp39-cp39-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:883917faffddd6c077f64baf383682c779f4d3176a26b778a6879c680b16f6ad"},
+    {file = "pineappl-0.5.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:0a447fb7d84de12af0416c07154fbb4234b5b6a7146f2ee8f54e70ca6c617309"},
+    {file = "pineappl-0.5.0-cp39-none-win_amd64.whl", hash = "sha256:be9cc7c755b710d9113ad7bef13beea59ec32815d7e42b08622418e7cf4e3f5c"},
+    {file = "pineappl-0.5.0.tar.gz", hash = "sha256:742a7f085db2a0c12dbf49750a1f1047e1aff4481627739cf0406b8c630d6fdd"},
 ]
 pluggy = [
     {file = "pluggy-0.13.1-py2.py3-none-any.whl", hash = "sha256:966c145cd83c96502c3c3868f50408687b38434af77734af1e9ca461a4081d2d"},

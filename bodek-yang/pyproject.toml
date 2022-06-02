@@ -12,7 +12,7 @@ authors = ["Alessandro Candido <candido.ale@gmail.com>"]
 python = "^3.9,<3.11"
 h5py = "^3.7.0"
 PyYAML = "^6.0"
-yadism = { version = "^0.11.0", extras = ["mark"] }
+yadism = { version = "^0.11.0", extras = ["pineappl", "mark"] }
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
