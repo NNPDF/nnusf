@@ -787,7 +787,7 @@ pineappl = ["pineappl (==0.5.0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9,<3.11"
-content-hash = "14a577b1bbb1325041d04bf05f18e43870757436c25d50a9845354c5dbf1b88e"
+content-hash = "e368d3a04ab299aa23e3de3165030ae49d306e4f6657c77bac915a209595a1a2"
 
 [metadata.files]
 a3b2bbc3ced97675ac3a71df45f55ba = [
