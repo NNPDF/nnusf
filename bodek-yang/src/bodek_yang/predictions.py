@@ -14,7 +14,7 @@ from . import load, utils
 logger = logging.getLogger(__name__)
 
 
-def main(grids: pathlib.Path, pdf: str):
+def main(grids: pathlib.Path, pdf: str, err: str = "theory"):
     with tempfile.TemporaryDirectory() as tmpdir:
         tmpdir = pathlib.Path(tmpdir).absolute()
 
@@ -23,7 +23,7 @@ def main(grids: pathlib.Path, pdf: str):
             utils.extract_tar(grids, tmpdir)
             grids = tmpdir / "grids"
 
-        preds_dest = tmpdir / "preds"
+        preds_dest = tmpdir / "predictions"
         preds_dest.mkdir()
 
         genie = load.load()
@@ -40,17 +40,20 @@ def main(grids: pathlib.Path, pdf: str):
 
             grid = pineappl.grid.Grid.read(gpath)
 
-            if False:
+            plt.figure()
+
+            if err == "theory":
                 # theory uncertainties
                 pdfset = lhapdf.mkPDF(pdf)
                 pred = grid.convolute_with_one(
                     2212, pdfset.xfxQ2, pdfset.alphasQ2, xi=prescr
                 )
                 pred = pred.reshape((*xgrid.shape, len(prescr)))
+
                 central = 4
                 bulk = slice(0, -1)
                 err_source = "9 pts."
-            else:
+            elif err == "pdf":
                 # PDF uncertainties
                 pred = []
                 for pdfset in lhapdf.mkPDFs(pdf):
@@ -64,6 +67,8 @@ def main(grids: pathlib.Path, pdf: str):
                 central = 0
                 bulk = slice(1, -1)
                 err_source = "PDF replicas"
+            else:
+                raise ValueError(f"Invalid error type '{err}'")
 
             plt.plot(q2grid[19], pred[19, :, central], color="tab:blue", label="yadism")
             plt.fill_between(
@@ -82,6 +87,11 @@ def main(grids: pathlib.Path, pdf: str):
             )
 
             plt.title(f"$x = {xgrid[19, 0]}$")
+            plt.xscale("log")
             plt.legend()
 
-            __import__("pdb").set_trace()
+            plt.savefig(preds_dest / f"{obs}.pdf")
+
+        with tarfile.open(pathlib.Path.cwd() / "predictions.tar", "w") as tar:
+            for path in tmpdir.iterdir():
+                tar.add(path.absolute(), path.relative_to(tmpdir))

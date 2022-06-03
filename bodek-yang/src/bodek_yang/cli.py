@@ -39,7 +39,12 @@ def sub_grids(runcards):
 @command.command("predictions")
 @click.argument("grids", type=click.Path(exists=True, path_type=pathlib.Path))
 @click.argument("pdf")
-def sub_predictions(grids, pdf):
+@click.option(
+    "--err",
+    type=click.Choice(["pdf", "theory"], case_sensitive=False),
+    default="theory",
+)
+def sub_predictions(grids, pdf, err):
     """Generate predictions from yadism grids.
 
     GRIDS is a path to folder (or tar folder) containing the grids, one per
@@ -47,4 +52,4 @@ def sub_predictions(grids, pdf):
     PDF is the pdf to be convoluted with the grids, in order to obtain the
     structure functions predictions.
     """
-    predictions.main(grids.absolute(), pdf)
+    predictions.main(grids.absolute(), pdf, err=err)
