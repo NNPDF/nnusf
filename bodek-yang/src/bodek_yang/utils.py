@@ -1,3 +1,4 @@
+import itertools
 import pathlib
 import tarfile
 from typing import Optional
@@ -44,3 +45,10 @@ def extract_tar(path: pathlib.Path, dest: pathlib.Path, subdirs: Optional[int] =
             f"{expected} supposed to be contained by the tar file,"
             f" but more {found} have been detected"
         )
+
+
+three_points = [0.5, 1.0, 2.0]
+"Three points prescription for scale variations."
+nine_points = list(itertools.product(three_points, three_points))
+"""Nine points prescription for scale variations (as couples, referred to ``(fact,
+ren)`` scales)."""

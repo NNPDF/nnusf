@@ -4,6 +4,7 @@ import tempfile
 import tarfile
 
 import lhapdf
+import matplotlib.colors as clr
 import matplotlib.pyplot as plt
 import numpy as np
 import pineappl
@@ -26,8 +27,10 @@ def main(grids: pathlib.Path, pdf: str):
         preds_dest.mkdir()
 
         genie = load.load()
-        xgrid, q2grid = np.meshgrid(*load.kin_grids())
+        q2grid, xgrid = np.meshgrid(*load.kin_grids())
         gmask = load.mask()
+
+        prescr = utils.nine_points
 
         for gpath in grids.iterdir():
             if "pineappl" not in gpath.name:
@@ -36,17 +39,49 @@ def main(grids: pathlib.Path, pdf: str):
             kind = obs.split("_")[0]
 
             grid = pineappl.grid.Grid.read(gpath)
-            pdfset = lhapdf.mkPDF(pdf)
 
-            fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
+            if False:
+                # theory uncertainties
+                pdfset = lhapdf.mkPDF(pdf)
+                pred = grid.convolute_with_one(
+                    2212, pdfset.xfxQ2, pdfset.alphasQ2, xi=prescr
+                )
+                pred = pred.reshape((*xgrid.shape, len(prescr)))
+                central = 4
+                bulk = slice(0, -1)
+                err_source = "9 pts."
+            else:
+                # PDF uncertainties
+                pred = []
+                for pdfset in lhapdf.mkPDFs(pdf):
+                    member_pred = grid.convolute_with_one(
+                        2212, pdfset.xfxQ2, pdfset.alphasQ2
+                    )
+                    pred.append(member_pred)
 
-            pred = grid.convolute_with_one(2212, pdfset.xfxQ2, pdfset.alphasQ2)
-            pred = pred.reshape(xgrid.shape)
+                pred = np.array(pred).T.reshape((*xgrid.shape, len(pred)))
+
+                central = 0
+                bulk = slice(1, -1)
+                err_source = "PDF replicas"
+
+            plt.plot(q2grid[19], pred[19, :, central], color="tab:blue", label="yadism")
+            plt.fill_between(
+                q2grid[19],
+                pred[19, :, bulk].min(axis=1),
+                pred[19, :, bulk].max(axis=1),
+                facecolor=clr.to_rgba("tab:blue", alpha=0.1),
+                label=err_source,
+            )
             np.save(preds_dest / obs, pred)
-            ax.plot_surface(xgrid, q2grid, pred, label="yadism")
 
             genie_pred = genie[f"{kind}_free_p"]
             genie_pred = genie_pred[gmask].reshape(xgrid.shape)
-            ax.plot_surface(xgrid, q2grid, genie_pred, label="genie")
+            plt.scatter(
+                q2grid[19], genie_pred[19], color="tab:red", marker="x", label="genie"
+            )
+
+            plt.title(f"$x = {xgrid[19, 0]}$")
+            plt.legend()
 
             __import__("pdb").set_trace()

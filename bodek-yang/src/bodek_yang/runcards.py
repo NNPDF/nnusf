@@ -18,10 +18,10 @@ def theory() -> dict:
 
 
 def observables() -> dict:
-    xgrid, q2grid = load.kin_grids()
+    q2grid, xgrid = load.kin_grids()
 
-    kinematics = np.array(np.meshgrid(xgrid, q2grid)).T.reshape(
-        (xgrid.size * q2grid.size, 2)
+    kinematics = np.array(np.meshgrid(q2grid, xgrid)).T.reshape(
+        (q2grid.size * xgrid.size, 2)
     )
     kinematics = [
         dict(zip(("x", "Q2", "y"), [float(k) for k in (*kin, 0)])) for kin in kinematics
