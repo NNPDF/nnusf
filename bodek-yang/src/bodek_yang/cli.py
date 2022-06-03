@@ -4,8 +4,10 @@ import click
 
 from . import grids, predictions, runcards
 
+CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
-@click.group()
+
+@click.group(context_settings=CONTEXT_SETTINGS)
 def command():
     pass
 
