@@ -3,7 +3,7 @@ requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
-name = "bodek-yang"
+name = "nnusf"
 version = "0.1.0"
 description = ""
 authors = ["Alessandro Candido <candido.ale@gmail.com>"]
@@ -24,7 +24,7 @@ ipython = "^8.4.0"
 pdbpp = "^0.10.3"
 
 [tool.poetry.scripts]
-bygen = "bodek_yang:command"
+bygen = "nnusf.bodek_yang:command"
 
 [tool.poe.tasks]
 by = "bygen"
