@@ -28,4 +28,4 @@ pdbpp = "^0.10.3"
 nnu = "nnusf.cli:command"
 
 [tool.poe.tasks]
-by = "bygen"
+th = "nnu theory"

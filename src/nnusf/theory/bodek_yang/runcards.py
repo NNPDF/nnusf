@@ -7,7 +7,8 @@ import numpy as np
 import yadmark.data.observables
 
 from . import load
-from .. import runcards, utils
+from .. import runcards
+from ... import utils
 
 
 def observables() -> dict:
@@ -39,7 +40,7 @@ def main():
         tmpdir = pathlib.Path(tmpdir)
 
         utils.write(runcards.theory(), tmpdir / "theory.yaml")
-        utils.write(observables(), tmpdir / "observables.yaml")
+        utils.write(observables(), tmpdir / "obs.yaml")
 
         with tarfile.open(pathlib.Path.cwd() / "runcards.tar", "w") as tar:
             for path in tmpdir.iterdir():

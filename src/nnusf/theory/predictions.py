@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pineappl
 
-from . import load
+from .bodek_yang import load
 from .. import utils
 
 logger = logging.getLogger(__name__)

@@ -4,7 +4,7 @@ import logging
 import h5py
 import numpy as np
 
-from .. import utils
+from ... import utils
 from .cuts import xcut, q2cut
 
 logger = logging.getLogger(__name__)
@@ -64,8 +64,3 @@ def mask() -> np.ndarray:
     q2mask = q2cut(genie["q2list"])
 
     return np.outer(xmask, q2mask)
-
-
-if __name__ == "__main__":
-    d = load()
-    __import__("pdb").set_trace()

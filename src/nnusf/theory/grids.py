@@ -25,7 +25,7 @@ def main(cards: pathlib.Path):
         theory = utils.read(cards / "theory.yaml")
         for cpath in cards.iterdir():
             if cpath.name.startswith("obs"):
-                observables = utils.read(cpath)
+                observables = utils.read(cpath, what="yaml")
                 output = yadism.run_yadism(theory, observables)
 
                 for obs in observables["observables"]:

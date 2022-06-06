@@ -2,13 +2,13 @@ import pathlib
 
 import click
 
-from . import grids, predictions, runcards
+from . import grids, predictions, bodek_yang, highq
 from ..cli import base
 
 
-@base.command.group("by")
+@base.command.group("theory")
 def subcommand():
-    """Compare predictions for Bodek-Yang model.
+    """Compute and compare predictions.
 
     Compute yadism values for structure functions (given an external PDF set)
     and compare with them.
@@ -17,12 +17,21 @@ def subcommand():
 
 
 @subcommand.command("runcards")
-def sub_runcards():
+@click.argument("what", type=click.Choice(["by", "hiq"]))
+def sub_runcards(what):
     """Generate yadism runcards.
 
-    Dump runcards compatible with Genie predictions.
+    Dump runcards compatible with WHAT predictions:
+
+        - 'by': Bodek-Yang predictions, made with Genie
+        - 'hiq': high Q2, from cut values of the dataset
     """
-    runcards.main()
+    if what == "by":
+        bodek_yang.runcards.main()
+    elif what == "hiq":
+        highq.runcards.main()
+    else:
+        raise ValueError(f"Predictions not available for '{what}'")
 
 
 @subcommand.command("grids")

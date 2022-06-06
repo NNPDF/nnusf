@@ -6,7 +6,8 @@ import tempfile
 import yadmark.data.observables
 
 from . import load
-from .. import runcards, utils
+from .. import runcards
+from ... import utils
 
 
 def observables() -> dict:
@@ -36,7 +37,7 @@ def main():
 
         utils.write(runcards.theory(), tmpdir / "theory.yaml")
         for name, observable in observables().items():
-            utils.write(observable, tmpdir / f"observables-{name}.yaml")
+            utils.write(observable, tmpdir / f"obs-{name}.yaml")
 
         with tarfile.open(pathlib.Path.cwd() / "runcards.tar", "w") as tar:
             for path in tmpdir.iterdir():
