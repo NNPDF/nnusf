@@ -2,7 +2,7 @@ import pathlib
 
 import click
 
-from . import grids, predictions, bodek_yang, highq
+from . import grids, predictions, runcards
 from ..cli import base
 
 
@@ -26,12 +26,7 @@ def sub_runcards(what):
         - 'by': Bodek-Yang predictions, made with Genie
         - 'hiq': high Q2, from cut values of the dataset
     """
-    if what == "by":
-        bodek_yang.runcards.main()
-    elif what == "hiq":
-        highq.runcards.main()
-    else:
-        raise ValueError(f"Predictions not available for '{what}'")
+    runcards.main(what)
 
 
 @subcommand.command("grids")

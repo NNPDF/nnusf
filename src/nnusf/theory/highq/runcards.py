@@ -1,13 +1,8 @@
 import copy
-import pathlib
-import tarfile
-import tempfile
 
 import yadmark.data.observables
 
 from . import load
-from .. import runcards
-from ... import utils
 
 
 def observables() -> dict:
@@ -29,16 +24,3 @@ def observables() -> dict:
             run["observables"][obsname] = obskins
 
     return dict(nu=run_nu, nb=run_nb)
-
-
-def main():
-    with tempfile.TemporaryDirectory() as tmpdir:
-        tmpdir = pathlib.Path(tmpdir)
-
-        utils.write(runcards.theory(), tmpdir / "theory.yaml")
-        for name, observable in observables().items():
-            utils.write(observable, tmpdir / f"obs-{name}.yaml")
-
-        with tarfile.open(pathlib.Path.cwd() / "runcards.tar", "w") as tar:
-            for path in tmpdir.iterdir():
-                tar.add(path.absolute(), arcname="runcards/" + path.name)
