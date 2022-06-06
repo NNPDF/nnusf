@@ -4,7 +4,7 @@ import logging
 import h5py
 import numpy as np
 
-from . import utils
+from .. import utils
 from .cuts import xcut, q2cut
 
 logger = logging.getLogger(__name__)
