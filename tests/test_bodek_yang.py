@@ -1,4 +1,4 @@
-from bodek_yang import __version__
+from nnusf.bodek_yang import __version__
 
 
 def test_version():

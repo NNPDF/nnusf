@@ -1,7 +1,6 @@
 name,stat,syst
 treatment,ADD,ADD
 type,UNCORR,CORR
-index,,
 1,0.013,0.053
 2,0.013,0.049
 3,0.014,0.048

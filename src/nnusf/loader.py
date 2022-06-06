@@ -1,3 +1,4 @@
+import imp
 import pathlib
 
 import numpy as np
@@ -47,19 +48,19 @@ class Loader:
         # kinematic file
         kin_file = self.path.joinpath(f"kinematics/KIN_{self.data_name}.csv")
         if kin_file.exists():
-            kin_df = pd.read_csv(kin_file)[2:].astype(float)
+            kin_df = pd.read_csv(kin_file)[1:].astype(float)
         else:
             kin_df = pd.read_csv(f"{self.path}/kinematics/KIN_{exp_name}_F2F3.csv")[
-                2:
+                1:
             ].astype(float)
         kin_df["A"] = np.full(kin_df.shape[0], info_df["target"][0])
 
         # central values and uncertainties
         data_df = pd.read_csv(
-            f"{self.path}/data/DATA_{self.data_name}.csv", header=1, dtype=float
+            f"{self.path}/data/DATA_{self.data_name}.csv", header=0, dtype=float
         )
         unc_df = pd.read_csv(f"{self.path}/uncertainties/UNC_{self.data_name}.csv")[
-            3:
+            2:
         ].astype(float)
         return kin_df, data_df, unc_df
 

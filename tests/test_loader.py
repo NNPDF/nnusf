@@ -9,5 +9,5 @@ class TestLoader:
         data = Loader(here, "NUTEV", "F2")
 
         assert len(data.kinematics) == 3
-        n_data = len(data.kinematics[0])
+        n_data = data.kinematics[0].shape[0]
         assert data.covmat.shape == (n_data, n_data)
