@@ -10,9 +10,9 @@ from rich.progress import track
 from utils import construct_uncertainties, dump_info_file, write_to_csv, build_obs_dict
 
 ERR_DESC = {
-    'syst': {
+    'stat': {
         'treatment': "ADD",
-        'type': "CORR",
+        'type': "UNCORR",
         'description': "Total systematic uncertainty"
     }
 }

@@ -1,6 +1,6 @@
 name,stat,syst
-treatment,nan,ADD
-type,nan,CORR
+treatment,ADD,ADD
+type,UNCORR,CORR
 index,,
 1,0.0456,0.008081699999999999
 2,0.0564,0.009492200000000001

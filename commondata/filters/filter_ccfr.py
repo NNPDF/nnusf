@@ -11,8 +11,8 @@ from utils import construct_uncertainties, dump_info_file, write_to_csv, build_o
 
 ERR_DESC = {
     'stat': {
-        'treatment': None,
-        'type': None,
+        'treatment': "ADD",
+        'type': "UNCORR",
         'description': None
     },
     'syst': {

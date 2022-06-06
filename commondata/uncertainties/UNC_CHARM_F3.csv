@@ -1,6 +1,6 @@
-name,syst
+name,stat
 treatment,ADD
-type,CORR
+type,UNCORR
 index,
 1,
 2,
