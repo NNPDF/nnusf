@@ -1,11 +1,12 @@
+# -*- coding: utf-8 -*-
 import pathlib
 import tarfile
 import tempfile
 
 import yaml
 
-from . import bodek_yang, highq
 from .. import utils
+from . import bodek_yang, highq
 
 
 def theory() -> dict:

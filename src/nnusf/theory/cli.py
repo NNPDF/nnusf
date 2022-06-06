@@ -1,9 +1,10 @@
+# -*- coding: utf-8 -*-
 import pathlib
 
 import click
 
-from . import grids, predictions, runcards
 from ..cli import base
+from . import grids, predictions, runcards
 
 
 @base.command.group("theory")

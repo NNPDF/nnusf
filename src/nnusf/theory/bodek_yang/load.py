@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import functools
 import logging
 
@@ -5,7 +6,7 @@ import h5py
 import numpy as np
 
 from ... import utils
-from .cuts import xcut, q2cut
+from .cuts import q2cut, xcut
 
 logger = logging.getLogger(__name__)
 
