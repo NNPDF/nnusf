@@ -57,9 +57,9 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
             # ---- Extract only input kinematics ---- #
             x_value = indep_var_dic[0]["values"][bin]["value"]
             kin_dict = {
-                "x": {"min": None, "mid": x_value, "max": None},
-                "Q2": {"min": None, "mid": f2_q2_value, "max": None},
-                "y": {"min": None, "mid": None, "max": None}
+                "x": {"mid": x_value, "min": None, "max": None},
+                "Q2": {"mid": f2_q2_value, "min": None, "max": None},
+                "y": {"mid": None, "min": None, "max": None}
             }
             kinematics.append(kin_dict)
             # ---- Extract central values for SF ---- #

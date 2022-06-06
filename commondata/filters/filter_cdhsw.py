@@ -63,9 +63,9 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
             # ---- Extract only input kinematics ---- #
             q2_value = indep_var_dic[0]["values"][bin]["value"]
             kin_dict = {
-                "x": {"min": None, "mid": f2_x_value, "max": None},
-                "Q2": {"min": None, "mid": q2_value, "max": None},
-                "y": {"min": None, "mid": None, "max": None}
+                "x": {"mid": f2_x_value, "min": None, "max": None},
+                "Q2": {"mid": q2_value, "min": None, "max": None},
+                "y": {"mid": None, "min": None, "max": None}
             }
             kinematics.append(kin_dict)
             # ---- Extract central values for SF ---- #
@@ -176,9 +176,9 @@ def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list, obs: str) 
                 q2_mid = 2 * M_NUCLEON * x_valmid * y_value_mid * dsig_E_value
                 q2_max = 2 * M_NUCLEON * x_valmax * y_value_max * dsig_E_value
                 kin_dict = {
-                    "x": {"min": x_valmin, "mid": x_valmid, "max": x_valmax},
-                    "Q2": {"min": q2_min, "mid": q2_mid, "max": q2_max},
-                    "y": {"min": y_value_min, "mid": y_value_mid, "max": y_value_max}
+                    "x": {"mid": x_valmid, "min": x_valmin, "max": x_valmax},
+                    "Q2": {"mid": q2_mid, "min": q2_min, "max": q2_max},
+                    "y": {"mid": y_value_mid, "min": y_value_min, "max": y_value_max}
                 }
                 kinematics.append(kin_dict)
                 # ---- Extract central values for SF ---- #
