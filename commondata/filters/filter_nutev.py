@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-
 import yaml
 import pandas as pd
 
 from pathlib import Path
 from rich.console import Console
 from rich.progress import track
+
+from utils import construct_uncertainties, dump_info_file, write_to_csv 
 
 ERR_DESC = {
     'stat': {
@@ -22,25 +23,6 @@ ERR_DESC = {
 
 console = Console()
 M_PROTON = 0.938 # GeV
-
-
-def write_to_csv(path: Path, exp_name:str, file: pd.DataFrame) -> None:
-    file.to_csv(f"{path}/{exp_name}.csv", encoding="utf-8")
-
-
-def construct_uncertainties(full_obs_errors: list) -> pd.DataFrame:
-    header_struct = pd.MultiIndex.from_tuples(
-        [(k, v["treatment"], v["type"]) for k,v in ERR_DESC.items()],
-        names=["name", "treatment", "type"]
-    )
-    full_error_values = pd.DataFrame(full_obs_errors).values
-    errors_pandas_table = pd.DataFrame(
-        full_error_values,
-        columns=header_struct,
-        index=range(1, len(full_obs_errors) + 1)
-    )
-    errors_pandas_table.index.name = "index"
-    return errors_pandas_table
 
 
 def extract_sf(path: Path, exp_name: str, table_id_list: list, sfunc: str) -> None:
@@ -96,7 +78,7 @@ def extract_sf(path: Path, exp_name: str, table_id_list: list, sfunc: str) -> No
     f2pd.index.name = "index"
 
     # Convert the error dictionaries into Pandas tables
-    f2_errors_pd = construct_uncertainties(f2_exp_errors) 
+    f2_errors_pd = construct_uncertainties(f2_exp_errors, ERR_DESC) 
 
     # Dump everything into files. In the following, F2 and xF3 lie on the central
     # values and errors share the same kinematic information and the difference.
@@ -165,7 +147,7 @@ def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list, obs: str) 
     dnuupd.index.name = "index"
 
     # Convert the error dictionaries into Pandas tables
-    dsignuu_errors_pd = construct_uncertainties(dsig_nu_errors) 
+    dsignuu_errors_pd = construct_uncertainties(dsig_nu_errors, ERR_DESC) 
 
     # Dump everything into files. In the following, F2 and xF3 lie on the central
     # values and errors share the same kinematic information and the difference.
@@ -195,18 +177,51 @@ if __name__ == "__main__":
     relative_path = Path().absolute().parents[0]
     experiment_name = "NUTEV"
 
-    # List of tables containing measurements for F2 and xF3
+    obs_list = []
+
+    # List of tables containing measurements for F2
     table_f2 = [i for i in range(1, 13)]
+    obs_list.append(
+        {
+            "type": "F2",
+            "tables": table_f2,
+            "projectile": 0
+        }
+    )
     extract_sf(relative_path, experiment_name, table_f2, "F2")
 
-    # List of tables containing measurements for F2 and xF3
+    # List of tables containing measurements for xF3
     table_f3 = [i for i in range(13, 25)]
+    obs_list.append(
+        {
+            "type": "F3",
+            "tables": table_f3,
+            "projectile": 0
+        }
+    )
     extract_sf(relative_path, experiment_name, table_f3, "F3")
 
     # List of tables containing measurements for D2SIG/DX/DY for NUMU + FE
     table_dsig_dxdynuu = [i for i in range(26, 93)]
+    obs_list.append(
+        {
+            "type": "dsig_dxdynuu", 
+            "tables": table_dsig_dxdynuu,
+            "projectile": 14
+        }
+    )
     extract_d2sigDxDy(relative_path, experiment_name, table_dsig_dxdynuu, "NUU")
 
-    # List of tables containing measurements for D2SIG/DX/DY for NUMU + FE
+    # List of tables containing measurements for D2SIG/DX/DY for NUBMU + FE
     table_dsig_dxdynub = [i for i in range(93, 160)]
+    obs_list.append(
+        {
+            "type": "dsig_dxdynub", 
+            "tables": table_dsig_dxdynub,
+            "projectile": -14
+        }
+    )
     extract_d2sigDxDy(relative_path, experiment_name, table_dsig_dxdynub, "NUB")
+
+    # dump info file
+    dump_info_file(relative_path, experiment_name, obs_list)
