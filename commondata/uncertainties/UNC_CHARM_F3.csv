@@ -1,7 +1,6 @@
-name,syst
+name,stat
 treatment,ADD
-type,CORR
-index,
+type,UNCORR
 1,
 2,
 3,0.078

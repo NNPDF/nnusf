@@ -64,9 +64,9 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
             # ---- Extract only input kinematics ---- #
             q2_value = indep_var_dic[0]["values"][bin]["value"]
             kin_dict = {
-                "x": {"min": None, "mid": f2_x_value, "max": None},
-                "Q2": {"min": None, "mid": q2_value, "max": None},
-                "y": {"min": None, "mid": None, "max": None}
+                "x": {"mid": f2_x_value, "min": None, "max": None},
+                "Q2": {"mid": q2_value, "min": None, "max": None},
+                "y": {"mid": None, "min": None, "max": None}
             }
             kinematics.append(kin_dict)
             # ---- Extract central values for SF ---- #
@@ -88,7 +88,7 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
 
     # Convert the kinematics dictionaries into Pandas tables
     full_kin = {i+1: pd.DataFrame(d).stack() for i, d in enumerate(kinematics)}
-    kinematics_pd = pd.concat(full_kin, axis=1, names=["index"]).swaplevel(0,1).T
+    kinematics_pd = pd.concat(full_kin, axis=1, ).swaplevel(0,1).T
 
     # Convert the central data values dict into Pandas tables
     f2pd = pd.DataFrame(f2_central, index=range(1, len(f2_central)+1), columns=["data"])
@@ -159,9 +159,9 @@ def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list) -> None:
             # According to the paper Q2 = 2*x*y*M_N*E_nu [GeV^2]
             q2_value = 2 * dsignuu_x_value * y * M_NUCLEON * dsignuu_Enu_value
             kin_dict = {
-                "x": {"min": None, "mid": dsignuu_x_value, "max": None},
-                "Q2": {"min": None, "mid": q2_value, "max": None},
-                "y": {"min": None, "mid": y, "max": None}
+                "x": {"mid": dsignuu_x_value, "min": None, "max": None},
+                "Q2": {"mid": q2_value, "min": None, "max": None},
+                "y": {"mid": y, "min": None, "max": None}
             }
             kinematics.append(kin_dict)
             # ---- Extract central values for SF ---- #
@@ -183,7 +183,7 @@ def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list) -> None:
 
     # Convert the kinematics dictionaries into Pandas tables
     full_kin = {i+1: pd.DataFrame(d).stack() for i, d in enumerate(kinematics)}
-    kinematics_pd = pd.concat(full_kin, axis=1, names=["index"]).swaplevel(0,1).T
+    kinematics_pd = pd.concat(full_kin, axis=1, ).swaplevel(0,1).T
 
     # Convert the central data values dict into Pandas tables
     nval_dnuu = len(dsig_nu_central) + 1

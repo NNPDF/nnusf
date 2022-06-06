@@ -11,8 +11,8 @@ from utils import construct_uncertainties, dump_info_file, write_to_csv, build_o
 
 ERR_DESC = {
     'stat': {
-        'treatment': None,
-        'type': None,
+        'treatment': "ADD",
+        'type': "UNCORR",
         'description': None
     },
     'syst': {
@@ -57,9 +57,9 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
             # ---- Extract only input kinematics ---- #
             q2_value = indep_var_dic[0]["values"][bin]["value"]
             kin_dict = {
-                "x": {"min": None, "mid": f2_x_value, "max": None},
-                "Q2": {"min": None, "mid": q2_value, "max": None},
-                "y": {"min": None, "mid": None, "max": None}
+                "x": {"mid": f2_x_value, "min": None, "max": None},
+                "Q2": {"mid": q2_value, "min": None, "max": None},
+                "y": {"mid": None, "min": None, "max": None}
             }
             kinematics.append(kin_dict)
             # ---- Extract central values for SF ---- #
@@ -99,7 +99,7 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
 
     # Convert the kinematics dictionaries into Pandas tables
     full_kin = {i+1: pd.DataFrame(d).stack() for i, d in enumerate(kinematics)}
-    kinematics_pd = pd.concat(full_kin, axis=1, names=["index"]).swaplevel(0,1).T
+    kinematics_pd = pd.concat(full_kin, axis=1).swaplevel(0,1).T
 
     # Convert the central data values dict into Pandas tables
     f2pd = pd.DataFrame(f2_central, index=range(1, len(f2_central)+1), columns=["data"])

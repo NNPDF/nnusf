@@ -17,7 +17,6 @@ def construct_uncertainties(full_obs_errors: list, ERR_DESC: dict) -> pd.DataFra
         columns=header_struct,
         index=range(1, len(full_obs_errors) + 1)
     )
-    errors_pandas_table.index.name = "index"
     return errors_pandas_table
 
 def build_obs_dict(fx: str, table: list, pid: float) -> dict:
