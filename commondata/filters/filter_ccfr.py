@@ -57,6 +57,7 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
     # Loop over the tables that only contains the F2/xF3
     for table_id in track(table_id_list, description="Progress tables"):
         table_path = path.joinpath(f"rawdata/{exp_name}/Table{table_id}.yaml")
+
         load_table = yaml.safe_load(table_path.read_text())
         # Extract the dictionary containing the high-level
         # kinematic information
@@ -85,14 +86,32 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
             f3_value = dep_var_f3dic["values"][bin]["value"]
             f3_central.append(f3_value)
             # ---- Extract SYS & STAT uncertainties ---- #
+
+            # Extract the uncertainties for F2
+            if len(dep_var_f2dic["values"][bin]["errors"]) == 2:
+                f2_sys = dep_var_f2dic["values"][bin]["errors"][1].get("symerror")
+                f2_sys = float(f2_sys.rstrip("%"))
+            elif len(dep_var_f2dic["values"][bin]["errors"]) == 1:
+                f2_sys = None
+            else:
+                raise ValueError("The systematics need to be taken in Quadrature.")
             error_dict_f2 = {
-                "stat": None,
-                "syst": dep_var_f2dic["values"][bin]["errors"][0]["symerror"]
+                "stat": dep_var_f2dic["values"][bin]["errors"][0]["symerror"],
+                "syst": (f2_value * f2_sys) / 100 if f2_sys is not None else None
             }
             f2_exp_errors.append(error_dict_f2)
+
+            # Extract the uncertainties for F3
+            if len(dep_var_f3dic["values"][bin]["errors"]) == 2:
+                f3_sys = dep_var_f3dic["values"][bin]["errors"][1].get("symerror")
+                f3_sys = float(f3_sys.rstrip("%"))
+            elif len(dep_var_f3dic["values"][bin]["errors"]) == 1:
+                f3_sys = None
+            else:
+                raise ValueError("The systematics need to be taken in Quadrature.")
             error_dict_f3 = {
-                "stat": None,
-                "syst": dep_var_f3dic["values"][bin]["errors"][0]["symerror"]
+                "stat": dep_var_f3dic["values"][bin]["errors"][0]["symerror"],
+                "syst": (f3_value * f3_sys) / 100 if f3_sys is not None else None
             }
             f3_exp_errors.append(error_dict_f3)
 
