@@ -3,16 +3,20 @@ import pathlib
 import click
 
 from . import grids, predictions, runcards
+from ..cli import base
 
-CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
+@base.command.group("by")
+def subcommand():
+    """Compare predictions for Bodek-Yang model.
 
-@click.group(context_settings=CONTEXT_SETTINGS)
-def command():
+    Compute yadism values for structure functions (given an external PDF set)
+    and compare with them.
+    """
     pass
 
 
-@command.command("runcards")
+@subcommand.command("runcards")
 def sub_runcards():
     """Generate yadism runcards.
 
@@ -21,7 +25,7 @@ def sub_runcards():
     runcards.main()
 
 
-@command.command("grids")
+@subcommand.command("grids")
 @click.argument("runcards", type=click.Path(exists=True, path_type=pathlib.Path))
 def sub_grids(runcards):
     """Generate grids with yadism.
@@ -38,7 +42,7 @@ def sub_grids(runcards):
     grids.main(runcards.absolute())
 
 
-@command.command("predictions")
+@subcommand.command("predictions")
 @click.argument("grids", type=click.Path(exists=True, path_type=pathlib.Path))
 @click.argument("pdf")
 @click.option(

@@ -2,10 +2,13 @@ import pathlib
 import tarfile
 import tempfile
 
+from . import load
 from .. import runcards, utils
 
 
 def observables() -> dict:
+    kins = load.kinematics()
+    __import__("pdb").set_trace()
     return {}
 
 
