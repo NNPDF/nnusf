@@ -7,8 +7,8 @@ import numpy as np
 import yaml
 import yadmark.data.observables
 
-from . import load, utils
-from .. import runcards
+from . import load
+from .. import runcards, utils
 
 
 def observables() -> dict:
