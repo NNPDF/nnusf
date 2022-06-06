@@ -23,7 +23,11 @@ ERR_DESC = {
 console = Console()
 
 # Mass determined using scikithep/particle for Pb208 in GeV
-M_LEAD_PB = 193.729
+M_NEUTRON = 939.565346 * 0.001
+M_PROTON = 938.272013 * 0.001
+A = 82 
+N = 208
+M_NUCLEON = 193.729 / ( A * M_PROTON + (N - A) * M_NEUTRON)
 
 
 def write_to_csv(path: Path, exp_name:str, file: pd.DataFrame) -> None:
@@ -169,9 +173,8 @@ def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list) -> None:
         for bin in range(len(indep_var_dic[0]["values"])):
             # ---- Extract only input kinematics ---- #
             y = indep_var_dic[0]["values"][bin]["value"]
-            # TODO: Double check the following kinematics again!!
             # According to the paper Q2 = 2*x*y*M_N*E_nu [GeV^2]
-            q2_value = 2 * dsignuu_x_value * y * M_LEAD_PB * dsignuu_Enu_value
+            q2_value = 2 * dsignuu_x_value * y * M_NUCLEON * dsignuu_Enu_value
             kin_dict = {
                 "x": {"min": None, "mid": dsignuu_x_value, "max": None},
                 "Q2": {"min": None, "mid": q2_value, "max": None},
