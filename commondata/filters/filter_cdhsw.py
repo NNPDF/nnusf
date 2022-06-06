@@ -21,8 +21,12 @@ ERR_DESC = {
 }
 
 console = Console()
-M_NUCLEON = 0.938 # GeV
-
+# Mass determined using Fe pdg values
+M_NEUTRON = 939.565346 * 0.001
+M_PROTON = 938.272013 * 0.001
+A = 26
+N = 56
+M_NUCLEON = 55.845 * 0.93149432 / ( A * M_PROTON + (N - A) * M_NEUTRON)
 
 def write_to_csv(path: Path, exp_name:str, file: pd.DataFrame) -> None:
     file.to_csv(f"{path}/{exp_name}.csv", encoding="utf-8")
