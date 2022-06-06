@@ -1,14 +1,10 @@
+# -*- coding: utf-8 -*-
 import copy
-import pathlib
-import tarfile
-import tempfile
 
 import numpy as np
-import yaml
 import yadmark.data.observables
 
 from . import load
-from .. import runcards, utils
 
 
 def observables() -> dict:
@@ -29,18 +25,7 @@ def observables() -> dict:
         )[0]
     )
     runcard["prDIS"] = "CC"
+    runcard["projectile"] = "neutrino"
     #  runcard["interpolation_xgrid"] = xgrid.tolist()
 
     return runcard
-
-
-def main():
-    with tempfile.TemporaryDirectory() as tmpdir:
-        tmpdir = pathlib.Path(tmpdir)
-
-        utils.write(runcards.theory(), tmpdir / "theory.yaml")
-        utils.write(observables(), tmpdir / "observables.yaml")
-
-        with tarfile.open(pathlib.Path.cwd() / "runcards.tar", "w") as tar:
-            for path in tmpdir.iterdir():
-                tar.add(path.absolute(), arcname="runcards/" + path.name)

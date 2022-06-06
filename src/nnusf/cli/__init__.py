@@ -1,3 +1,3 @@
+# -*- coding: utf-8 -*-
+from ..theory import cli
 from .base import command
-from ..bodek_yang import cli
-from ..highq import cli

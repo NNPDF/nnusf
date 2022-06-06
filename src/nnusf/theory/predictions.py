@@ -1,7 +1,8 @@
+# -*- coding: utf-8 -*-
 import logging
 import pathlib
-import tempfile
 import tarfile
+import tempfile
 
 import lhapdf
 import matplotlib.colors as clr
@@ -9,8 +10,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pineappl
 
-from . import load
 from .. import utils
+from .bodek_yang import load
 
 logger = logging.getLogger(__name__)
 

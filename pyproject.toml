@@ -29,6 +29,7 @@ nnu = "nnusf.cli:command"
 
 [tool.poe.tasks]
 by = "bygen"
+th = "nnu theory"
 
 [tool.pytest.ini_options]
 testpaths = ['tests/',]
