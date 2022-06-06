@@ -5,7 +5,7 @@ import tarfile
 
 import yadism
 
-from . import utils
+from .. import utils
 
 logger = logging.getLogger(__name__)
 

@@ -9,7 +9,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pineappl
 
-from . import load, utils
+from . import load
+from .. import utils
 
 logger = logging.getLogger(__name__)
 

@@ -8,13 +8,7 @@ import yaml
 import yadmark.data.observables
 
 from . import load, utils
-
-
-def theory() -> dict:
-    runcard = yaml.safe_load(
-        (utils.pkg / "theory_200.yaml").read_text(encoding="utf-8")
-    )
-    return runcard
+from .. import runcards
 
 
 def observables() -> dict:
@@ -44,7 +38,7 @@ def main():
     with tempfile.TemporaryDirectory() as tmpdir:
         tmpdir = pathlib.Path(tmpdir)
 
-        utils.write(theory(), tmpdir / "theory.yaml")
+        utils.write(runcards.theory(), tmpdir / "theory.yaml")
         utils.write(observables(), tmpdir / "observables.yaml")
 
         with tarfile.open(pathlib.Path.cwd() / "runcards.tar", "w") as tar:
