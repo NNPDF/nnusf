@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import yaml
+import numpy as np
 import pandas as pd
 
 from pathlib import Path
@@ -99,8 +100,19 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
                 if unc_type is None:
                     stat_unc, syst_unc = None, None
                 else:
-                    stat_unc = unc_type[0].get("symerror", None)
-                    syst_unc = unc_type[1].get("symerror", None)
+                    syst_unc = 0.0
+                    for unc in unc_type: 
+                        # stat
+                        if unc['label'] == 'stat':
+                            stat_unc = unc['symerror']
+                        if unc['label'] == 'sys':
+                            # asymmetric sys
+                            if 'asymerror' in unc: 
+                                syst_unc += np.abs([unc['asymerror']['plus'], unc['asymerror']['minus']]).max() ** 2
+                            # symmetric sys
+                            else:
+                                syst_unc += unc['symerror'] ** 2
+                    syst_unc = np.sqrt(syst_unc)
                 uncertainty_dic[uncertainty_names[idx]] = [stat_unc, syst_unc]
             error_dict_f2 = {
                 "stat": uncertainty_dic["f2_unc"][0],
