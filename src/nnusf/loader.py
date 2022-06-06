@@ -4,6 +4,13 @@ import numpy as np
 import pandas as pd
 
 
+OBS_TYPE = ["F2", "F3", "DXDYNUU", "DXDYNUB"]
+
+
+class ObsTypeError(Exception):
+    pass
+
+
 class Loader:
     """Load a dataset given the name and build the covariance matrix
 
@@ -21,6 +28,9 @@ class Loader:
     def __init__(
         self, path_to_commondata: pathlib.Path, data_name: str, data_type: str
     ) -> None:
+        if data_type not in OBS_TYPE:
+            raise ObsTypeError("Observable not implemented or Wrong!")
+
         self.path = path_to_commondata.joinpath("commondata")
         self.data_name = f"{data_name}_{data_type}"
 
