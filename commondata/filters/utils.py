@@ -20,7 +20,7 @@ def construct_uncertainties(full_obs_errors: list, ERR_DESC: dict) -> pd.DataFra
     errors_pandas_table.index.name = "index"
     return errors_pandas_table
 
-def build_obs_dict(fx, table, pid):
+def build_obs_dict(fx: str, table: list, pid: float) -> dict:
     return {
         "type": fx,
         "tables": table,
