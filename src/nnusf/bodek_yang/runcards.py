@@ -4,7 +4,6 @@ import tarfile
 import tempfile
 
 import numpy as np
-import yaml
 import yadmark.data.observables
 
 from . import load
@@ -29,6 +28,7 @@ def observables() -> dict:
         )[0]
     )
     runcard["prDIS"] = "CC"
+    runcard["projectile"] = "neutrino"
     #  runcard["interpolation_xgrid"] = xgrid.tolist()
 
     return runcard
