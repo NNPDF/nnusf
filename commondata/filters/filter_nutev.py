@@ -6,7 +6,7 @@ from pathlib import Path
 from rich.console import Console
 from rich.progress import track
 
-from utils import construct_uncertainties, dump_info_file, write_to_csv 
+from utils import construct_uncertainties, dump_info_file, write_to_csv, build_obs_dict
 
 ERR_DESC = {
     'stat': {
@@ -120,7 +120,7 @@ def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list, obs: str) 
             for bin in range(len(indep_var_dic[0]["values"])):
                 # ---- Extract only input kinematics ---- #
                 y = indep_var_dic[0]["values"][bin]["value"]
-                # Accordint to the paper, Q2=2M_p*x*y*E_nu
+                # According to the paper, Q2=2M_p*x*y*E_nu
                 q2_value = 2 * M_PROTON * dsig_x_value * y * dsig_E_value
                 kin_dict = {
                     "x": {"min": None, "mid": dsig_x_value, "max": None},
@@ -176,52 +176,28 @@ def extract_ratio_sig(path: Path, exp_name: str, table_id_list: list) -> None:
 if __name__ == "__main__":
     relative_path = Path().absolute().parents[0]
     experiment_name = "NUTEV"
-
+    target = 26
     obs_list = []
 
     # List of tables containing measurements for F2
     table_f2 = [i for i in range(1, 13)]
-    obs_list.append(
-        {
-            "type": "F2",
-            "tables": table_f2,
-            "projectile": 0
-        }
-    )
+    obs_list.append(build_obs_dict("F2", table_f2, 0))
     extract_sf(relative_path, experiment_name, table_f2, "F2")
 
     # List of tables containing measurements for xF3
     table_f3 = [i for i in range(13, 25)]
-    obs_list.append(
-        {
-            "type": "F3",
-            "tables": table_f3,
-            "projectile": 0
-        }
-    )
+    obs_list.append(build_obs_dict("F3", table_f3, 0))
     extract_sf(relative_path, experiment_name, table_f3, "F3")
 
     # List of tables containing measurements for D2SIG/DX/DY for NUMU + FE
     table_dsig_dxdynuu = [i for i in range(26, 93)]
-    obs_list.append(
-        {
-            "type": "dsig_dxdynuu", 
-            "tables": table_dsig_dxdynuu,
-            "projectile": 14
-        }
-    )
+    obs_list.append(build_obs_dict("DXDYNUU", table_dsig_dxdynuu, 14))
     extract_d2sigDxDy(relative_path, experiment_name, table_dsig_dxdynuu, "NUU")
 
     # List of tables containing measurements for D2SIG/DX/DY for NUBMU + FE
     table_dsig_dxdynub = [i for i in range(93, 160)]
-    obs_list.append(
-        {
-            "type": "dsig_dxdynub", 
-            "tables": table_dsig_dxdynub,
-            "projectile": -14
-        }
-    )
+    obs_list.append(build_obs_dict("DXDYNUB", table_dsig_dxdynub, -14))
     extract_d2sigDxDy(relative_path, experiment_name, table_dsig_dxdynub, "NUB")
 
     # dump info file
-    dump_info_file(relative_path, experiment_name, obs_list)
+    dump_info_file(relative_path, experiment_name, obs_list, target)

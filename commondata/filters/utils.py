@@ -20,10 +20,17 @@ def construct_uncertainties(full_obs_errors: list, ERR_DESC: dict) -> pd.DataFra
     errors_pandas_table.index.name = "index"
     return errors_pandas_table
 
+def build_obs_dict(fx, table, pid):
+    return {
+        "type": fx,
+        "tables": table,
+        "projectile": pid
+    }
 
-def dump_info_file(path : Path, exp_name : str, obs_list: list) -> None:
+
+def dump_info_file(path : Path, exp_name : str, obs_list: list, target=None) -> None:
     info_folder = path.joinpath("info")
     info_folder.mkdir(exist_ok=True)
     df = pd.DataFrame(obs_list)
+    df["target"] = target
     df.to_csv(f"{info_folder}/{exp_name}.csv", encoding="utf-8")
-
