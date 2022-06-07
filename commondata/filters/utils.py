@@ -2,11 +2,24 @@ import pandas as pd
 from pathlib import Path
 
 
+ERR_DESC = {
+    'stat': {
+        'treatment': "ADD",
+        'type': "UNCORR",
+        'description': "Total statistical uncertainty"
+    },
+    'syst': {
+        'treatment': "ADD",
+        'type': "CORR",
+        'description': "Total systematic uncertainty"
+    }
+}
+
 def write_to_csv(path: Path, exp_name:str, file: pd.DataFrame) -> None:
     file.to_csv(f"{path}/{exp_name}.csv", encoding="utf-8")
 
 
-def construct_uncertainties(full_obs_errors: list, ERR_DESC: dict) -> pd.DataFrame:
+def construct_uncertainties(full_obs_errors: list) -> pd.DataFrame:
     header_struct = pd.MultiIndex.from_tuples(
         [(k, v["treatment"], v["type"]) for k,v in ERR_DESC.items()],
         names=["name", "treatment", "type"]

@@ -9,13 +9,6 @@ from rich.progress import track
 
 from utils import construct_uncertainties, dump_info_file, write_to_csv, build_obs_dict
 
-ERR_DESC = {
-    'stat': {
-        'treatment': "ADD",
-        'type': "UNCORR",
-        'description': "Total systematic uncertainty"
-    }
-}
 
 console = Console()
 
@@ -72,16 +65,18 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
                 uncertainty_dic, uncertainty_names = {}, ["f2_unc", "f3_unc"]
                 for idx, unc_type in enumerate(uncertainties_sfs):
                     if unc_type is None:
-                        syst_unc = None
+                        stat_unc = 0.0
                     else:
-                        syst_unc = unc_type[0].get("symerror", None)
-                    uncertainty_dic[uncertainty_names[idx]] = syst_unc
+                        stat_unc = unc_type[0].get("symerror", 0.0)
+                    uncertainty_dic[uncertainty_names[idx]] = stat_unc
                 error_dict_f2 = {
-                    "syst": uncertainty_dic["f2_unc"]
+                    "stat": uncertainty_dic["f2_unc"],
+                    "syst": 0.0
                 }
                 f2_exp_errors.append(error_dict_f2)
                 error_dict_f3 = {
-                    "syst": uncertainty_dic["f3_unc"]
+                    "stat": uncertainty_dic["f3_unc"],
+                    "syst": 0.0
                 }
                 f3_exp_errors.append(error_dict_f3)
 
@@ -96,8 +91,8 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
     f3pd.index.name = "index"
 
     # Convert the error dictionaries into Pandas tables
-    f2_errors_pd = construct_uncertainties(f2_exp_errors, ERR_DESC)
-    f3_errors_pd = construct_uncertainties(f3_exp_errors, ERR_DESC)
+    f2_errors_pd = construct_uncertainties(f2_exp_errors)
+    f3_errors_pd = construct_uncertainties(f3_exp_errors)
 
     # Dump everything into files. In the following, F2 and xF3 lie on the central
     # values and errors share the same kinematic information and the difference.
@@ -157,12 +152,13 @@ def extract_qbar(path: Path, exp_name: str, table_id_list: list) -> None:
                 uncertainty_dic, uncertainty_names = {}, ["QBAR_unc"]
                 for idx, unc_type in enumerate(uncertainties_sfs):
                     if unc_type is None:
-                        syst_unc = None
+                        stat_unc = 0.0
                     else:
-                        syst_unc = unc_type[0].get("symerror", None)
-                    uncertainty_dic[uncertainty_names[idx]] = syst_unc
+                        stat_unc = unc_type[0].get("symerror", 0.0)
+                    uncertainty_dic[uncertainty_names[idx]] = stat_unc
                 error_dict_QBAR = {
-                    "syst": uncertainty_dic["QBAR_unc"]
+                    "stat": uncertainty_dic["QBAR_unc"],
+                    "syst": 0.0
                 }
                 QBAR_exp_errors.append(error_dict_QBAR)
 
@@ -175,7 +171,7 @@ def extract_qbar(path: Path, exp_name: str, table_id_list: list) -> None:
     QBARpd.index.name = "index"
 
     # Convert the error dictionaries into Pandas tables
-    QBAR_errors_pd = construct_uncertainties(QBAR_exp_errors, ERR_DESC)
+    QBAR_errors_pd = construct_uncertainties(QBAR_exp_errors)
 
     # Dump everything into files. In the following, F2 and xF3 lie on the central
     # values and errors share the same kinematic information and the difference.

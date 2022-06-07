@@ -9,19 +9,6 @@ from rich.progress import track
 
 from utils import construct_uncertainties, dump_info_file, write_to_csv, build_obs_dict
 
-ERR_DESC = {
-    'stat': {
-        'treatment': "ADD",
-        'type': "UNCORR",
-        'description': "Total statistical uncertainty"
-    },
-    'syst': {
-        'treatment': "ADD",
-        'type': "CORR",
-        'description': "Total systematic uncertainty"
-    }
-}
-
 console = Console()
 
 
@@ -75,10 +62,10 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
             uncertainty_dic, uncertainty_names = {}, ["f2_unc", "f3_unc"]
             for idx, unc_type in enumerate(uncertainties_sfs):
                 if unc_type is None:
-                    stat_unc, syst_unc = None, None
+                    stat_unc, syst_unc = 0.0, 0.0
                 else:
-                    stat_unc = unc_type[0].get("symerror", None)
-                    syst_unc = unc_type[1].get("symerror", None)
+                    stat_unc = unc_type[0].get("symerror",  0.0)
+                    syst_unc = unc_type[1].get("symerror",  0.0)
                 uncertainty_dic[uncertainty_names[idx]] = [stat_unc, syst_unc]
             error_dict_f2 = {
                 "stat": uncertainty_dic["f2_unc"][0],
@@ -102,8 +89,8 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
     f3pd.index.name = "index"
 
     # Convert the error dictionaries into Pandas tables
-    f2_errors_pd = construct_uncertainties(f2_exp_errors, ERR_DESC)
-    f3_errors_pd = construct_uncertainties(f3_exp_errors, ERR_DESC)
+    f2_errors_pd = construct_uncertainties(f2_exp_errors)
+    f3_errors_pd = construct_uncertainties(f3_exp_errors)
 
     # Dump everything into files. In the following, F2 and xF3 lie on the central
     # values and errors share the same kinematic information and the difference.

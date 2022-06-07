@@ -8,19 +8,6 @@ from rich.progress import track
 
 from utils import construct_uncertainties, dump_info_file, write_to_csv, build_obs_dict
 
-ERR_DESC = {
-    'stat': {
-        'treatment': "ADD",
-        'type': "UNCORR",
-        'description': "Total statistical uncertainty"
-    },
-    'syst': {
-        'treatment': "ADD",
-        'type': "CORR",
-        'description': "Total systematic uncertainty"
-    }
-}
-
 console = Console()
 M_PROTON = 0.938 # GeV
 
@@ -78,7 +65,7 @@ def extract_sf(path: Path, exp_name: str, table_id_list: list, sfunc: str) -> No
     f2pd.index.name = "index"
 
     # Convert the error dictionaries into Pandas tables
-    f2_errors_pd = construct_uncertainties(f2_exp_errors, ERR_DESC) 
+    f2_errors_pd = construct_uncertainties(f2_exp_errors) 
 
     # Dump everything into files. In the following, F2 and xF3 lie on the central
     # values and errors share the same kinematic information and the difference.
@@ -131,7 +118,7 @@ def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list, obs: str) 
                 # ---- Extract central values for SF ---- #
                 unc_type = dsig_dx_dy["values"][bin].get("errors", None)
                 if unc_type is None: 
-                    stat_unc, syst_unc = None, None
+                    stat_unc, syst_unc = 0.0, 0.0
                 else:
                     stat_unc = unc_type[0]["symerror"]
                     syst_unc = unc_type[1]["symerror"]
@@ -148,7 +135,7 @@ def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list, obs: str) 
     dnuupd.index.name = "index"
 
     # Convert the error dictionaries into Pandas tables
-    dsignuu_errors_pd = construct_uncertainties(dsig_nu_errors, ERR_DESC) 
+    dsignuu_errors_pd = construct_uncertainties(dsig_nu_errors) 
 
     # Dump everything into files. In the following, F2 and xF3 lie on the central
     # values and errors share the same kinematic information and the difference.

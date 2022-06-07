@@ -9,19 +9,6 @@ from rich.progress import track
 
 from utils import construct_uncertainties, dump_info_file, write_to_csv, build_obs_dict
 
-ERR_DESC = {
-    'stat': {
-        'treatment': "ADD",
-        'type': "UNCORR",
-        'description': None
-    },
-    'syst': {
-        'treatment': "ADD",
-        'type': "CORR",
-        'description': "Total systematic uncertainty"
-    }
-}
-
 console = Console()
 
 def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
@@ -79,7 +66,7 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
                 raise ValueError("The systematics need to be taken in Quadrature.")
             error_dict_f2 = {
                 "stat": dep_var_f2dic["values"][bin]["errors"][0]["symerror"],
-                "syst": (f2_value * f2_sys) / 100 if f2_sys is not None else None
+                "syst": (f2_value * f2_sys) / 100 if f2_sys is not None else 0.0
             }
             f2_exp_errors.append(error_dict_f2)
 
@@ -93,7 +80,7 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
                 raise ValueError("The systematics need to be taken in Quadrature.")
             error_dict_f3 = {
                 "stat": dep_var_f3dic["values"][bin]["errors"][0]["symerror"],
-                "syst": (f3_value * f3_sys) / 100 if f3_sys is not None else None
+                "syst": (f3_value * f3_sys) / 100 if f3_sys is not None else 0.0
             }
             f3_exp_errors.append(error_dict_f3)
 
@@ -108,8 +95,8 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
     f3pd.index.name = "index"
 
     # Convert the error dictionaries into Pandas tables
-    f2_errors_pd = construct_uncertainties(f2_exp_errors, ERR_DESC) 
-    f3_errors_pd = construct_uncertainties(f3_exp_errors, ERR_DESC)
+    f2_errors_pd = construct_uncertainties(f2_exp_errors) 
+    f3_errors_pd = construct_uncertainties(f3_exp_errors)
 
     # Dump everything into files. In the following, F2 and xF3 lie on the central
     # values and errors share the same kinematic information and the difference.
