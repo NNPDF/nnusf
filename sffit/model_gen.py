@@ -1,5 +1,5 @@
-import tensorflow as tf
 from tensorflow.keras import layers
+import tensorflow as tf
 import numpy as np
 import random
 
@@ -11,7 +11,7 @@ log = logging.getLogger(__name__)
 coloredlogs.install(level=logging.INFO, logger=log)
 
 
-################################ LOAD MOCK DATA ################################
+################################ PREPARE DATA ################################
 
 ndat = temp_data.ndat
 
@@ -36,7 +36,8 @@ vl_theory_grid = input_theory_grid[~tr_filter]
 
 
 # get inverse covariance matrix
-input_invcovmat = np.linalg.inv(temp_data.input_covmat)
+input_covmat = temp_data.input_covmat
+input_invcovmat = np.linalg.inv(input_covmat)
 tr_invcovmat = input_invcovmat[tr_filter][:, tr_filter]
 vl_invcovmat = input_invcovmat[~tr_filter][:, ~tr_filter]
 
@@ -45,6 +46,12 @@ input_central_values = temp_data.input_central_values
 tr_central_values = input_central_values[tr_filter]
 vl_central_values = input_central_values[~tr_filter]
 
+# generate pseudodata
+cholesky = np.linalg.cholesky(input_covmat)
+random_samples = np.random.randn(ndat)
+pseudodata = input_central_values + cholesky @ random_samples
+tr_pseudodata = pseudodata[tr_filter]
+vl_pseudodata = pseudodata[~tr_filter]
 
 # define the output basis of the sf parametrization
 output_basis = np.array(["fl", "f2", "f3", "flbar", "2bar", "f3bar"])
@@ -84,11 +91,12 @@ class Observable(layers.Layer):
         aa = tf.tensordot(distance[0, :], self.invcovmat, axes=1)
         chi2 = tf.tensordot(aa, distance[0, :], axes=1)
         ndat = self.theory_grid.shape[0]
+        tf.print(ndat)
         return chi2 / ndat
 
 
-tr_layer = Observable(tr_theory_grid, tr_invcovmat, tr_central_values)
-vl_layer = Observable(vl_theory_grid, vl_invcovmat, vl_central_values)
+tr_layer = Observable(tr_theory_grid, tr_invcovmat, tr_pseudodata)
+vl_layer = Observable(vl_theory_grid, vl_invcovmat, vl_pseudodata)
 
 tr_output = tr_layer(sf_basis)
 vl_output = vl_layer(sf_basis)
@@ -106,6 +114,7 @@ def custom_loss(y_true, y_pred):
 tr_model.compile(optimizer="Adadelta", loss=custom_loss)
 vl_model.compile(optimizer="Adam", loss=custom_loss)
 
+
 ########################### EARLY STOPPING CALLBACKS ###########################
 class EarlyStopping(tf.keras.callbacks.Callback):
     def __init__(self, vl_model, patience_epochs, vl_kinematics_array, y):
@@ -119,8 +128,10 @@ class EarlyStopping(tf.keras.callbacks.Callback):
         self.best_weights = None
 
     def on_epoch_end(self, epoch, logs=None):
-        chi2 = self.vl_model.evaluate(self.vl_kinematics_array, self.y, verbose=0)
-        if self.best_chi2==None or chi2<self.best_chi2:
+        chi2 = self.vl_model.evaluate(
+            self.vl_kinematics_array, self.y, verbose=0
+        )
+        if self.best_chi2 == None or chi2 < self.best_chi2:
             self.best_chi2 = chi2
             self.best_epoch = epoch
             self.best_weights = self.model.get_weights()
@@ -142,13 +153,15 @@ tr_kinematics_array = tf.expand_dims(tr_kinematics_array, axis=0)
 vl_kinematics_array = tf.expand_dims(vl_kinematics_array, axis=0)
 
 patience_epochs = int(temp_data.patience * temp_data.max_epochs)
-early_stopping_callback = EarlyStopping(vl_model, patience_epochs, vl_kinematics_array, y)
+early_stopping_callback = EarlyStopping(
+    vl_model, patience_epochs, vl_kinematics_array, y
+)
 
 tr_model.fit(
     tr_kinematics_array,
     y,
     epochs=temp_data.max_epochs,
-    verbose=0,
+    verbose=2,
     callbacks=[early_stopping_callback],
 )
 
