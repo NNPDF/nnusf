@@ -129,11 +129,12 @@ def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list, obs: str) 
                 }
                 kinematics.append(kin_dict)
                 # ---- Extract central values for SF ---- #
-                unc_type = dsig_dx_dy["values"][bin].get("error", None)
-                if unc_type is None: stat_unc, syst_unc = None, None
+                unc_type = dsig_dx_dy["values"][bin].get("errors", None)
+                if unc_type is None: 
+                    stat_unc, syst_unc = None, None
                 else:
-                    stat_unc = unc_type[0].get("symerror", None)
-                    syst_unc = unc_type[1].get("symerror", None)
+                    stat_unc = unc_type[0]["symerror"]
+                    syst_unc = unc_type[1]["symerror"]
                 error_dict_1stentry = {"stat": stat_unc, "syst": syst_unc}
                 dsig_nu_errors.append(error_dict_1stentry)
 
