@@ -76,7 +76,7 @@ class Loader:
     @property
     def kinematics(self) -> tuple:
         """Returns the kinematics variables"""
-        return self.kin_df["x"], self.kin_df["Q2"], self.kin_df["A"]
+        return self.kin_df["x"].values, self.kin_df["Q2"].values, self.kin_df["A"].values
 
     @property
     def central_values(self) -> np.ndarray:
