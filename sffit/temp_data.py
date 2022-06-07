@@ -1,16 +1,26 @@
 import numpy as np
 
-ndat = 120
+# LOAD USING NNUSF COMMONDATA
+from nnusf.loader import Loader
 
-input_central_values = np.random.rand(ndat)
+import pathlib
+here = pathlib.Path(__file__).parents[1]
+data = Loader(here, "NUTEV", "F2")
 
-input_Q2 = np.random.rand(ndat)*5
-input_x = np.random.rand(ndat)
-input_A = np.random.randint(low=1, high=100, size=(ndat))
+input_central_values = data.central_values.to_numpy()
+
+input_x = data.kinematics[0]
+input_Q2 = data.kinematics[1]
+input_A = data.kinematics[2]
 input_kinematics_array = np.vstack((input_x, input_Q2, input_A)).T
 
-input_covmat = np.random.rand(ndat,ndat)
+input_covmat = data.covmat
 
+
+# MANUALLY ENTERED DATA
+
+ndat = input_central_values.size
 input_theory_grid = np.array([[1,0,0,0,0,0] for _ in input_central_values])
-
 tr_ratio = 0.75
+max_epochs = 200000
+patience = 0.1
