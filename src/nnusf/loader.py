@@ -18,6 +18,8 @@ class Loader:
     ----------
     path_to_commondata:
         path to commondata folder
+    path_to_theory: 
+        path to theory folder
     data_name:
         dataset name
     data_type: str
@@ -26,15 +28,16 @@ class Loader:
     """
 
     def __init__(
-        self, path_to_commondata: pathlib.Path, data_name: str, data_type: str
+        self, path_to_commondata: pathlib.Path, path_to_theory: pathlib.Path, data_name: str, data_type: str
     ) -> None:
         if data_type not in OBS_TYPE:
             raise ObsTypeError("Observable not implemented or Wrong!")
 
-        self.path = path_to_commondata.joinpath("commondata")
+        self.commondata_path = path_to_commondata
+        self.theory_path = path_to_theory
         self.data_name = f"{data_name}_{data_type}"
 
-        self.kin_df, self.data_df, unc_df = self.load()
+        self.kin_df, self.data_df, unc_df, self.coeff_array = self.load()
         self.covariance_matrix = self.build_covariance_matrix(unc_df)
 
     def load(self) -> tuple:
@@ -71,7 +74,9 @@ class Loader:
         unc_df = pd.read_csv(f"{self.path}/uncertainties/UNC_{self.data_name}.csv")[
             2:
         ].astype(float)
-        return kin_df, data_df, unc_df
+
+        coeff_array = np.load(f"{self.theory_path}/coefficients/{self.data_name}.npy")
+        return kin_df, data_df, unc_df, coeff_array
 
     @property
     def kinematics(self) -> tuple:
@@ -81,12 +86,17 @@ class Loader:
     @property
     def central_values(self) -> np.ndarray:
         """Returns the dataset central values"""
-        return self.data_df["data"]
+        return self.data_df["data"].values
 
     @property
     def covmat(self) -> np.ndarray:
         """Returns the covariance matrix"""
         return self.covariance_matrix
+    
+    @property
+    def coefficients(self) -> np.ndarray:
+        """Returns the coefficients prediction"""
+        return self.coeff_array
 
     @staticmethod
     def build_covariance_matrix(unc_df: pd.DataFrame) -> np.ndarray:
