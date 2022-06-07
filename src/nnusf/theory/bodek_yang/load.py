@@ -39,7 +39,7 @@ class Data:
 
 @functools.cache
 def load() -> Data:
-    genie = h5py.File(utils.pkg / "genie.hdf5", "r")
+    genie = h5py.File(utils.pkg / "theory" / "assets" / "genie.hdf5", "r")
 
     return Data(genie)
 

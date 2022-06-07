@@ -11,7 +11,9 @@ from . import bodek_yang, highq
 
 def theory() -> dict:
     runcard = yaml.safe_load(
-        (utils.pkg / "theory_200.yaml").read_text(encoding="utf-8")
+        (utils.pkg / "theory" / "assets" / "theory_200.yaml").read_text(
+            encoding="utf-8"
+        )
     )
     return runcard
 
