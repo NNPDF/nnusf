@@ -129,4 +129,4 @@ class Loader:
         """
         diagonal = np.power(unc_df["stat"], 2)
         corr_sys = unc_df["syst"]
-        return np.diag(diagonal) + corr_sys @ corr_sys.T
+        return np.diag(diagonal) + np.outer(corr_sys, corr_sys)
