@@ -62,14 +62,14 @@ class Loader:
         """
         # info file
         exp_name = self.data_name.split("_")[0]
-        info_df = pd.read_csv(f"{self.path}/info/{exp_name}.csv")
+        info_df = pd.read_csv(f"{self.commondata_path}/info/{exp_name}.csv")
 
         # kinematic file
-        kin_file = self.path.joinpath(f"kinematics/KIN_{self.data_name}.csv")
+        kin_file = self.commondata_path.joinpath(f"kinematics/KIN_{self.data_name}.csv")
         if kin_file.exists():
             kin_df = pd.read_csv(kin_file)[1:].astype(float)
         else:
-            kin_df = pd.read_csv(f"{self.path}/kinematics/KIN_{exp_name}_F2F3.csv")[
+            kin_df = pd.read_csv(f"{self.commondata_path}/kinematics/KIN_{exp_name}_F2F3.csv")[
                 1:
             ].astype(float)
         kin_df["A"] = np.full(kin_df.shape[0], info_df["target"][0])
@@ -83,13 +83,14 @@ class Loader:
 
         # central values and uncertainties
         data_df = pd.read_csv(
-            f"{self.path}/data/DATA_{self.data_name}.csv", header=0, dtype=float
+            f"{self.commondata_path}/data/DATA_{self.data_name}.csv", header=0, dtype=float
         )
-        unc_df = pd.read_csv(f"{self.path}/uncertainties/UNC_{self.data_name}.csv")[
+        unc_df = pd.read_csv(f"{self.commondata_path}/uncertainties/UNC_{self.data_name}.csv")[
             2:
         ].astype(float)
 
-        coeff_array = np.load(f"{self.theory_path}/coefficients/{self.data_name}.npy")
+        # coeff_array = np.load(f"{self.theory_path}/coefficients/{self.data_name}.npy")
+        coeff_array = None
         return kin_df, data_df, unc_df, coeff_array
 
     @property

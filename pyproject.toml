@@ -26,13 +26,14 @@ pdbpp = "^0.10.3"
 
 [tool.poetry.scripts]
 nnu = "nnusf.cli:command"
+cmb = "nnusf.cli.combine_tables:main"
 
 [tool.poe.tasks]
 by = "bygen"
 th = "nnu theory"
 
 [tool.pytest.ini_options]
-testpaths = ['tests/',]
+testpaths = ['tests/']
 python_files = ['test_*.py', 'benchmark_*.py', 'regression.py']
 python_classes = ['Test*']
 python_functions = ['test_*']
