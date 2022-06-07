@@ -1,5 +1,5 @@
 import pathlib
-from nnusf.loader import Loader
+from nnusf.data.loader import Loader
 
 path_to_commondata = pathlib.Path(__file__).parents[1].joinpath("commondata")
 path_to_theory = pathlib.Path(__file__).parents[1].joinpath("theory")

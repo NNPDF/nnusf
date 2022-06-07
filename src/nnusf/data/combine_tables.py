@@ -1,7 +1,7 @@
 import pandas as pd
 
 from pathlib import Path
-from nnusf.loader import Loader
+from nnusf.data.loader import Loader
 from rich.console import Console
 
 
