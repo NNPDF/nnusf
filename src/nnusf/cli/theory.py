@@ -3,8 +3,8 @@ import pathlib
 
 import click
 
-from ..cli import base
-from . import grids, predictions, runcards
+from ..theory import grids, predictions, runcards
+from . import base
 
 
 @base.command.group("theory")
