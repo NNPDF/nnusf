@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
+from pathlib import Path
+
 import pandas as pd
 
-from pathlib import Path
-from nnusf.loader import Loader
+from .loader import Loader
 
 ABS_PATH = Path(__file__).parents[3]
 DATA_PATH = ABS_PATH.joinpath("commondata")
@@ -31,7 +33,9 @@ def combine_tables(dataset_names: list[str]) -> None:
             print(dataset, obs)
             load_class = Loader(DATA_PATH, THEORY_PATH, dataset, obs)
             values = load_class.load()[0]
-            import pdb; pdb.set_trace()
+            import pdb
+
+            pdb.set_trace()
             # combined_tables.append(load_class.load()[0])
     concatenated_tables = pd.concat(combined_tables)
     concatenated_tables.to_csv(DATA_PATH / "combined_tables.csv")
