@@ -55,7 +55,8 @@ def sub_grids(runcards):
     type=click.Choice(["pdf", "theory"], case_sensitive=False),
     default="theory",
 )
-def sub_predictions(grids, pdf, err):
+@click.option("-x", type=int, default=None)
+def sub_predictions(grids, pdf, err, x):
     """Generate predictions from yadism grids.
 
     GRIDS is a path to folder (or tar folder) containing the grids, one per
@@ -63,4 +64,7 @@ def sub_predictions(grids, pdf, err):
     PDF is the pdf to be convoluted with the grids, in order to obtain the
     structure functions predictions.
     """
-    predictions.main(grids.absolute(), pdf, err=err)
+    if x is None:
+        predictions.main(grids.absolute(), pdf, err=err)
+    else:
+        predictions.main(grids.absolute(), pdf, err=err, xpoint=x)

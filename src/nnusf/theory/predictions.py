@@ -16,7 +16,7 @@ from .bodek_yang import load
 logger = logging.getLogger(__name__)
 
 
-def main(grids: pathlib.Path, pdf: str, err: str = "theory"):
+def main(grids: pathlib.Path, pdf: str, err: str = "theory", xpoint: int = 20):
     with tempfile.TemporaryDirectory() as tmpdir:
         tmpdir = pathlib.Path(tmpdir).absolute()
 
@@ -33,7 +33,6 @@ def main(grids: pathlib.Path, pdf: str, err: str = "theory"):
         gmask = load.mask()
 
         prescr = utils.nine_points
-        xpoint = 10
 
         for gpath in grids.iterdir():
             if "pineappl" not in gpath.name:
