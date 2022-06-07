@@ -1,0 +1,22 @@
+#
+# Configuration file for nnufit
+#
+############################################################
+description: A first trial fit with nnufit
+
+experiments:
+- {dataset: NUTEV, frac: 0.75}
+- {dataset: CHORUS, frac: 0.75}
+
+trvlseed: 1
+pseudodataseed: 1
+
+model_parameters:
+  epochs: 17000
+  stopping_patience: 0.1
+  nodes_per_layer: [25, 20, 6]
+  activation_per_layer: [tanh, tanh, linear]
+  optimizer:
+    clipnorm: 1e-5
+    learning_rate: 1e-3
+    optimizer_name: Adam

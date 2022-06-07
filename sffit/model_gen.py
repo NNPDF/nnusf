@@ -49,7 +49,7 @@ vl_central_values = input_central_values[~tr_filter]
 # generate pseudodata
 cholesky = np.linalg.cholesky(input_covmat)
 random_samples = np.random.randn(ndat)
-pseudodata = input_central_values + cholesky @ random_samples
+pseudodata = input_central_values + random_samples @ cholesky
 tr_pseudodata = pseudodata[tr_filter]
 vl_pseudodata = pseudodata[~tr_filter]
 
@@ -67,12 +67,16 @@ layer_input = layers.Input(
 )  # (None,3) is (ndat,3)
 
 # Create 3 layers
-layer1 = layers.Dense(20, activation="relu")
-layer2 = layers.Dense(10, activation="relu")
-layer3 = layers.Dense(output_nodes, name="SF_output")
+layer1 = layers.Dense(10, activation="tanh")
+layer2 = layers.Dense(10, activation="tanh")
+layer3 = layers.Dense(10, activation="tanh")
+layer4 = layers.Dense(10, activation="tanh")
+layer5 = layers.Dense(10, activation="tanh")
+layer6 = layers.Dense(10, activation="tanh")
+layer7 = layers.Dense(output_nodes, activation="linear", name="SF_output")
 
 # Connect the layers forming the sf parametrization model
-sf_basis = layer3(layer2(layer1(layer_input)))
+sf_basis = layer7(layer6(layer5(layer4(layer3(layer2(layer1(layer_input)))))))
 
 
 ############################# ADD TR/VL CHI2 LAYERS ############################
@@ -88,10 +92,10 @@ class Observable(layers.Layer):
     def call(self, input):
         predictions = tf.einsum("ijk,jk->ij", input, self.theory_grid)
         distance = predictions - self.experimental_central_value
-        aa = tf.tensordot(distance[0, :], self.invcovmat, axes=1)
-        chi2 = tf.tensordot(aa, distance[0, :], axes=1)
+        tmp_dot = tf.tensordot(self.invcovmat, distance[0, :], axes=1)
+        chi2 = tf.tensordot(distance[0, :], tmp_dot, axes=1)
         ndat = self.theory_grid.shape[0]
-        tf.print(ndat)
+        tf.print(tf.math.reduce_mean(distance))
         return chi2 / ndat
 
 
@@ -107,11 +111,14 @@ vl_model = tf.keras.Model(inputs=layer_input, outputs=vl_output)
 
 
 def custom_loss(y_true, y_pred):
-    "Model prediction is the chi2, so we just need to minimize the sum"
-    return tf.keras.backend.sum(y_pred)
+    "Model prediction is the chi2"
+    del y_true
+    return y_pred
 
 
-tr_model.compile(optimizer="Adadelta", loss=custom_loss)
+opt = tf.keras.optimizers.Adam()
+
+tr_model.compile(optimizer=opt, loss=custom_loss)
 vl_model.compile(optimizer="Adam", loss=custom_loss)
 
 
@@ -157,6 +164,7 @@ early_stopping_callback = EarlyStopping(
     vl_model, patience_epochs, vl_kinematics_array, y
 )
 
+
 tr_model.fit(
     tr_kinematics_array,
     y,
@@ -172,16 +180,6 @@ tr_model.fit(
 model_sf = tf.keras.Model(
     inputs=tr_model.input, outputs=tr_model.get_layer("SF_output").output
 )
-input_grid_to_store = tf.random.uniform(shape=(batch_size, ndat, 3))
-tr_grid_to_be_stored = model_sf.predict(input_grid_to_store)
 
-model_sf = tf.keras.Model(
-    inputs=vl_model.input, outputs=vl_model.get_layer("SF_output").output
-)
-vl_grid_to_be_stored = model_sf.predict(input_grid_to_store)
-
-tr_vl_pred_agree = (tr_grid_to_be_stored == vl_grid_to_be_stored).all()
-if not tr_vl_pred_agree:
-    log.warning(
-        f"predicted sfs of training and validation are the same: {tr_vl_pred_agree}"
-    )
+tr_grid_to_be_stored = model_sf.predict(input_kinematics_array)
+tr_only_f2_for_benchmarking = model_sf.predict(tr_kinematics_array)[:, :, 0]
