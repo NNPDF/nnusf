@@ -6,6 +6,12 @@ import pandas as pd
 
 OBS_TYPE = ["F2", "F3", "DXDYNUU", "DXDYNUB"]
 
+MAP_EXP_YADISM = {
+    "NUTEV": "XSNUTEVCC",
+    "CHORUS": "XSCHORUSCC",
+    "CDHSW": "XSCHORUSCC"
+}
+
 
 class ObsTypeError(Exception):
     pass
@@ -35,6 +41,7 @@ class Loader:
 
         self.commondata_path = path_to_commondata
         self.theory_path = path_to_theory
+        self.data_type = data_type
         self.data_name = f"{data_name}_{data_type}"
 
         self.kin_df, self.data_df, unc_df, self.coeff_array = self.load()
@@ -55,27 +62,35 @@ class Loader:
         """
         # info file
         exp_name = self.data_name.split("_")[0]
-        info_df = pd.read_csv(f"{self.path}/info/{exp_name}.csv")
+        info_df = pd.read_csv(f"{self.commondata_path}/info/{exp_name}.csv")
 
         # kinematic file
-        kin_file = self.path.joinpath(f"kinematics/KIN_{self.data_name}.csv")
+        kin_file = self.commondata_path.joinpath(f"kinematics/KIN_{self.data_name}.csv")
         if kin_file.exists():
             kin_df = pd.read_csv(kin_file)[1:].astype(float)
         else:
-            kin_df = pd.read_csv(f"{self.path}/kinematics/KIN_{exp_name}_F2F3.csv")[
+            kin_df = pd.read_csv(f"{self.commondata_path}/kinematics/KIN_{exp_name}_F2F3.csv")[
                 1:
             ].astype(float)
         kin_df["A"] = np.full(kin_df.shape[0], info_df["target"][0])
+        kin_df["Obs"] = kin_df.shape[0] * [self.data_type]
+        kin_df["projectile"] = np.full(kin_df.shape[0], info_df["projectile"][0])
+        if self.data_type in ["DXDYNUU", "DXDYNUB"]:
+            data_spec = MAP_EXP_YADISM[self.data_name.split("_")[0]]
+        else:
+            data_spec = None
+        kin_df["xsec"] = kin_df.shape[0] * [data_spec]
 
         # central values and uncertainties
         data_df = pd.read_csv(
-            f"{self.path}/data/DATA_{self.data_name}.csv", header=0, dtype=float
+            f"{self.commondata_path}/data/DATA_{self.data_name}.csv", header=0, dtype=float
         )
-        unc_df = pd.read_csv(f"{self.path}/uncertainties/UNC_{self.data_name}.csv")[
+        unc_df = pd.read_csv(f"{self.commondata_path}/uncertainties/UNC_{self.data_name}.csv")[
             2:
         ].astype(float)
 
-        coeff_array = np.load(f"{self.theory_path}/coefficients/{self.data_name}.npy")
+        # coeff_array = np.load(f"{self.theory_path}/coefficients/{self.data_name}.npy")
+        coeff_array = None
         return kin_df, data_df, unc_df, coeff_array
 
     @property
@@ -114,4 +129,4 @@ class Loader:
         """
         diagonal = np.power(unc_df["stat"], 2)
         corr_sys = unc_df["syst"]
-        return np.diag(diagonal) + corr_sys @ corr_sys.T
+        return np.diag(diagonal) + np.outer(corr_sys, corr_sys)

@@ -28,4 +28,4 @@ def observables() -> dict:
     runcard["projectile"] = "neutrino"
     #  runcard["interpolation_xgrid"] = xgrid.tolist()
 
-    return runcard
+    return {"bodek-yang": runcard}
