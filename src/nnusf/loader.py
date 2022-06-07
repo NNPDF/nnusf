@@ -6,6 +6,12 @@ import pandas as pd
 
 OBS_TYPE = ["F2", "F3", "DXDYNUU", "DXDYNUB"]
 
+MAP_EXP_YADISM = {
+    "NUTEV": "XSNUTEVCC",
+    "CHORUS": "XSCHORUSCC",
+    "CDHSW": "XSCHORUSCC"
+}
+
 
 class ObsTypeError(Exception):
     pass
@@ -35,6 +41,7 @@ class Loader:
 
         self.commondata_path = path_to_commondata
         self.theory_path = path_to_theory
+        self.data_type = data_type
         self.data_name = f"{data_name}_{data_type}"
 
         self.kin_df, self.data_df, unc_df, self.coeff_array = self.load()
@@ -66,6 +73,13 @@ class Loader:
                 1:
             ].astype(float)
         kin_df["A"] = np.full(kin_df.shape[0], info_df["target"][0])
+        kin_df["Obs"] = kin_df.shape[0] * [self.data_type]
+        kin_df["projectile"] = np.full(kin_df.shape[0], info_df["projectile"][0])
+        if self.data_type in ["DXDYNUU", "DXDYNUB"]:
+            data_spec = MAP_EXP_YADISM[self.data_name.split("_")[0]]
+        else:
+            data_spec = None
+        kin_df["xsec"] = kin_df.shape[0] * [data_spec]
 
         # central values and uncertainties
         data_df = pd.read_csv(
