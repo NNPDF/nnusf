@@ -44,7 +44,7 @@ class Loader:
         self.data_type = data_type
         self.data_name = f"{data_name}_{data_type}"
         self.fulltables = self.load()
-        # self.covariance_matrix = self.build_covariance_matrix(self.fulltables)
+        self.covariance_matrix = self.build_covariance_matrix(self.fulltables)
 
     def load(self) -> pd.DataFrame:
         """Load the dataset information
