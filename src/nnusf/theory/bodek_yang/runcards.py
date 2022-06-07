@@ -14,7 +14,7 @@ def observables() -> dict:
         (q2grid.size * xgrid.size, 2)
     )
     kinematics = [
-        dict(zip(("x", "Q2", "y"), [float(k) for k in (*kin, 0)])) for kin in kinematics
+        dict(zip(("Q2", "x", "y"), [float(k) for k in (*kin, 0)])) for kin in kinematics
     ]
 
     runcard = copy.deepcopy(yadmark.data.observables.default_card)
