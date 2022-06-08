@@ -1,8 +1,11 @@
+# -*- coding: utf-8 -*-
+import logging
 import pathlib
 
 import numpy as np
 import pandas as pd
 
+_logger = logging.getLogger(__name__)
 
 OBS_TYPE = ["F2", "F3", "FW", "DXDYNUU", "DXDYNUB", "QBAR"]
 
@@ -45,6 +48,8 @@ class Loader:
         self.theory_path = path_to_theory
         self.fulltables = self.load()
         self.covariance_matrix = self.build_covariance_matrix(self.fulltables)
+
+        _logger.info(f"Loaded '{data_name}' dataset")
 
     def load(self) -> pd.DataFrame:
         """Load the dataset information
