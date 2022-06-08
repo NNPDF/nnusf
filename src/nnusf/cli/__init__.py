@@ -1,3 +1,3 @@
 # -*- coding: utf-8 -*-
-from . import data, theory
+from . import data, log, theory
 from .base import command

@@ -106,11 +106,9 @@ def main(datapaths: list[pathlib.Path], destination: pathlib.Path):
         try:
             coeffs = coefficients(name, datapath=dataset.parents[1])
         except MissingRequisite as exc:
-            _logger.info(f"\t  {exc.args[0]}")
+            _logger.error(f"{exc.args[0]}")
             continue
 
         dest = (destination / name).with_suffix(".npy")
         np.save(dest, coeffs)
-        _logger.info(
-            f"\t  {coeffs.shape} saved in {dest.relative_to(pathlib.Path.cwd())}"
-        )
+        _logger.info(f"{coeffs.shape} saved in {dest.relative_to(pathlib.Path.cwd())}")
