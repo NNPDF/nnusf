@@ -63,7 +63,9 @@ class Loader:
         if kin_file.exists():
             kin_df = pd.read_csv(kin_file).iloc[1:, :3]
         else:
-            kin_df = pd.read_csv(f"{self.commondata_path}/kinematics/KIN_{exp_name}_F2F3.csv").iloc[1:, :3]
+            kin_df = pd.read_csv(
+                f"{self.commondata_path}/kinematics/KIN_{exp_name}_F2F3.csv"
+            ).iloc[1:, :3]
 
         # Extract values from the central and uncertainties
         data_df = pd.read_csv(
@@ -81,7 +83,7 @@ class Loader:
         new_df = new_df.dropna().astype(float)
 
         # drop data with 0 total uncertainty:
-        new_df = new_df[ new_df['stat'] + new_df['syst'] != 0.0 ]
+        new_df = new_df[new_df["stat"] + new_df["syst"] != 0.0]
 
         number_datapoints = new_df.shape[0]
 
