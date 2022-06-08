@@ -11,7 +11,7 @@ def load_experimental_data(experiment_list):
     "returns a dictionary with dataset names as keys and data as value"
     experimental_data = {}
     for experiment in experiment_list:
-        data = Loader(path_to_commondata, path_to_theory, experiment['dataset'])
+        data = Loader(experiment['dataset'], path_to_commondata, path_to_theory)
         data.tr_frac = experiment['frac']
         experimental_data[experiment['dataset']] = data
     return experimental_data

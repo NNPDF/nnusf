@@ -34,11 +34,6 @@ def main():
 
     perform_fit(tr_model, vl_model, data_info, **runcard_content["fit_parameters"])
 
-    import ipdb; ipdb.set_trace()
-
-
-    # Do fit
-
 
 if __name__ == "__main__":
     main()

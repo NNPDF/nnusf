@@ -19,4 +19,4 @@ class Chi2Layer(tf.keras.layers.Layer):
         tmp_dot = tf.tensordot(self.invcovmat, distance[0, :], axes=1)
         chi2 = tf.tensordot(distance[0, :], tmp_dot, axes=1)
         ndat = self.theory_grid.shape[0]
-        return chi2 / ndat
+        return chi2
