@@ -20,7 +20,7 @@ def combine_tables(datasets: list[pathlib.Path]) -> pd.DataFrame:
     combined_tables = []
     for dataset in datasets:
         _logger.info(f"Append experiment '{dataset}'")
-        data = Loader(dataset.parents[1], None, dataset.stem.strip("DATA_"))
+        data = Loader(dataset.stem.strip("DATA_"), dataset.parents[1])
         combined_tables.append(data.fulltables)
 
     return pd.concat(combined_tables)

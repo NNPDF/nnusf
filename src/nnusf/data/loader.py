@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 import pathlib
+from typing import Optional
 
 import numpy as np
 import pandas as pd
@@ -17,26 +18,30 @@ class ObsTypeError(Exception):
 
 
 class Loader:
-    """Load a dataset given the name and build the covariance matrix
+    """Load a dataset given the name.
+
+    This includes:
+
+        - loading the central values
+        - building the covariance matrix
+        - (on demand) loading the coefficients (if the path is available)
 
     Parameters
     ----------
-    path_to_commondata:
-        path to commondata folder
-    path_to_theory:
-        path to theory folder
-    data_name:
+    data_name: str
         dataset name
-    data_type: str
-        data type: F2,F3, DXDYNUU, DXDYNUB
+    path_to_commondata: os.PathLike
+        path to commondata folder
+    path_to_coefficients: os.PathLike or None
+        path to theory folder
 
     """
 
     def __init__(
         self,
-        path_to_commondata: pathlib.Path,
-        path_to_theory: pathlib.Path,
         data_name: str,
+        path_to_commondata: pathlib.Path,
+        path_to_coefficients: Optional[pathlib.Path] = None,
     ) -> None:
 
         self.data_name = data_name
@@ -47,7 +52,7 @@ class Loader:
             )
 
         self.commondata_path = path_to_commondata
-        self.theory_path = path_to_theory
+        self.coefficients_path = path_to_coefficients
         self.fulltables = self._load()
         self.covariance_matrix = self.build_covariance_matrix(self.fulltables)
 
@@ -155,7 +160,12 @@ class Loader:
     @property
     def coefficients(self) -> np.ndarray:
         """Returns the coefficients prediction"""
-        return self.coeff_array
+        if self.coefficients_path is None:
+            raise ValueError(
+                f"No path available to load coefficients for '{self.data_name}'"
+            )
+
+        return np.load((self.coefficients_path / self.data_name).with_suffix(".npy"))
 
     @staticmethod
     def build_covariance_matrix(unc_df: pd.DataFrame) -> np.ndarray:
