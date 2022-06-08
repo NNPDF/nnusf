@@ -47,8 +47,7 @@ def generate_models(data_info, units_per_layer, activation_per_layer,
     tr_ndata_index_of_experiment = 0
     vl_ndata_index_of_experiment = 0
     for data in data_info.values():
-        coefficients = np.array([[1, 0, 0, 0, 0, 0] for _ in range(data.n_data)])
-        import ipdb; ipdb.set_trace()
+        coefficients = data.coefficients
         tr_coefficients = coefficients[data.tr_filter]
         vl_coefficients = coefficients[~data.tr_filter]
         invcovmat = np.linalg.inv(data.covmat)

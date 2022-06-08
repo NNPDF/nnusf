@@ -5,6 +5,7 @@ import numpy as np
 optimizer_options = {
     "Adam": tf.keras.optimizers.Adam,
     "Nadam": tf.keras.optimizers.Nadam,
+    "Adadelta": tf.keras.optimizers.Adadelta,
 }
 
 def perform_fit(tr_model, vl_model, data_info, epochs, stopping_patience, optimizer_parameters, **kwargs):

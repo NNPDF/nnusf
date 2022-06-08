@@ -18,5 +18,5 @@ class Chi2Layer(tf.keras.layers.Layer):
         distance = predictions - self.experimental_central_value
         tmp_dot = tf.tensordot(self.invcovmat, distance[0, :], axes=1)
         chi2 = tf.tensordot(distance[0, :], tmp_dot, axes=1)
-        ndat = self.theory_grid.shape[0]
+        # tf.print(self.name, ": ", chi2/self.experimental_central_value.shape[0])
         return chi2
