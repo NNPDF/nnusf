@@ -61,24 +61,29 @@ class Loader:
         # Extract values from the kinematic tables
         kin_file = self.commondata_path.joinpath(f"kinematics/KIN_{self.data_name}.csv")
         if kin_file.exists():
-            kin_df = pd.read_csv(kin_file).iloc[1:, :4]
-        else:
+            kin_df = pd.read_csv(kin_file).iloc[1:, 1:4].reset_index(drop=True)
+        elif self.data_type in ["F2", "F3"]:
             kin_df = pd.read_csv(
                 f"{self.commondata_path}/kinematics/KIN_{exp_name}_F2F3.csv"
-            ).iloc[1:, :4]
+            ).iloc[1:, 1:4].reset_index(drop=True)
+        elif self.data_type in ["DXDYNUU", "DXDYNUB"]:
+            kin_df = pd.read_csv(
+                f"{self.commondata_path}/kinematics/KIN_{exp_name}_DXDY.csv"
+            ).iloc[1:, 1:4].reset_index(drop=True)
+
 
         # Extract values from the central and uncertainties
         data_df = pd.read_csv(
             f"{self.commondata_path}/data/DATA_{self.data_name}.csv",
             header=0,
             na_values=["-", " "],
-        )
+        ).iloc[:, 1:].reset_index(drop=True)
         unc_df = pd.read_csv(
             f"{self.commondata_path}/uncertainties/UNC_{self.data_name}.csv",
             na_values=["-", " "],
-        )[2:]
+        ).iloc[2:, 1:].reset_index(drop=True)
 
-        # Concatenate everything into one single big table
+        # Concatenate enverything into one single big table
         new_df = pd.concat([kin_df, data_df, unc_df], axis=1)
         new_df = new_df.dropna().astype(float)
 
@@ -98,7 +103,7 @@ class Loader:
         new_df["A"] = np.full(number_datapoints, info_df["target"][0])
         new_df["xsec"] = np.full(number_datapoints, data_spec)
         new_df["Obs"] = np.full(number_datapoints, self.data_type)
-        new_df["projectile"] = np.full(number_datapoints, info_df["projectile"][0])
+        new_df["projectile"] = np.full(number_datapoints, info_df.loc[info_df["type"] == self.data_type, "projectile"])
 
         return new_df
 
