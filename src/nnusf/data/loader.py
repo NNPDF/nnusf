@@ -42,16 +42,18 @@ class Loader:
         self.data_name = data_name
         self.data_type = data_name.split("_")[1]
         if self.data_type not in OBS_TYPE:
-            raise ObsTypeError("Observable not implemented or Wrong!")
+            raise ObsTypeError(
+                f"Observable '{self.data_type}' not implemented or Wrong!"
+            )
 
         self.commondata_path = path_to_commondata
         self.theory_path = path_to_theory
-        self.fulltables = self.load()
+        self.fulltables = self._load()
         self.covariance_matrix = self.build_covariance_matrix(self.fulltables)
 
         _logger.info(f"Loaded '{data_name}' dataset")
 
-    def load(self) -> pd.DataFrame:
+    def _load(self) -> pd.DataFrame:
         """Load the dataset information
 
         Returns
@@ -68,25 +70,40 @@ class Loader:
         if kin_file.exists():
             kin_df = pd.read_csv(kin_file).iloc[1:, 1:4].reset_index(drop=True)
         elif self.data_type in ["F2", "F3"]:
-            kin_df = pd.read_csv(
-                f"{self.commondata_path}/kinematics/KIN_{exp_name}_F2F3.csv"
-            ).iloc[1:, 1:4].reset_index(drop=True)
+            kin_df = (
+                pd.read_csv(
+                    f"{self.commondata_path}/kinematics/KIN_{exp_name}_F2F3.csv"
+                )
+                .iloc[1:, 1:4]
+                .reset_index(drop=True)
+            )
         elif self.data_type in ["DXDYNUU", "DXDYNUB"]:
-            kin_df = pd.read_csv(
-                f"{self.commondata_path}/kinematics/KIN_{exp_name}_DXDY.csv"
-            ).iloc[1:, 1:4].reset_index(drop=True)
-
+            kin_df = (
+                pd.read_csv(
+                    f"{self.commondata_path}/kinematics/KIN_{exp_name}_DXDY.csv"
+                )
+                .iloc[1:, 1:4]
+                .reset_index(drop=True)
+            )
 
         # Extract values from the central and uncertainties
-        data_df = pd.read_csv(
-            f"{self.commondata_path}/data/DATA_{self.data_name}.csv",
-            header=0,
-            na_values=["-", " "],
-        ).iloc[:, 1:].reset_index(drop=True)
-        unc_df = pd.read_csv(
-            f"{self.commondata_path}/uncertainties/UNC_{self.data_name}.csv",
-            na_values=["-", " "],
-        ).iloc[2:, 1:].reset_index(drop=True)
+        data_df = (
+            pd.read_csv(
+                f"{self.commondata_path}/data/DATA_{self.data_name}.csv",
+                header=0,
+                na_values=["-", " "],
+            )
+            .iloc[:, 1:]
+            .reset_index(drop=True)
+        )
+        unc_df = (
+            pd.read_csv(
+                f"{self.commondata_path}/uncertainties/UNC_{self.data_name}.csv",
+                na_values=["-", " "],
+            )
+            .iloc[2:, 1:]
+            .reset_index(drop=True)
+        )
 
         # Concatenate enverything into one single big table
         new_df = pd.concat([kin_df, data_df, unc_df], axis=1)
@@ -108,7 +125,10 @@ class Loader:
         new_df["A"] = np.full(number_datapoints, info_df["target"][0])
         new_df["xsec"] = np.full(number_datapoints, data_spec)
         new_df["Obs"] = np.full(number_datapoints, self.data_type)
-        new_df["projectile"] = np.full(number_datapoints, info_df.loc[info_df["type"] == self.data_type, "projectile"])
+        new_df["projectile"] = np.full(
+            number_datapoints,
+            info_df.loc[info_df["type"] == self.data_type, "projectile"],
+        )
 
         return new_df
 

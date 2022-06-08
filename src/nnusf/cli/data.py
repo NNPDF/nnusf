@@ -13,9 +13,17 @@ def subcommand():
 
 
 @subcommand.command("combine")
-def sub_combine():
+@click.argument("data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path))
+@click.option(
+    "-d",
+    "--destination",
+    type=click.Path(exists=True, path_type=pathlib.Path),
+    default=pathlib.Path.cwd().absolute() / "commondata",
+    help="Alternative destination path to store the resulting table (default: $PWD/commondata)",
+)
+def sub_combine(data, destination):
     """Combine tables."""
-    combine_tables.main()
+    combine_tables.main(data, destination)
 
 
 @subcommand.command("coefficients")

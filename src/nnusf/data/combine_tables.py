@@ -1,27 +1,19 @@
+# -*- coding: utf-8 -*-
+import logging
+import pathlib
+
 import pandas as pd
 
-from pathlib import Path
 from nnusf.data.loader import Loader
-from rich.console import Console
 
+_logger = logging.getLogger(__name__)
 
-console = Console()
-
-ABS_PATH = Path(__file__).parents[3]
+ABS_PATH = pathlib.Path(__file__).parents[3]
 DATA_PATH = ABS_PATH.joinpath("commondata")
 THEORY_PATH = ABS_PATH.joinpath("theory")
 
-MAP_DATASET_OBS = {
-    "BEBCWA59": ["F2", "F3"],
-    "CCFR": ["F2", "F3"],
-    "CHARM": ["F2", "F3"],
-    "NUTEV": ["F2", "F3", "DXDYNUU", "DXDYNUB"],
-    "CHORUS": ["F2", "F3", "DXDYNUU", "DXDYNUB"],
-    "CDHSW": ["F2", "F3", "DXDYNUU", "DXDYNUB"],
-}
 
-
-def combine_tables(dataset_names: list[str]) -> None:
+def combine_tables(datasets: list[pathlib.Path]) -> pd.DataFrame:
     """Combined all the tables with extra information.
 
     Parameters
@@ -30,16 +22,18 @@ def combine_tables(dataset_names: list[str]) -> None:
         list containing the names of the datasets
     """
     combined_tables = []
-    for dataset in dataset_names:
-        console.print(f"\n• Experiment: {dataset}", style="bold red")
-        for obs in MAP_DATASET_OBS[dataset]:
-            console.print(f"[+] Observables: {obs}", style="bold blue")
-            load_class = Loader(DATA_PATH, THEORY_PATH, dataset, obs)
-            combined_tables.append(load_class.load())
-    concatenated_tables = pd.concat(combined_tables)
-    concatenated_tables.to_csv(DATA_PATH / "combined_tables.csv")
+    for dataset in datasets:
+        _logger.info(f"Append experiment '{dataset}'")
+        data = Loader(dataset.parents[1], None, dataset.stem.strip("DATA_"))
+        combined_tables.append(data.fulltables)
+
+    return pd.concat(combined_tables)
 
 
-def main():
-    dataset_lists = ["BEBCWA59", "CCFR", "CHARM", "NUTEV", "CHORUS", "CDHSW"]
-    combine_tables(dataset_lists)
+def main(dataset_list: list[pathlib.Path], destination: pathlib.Path):
+    cat_tab = combine_tables(dataset_list)
+    file = destination / "combined_tables.csv"
+    cat_tab.to_csv(file)
+    _logger.info(
+        f"Combination generated, saved in '{file.relative_to(pathlib.Path.cwd())}'"
+    )
