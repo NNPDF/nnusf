@@ -7,9 +7,14 @@ from pathlib import Path
 from rich.console import Console
 from rich.progress import track
 
-from utils import construct_uncertainties, dump_info_file, write_to_csv, build_obs_dict
+from nnusf.data.filters.utils import construct_uncertainties, dump_info_file, write_to_csv, build_obs_dict
 
 console = Console()
+
+# Experiment metadata
+TARGET = 26
+EXP_NAME = "CCFR"
+
 
 def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
     """
@@ -115,18 +120,20 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
     write_to_csv(systypes_folder, f"UNC_{exp_name}_F3", f3_errors_pd)
 
 
-if __name__ == "__main__":
-    relative_path = Path().absolute().parents[0]
-    experiment_name = "CCFR"
-    target = 26
-
+def main(relative_path: list[Path]) -> None:
+    path_to_commondata = relative_path[0]
     # List of tables containing measurements for F2 and xF3
     table_f2_xf3 = [i for i in range(1, 23)]
     obs_list = [
         build_obs_dict("F2", table_f2_xf3, 0),
         build_obs_dict("F3", table_f2_xf3, 0)
     ]
-    extract_f2f3(relative_path, experiment_name, table_f2_xf3)
+    extract_f2f3(path_to_commondata, EXP_NAME, table_f2_xf3)
 
     # dump info file
-    dump_info_file(relative_path, experiment_name, obs_list, target)
+    dump_info_file(path_to_commondata, EXP_NAME, obs_list, TARGET)
+
+
+if __name__ == "__main__":
+    relative_path = [Path().absolute().parents[3].joinpath("commondata")]
+    main(relative_path)
