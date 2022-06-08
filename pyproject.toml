@@ -22,6 +22,7 @@ rich = "^10"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1"
+pytest-cov = "^2.12.1"
 ipython = "^8.4.0"
 pdbpp = "^0.10.3"
 
@@ -29,11 +30,18 @@ pdbpp = "^0.10.3"
 nnu = "nnusf.cli:command"
 
 [tool.poe.tasks]
-by = "bygen"
-th = "nnu theory"
+coverage = "$BROWSER htmlcov/index.html"
+test = "pytest tests"
+test-cov = ["test", "coverage"]
 
 [tool.pytest.ini_options]
 testpaths = ['tests/']
 python_files = ['test_*.py', 'benchmark_*.py', 'regression.py']
 python_classes = ['Test*']
 python_functions = ['test_*']
+addopts = [
+  '--cov=nnusf',
+  '--cov-report=html',
+  '--cov-report=xml',
+  '--strict-markers',
+]
