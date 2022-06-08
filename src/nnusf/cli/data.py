@@ -4,6 +4,14 @@ import pathlib
 import click
 
 from ..data import coefficients, combine_tables
+from ..data.filters import (
+    filter_bebcwa59,
+    filter_chorus,
+    filter_nutev,
+    filter_charm,
+    filter_cdhsw,
+    filter_ccfr,
+)
 from . import base
 
 
@@ -32,6 +40,26 @@ def sub_combine(data, destination):
     to repeat the operation for all dataset stored in `data`.
     """
     combine_tables.main(data, destination)
+
+
+@subcommand.command("filter")
+@click.argument("data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path))
+@click.argument("name", nargs=1, type=str)
+def filter_data(data, name):
+    if name == "BEBCWA59":
+        filter_bebcwa59.main(data)
+    elif name == "CHORUS":
+        filter_chorus.main(data)
+    elif name == "NUTEV":
+        filter_nutev.main(data)
+    elif name == "CHARM":
+        filter_charm.main(data)
+    elif name == "CCFR":
+        filter_ccfr.main(data)
+    elif name == "CDHSW":
+        filter_cdhsw.main(data)
+    else:
+        raise ValueError("Dataset not Implemented.")
 
 
 @subcommand.command("coefficients")
