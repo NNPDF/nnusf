@@ -1,4 +1,4 @@
 ,type,tables,projectile,target
-0,F2,[1],0,
-1,F3,[1],0,
-2,QBAR,[2],0,
+0,F2,[1],0,50
+1,F3,[1],0,50
+2,QBAR,[2],0,50

@@ -12,6 +12,11 @@ from utils import construct_uncertainties, dump_info_file, write_to_csv, build_o
 
 console = Console()
 
+M_NEUTRON = 939.565346 * 0.001
+M_PROTON = 938.272013 * 0.001
+A = 20 + 3 * 8 + 6
+N = 40 + 3 * 16 + 12
+M_NUCLEON = 100.08969 * 0.93149432 / ( A * M_PROTON + (N - A) * M_NEUTRON)
 
 def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
     """
@@ -136,6 +141,8 @@ def extract_qbar(path: Path, exp_name: str, table_id_list: list) -> None:
             for bin in range(len(indep_var_dic[0]["values"])):
                 # ---- Extract only input kinematics ---- #
                 q2_value = indep_var_dic[0]["values"][bin]["value"]
+                # S = 400**2 # Gev^2
+                # y_value = q2_value / (( S - M_NUCLEON **2 ) * QBAR_x_value)
                 kin_dict = {
                     "x": {"mid": QBAR_x_value, "min": None, "max": None},
                     "Q2": {"mid": q2_value, "min": None, "max": None},
@@ -191,6 +198,7 @@ def extract_qbar(path: Path, exp_name: str, table_id_list: list) -> None:
 if __name__ == "__main__":
     relative_path = Path().absolute().parents[0]
     experiment_name = "CHARM"
+    target = A
 
     # List of tables containing measurements for F2 and xF3
     obs_list = [
@@ -205,4 +213,4 @@ if __name__ == "__main__":
     extract_qbar(relative_path, experiment_name, [2])
 
     # dump info file
-    dump_info_file(relative_path, experiment_name, obs_list)
+    dump_info_file(relative_path, experiment_name, obs_list, target)
