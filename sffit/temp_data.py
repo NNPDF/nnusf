@@ -1,7 +1,7 @@
 import numpy as np
 
 # LOAD USING NNUSF COMMONDATA
-from nnusf.loader import Loader
+from nnusf.data.loader import Loader
 
 import pathlib
 

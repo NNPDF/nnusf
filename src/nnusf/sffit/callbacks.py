@@ -7,19 +7,18 @@ log = logging.getLogger(__name__)
 
 
 class EarlyStopping(tf.keras.callbacks.Callback):
-    def __init__(self, vl_model, patience_epochs, vl_kinematics_array, y):
+    def __init__(self, vl_model, patience_epochs, vl_kinematics_array):
         super().__init__()
         self.vl_model = vl_model
         self.patience_epochs = patience_epochs
         self.vl_kinematics_array = vl_kinematics_array
         self.best_epoch = None
         self.best_chi2 = None
-        self.y = y
         self.best_weights = None
 
     def on_epoch_end(self, epoch, logs=None):
         chi2 = self.vl_model.evaluate(
-            self.vl_kinematics_array, self.y, verbose=0
+            self.vl_kinematics_array, y=tf.constant([0]), verbose=0
         )
         if self.best_chi2 == None or chi2 < self.best_chi2:
             self.best_chi2 = chi2

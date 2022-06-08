@@ -16,8 +16,8 @@ fit_parameters:
   stopping_patience: 0.1
   units_per_layer: [25, 20]
   activation_per_layer: [tanh, tanh]
-  optimizer:
+  optimizer_parameters:
+    optimizer: Adam
     clipnorm: 1e-5
     learning_rate: 1e-3
-    optimizer_name: Adam
   initializer_seed: 1

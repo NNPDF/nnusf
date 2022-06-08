@@ -8,6 +8,7 @@ import yaml
 import load_data
 import numpy as np
 from model_gen import generate_models
+from train_model import perform_fit
 
 
 def main():
@@ -31,9 +32,10 @@ def main():
 
     tr_model, vl_model = generate_models(data_info, **runcard_content["fit_parameters"])
 
+    perform_fit(tr_model, vl_model, data_info, **runcard_content["fit_parameters"])
+
     import ipdb; ipdb.set_trace()
 
-    # Build model
 
     # Do fit
 

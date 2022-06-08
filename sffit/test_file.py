@@ -78,6 +78,7 @@ layer7 = layers.Dense(output_nodes, activation="linear", name="SF_output")
 # Connect the layers forming the sf parametrization model
 sf_basis = layer7(layer6(layer5(layer4(layer3(layer2(layer1(layer_input)))))))
 
+import ipdb; ipdb.set_trace()
 
 ############################# ADD TR/VL CHI2 LAYERS ############################
 class Chi2Layer(layers.Layer):
@@ -166,7 +167,6 @@ early_stopping_callback = EarlyStopping(
     vl_model, patience_epochs, vl_kinematics_array, y
 )
 
-import ipdb; ipdb.set_trace()
 
 tr_model.fit(
     tr_kinematics_array,
