@@ -8,17 +8,21 @@ from pathlib import Path
 from rich.console import Console
 from rich.progress import track
 
-from utils import construct_uncertainties, dump_info_file, write_to_csv, build_obs_dict
-
+from nnusf.data.filters.utils import construct_uncertainties, dump_info_file, write_to_csv, build_obs_dict
 
 
 console = Console()
+
 # Mass determined using Fe pdg values
 M_NEUTRON = 939.565346 * 0.001
 M_PROTON = 938.272013 * 0.001
 A = 26
 N = 56
 M_NUCLEON = 55.845 * 0.93149432 / ( A * M_PROTON + (N - A) * M_NEUTRON)
+
+# Experiment metadata
+TARGET = A
+EXP_NAME = "CDHSW"
 
 def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
     """
@@ -305,10 +309,9 @@ def extract_fw(path: Path, exp_name: str, table_id_list: list) -> None:
     systypes_folder.mkdir(exist_ok=True)
     write_to_csv(systypes_folder, f"UNC_{exp_name}_FW", fw_errors_pd)
 
-if __name__ == "__main__":
-    relative_path = Path().absolute().parents[0]
-    experiment_name = "CDHSW"
-    target = A
+
+def main(relative_path: list[Path]) -> None:
+    path_to_commondata = relative_path[0]
     obs_list = []
 
     # List of tables containing measurements for F2 and xF3
@@ -317,21 +320,26 @@ if __name__ == "__main__":
         build_obs_dict("F2", table_f2_xf3, 14),
         build_obs_dict("F3", table_f2_xf3, 14)
     ])
-    extract_f2f3(relative_path, experiment_name, table_f2_xf3)
+    extract_f2f3(path_to_commondata, EXP_NAME, table_f2_xf3)
 
     # List of tables containing measurements for D2SIG/DX/DY for NUMU + FE
     table_dsig_dxdynuu = [i for i in range(1, 10)]
     obs_list.append(build_obs_dict("DXDYNUU", table_dsig_dxdynuu, 14))
-    extract_d2sigDxDy(relative_path, experiment_name, table_dsig_dxdynuu, "NUU")
+    extract_d2sigDxDy(path_to_commondata, EXP_NAME, table_dsig_dxdynuu, "NUU")
 
     # List of tables containing measurements for D2SIG/DX/DY for NUMUB + FE
     table_dsig_dxdynub = [i for i in range(10, 18)]
     obs_list.append(build_obs_dict("DXDYNUB", table_dsig_dxdynub, -14))
-    extract_d2sigDxDy(relative_path, experiment_name, table_dsig_dxdynub, "NUB")
+    extract_d2sigDxDy(path_to_commondata, EXP_NAME, table_dsig_dxdynub, "NUB")
 
     # List of tables containing measurements for FW
     table_fw = [i for i in range(30, 40)]
     obs_list.append(build_obs_dict("FW", table_fw, 14))
-    extract_fw(relative_path, experiment_name, table_fw)
+    extract_fw(path_to_commondata, EXP_NAME, table_fw)
     # dump info file
-    dump_info_file(relative_path, experiment_name, obs_list, target)
+    dump_info_file(path_to_commondata, EXP_NAME, obs_list, TARGET)
+
+
+if __name__ == "__main__":
+    relative_path = [Path().absolute().parents[3].joinpath("commondata")]
+    main(relative_path)
