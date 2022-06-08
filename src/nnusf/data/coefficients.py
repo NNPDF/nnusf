@@ -48,8 +48,11 @@ def main(datapaths: list[pathlib.Path], destination: pathlib.Path):
                 continue
 
             yadcoeffs = []
-            for kin in data.kinematics:
-                y = 0.1
+            if "y" not in data.fulltables:
+                print(f"\t  NO y available for '{name}'")
+                continue
+
+            for kin, y in zip(data.kinematics, data.fulltables["y"]):
                 th = runcards.theory()
                 yadcoeffs.append(
                     xs_coeffs(
