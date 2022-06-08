@@ -11,11 +11,11 @@ experiments:
 trvlseed: 1
 pseudodataseed: 1
 
-model_parameters:
+fit_parameters:
   epochs: 17000
   stopping_patience: 0.1
-  nodes_per_layer: [25, 20, 6]
-  activation_per_layer: [tanh, tanh, linear]
+  units_per_layer: [25, 20]
+  activation_per_layer: [tanh, tanh]
   optimizer:
     clipnorm: 1e-5
     learning_rate: 1e-3

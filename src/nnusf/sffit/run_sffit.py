@@ -7,6 +7,7 @@ import pathlib
 import yaml
 import load_data
 import numpy as np
+from model_gen import generate_models
 
 
 def main():
@@ -21,14 +22,14 @@ def main():
         runcard_content = yaml.load(file, Loader=yaml.FullLoader)
 
     experiments_dict = runcard_content["experiments"]
-    experimental_data = load_data.load_experimental_data(experiments_dict)
+    data_info = load_data.load_experimental_data(experiments_dict)
 
     if runcard_content["pseudodataseed"]:
-        load_data.add_pseudodata(experimental_data)
+        load_data.add_pseudodata(data_info)
 
-    load_data.add_tr_filter_mask(experimental_data, runcard_content['trvlseed'])
+    load_data.add_tr_filter_mask(data_info, runcard_content['trvlseed'])
 
-    
+    tr_model, vl_model = generate_models(data_info, **runcard_content["fit_parameters"])
 
     import ipdb; ipdb.set_trace()
 

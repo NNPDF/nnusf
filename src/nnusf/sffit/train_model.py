@@ -4,8 +4,8 @@ from .callbacks import EarlyStopping
 
 def perform_fit(tr_model, vl_model, max_epochs, patience)
 
-    # The model output is the chi2 so we want to minimize the output directly
-    custom_loss = lambda y_true, y_pred : y_pred
+    # The model has output nodes corresponding to the chi2 per experiment
+    custom_loss = lambda y_true, y_pred : tf.math.reduce_sum(y_pred)
 
     tr_model.compile(optimizer="Adam", loss=custom_loss)
     vl_model.compile(optimizer="Adam", loss=custom_loss)
