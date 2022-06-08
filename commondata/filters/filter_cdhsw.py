@@ -223,6 +223,7 @@ def extract_fw(path: Path, exp_name: str, table_id_list: list) -> None:
         # Extract the dictionary containing the high-level
         # kinematic information
         indep_var_dic = load_table["independent_variables"]
+        dep_var_Adic = load_table["dependent_variables"][0] # A
         dep_var_fwdic = load_table["dependent_variables"][1] # FW
         # The x values should be the same for FW
         fw_x_value = float(dep_var_fwdic["qualifiers"][2]["value"])
@@ -232,10 +233,19 @@ def extract_fw(path: Path, exp_name: str, table_id_list: list) -> None:
         for bin in range(len(indep_var_dic[0]["values"])):
             # ---- Extract only input kinematics ---- #
             q2_value = indep_var_dic[0]["values"][bin]["value"]
+            A = dep_var_Adic["values"][bin]["value"]
+            b = fw_x_value ** 2 * M_NUCLEON ** 2 / q2_value
+            # calculate y
+            sqrt =  np.sqrt( 4 * A**2 * b - A**2 +2*A ) 
+            den = 2 * A * b - A + 1 
+            y1 = - (A + sqrt)/den
+            y2 = - (A - sqrt)/den
+            if y1 >=0 and y2 >= 0:
+                raise ValueError("y values are both positive")
             kin_dict = {
                 "x": {"mid": fw_x_value, "min": None, "max": None},
                 "Q2": {"mid": q2_value, "min": None, "max": None},
-                "y": {"mid": None, "min": None, "max": None}
+                "y": {"mid": max(y1, y2), "min": None, "max": None}
             }
             kinematics.append(kin_dict)
             # ---- Extract central values for SF ---- #
