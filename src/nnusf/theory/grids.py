@@ -8,7 +8,7 @@ import yadism
 
 from .. import utils
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 
 def main(cards: pathlib.Path):
@@ -32,7 +32,7 @@ def main(cards: pathlib.Path):
                 for obs in observables["observables"]:
                     res_path = grids_dest / f"{obs}.pineappl.lz4"
                     output.dump_pineappl_to_file(res_path, obs)
-                    logger.info(f"Dumped {res_path.name}")
+                    _logger.info(f"Dumped {res_path.name}")
 
         with tarfile.open(pathlib.Path.cwd() / "grids.tar", "w") as tar:
             for path in tmpdir.iterdir():

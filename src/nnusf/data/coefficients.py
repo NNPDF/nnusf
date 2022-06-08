@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import logging
 import pathlib
 
 import numpy as np
@@ -6,6 +7,8 @@ from yadism.esf.exs import xs_coeffs
 
 from ..theory import runcards
 from . import loader
+
+_logger = logging.getLogger(__name__)
 
 
 class MissingRequisite(ValueError):
@@ -54,7 +57,6 @@ def cross_section(
 
 def coefficients(name: str, datapath: pathlib.Path):
     data = loader.Loader(datapath, None, name)
-    print("\tloaded", name)
 
     if data.n_data == 0:
         MissingRequisite("NO data found")
@@ -95,18 +97,20 @@ def coefficients(name: str, datapath: pathlib.Path):
 
 def main(datapaths: list[pathlib.Path], destination: pathlib.Path):
     destination.mkdir(parents=True, exist_ok=True)
-    print("Coefficients destination:", destination)
+    _logger.info(f"Coefficients destination: {destination}")
 
-    print("Saving coefficients:")
+    _logger.info("Saving coefficients:")
     for dataset in datapaths:
         name = dataset.stem.strip("DATA_")
 
         try:
             coeffs = coefficients(name, datapath=dataset.parents[1])
         except MissingRequisite as exc:
-            print(f"\t  {exc.args[0]}")
+            _logger.info(f"\t  {exc.args[0]}")
             continue
 
         dest = (destination / name).with_suffix(".npy")
         np.save(dest, coeffs)
-        print(f"\t  {coeffs.shape} saved in", dest.relative_to(pathlib.Path.cwd()))
+        _logger.info(
+            f"\t  {coeffs.shape} saved in {dest.relative_to(pathlib.Path.cwd())}"
+        )
