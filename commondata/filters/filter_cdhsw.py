@@ -170,7 +170,8 @@ def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list, obs: str) 
                     "y": {"mid": y_value_mid, "min": y_value_min, "max": y_value_max}
                 }
                 kinematics.append(kin_dict)
-                # ---- Extract central values for SF ---- #
+                # ---- Extract central values and uncertainties ---- #
+                dsig_nu_central.append(dsig_dx_dy["values"][bin]["value"])
                 unc_type = dsig_dx_dy["values"][bin].get("errors", None)
                 if unc_type is None: stat_unc, syst_unc = 0.0, 0.0
                 else:
