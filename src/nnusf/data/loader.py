@@ -61,11 +61,11 @@ class Loader:
         # Extract values from the kinematic tables
         kin_file = self.commondata_path.joinpath(f"kinematics/KIN_{self.data_name}.csv")
         if kin_file.exists():
-            kin_df = pd.read_csv(kin_file).iloc[1:, :3]
+            kin_df = pd.read_csv(kin_file).iloc[1:, :4]
         else:
             kin_df = pd.read_csv(
                 f"{self.commondata_path}/kinematics/KIN_{exp_name}_F2F3.csv"
-            ).iloc[1:, :3]
+            ).iloc[1:, :4]
 
         # Extract values from the central and uncertainties
         data_df = pd.read_csv(
