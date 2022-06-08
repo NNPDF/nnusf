@@ -26,8 +26,21 @@ def main(datapaths: list[pathlib.Path], destination: pathlib.Path):
         ndata = data.kinematics[0].shape[0]
         coeffs = np.zeros((ndata, 6))
 
-        pos = 0 if obs == "F2" else 2
-        coeffs[:, pos] = 1
+        kind = 0 if obs == "F2" else 2
+        proj = data.fulltables["projectile"].values
+
+        pos = np.zeros((proj.size, 2), dtype=int)
+        pos[np.sign(proj) == -1] = 3
+        pos[np.sign(proj) == 0] = [0, 3]
+        pos[np.sign(proj) == 1] = 0
+        pos += kind
+        weight = np.zeros(proj.size)
+        weight[np.sign(proj) != 0] = 1.0
+        weight[np.sign(proj) == 0] = 1.0 / 2.0
+
+        coeffs[:, pos] = weight[:, np.newaxis]
+
+        __import__("pdb").set_trace()
 
         dest = (destination / name).with_suffix(".npy")
         np.save(dest, coeffs)
