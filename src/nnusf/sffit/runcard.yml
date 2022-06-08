@@ -1,0 +1,40 @@
+#
+# Configuration file for nnufit
+#
+############################################################
+description: A first trial fit with nnufit
+
+experiments:
+- {dataset: BEBCWA59_F2, frac: 0.75}
+- {dataset: BEBCWA59_F3, frac: 0.75}
+- {dataset: CCFR_F2, frac: 0.75}
+- {dataset: CCFR_F3, frac: 0.75}
+- {dataset: CDHSW_DXDYNUB, frac: 0.75}
+- {dataset: CDHSW_DXDYNUU, frac: 0.75}
+- {dataset: CDHSW_F2, frac: 0.75}
+- {dataset: CDHSW_F3, frac: 0.75}
+- {dataset: CDHSW_FW, frac: 0.75}
+# - {dataset: CHARM_F2, frac: 0.75}
+# - {dataset: CHARM_F3, frac: 0.75}
+- {dataset: CHORUS_DXDYNUB, frac: 0.75}
+- {dataset: CHORUS_DXDYNUU, frac: 0.75}
+- {dataset: CHORUS_F2, frac: 0.75}
+- {dataset: CHORUS_F3, frac: 0.75}
+# - {dataset: NUTEV_DXDYNUB, frac: 0.75}
+# - {dataset: NUTEV_DXDYNUU, frac: 0.75}
+- {dataset: NUTEV_F2, frac: 0.75}
+- {dataset: NUTEV_F3, frac: 0.75}
+
+trvlseed: 1
+pseudodataseed: 1
+
+fit_parameters:
+  epochs: 17000
+  stopping_patience: 0.1
+  units_per_layer: [50, 50, 50, 50, 50]
+  activation_per_layer: [tanh, tanh, tanh, tanh, tanh]
+  optimizer_parameters:
+    optimizer: Adam
+    clipnorm: 1e-5
+    learning_rate: 1e-3
+  initializer_seed: 1
