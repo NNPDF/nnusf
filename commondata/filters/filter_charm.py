@@ -9,13 +9,6 @@ from rich.progress import track
 
 from utils import construct_uncertainties, dump_info_file, write_to_csv, build_obs_dict
 
-ERR_DESC = {
-    'stat': {
-        'treatment': "ADD",
-        'type': "UNCORR",
-        'description': "Total systematic uncertainty"
-    }
-}
 
 console = Console()
 
@@ -72,16 +65,18 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
                 uncertainty_dic, uncertainty_names = {}, ["f2_unc", "f3_unc"]
                 for idx, unc_type in enumerate(uncertainties_sfs):
                     if unc_type is None:
-                        syst_unc = None
+                        stat_unc = 0.0
                     else:
-                        syst_unc = unc_type[0].get("symerror", None)
-                    uncertainty_dic[uncertainty_names[idx]] = syst_unc
+                        stat_unc = unc_type[0].get("symerror", 0.0)
+                    uncertainty_dic[uncertainty_names[idx]] = stat_unc
                 error_dict_f2 = {
-                    "syst": uncertainty_dic["f2_unc"]
+                    "stat": uncertainty_dic["f2_unc"],
+                    "syst": 0.0
                 }
                 f2_exp_errors.append(error_dict_f2)
                 error_dict_f3 = {
-                    "syst": uncertainty_dic["f3_unc"]
+                    "stat": uncertainty_dic["f3_unc"],
+                    "syst": 0.0
                 }
                 f3_exp_errors.append(error_dict_f3)
 
@@ -96,8 +91,8 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
     f3pd.index.name = "index"
 
     # Convert the error dictionaries into Pandas tables
-    f2_errors_pd = construct_uncertainties(f2_exp_errors, ERR_DESC)
-    f3_errors_pd = construct_uncertainties(f3_exp_errors, ERR_DESC)
+    f2_errors_pd = construct_uncertainties(f2_exp_errors)
+    f3_errors_pd = construct_uncertainties(f3_exp_errors)
 
     # Dump everything into files. In the following, F2 and xF3 lie on the central
     # values and errors share the same kinematic information and the difference.
@@ -115,6 +110,83 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
     write_to_csv(systypes_folder, f"UNC_{exp_name}_F2", f2_errors_pd)
     write_to_csv(systypes_folder, f"UNC_{exp_name}_F3", f3_errors_pd)
 
+def extract_qbar(path: Path, exp_name: str, table_id_list: list) -> None:
+    """
+    Parameters:
+    -----------
+    path: Path
+    """
+    kinematics = []
+    QBAR_central = []
+    QBAR_exp_errors = []
+    console.print("\n• Extracting QBAR from HEP tables:", style="bold blue")
+    # Loop over the tables that only contains the F2/xF3
+    for table_id in track(table_id_list, description="Progress tables"):
+        table_path = path.joinpath(f"rawdata/{exp_name}/Table{table_id}.yaml")
+        load_table = yaml.safe_load(table_path.read_text())
+        indep_var_dic = load_table["independent_variables"]
+        
+        dependent_variables = load_table["dependent_variables"]
+        for i in range(0, len(dependent_variables)):
+            dep_var_QBAR_dic = load_table["dependent_variables"][i]
+            QBAR_x_value = float(dep_var_QBAR_dic["qualifiers"][3]["value"])
+            # The numbers of bins should match the number of values 
+            # contained in the `independent_variables`. Now we can 
+            # loop over the different BINs
+            for bin in range(len(indep_var_dic[0]["values"])):
+                # ---- Extract only input kinematics ---- #
+                q2_value = indep_var_dic[0]["values"][bin]["value"]
+                kin_dict = {
+                    "x": {"mid": QBAR_x_value, "min": None, "max": None},
+                    "Q2": {"mid": q2_value, "min": None, "max": None},
+                    "y": {"mid": None, "min": None, "max": None}
+                }
+                kinematics.append(kin_dict)
+                # ---- Extract central values for SF ---- #
+                QBAR_central.append(dep_var_QBAR_dic["values"][bin]["value"])
+
+                # ---- Extract SYS & STAT uncertainties ---- #
+                uncertainties_sfs = [
+                    dep_var_QBAR_dic["values"][bin].get("errors", None), 
+                ]
+                uncertainty_dic, uncertainty_names = {}, ["QBAR_unc"]
+                for idx, unc_type in enumerate(uncertainties_sfs):
+                    if unc_type is None:
+                        stat_unc = 0.0
+                    else:
+                        stat_unc = unc_type[0].get("symerror", 0.0)
+                    uncertainty_dic[uncertainty_names[idx]] = stat_unc
+                error_dict_QBAR = {
+                    "stat": uncertainty_dic["QBAR_unc"],
+                    "syst": 0.0
+                }
+                QBAR_exp_errors.append(error_dict_QBAR)
+
+    # Convert the kinematics dictionaries into Pandas tables
+    full_kin = {i+1: pd.DataFrame(d).stack() for i, d in enumerate(kinematics)}
+    kinematics_pd = pd.concat(full_kin, axis=1, ).swaplevel(0,1).T
+
+    # Convert the central data values dict into Pandas tables
+    QBARpd = pd.DataFrame(QBAR_central, index=range(1, len(QBAR_central)+1), columns=["data"])
+    QBARpd.index.name = "index"
+
+    # Convert the error dictionaries into Pandas tables
+    QBAR_errors_pd = construct_uncertainties(QBAR_exp_errors)
+
+    # Dump everything into files. In the following, F2 and xF3 lie on the central
+    # values and errors share the same kinematic information and the difference.
+    kinematics_folder = path.joinpath("kinematics")
+    kinematics_folder.mkdir(exist_ok=True)
+    write_to_csv(kinematics_folder, f"KIN_{exp_name}_QBAR", kinematics_pd)
+
+    central_val_folder = path.joinpath("data")
+    central_val_folder.mkdir(exist_ok=True)
+    write_to_csv(central_val_folder, f"DATA_{exp_name}_QBAR", QBARpd)
+
+    systypes_folder = path.joinpath("uncertainties")
+    systypes_folder.mkdir(exist_ok=True)
+    write_to_csv(systypes_folder, f"UNC_{exp_name}_QBAR", QBAR_errors_pd)
+
 
 if __name__ == "__main__":
     relative_path = Path().absolute().parents[0]
@@ -126,6 +198,11 @@ if __name__ == "__main__":
         build_obs_dict("F3", [1], 0)
     ]
     extract_f2f3(relative_path, experiment_name, [1])
+
+    obs_list.append(
+        build_obs_dict("QBAR", [2], 0),
+    )
+    extract_qbar(relative_path, experiment_name, [2])
 
     # dump info file
     dump_info_file(relative_path, experiment_name, obs_list)

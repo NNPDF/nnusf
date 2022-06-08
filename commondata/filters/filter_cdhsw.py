@@ -10,18 +10,7 @@ from rich.progress import track
 
 from utils import construct_uncertainties, dump_info_file, write_to_csv, build_obs_dict
 
-ERR_DESC = {
-    'stat': {
-        'treatment': "ADD",
-        'type': "UNCORR",
-        'description': "Total statistical uncertainty"
-    },
-    'syst': {
-        'treatment': "ADD",
-        'type': "CORR",
-        'description': "Total systematic uncertainty"
-    }
-}
+
 
 console = Console()
 # Mass determined using Fe pdg values
@@ -81,7 +70,7 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
             uncertainty_dic, uncertainty_names = {}, ["f2_unc", "f3_unc"]
             for idx, unc_type in enumerate(uncertainties_sfs):
                 if unc_type is None:
-                    stat_unc, syst_unc = None, None
+                    stat_unc, syst_unc = 0.0, 0.0
                 else:
                     syst_unc = 0.0
                     for unc in unc_type: 
@@ -119,8 +108,8 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
     f3pd.index.name = "index"
 
     # Convert the error dictionaries into Pandas tables
-    f2_errors_pd = construct_uncertainties(f2_exp_errors, ERR_DESC)
-    f3_errors_pd = construct_uncertainties(f3_exp_errors, ERR_DESC)
+    f2_errors_pd = construct_uncertainties(f2_exp_errors)
+    f3_errors_pd = construct_uncertainties(f3_exp_errors)
 
     # Dump everything into files. In the following, F2 and xF3 lie on the central
     # values and errors share the same kinematic information and the difference.
@@ -182,11 +171,11 @@ def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list, obs: str) 
                 }
                 kinematics.append(kin_dict)
                 # ---- Extract central values for SF ---- #
-                unc_type = dsig_dx_dy["values"][bin].get("error", None)
-                if unc_type is None: stat_unc, syst_unc = None, None
+                unc_type = dsig_dx_dy["values"][bin].get("errors", None)
+                if unc_type is None: stat_unc, syst_unc = 0.0, 0.0
                 else:
-                    stat_unc = unc_type[0].get("symerror", None)
-                    syst_unc = unc_type[1].get("symerror", None)
+                    stat_unc = unc_type[0].get("symerror", 0.0)
+                    syst_unc = unc_type[1].get("symerror", 0.0)
                 error_dict_1stentry = {"stat": stat_unc, "syst": syst_unc}
                 dsig_nu_errors.append(error_dict_1stentry)
 
@@ -200,7 +189,7 @@ def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list, obs: str) 
     dnuupd.index.name = "index"
 
     # Convert the error dictionaries into Pandas tables
-    dsignuu_errors_pd = construct_uncertainties(dsig_nu_errors, ERR_DESC) 
+    dsignuu_errors_pd = construct_uncertainties(dsig_nu_errors) 
 
     # Dump everything into files. In the following, F2 and xF3 lie on the central
     # values and errors share the same kinematic information and the difference.
@@ -216,6 +205,94 @@ def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list, obs: str) 
     systypes_folder.mkdir(exist_ok=True)
     write_to_csv(systypes_folder, f"UNC_{exp_name}_DXDY{obs}", dsignuu_errors_pd)
 
+def extract_fw(path: Path, exp_name: str, table_id_list: list) -> None:
+    """
+    Parameters:
+    -----------
+    path: Path
+    """
+    kinematics = []
+    fw_central = []
+    fw_exp_errors = []
+    console.print("\n• Extracting FW from HEP tables:", style="bold blue")
+    # Loop over the tables that only contains the FW
+    for table_id in track(table_id_list, description="Progress tables"):
+        table_path = path.joinpath(f"rawdata/{exp_name}/Table{table_id}.yaml")
+        load_table = yaml.safe_load(table_path.read_text())
+        # Extract the dictionary containing the high-level
+        # kinematic information
+        indep_var_dic = load_table["independent_variables"]
+        dep_var_fwdic = load_table["dependent_variables"][1] # FW
+        # The x values should be the same for FW
+        fw_x_value = float(dep_var_fwdic["qualifiers"][2]["value"])
+        # The numbers of bins should match the number of values 
+        # contained in the `independent_variables`. Now we can 
+        # loop over the different BINs
+        for bin in range(len(indep_var_dic[0]["values"])):
+            # ---- Extract only input kinematics ---- #
+            q2_value = indep_var_dic[0]["values"][bin]["value"]
+            kin_dict = {
+                "x": {"mid": fw_x_value, "min": None, "max": None},
+                "Q2": {"mid": q2_value, "min": None, "max": None},
+                "y": {"mid": None, "min": None, "max": None}
+            }
+            kinematics.append(kin_dict)
+            # ---- Extract central values for SF ---- #
+            fw_value = dep_var_fwdic["values"][bin]["value"]
+            fw_central.append(fw_value)
+            # ---- Extract SYS & STAT uncertainties ---- #
+            uncertainties_sfs = [
+                dep_var_fwdic["values"][bin].get("errors", None), 
+            ]
+            uncertainty_dic, uncertainty_name = {}, "fw_unc"
+            for unc_type in uncertainties_sfs:
+                if unc_type is None:
+                    stat_unc, syst_unc = 0.0, 0.0
+                else:
+                    syst_unc = 0.0
+                    for unc in unc_type: 
+                        # stat
+                        if unc['label'] == 'stat':
+                            stat_unc = unc['symerror']
+                        if unc['label'] == 'sys':
+                            # asymmetric sys
+                            if 'asymerror' in unc: 
+                                syst_unc += np.abs([unc['asymerror']['plus'], unc['asymerror']['minus']]).max() ** 2
+                            # symmetric sys
+                            else:
+                                syst_unc += unc['symerror'] ** 2
+                    syst_unc = np.sqrt(syst_unc)
+                uncertainty_dic[uncertainty_name] = [stat_unc, syst_unc]
+            error_dict_fw = {
+                "stat": uncertainty_dic["fw_unc"][0],
+                "syst": uncertainty_dic["fw_unc"][1]
+            }
+            fw_exp_errors.append(error_dict_fw)
+
+    # Convert the kinematics dictionaries into Pandas tables
+    full_kin = {i+1: pd.DataFrame(d).stack() for i, d in enumerate(kinematics)}
+    kinematics_pd = pd.concat(full_kin, axis=1, ).swaplevel(0,1).T
+
+    # Convert the central data values dict into Pandas tables
+    fwpd = pd.DataFrame(fw_central, index=range(1, len(fw_central)+1), columns=["data"])
+    fwpd.index.name = "index"
+
+    # Convert the error dictionaries into Pandas tables
+    fw_errors_pd = construct_uncertainties(fw_exp_errors)
+
+    # Dump everything into files. In the following, FW lie on the central
+    # values and errors share the same kinematic information and the difference.
+    kinematics_folder = path.joinpath("kinematics")
+    kinematics_folder.mkdir(exist_ok=True)
+    write_to_csv(kinematics_folder, f"KIN_{exp_name}_FW", kinematics_pd)
+
+    central_val_folder = path.joinpath("data")
+    central_val_folder.mkdir(exist_ok=True)
+    write_to_csv(central_val_folder, f"DATA_{exp_name}_FW", fwpd)
+
+    systypes_folder = path.joinpath("uncertainties")
+    systypes_folder.mkdir(exist_ok=True)
+    write_to_csv(systypes_folder, f"UNC_{exp_name}_FW", fw_errors_pd)
 
 if __name__ == "__main__":
     relative_path = Path().absolute().parents[0]
@@ -241,5 +318,9 @@ if __name__ == "__main__":
     obs_list.append(build_obs_dict("DXDYNUB", table_dsig_dxdynub, -14))
     extract_d2sigDxDy(relative_path, experiment_name, table_dsig_dxdynub, "NUB")
 
+    # List of tables containing measurements for FW
+    table_fw = [i for i in range(30, 40)]
+    obs_list.append(build_obs_dict("FW", table_fw, 14))
+    extract_fw(relative_path, experiment_name, table_fw)
     # dump info file
     dump_info_file(relative_path, experiment_name, obs_list, target)

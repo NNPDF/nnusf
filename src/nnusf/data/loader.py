@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
 import pathlib
 
 import numpy as np
 import pandas as pd
+
 
 OBS_TYPE = ["F2", "F3", "DXDYNUU", "DXDYNUB"]
 
@@ -34,80 +34,83 @@ class Loader:
         path_to_commondata: pathlib.Path,
         path_to_theory: pathlib.Path,
         data_name: str,
-        data_type: str,
     ) -> None:
-        if data_type not in OBS_TYPE:
+        
+        self.data_name = data_name
+        self.data_type = data_name.split('_')[1]
+        if self.data_type not in OBS_TYPE:
             raise ObsTypeError("Observable not implemented or Wrong!")
 
         self.commondata_path = path_to_commondata
         self.theory_path = path_to_theory
-        self.data_type = data_type
-        self.data_name = f"{data_name}_{data_type}"
+        self.fulltables = self.load()
+        self.covariance_matrix = self.build_covariance_matrix(self.fulltables)
 
-        self.kin_df, self.data_df, unc_df, self.coeff_array = self.load()
-        self.covariance_matrix = self.build_covariance_matrix(unc_df)
-
-    def load(self) -> tuple:
+    def load(self) -> pd.DataFrame:
         """Load the dataset information
 
         Returns
         -------
-        kin_df:
-            kinematic variables
-        data_df:
-            central values
-        unc_df:
-            uncertainties
+        table with loaded data
 
         """
         # info file
         exp_name = self.data_name.split("_")[0]
         info_df = pd.read_csv(f"{self.commondata_path}/info/{exp_name}.csv")
 
-        # kinematic file
+        # Extract values from the kinematic tables
         kin_file = self.commondata_path.joinpath(f"kinematics/KIN_{self.data_name}.csv")
         if kin_file.exists():
-            kin_df = pd.read_csv(kin_file)[1:].astype(float)
+            kin_df = pd.read_csv(kin_file).iloc[1:, :3]
         else:
             kin_df = pd.read_csv(
                 f"{self.commondata_path}/kinematics/KIN_{exp_name}_F2F3.csv"
-            )[1:].astype(float)
-        kin_df["A"] = np.full(kin_df.shape[0], info_df["target"][0])
-        kin_df["Obs"] = kin_df.shape[0] * [self.data_type]
-        kin_df["projectile"] = np.full(kin_df.shape[0], info_df["projectile"][0])
-        if self.data_type in ["DXDYNUU", "DXDYNUB"]:
-            data_spec = MAP_EXP_YADISM[self.data_name.split("_")[0]]
-        else:
-            data_spec = None
-        kin_df["xsec"] = kin_df.shape[0] * [data_spec]
+            ).iloc[1:, :3]
 
-        # central values and uncertainties
+        # Extract values from the central and uncertainties
         data_df = pd.read_csv(
             f"{self.commondata_path}/data/DATA_{self.data_name}.csv",
             header=0,
-            dtype=float,
+            na_values=["-", " "],
         )
         unc_df = pd.read_csv(
-            f"{self.commondata_path}/uncertainties/UNC_{self.data_name}.csv"
-        )[2:].astype(float)
+            f"{self.commondata_path}/uncertainties/UNC_{self.data_name}.csv",
+            na_values=["-", " "],
+        )[2:]
 
-        # coeff_array = np.load(f"{self.theory_path}/coefficients/{self.data_name}.npy")
-        coeff_array = None
-        return kin_df, data_df, unc_df, coeff_array
+        # Concatenate everything into one single big table
+        new_df = pd.concat([kin_df, data_df, unc_df], axis=1)
+        new_df = new_df.dropna().astype(float)
+
+        # drop data with 0 total uncertainty:
+        new_df = new_df[new_df["stat"] + new_df["syst"] != 0.0]
+
+        number_datapoints = new_df.shape[0]
+
+        # Extract the information on the cross section
+        data_spec = MAP_EXP_YADISM.get(exp_name, None)
+
+        # Append all the columns to the `kin_df` table
+        new_df["A"] = np.full(number_datapoints, info_df["target"][0])
+        new_df["xsec"] = np.full(number_datapoints, data_spec)
+        new_df["Obs"] = np.full(number_datapoints, self.data_type)
+        new_df["projectile"] = np.full(number_datapoints, info_df["projectile"][0])
+
+        return new_df
 
     @property
     def kinematics(self) -> tuple:
         """Returns the kinematics variables"""
         return (
-            self.kin_df["x"].values,
-            self.kin_df["Q2"].values,
-            self.kin_df["A"].values,
+            self.fulltables["x"].values,
+            self.fulltables["Q2"].values,
+            self.fulltables["A"].values,
         )
 
     @property
     def central_values(self) -> np.ndarray:
         """Returns the dataset central values"""
-        return self.data_df["data"].values
+        return self.fulltables["data"].values
 
     @property
     def covmat(self) -> np.ndarray:
@@ -129,8 +132,7 @@ class Loader:
             uncertainties table
         Returns
         -------
-        covmat:
-            covariance matrix
+        covariance matrix
 
         """
         diagonal = np.power(unc_df["stat"], 2)

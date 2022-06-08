@@ -9,19 +9,6 @@ from rich.progress import track
 
 from utils import construct_uncertainties, dump_info_file, write_to_csv, build_obs_dict
 
-ERR_DESC = {
-    'stat': {
-        'treatment': "ADD",
-        'type': "UNCORR",
-        'description': "Total statistical uncertainty"
-    },
-    'syst': {
-        'treatment': "ADD",
-        'type': "CORR",
-        'description': "Total systematic uncertainty"
-    }
-}
-
 console = Console()
 
 # Mass determined using scikithep/particle for Pb208 in GeV
@@ -97,8 +84,8 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
     f3pd.index.name = "index"
 
     # Convert the error dictionaries into Pandas tables
-    f2_errors_pd = construct_uncertainties(f2_exp_errors, ERR_DESC)
-    f3_errors_pd = construct_uncertainties(f3_exp_errors, ERR_DESC)
+    f2_errors_pd = construct_uncertainties(f2_exp_errors)
+    f3_errors_pd = construct_uncertainties(f3_exp_errors)
 
     # Dump everything into files. In the following, F2 and xF3 lie on the central
     # values and errors share the same kinematic information and the difference.
@@ -194,8 +181,8 @@ def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list) -> None:
     dnubpd.index.name = "index"
 
     # Convert the error dictionaries into Pandas tables
-    dsignuu_errors_pd = construct_uncertainties(dsig_nu_errors, ERR_DESC)
-    dsignub_errors_pd = construct_uncertainties(dsig_nub_error, ERR_DESC)
+    dsignuu_errors_pd = construct_uncertainties(dsig_nu_errors)
+    dsignub_errors_pd = construct_uncertainties(dsig_nub_error)
 
     # Dump everything into files. In the following, F2 and xF3 lie on the central
     # values and errors share the same kinematic information and the difference.
