@@ -13,9 +13,25 @@ def subcommand():
 
 
 @subcommand.command("combine")
-def sub_combine():
-    """Combine tables."""
-    combine_tables.main()
+@click.argument("data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path))
+@click.option(
+    "-d",
+    "--destination",
+    type=click.Path(exists=True, path_type=pathlib.Path),
+    default=pathlib.Path.cwd().absolute() / "commondata",
+    help="Alternative destination path to store the resulting table (default: $PWD/commondata)",
+)
+def sub_combine(data, destination):
+    """Combine data tables into a unique one.
+
+    The operation is repeated for each DATA path provided (multiple values allowed),
+    e.g.:
+
+        nnu data coefficients commondata/data/*
+
+    to repeat the operation for all dataset stored in `data`.
+    """
+    combine_tables.main(data, destination)
 
 
 @subcommand.command("coefficients")

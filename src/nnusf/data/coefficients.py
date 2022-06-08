@@ -56,7 +56,7 @@ def cross_section(
 
 
 def coefficients(name: str, datapath: pathlib.Path):
-    data = loader.Loader(datapath, None, name)
+    data = loader.Loader(name, datapath)
 
     if data.n_data == 0:
         MissingRequisite("NO data found")
