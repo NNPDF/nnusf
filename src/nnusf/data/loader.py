@@ -34,15 +34,15 @@ class Loader:
         path_to_commondata: pathlib.Path,
         path_to_theory: pathlib.Path,
         data_name: str,
-        data_type: str,
     ) -> None:
-        if data_type not in OBS_TYPE:
+        
+        self.data_name = data_name
+        self.data_type = data_name.split('_')[1]
+        if self.data_type not in OBS_TYPE:
             raise ObsTypeError("Observable not implemented or Wrong!")
 
         self.commondata_path = path_to_commondata
         self.theory_path = path_to_theory
-        self.data_type = data_type
-        self.data_name = f"{data_name}_{data_type}"
         self.fulltables = self.load()
         self.covariance_matrix = self.build_covariance_matrix(self.fulltables)
 
