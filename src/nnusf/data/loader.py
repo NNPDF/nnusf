@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 
 
-OBS_TYPE = ["F2", "F3", "DXDYNUU", "DXDYNUB"]
+OBS_TYPE = ["F2", "F3", "FW", "DXDYNUU", "DXDYNUB", "QBAR"]
 
 MAP_EXP_YADISM = {"NUTEV": "XSNUTEVCC", "CHORUS": "XSCHORUSCC", "CDHSW": "XSCHORUSCC"}
 
@@ -88,7 +88,11 @@ class Loader:
         number_datapoints = new_df.shape[0]
 
         # Extract the information on the cross section
-        data_spec = MAP_EXP_YADISM.get(exp_name, None)
+        # FW is a different case
+        if self.data_type == "FW":
+            data_spec = "FW"
+        else: 
+            data_spec = MAP_EXP_YADISM.get(exp_name, None)
 
         # Append all the columns to the `kin_df` table
         new_df["A"] = np.full(number_datapoints, info_df["target"][0])
