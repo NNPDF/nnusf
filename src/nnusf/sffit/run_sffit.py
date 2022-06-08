@@ -5,7 +5,8 @@ Executable to perform the structure function fit
 import argparse
 import pathlib
 import yaml
-from load_data import load_experimental_data, make_pseudodata
+import load_data
+import numpy as np
 
 
 def main():
@@ -20,13 +21,16 @@ def main():
         runcard_content = yaml.load(file, Loader=yaml.FullLoader)
 
     experiments_dict = runcard_content["experiments"]
-    experimental_data = load_experimental_data(experiments_dict)
+    experimental_data = load_data.load_experimental_data(experiments_dict)
 
     if runcard_content["pseudodataseed"]:
-        pseudo_data = make_pseudodata(experimental_data)
+        load_data.add_pseudodata(experimental_data)
 
+    load_data.add_tr_filter_mask(experimental_data, runcard_content['trvlseed'])
 
-    # Load data
+    
+
+    import ipdb; ipdb.set_trace()
 
     # Build model
 

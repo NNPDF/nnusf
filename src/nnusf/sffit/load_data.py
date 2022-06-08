@@ -1,24 +1,10 @@
 from nnusf.data.loader import Loader
 import pathlib
 import numpy as np
-from dataclasses import dataclass
+import random
 
 path_to_commondata = pathlib.Path(__file__).parents[3].joinpath("commondata")
 path_to_theory = pathlib.Path(__file__).parents[3].joinpath("theory")
-
-@dataclass
-class Pseudodata:
-    "Class containing data needed to fit an experimental dataset"
-    name: str
-    tr_mask: np.ndarray
-    tr_kinematics_array: np.ndarray
-    tr_invcovmat: np.ndarray
-    tr_coefficients: np.ndarray
-    tr_central_values: np.ndarray
-    vl_kinematics_array: np.ndarray
-    vl_invcovmat: np.ndarray
-    vl_coefficients: np.ndarray
-    vl_central_values: np.ndarray
 
 
 def load_experimental_data(experiment_list):
@@ -26,18 +12,25 @@ def load_experimental_data(experiment_list):
     experimental_data = {}
     for experiment in experiment_list:
         data = Loader(path_to_commondata, path_to_theory, experiment['dataset'])
+        data.tr_frac = experiment['frac']
         experimental_data[experiment['dataset']] = data
     return experimental_data
 
 
-def make_pseudodata(experimental_data_list):
-    pseudodata_dict = {}
-    for dataset_name, experimental_data in zip(experimental_data_list.keys(), experimental_data_list.values()):
-        cholesky = np.linalg.cholesky(experimental_data.covmat)
-        random_samples = np.random.randn(experimental_data.covmat.shape[0])
-        pseudodata = experimental_data.central_values + random_samples @ cholesky
-        pseudodata_dict[dataset_name] = pseudodata
-    return pseudodata_dict
+def add_pseudodata(experimental_datasets):
+    for dataset in experimental_datasets.values():
+        cholesky = np.linalg.cholesky(dataset.covmat)
+        random_samples = np.random.randn(dataset.n_data)
+        pseudodata = dataset.central_values + random_samples @ cholesky
+        dataset.pseudodata = pseudodata
 
-def make_tr_vl_objects():
-    pass
+
+def add_tr_filter_mask(experimental_datasets, trvlseed=None):
+    np.random.seed(seed=trvlseed)
+    for dataset in experimental_datasets.values():
+        tr_indices = np.array(
+            random.sample(range(dataset.n_data), int(dataset.tr_frac * dataset.n_data)), dtype=int
+        )
+        tr_filter = np.zeros(dataset.n_data, dtype=bool)
+        tr_filter[tr_indices] = True
+        dataset.tr_filter = tr_filter
