@@ -7,7 +7,7 @@ from pathlib import Path
 from rich.console import Console
 from rich.progress import track
 
-from utils import construct_uncertainties, dump_info_file, write_to_csv, build_obs_dict
+from nnusf.data.filters.utils import construct_uncertainties, dump_info_file, write_to_csv, build_obs_dict
 
 console = Console()
 
@@ -17,6 +17,10 @@ M_PROTON = 938.272013 * 0.001
 A = 82 
 N = 208
 M_NUCLEON = 193.729 / ( A * M_PROTON + (N - A) * M_NEUTRON)
+
+# Experiment Metadata
+TARGET = A
+EXP_NAME = "CHORUS"
 
 
 def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
@@ -201,28 +205,16 @@ def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list) -> None:
     write_to_csv(systypes_folder, f"UNC_{exp_name}_DXDYNUB", dsignub_errors_pd)
 
 
-def extract_ratio_sig(path: Path, exp_name: str, table_id_list: list) -> None:
-    """
-    Placeholder function to include the ratio between the longitudinal and
-    transversal cross sections in case we would like to also include this in
-    the fit.
-    """
-    pass
-
-
-if __name__ == "__main__":
-    relative_path = Path().absolute().parents[0]
-    experiment_name = "CHORUS"
-    target = A
+def main(relative_path: list[Path]) -> None:
+    path_to_commondata = relative_path[0]
     obs_list = []
-
     # List of tables containing measurements for F2 and xF3
     table_f2_xf3 = [i for i in range(1, 12)]
     obs_list.extend([
         build_obs_dict("F2", table_f2_xf3, 0),
         build_obs_dict("F3", table_f2_xf3, 0)
     ])
-    extract_f2f3(relative_path, experiment_name, table_f2_xf3)
+    extract_f2f3(path_to_commondata, EXP_NAME, table_f2_xf3)
 
     # List of tables containing measurements for D2SIG/DX/DY
     table_dsig_dxdy = [i for i in range(23, 122)]
@@ -230,7 +222,13 @@ if __name__ == "__main__":
         build_obs_dict("DXDYNUU", table_dsig_dxdy, 14),
         build_obs_dict("DXDYNUB", table_dsig_dxdy, -14)
     ])
-    extract_d2sigDxDy(relative_path, experiment_name, table_dsig_dxdy)
+    extract_d2sigDxDy(path_to_commondata, EXP_NAME, table_dsig_dxdy)
 
     # dump info file
-    dump_info_file(relative_path, experiment_name, obs_list, target)
+    dump_info_file(path_to_commondata, EXP_NAME, obs_list, TARGET)
+
+
+if __name__ == "__main__":
+    relative_path = [Path().absolute().parents[3].joinpath("commondata")]
+    main(relative_path)
+
