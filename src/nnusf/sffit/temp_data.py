@@ -10,8 +10,6 @@ path_to_theory = pathlib.Path(__file__).parents[1].joinpath("theory")
 # data = Loader(path_to_commondata, path_to_theory, "CHORUS", "F3")
 data = Loader(path_to_commondata, path_to_theory, "NUTEV", "F2")
 
-import ipdb; ipdb.set_trace()
-
 input_central_values = data.central_values
 
 input_x = data.kinematics[0]
@@ -27,5 +25,5 @@ input_covmat = data.covmat
 ndat = input_central_values.size
 input_theory_grid = np.array([[1, 0, 0, 0, 0, 0] for _ in input_central_values])
 tr_ratio = 0.75
-max_epochs = 20
+max_epochs = 2000
 patience = 0.9

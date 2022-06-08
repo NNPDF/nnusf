@@ -5,8 +5,8 @@
 description: A first trial fit with nnufit
 
 experiments:
-- {dataset: NUTEV, frac: 0.75}
-- {dataset: CHORUS, frac: 0.75}
+- {dataset: NUTEV_F2, frac: 0.75}
+- {dataset: NUTEV_F3, frac: 0.75}
 
 trvlseed: 1
 pseudodataseed: 1
@@ -20,3 +20,4 @@ model_parameters:
     clipnorm: 1e-5
     learning_rate: 1e-3
     optimizer_name: Adam
+  initializer_seed: 1

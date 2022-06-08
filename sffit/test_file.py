@@ -80,9 +80,9 @@ sf_basis = layer7(layer6(layer5(layer4(layer3(layer2(layer1(layer_input)))))))
 
 
 ############################# ADD TR/VL CHI2 LAYERS ############################
-class Observable(layers.Layer):
+class Chi2Layer(layers.Layer):
     def __init__(self, theory_grid, invcovmat, experimental_central_value):
-        super(Observable, self).__init__()
+        super(Chi2Layer, self).__init__()
         self.theory_grid = tf.keras.backend.constant(theory_grid)
         self.invcovmat = tf.keras.backend.constant(invcovmat)
         self.experimental_central_value = tf.keras.backend.constant(
@@ -99,8 +99,8 @@ class Observable(layers.Layer):
         return chi2 / ndat
 
 
-tr_layer = Observable(tr_theory_grid, tr_invcovmat, tr_pseudodata)
-vl_layer = Observable(vl_theory_grid, vl_invcovmat, vl_pseudodata)
+tr_layer = Chi2Layer(tr_theory_grid, tr_invcovmat, tr_pseudodata)
+vl_layer = Chi2Layer(vl_theory_grid, vl_invcovmat, vl_pseudodata)
 
 tr_output = tr_layer(sf_basis)
 vl_output = vl_layer(sf_basis)
@@ -114,6 +114,8 @@ def custom_loss(y_true, y_pred):
     "Model prediction is the chi2"
     del y_true
     return y_pred
+
+custom_loss = lambda y_true, y_pred : y_pred
 
 
 opt = tf.keras.optimizers.Adam()
@@ -154,7 +156,7 @@ class EarlyStopping(tf.keras.callbacks.Callback):
 ################################## DO THE FIT ##################################
 
 # tf wants us to give a y input, but we make that part of the the loss function
-y = tf.zeros((batch_size, ndat, output_nodes))
+y = tf.zeros((batch_size, 1, output_nodes))
 
 tr_kinematics_array = tf.expand_dims(tr_kinematics_array, axis=0)
 vl_kinematics_array = tf.expand_dims(vl_kinematics_array, axis=0)
@@ -164,6 +166,7 @@ early_stopping_callback = EarlyStopping(
     vl_model, patience_epochs, vl_kinematics_array, y
 )
 
+import ipdb; ipdb.set_trace()
 
 tr_model.fit(
     tr_kinematics_array,
@@ -181,5 +184,4 @@ model_sf = tf.keras.Model(
     inputs=tr_model.input, outputs=tr_model.get_layer("SF_output").output
 )
 
-tr_grid_to_be_stored = model_sf.predict(input_kinematics_array)
-tr_only_f2_for_benchmarking = model_sf.predict(tr_kinematics_array)[:, :, 0]
+tr_grid_to_be_stored = model_sf.predict(tf.constant([input_kinematics_array]))
