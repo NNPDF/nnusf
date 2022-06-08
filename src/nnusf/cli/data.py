@@ -22,7 +22,15 @@ def subcommand():
     help="Alternative destination path to store the resulting table (default: $PWD/commondata)",
 )
 def sub_combine(data, destination):
-    """Combine tables."""
+    """Combine data tables into a unique one.
+
+    The operation is repeated for each DATA path provided (multiple values allowed),
+    e.g.:
+
+        nnu data coefficients commondata/data/*
+
+    to repeat the operation for all dataset stored in `data`.
+    """
     combine_tables.main(data, destination)
 
 

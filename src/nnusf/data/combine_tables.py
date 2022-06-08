@@ -8,10 +8,6 @@ from nnusf.data.loader import Loader
 
 _logger = logging.getLogger(__name__)
 
-ABS_PATH = pathlib.Path(__file__).parents[3]
-DATA_PATH = ABS_PATH.joinpath("commondata")
-THEORY_PATH = ABS_PATH.joinpath("theory")
-
 
 def combine_tables(datasets: list[pathlib.Path]) -> pd.DataFrame:
     """Combined all the tables with extra information.
