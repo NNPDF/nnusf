@@ -9,12 +9,10 @@ class TestLoader:
     def test_init(self):
         data = Loader(path_to_commondata, path_to_theory, "NUTEV_F2")
 
-        assert len(data.kinematics) == 3
-        n_data = data.kinematics[0].shape[0]
-        assert data.covmat.shape == (n_data, n_data)
+        assert data.kinematics.shape[1] == 3
+        assert data.covmat.shape == (data.n_data,  data.n_data)
 
     def test_drop_zeros(self):
         data = Loader(path_to_commondata, path_to_theory, "BEBCWA59_F3")
 
-        assert len(data.kinematics) == 3
         assert 0 not in data.fulltables["stat"] + data.fulltables["syst"]

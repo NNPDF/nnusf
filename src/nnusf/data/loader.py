@@ -35,9 +35,9 @@ class Loader:
         path_to_theory: pathlib.Path,
         data_name: str,
     ) -> None:
-        
+
         self.data_name = data_name
-        self.data_type = data_name.split('_')[1]
+        self.data_type = data_name.split("_")[1]
         if self.data_type not in OBS_TYPE:
             raise ObsTypeError("Observable not implemented or Wrong!")
 
@@ -91,7 +91,7 @@ class Loader:
         # FW is a different case
         if self.data_type == "FW":
             data_spec = "FW"
-        else: 
+        else:
             data_spec = MAP_EXP_YADISM.get(exp_name, None)
 
         # Append all the columns to the `kin_df` table
@@ -103,13 +103,14 @@ class Loader:
         return new_df
 
     @property
-    def kinematics(self) -> tuple:
+    def kinematics(self) -> np.ndarray:
         """Returns the kinematics variables"""
-        return (
-            self.fulltables["x"].values,
-            self.fulltables["Q2"].values,
-            self.fulltables["A"].values,
-        )
+        return self.fulltables[["x", "Q2", "A"]].values
+
+    @property
+    def n_data(self):
+        """Returns the number of datapoints"""
+        return self.fulltables.shape[0]
 
     @property
     def central_values(self) -> np.ndarray:
