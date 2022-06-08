@@ -23,11 +23,18 @@ EXP_NAME = "BEBCWA59"
 
 
 def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
+    """Extract F2 and xF3 structure functions.
+
+    Parameters
+    ----------
+    path : Path
+        Path to the commondata folder
+    exp_name : str
+        name of the experiment
+    table_id_list : list
+        list of table that corresponds to F2 & xF3
     """
-    Parameters:
-    -----------
-    path: Path
-    """
+
     kinematics = []
     f2_central = []
     f3_central = []
@@ -36,7 +43,6 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
     console.print("\n• Extracting F2 and xF3 from HEP tables:", style="bold blue")
     # Loop over the tables that only contains the F2/xF3
     for table_id in track(table_id_list, description="Progress tables"):
-        print(path)
         table_path = path.joinpath(f"rawdata/{exp_name}/Table{table_id}.yaml")
         load_table = yaml.safe_load(table_path.read_text())
         # Extract the dictionary containing the high-level
@@ -124,8 +130,14 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
     write_to_csv(systypes_folder, f"UNC_{exp_name}_F3", f3_errors_pd)
 
 
-def main(relative_path: list[Path]) -> None:
-    path_to_commondata = relative_path[0]
+def main(path_to_commondata: Path) -> None:
+    """
+    Parameters
+    ----------
+    path_to_commondata : Path
+        path to the commondata folder
+    """
+
     # List of tables containing measurements for F2 and xF3
     table_f2_xf3 = [i for i in range(1, 10)]
     obs_list = [
@@ -139,5 +151,5 @@ def main(relative_path: list[Path]) -> None:
 
 
 if __name__ == "__main__":
-    relative_path = [Path().absolute().parents[3].joinpath("commondata")]
+    relative_path = Path().absolute().parents[3].joinpath("commondata")
     main(relative_path)

@@ -27,11 +27,18 @@ EXP_NAME = "CHARM"
 
 
 def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
+    """Extract F2 and xF3 structure functions.
+
+    Parameters
+    ----------
+    path : Path
+        Path to the commondata folder
+    exp_name : str
+        name of the experiment
+    table_id_list : list
+        list of table that corresponds to F2 & xF3
     """
-    Parameters:
-    -----------
-    path: Path
-    """
+
     kinematics = []
     f2_central = []
     f3_central = []
@@ -130,11 +137,18 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
 
 
 def extract_qbar(path: Path, exp_name: str, table_id_list: list) -> None:
+    """Extract the double differential cross section.
+
+    Parameters
+    ----------
+    path : Path
+        Path to the commondata folder
+    exp_name : str
+        name of the experiment
+    table_id_list : list
+        list of table that corresponds to DSIG/DX/DY
     """
-    Parameters:
-    -----------
-    path: Path
-    """
+
     kinematics = []
     QBAR_central = []
     QBAR_exp_errors = []
@@ -215,8 +229,14 @@ def extract_qbar(path: Path, exp_name: str, table_id_list: list) -> None:
     write_to_csv(systypes_folder, f"UNC_{exp_name}_QBAR", QBAR_errors_pd)
 
 
-def main(relative_path: list[Path]) -> None:
-    path_to_commondata = relative_path[0]
+def main(path_to_commondata: Path) -> None:
+    """
+    Parameters
+    ----------
+    path_to_commondata : Path
+        path to the commondata folder
+    """
+
     # List of tables containing measurements for F2 and xF3
     obs_list = [build_obs_dict("F2", [1], 0), build_obs_dict("F3", [1], 0)]
     extract_f2f3(path_to_commondata, EXP_NAME, [1])
@@ -231,5 +251,5 @@ def main(relative_path: list[Path]) -> None:
 
 
 if __name__ == "__main__":
-    relative_path = [Path().absolute().parents[3].joinpath("commondata")]
+    relative_path = Path().absolute().parents[3].joinpath("commondata")
     main(relative_path)

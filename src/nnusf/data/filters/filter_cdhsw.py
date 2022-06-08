@@ -31,11 +31,18 @@ EXP_NAME = "CDHSW"
 
 
 def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
+    """Extract F2 and xF3 structure functions.
+
+    Parameters
+    ----------
+    path : Path
+        Path to the commondata folder
+    exp_name : str
+        name of the experiment
+    table_id_list : list
+        list of table that corresponds to F2 & xF3
     """
-    Parameters:
-    -----------
-    path: Path
-    """
+
     kinematics = []
     f2_central = []
     f3_central = []
@@ -158,11 +165,18 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
 
 
 def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list, obs: str) -> None:
+    """Extract the double differential cross sections.
+
+    Parameters
+    ----------
+    path : Path
+        Path to the commondata folder
+    exp_name : str
+        name of the experiment
+    table_id_list : list
+        list of table that corresponds to DSIG/DX/DY
     """
-    Parameters:
-    -----------
-    path: Path
-    """
+
     kinematics = []
     dsig_nu_central = []
     dsig_nu_errors = []
@@ -245,11 +259,18 @@ def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list, obs: str) 
 
 
 def extract_fw(path: Path, exp_name: str, table_id_list: list) -> None:
+    """Extract the F_W observable.
+
+    Parameters
+    ----------
+    path : Path
+        Path to the commondata folder
+    exp_name : str
+        name of the experiment
+    table_id_list : list
+        list of table that corresponds to F_W
     """
-    Parameters:
-    -----------
-    path: Path
-    """
+
     kinematics = []
     fw_central = []
     fw_exp_errors = []
@@ -361,8 +382,14 @@ def extract_fw(path: Path, exp_name: str, table_id_list: list) -> None:
     write_to_csv(systypes_folder, f"UNC_{exp_name}_FW", fw_errors_pd)
 
 
-def main(relative_path: list[Path]) -> None:
-    path_to_commondata = relative_path[0]
+def main(path_to_commondata: Path) -> None:
+    """
+    Parameters
+    ----------
+    path_to_commondata : Path
+        path to the commondata folder
+    """
+
     obs_list = []
 
     # List of tables containing measurements for F2 and xF3
@@ -391,5 +418,5 @@ def main(relative_path: list[Path]) -> None:
 
 
 if __name__ == "__main__":
-    relative_path = [Path().absolute().parents[3].joinpath("commondata")]
+    relative_path = Path().absolute().parents[3].joinpath("commondata")
     main(relative_path)
