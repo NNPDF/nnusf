@@ -1,6 +1,6 @@
-import tensorflow as tf
-
 import logging
+
+import tensorflow as tf
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)

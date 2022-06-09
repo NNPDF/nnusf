@@ -4,9 +4,10 @@ Executable to perform the structure function fit
 
 import argparse
 import pathlib
+
 import yaml
+
 import load_data
-import numpy as np
 from model_gen import generate_models
 from train_model import perform_fit
 
@@ -28,11 +29,15 @@ def main():
     if runcard_content["pseudodataseed"]:
         load_data.add_pseudodata(data_info)
 
-    load_data.add_tr_filter_mask(data_info, runcard_content['trvlseed'])
+    load_data.add_tr_filter_mask(data_info, runcard_content["trvlseed"])
 
-    tr_model, vl_model = generate_models(data_info, **runcard_content["fit_parameters"])
+    tr_model, vl_model = generate_models(
+        data_info, **runcard_content["fit_parameters"]
+    )
 
-    perform_fit(tr_model, vl_model, data_info, **runcard_content["fit_parameters"])
+    perform_fit(
+        tr_model, vl_model, data_info, **runcard_content["fit_parameters"]
+    )
 
 
 if __name__ == "__main__":

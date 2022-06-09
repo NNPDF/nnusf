@@ -1,6 +1,7 @@
-import tensorflow as tf
-from callbacks import EarlyStopping
 import numpy as np
+import tensorflow as tf
+
+from callbacks import EarlyStopping
 
 optimizer_options = {
     "Adam": tf.keras.optimizers.Adam,
@@ -8,7 +9,16 @@ optimizer_options = {
     "Adadelta": tf.keras.optimizers.Adadelta,
 }
 
-def perform_fit(tr_model, vl_model, data_info, epochs, stopping_patience, optimizer_parameters, **kwargs):
+
+def perform_fit(
+    tr_model,
+    vl_model,
+    data_info,
+    epochs,
+    stopping_patience,
+    optimizer_parameters,
+    **kwargs
+):
     "Compile the models and do the fit"
     del kwargs
 
@@ -16,7 +26,7 @@ def perform_fit(tr_model, vl_model, data_info, epochs, stopping_patience, optimi
     optimizer = opt_class()
 
     # The model has output nodes corresponding to the chi2 per experiment
-    custom_loss = lambda y_true, y_pred : tf.math.reduce_sum(y_pred)
+    custom_loss = lambda y_true, y_pred: tf.math.reduce_sum(y_pred)
 
     tr_model.compile(optimizer=optimizer, loss=custom_loss)
     vl_model.compile(loss=custom_loss)
@@ -44,4 +54,3 @@ def perform_fit(tr_model, vl_model, data_info, epochs, stopping_patience, optimi
         verbose=2,
         callbacks=[early_stopping_callback],
     )
-
