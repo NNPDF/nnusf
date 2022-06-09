@@ -9,13 +9,18 @@ There are actually two sections:
 
 """
 import copy
+import logging
+import pathlib
+from typing import Optional
 
 import yadmark.data.observables
 
 from . import load
 
+_logger = logging.getLogger(__name__)
 
-def overlap() -> dict:
+
+def overlap(datasets: list[str], path: pathlib.Path) -> dict:
     """Provide data overlap yadism runcards.
 
     Returns
@@ -24,7 +29,7 @@ def overlap() -> dict:
         id to observables runcard mapping
 
     """
-    kins = load.kinematics()
+    kins = load.kinematics(datasets[0], path)
 
     run_nu = copy.deepcopy(yadmark.data.observables.default_card)
     run_nu["prDIS"] = "CC"
@@ -59,6 +64,7 @@ def overlap() -> dict:
                 run_nu_extra["observables"][sfname].append(dict(x=x, Q2=q2, y=0))
                 run_nb_extra["observables"][sfname].append(dict(x=x, Q2=q2, y=0))
 
+    _logger.info("Data overlapping runcards generated.")
     return dict(nu=run_nu, nb=run_nb, nu_extra=run_nb_extra, nb_extra=run_nb_extra)
 
 
@@ -71,10 +77,11 @@ def boundary() -> dict:
         id to observables runcard mapping
 
     """
+    _logger.info("Large Q2 boundary conditions runcard generated.")
     return dict()
 
 
-def observables() -> dict:
+def observables(datasets: list[str], path: Optional[pathlib.Path]) -> dict:
     """Collect all yadism runcards for large Q2 region.
 
     Returns
@@ -83,4 +90,13 @@ def observables() -> dict:
         id to observables runcard mapping
 
     """
-    return overlap() | boundary()
+    if len(datasets) == 0 or path is None:
+        if path is None:
+            _logger.warning("No path to data folder provided.")
+        else:
+            _logger.warning("No data requested.")
+
+        _logger.warning("No data overlapping runcard will be generated.")
+        return boundary()
+
+    return overlap(datasets, path) | boundary()

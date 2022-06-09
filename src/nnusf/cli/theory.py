@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Provide theory subcommand."""
 import pathlib
 
 import click
@@ -17,22 +18,52 @@ def subcommand():
     pass
 
 
-@subcommand.command("runcards")
-@click.argument("what", type=click.Choice(["by", "hiq"]))
-def sub_runcards(what):
+@subcommand.group("runcards")
+def sub_runcards():
     """Generate yadism runcards.
 
-    Dump runcards compatible with WHAT predictions:
+    Dump runcards compatible with predictions.
 
-        - 'by': Bodek-Yang predictions, made with Genie
-        - 'hiq': high Q2, from cut values of the dataset
     """
-    runcards.main(what)
+
+
+@sub_runcards.command("by")
+@click.option(
+    "-d",
+    "--destination",
+    type=click.Path(path_type=pathlib.Path),
+    default=pathlib.Path.cwd().absolute() / "theory",
+    help="Alternative destination path to store the resulting table (default: $PWD/theory)",
+)
+def sub_sub_by(destination):
+    """Bodek-Yang predictions, made with Genie."""
+    runcards.by(destination=destination)
+
+
+@sub_runcards.command("hiq")
+@click.argument("data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path))
+@click.option(
+    "-d",
+    "--destination",
+    type=click.Path(path_type=pathlib.Path),
+    default=pathlib.Path.cwd().absolute() / "theory",
+    help="Alternative destination path to store the resulting table (default: $PWD/theory)",
+)
+def sub_sub_hiq(data, destination):
+    """High Q2, from cut values of the dataset."""
+    runcards.hiq(data, destination=destination)
 
 
 @subcommand.command("grids")
 @click.argument("runcards", type=click.Path(exists=True, path_type=pathlib.Path))
-def sub_grids(runcards):
+@click.option(
+    "-d",
+    "--destination",
+    type=click.Path(path_type=pathlib.Path),
+    default=pathlib.Path.cwd().absolute() / "theory",
+    help="Alternative destination path to store the resulting table (default: $PWD/theory)",
+)
+def sub_grids(runcards, destination):
     """Generate grids with yadism.
 
     RUNCARDS is a path to folder (or tar folder) containing the runcards:
@@ -43,6 +74,7 @@ def sub_grids(runcards):
     prefix and suffix: it has to start with `obs`, and extension has to be
     `.yaml`.
     The internal `name` key is used for the generated grids.
+
     """
     grids.main(runcards.absolute())
 
@@ -56,13 +88,21 @@ def sub_grids(runcards):
     default="theory",
 )
 @click.option("-x", type=int, default=None)
-def sub_predictions(grids, pdf, err, x):
+@click.option(
+    "-d",
+    "--destination",
+    type=click.Path(path_type=pathlib.Path),
+    default=pathlib.Path.cwd().absolute() / "theory",
+    help="Alternative destination path to store the resulting table (default: $PWD/theory)",
+)
+def sub_predictions(grids, pdf, err, destination, x):
     """Generate predictions from yadism grids.
 
     GRIDS is a path to folder (or tar folder) containing the grids, one per
     observable.
     PDF is the pdf to be convoluted with the grids, in order to obtain the
     structure functions predictions.
+
     """
     if x is None:
         predictions.main(grids.absolute(), pdf, err=err)
