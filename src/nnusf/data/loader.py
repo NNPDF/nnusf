@@ -15,7 +15,7 @@ MAP_EXP_YADISM = {"NUTEV": "XSNUTEVCC", "CHORUS": "XSCHORUSCC", "CDHSW": "XSCHOR
 
 
 class ObsTypeError(Exception):
-    pass
+    """Raised when observable is not recognized."""
 
 
 class Loader:
@@ -27,15 +27,6 @@ class Loader:
         - building the covariance matrix
         - (on demand) loading the coefficients (if the path is available)
 
-    Parameters
-    ----------
-    name: str
-        dataset name
-    path_to_commondata: os.PathLike
-        path to commondata folder
-    path_to_coefficients: os.PathLike or None
-        path to theory folder
-
     """
 
     def __init__(
@@ -43,8 +34,19 @@ class Loader:
         name: str,
         path_to_commondata: pathlib.Path,
         path_to_coefficients: Optional[pathlib.Path] = None,
-    ) -> None:
+    ):
+        """Initialize object.
 
+        Parameters
+        ----------
+        name: str
+            dataset name
+        path_to_commondata: os.PathLike
+            path to commondata folder
+        path_to_coefficients: os.PathLike or None
+            path to theory folder
+
+        """
         self.name = name
         if self.obs not in OBS_TYPE:
             raise ObsTypeError(f"Observable '{self.obs}' not implemented or Wrong!")
@@ -57,7 +59,7 @@ class Loader:
         _logger.info(f"Loaded '{name}' dataset")
 
     def _load(self) -> pd.DataFrame:
-        """Load the dataset information
+        """Load the dataset information.
 
         Returns
         -------
@@ -136,7 +138,13 @@ class Loader:
         return new_df
 
     @property
+    def exp(self) -> str:
+        """Return the name of the experiment."""
+        return self.name.split("_")[0]
+
+    @property
     def obs(self) -> str:
+        """Return the observable name."""
         return self.name.split("_")[1]
 
     @property

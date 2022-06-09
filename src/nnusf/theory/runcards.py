@@ -28,13 +28,28 @@ def dump(
     observables_cards: dict[str, dict],
     destination: pathlib.Path = pathlib.Path.cwd(),
 ):
-    """Dump runcards to tar in a given destination."""
+    """Dump runcards to tar in a given destination.
+
+    Raises
+    ------
+    NotADirectoryError
+        if destination is given, but it is not a directory
+
+    """
     with tempfile.TemporaryDirectory() as tmpdir:
         tmpdir = pathlib.Path(tmpdir)
 
         utils.write(theory_card, tmpdir / "theory.yaml")
         for name, observable in observables_cards.items():
             utils.write(observable, tmpdir / f"obs-{name}.yaml")
+
+        if destination.exists():
+            if not destination.is_dir():
+                raise NotADirectoryError(
+                    f"The given destination exists, but is not a directory - '{destination}'"
+                )
+        else:
+            destination.mkdir(parents=True)
 
         tarpath = destination / "runcards.tar"
         with tarfile.open(tarpath, "w") as tar:
@@ -48,7 +63,7 @@ def dump(
 
 def by(destination: pathlib.Path):
     """Generate Bodek-Yang yadism runcards."""
-    dump(theory(), bodek_yang.runcards.observables())
+    dump(theory(), bodek_yang.runcards.observables(), destination=destination)
 
 
 def hiq(datasets: list[pathlib.Path], destination: pathlib.Path):
@@ -64,4 +79,5 @@ def hiq(datasets: list[pathlib.Path], destination: pathlib.Path):
         highq.runcards.observables(
             ["_".join(ds.stem.split("_")[1:]) for ds in datasets], path
         ),
+        destination=destination,
     )
