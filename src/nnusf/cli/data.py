@@ -31,6 +31,7 @@ def sub_combine(data, destination):
         nnu data coefficients commondata/data/*
 
     to repeat the operation for all dataset stored in `data`.
+
     """
     combine_tables.main(data, destination)
 
@@ -44,7 +45,9 @@ def filter_all_data(data):
     into the commondata folder.
 
     The command is run as follows:
-        nnu data filter ./commondata/rawdata/*
+
+        nnu data filter commondata/rawdata/*
+
     """
     filters.main(data)
 
@@ -70,5 +73,6 @@ def sub_coefficients(data, destination):
         nnu data coefficients commondata/data/*
 
     to repeat the operation for all dataset stored in `data`.
+
     """
     coefficients.main(data, destination)
