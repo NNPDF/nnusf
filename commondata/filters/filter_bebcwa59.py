@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""Filter for BEBCWA59 experiment."""
 
 from pathlib import Path
 
@@ -8,7 +9,7 @@ import yaml
 from rich.console import Console
 from rich.progress import track
 
-from nnusf.data.filters.utils import (
+from nnusf.data.utils import (
     build_obs_dict,
     construct_uncertainties,
     dump_info_file,
@@ -22,7 +23,7 @@ TARGET = 10
 EXP_NAME = "BEBCWA59"
 
 
-def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
+def extract_f2f3(path: Path, exp_name: str, table_id_list: list):
     """Extract F2 and xF3 structure functions.
 
     Parameters
@@ -33,8 +34,8 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
         name of the experiment
     table_id_list : list
         list of table that corresponds to F2 & xF3
-    """
 
+    """
     kinematics = []
     f2_central = []
     f3_central = []
@@ -130,14 +131,15 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
     write_to_csv(systypes_folder, f"UNC_{exp_name}_F3", f3_errors_pd)
 
 
-def main(path_to_commondata: Path) -> None:
-    """
+def main(path_to_commondata: Path):
+    """Run filter.
+
     Parameters
     ----------
     path_to_commondata : Path
         path to the commondata folder
-    """
 
+    """
     # List of tables containing measurements for F2 and xF3
     table_f2_xf3 = [i for i in range(1, 10)]
     obs_list = [
@@ -151,5 +153,5 @@ def main(path_to_commondata: Path) -> None:
 
 
 if __name__ == "__main__":
-    relative_path = Path().absolute().parents[3].joinpath("commondata")
+    relative_path = Path().absolute().parents[3] / "commondata"
     main(relative_path)

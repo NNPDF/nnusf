@@ -104,4 +104,4 @@ def dump_info_file(
     info_folder.mkdir(exist_ok=True)
     df = pd.DataFrame(obs_list)
     df["target"] = target
-    df.to_csv(info_folder / "{exp_name}.csv", encoding="utf-8")
+    df.to_csv(info_folder / f"{exp_name}.csv", encoding="utf-8")
