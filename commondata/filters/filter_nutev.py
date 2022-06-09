@@ -7,7 +7,7 @@ import yaml
 from rich.console import Console
 from rich.progress import track
 
-from nnusf.data.filters.utils import (
+from nnusf.data.utils import (
     build_obs_dict,
     construct_uncertainties,
     dump_info_file,
