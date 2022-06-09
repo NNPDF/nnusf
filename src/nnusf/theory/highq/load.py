@@ -7,8 +7,8 @@ import numpy as np
 from ...data import loader
 
 sfmap = dict(F2="F2_total", FL="FL_total", F3="F3_total")
+xsmap = dict(CHORUS="XSCHORUSCC", NUTEV="XSNUTEVCC", CDHSW="XSCHORUSCC", FW="FW")
 projectiles = dict(NU="neutrino", NB="antineutrino")
-xsmap = dict(CHORUS="XSCHORUSCC")
 
 Q2CUT = 5
 

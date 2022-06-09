@@ -52,8 +52,21 @@ def overlap(datasets: list[str], path: pathlib.Path) -> dict:
             ds_cards[f"{dataset}_NU"] = copy.deepcopy(run_nu)
             ds_cards[f"{dataset}_NB"] = copy.deepcopy(run_nb)
 
+        obs = kins["obs"]
+        try:
+            if obs in load.sfmap:
+                obsname = load.sfmap[obs]
+            else:
+                exp = kins["exp"]
+                if obs in load.xsmap:
+                    obsname = load.xsmap[obs]
+                else:
+                    obsname = load.xsmap[exp]
+        except KeyError:
+            _logger.error(f"No definition found for '{dataset}'")
+            continue
+
         for run in ds_cards.values():
-            obsname = load.sfmap[kins["obs"]]
             obskins = list(
                 pd.DataFrame({k: v for k, v in kins.items() if k in ["x", "Q2", "y"]})
                 .T.to_dict()
