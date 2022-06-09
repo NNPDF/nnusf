@@ -22,8 +22,8 @@ def perform_fit(
     "Compile the models and do the fit"
     del kwargs
 
-    opt_class = optimizer_options[optimizer_parameters.pop("optimizer")]
-    optimizer = opt_class()
+    optimizer = optimizer_options[optimizer_parameters.pop("optimizer")]
+    optimizer = optimizer(**optimizer_parameters)
 
     # The model has output nodes corresponding to the chi2 per experiment
     custom_loss = lambda y_true, y_pred: tf.math.reduce_sum(y_pred)

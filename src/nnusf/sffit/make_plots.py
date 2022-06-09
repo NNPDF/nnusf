@@ -3,12 +3,10 @@ Executable to make plots
 """
 
 import argparse
+import logging
 import pathlib
 
 import yaml
-
-import logging
-import tensorflow as tf
 
 import plots
 
@@ -34,7 +32,7 @@ def main():
     path_to_output_folder.mkdir(parents=True, exist_ok=True)
 
     with open(path_to_runcard) as file:
-        runcard_content = yaml.load(file, Loader=yaml.FullLoader)
+        runcard_content = yaml.load(file, Loader=yaml.SafeLoader)
 
     runcard_content["output"] = str(path_to_output_folder.absolute())
 

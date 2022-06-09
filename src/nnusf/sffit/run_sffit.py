@@ -3,18 +3,16 @@ Executable to perform the structure function fit
 """
 
 import argparse
+import logging
 import pathlib
+import shutil
 
+import tensorflow as tf
 import yaml
 
 import load_data
 from model_gen import generate_models
 from train_model import perform_fit
-
-import logging
-import tensorflow as tf
-import shutil
-
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)

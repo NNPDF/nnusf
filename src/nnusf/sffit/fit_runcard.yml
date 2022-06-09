@@ -35,6 +35,6 @@ fit_parameters:
   activation_per_layer: [tanh, tanh,tanh,tanh, selu]
   optimizer_parameters:
     optimizer: Adam
-    clipnorm: 1e-5
-    learning_rate: 1e-3
+    clipnorm: 0.00001
+    learning_rate: 0.001
   initializer_seed: 1

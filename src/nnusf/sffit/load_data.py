@@ -2,7 +2,6 @@ import pathlib
 import random
 
 import numpy as np
-
 from nnusf.data.loader import Loader
 
 path_to_commondata = pathlib.Path(__file__).parents[3].joinpath("commondata")
