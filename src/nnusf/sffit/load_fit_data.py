@@ -3,12 +3,14 @@ import tensorflow as tf
 import numpy as np
 from dataclasses import dataclass
 
+
 @dataclass
 class PredictionInfo:
     predictions: np.ndarray
     q: np.ndarray
     x: np.ndarray
     A: np.ndarray
+    n_sfs: int
 
 
 def load_models(fit):
@@ -43,6 +45,7 @@ def get_predictions_q(
         x=x_slice,
         A=a_slice,
         q=q_values,
+        n_sfs=len(predictions),
     )
 
     return prediction_info
