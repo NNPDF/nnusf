@@ -35,9 +35,9 @@ def kinematics(name: str, path: pathlib.Path) -> pd.DataFrame:
     data = loader.Loader(name, path)
 
     kins = dict(
-        x=data.fulltables["x"].values,
-        y=data.fulltables["y"].values,
-        Q2=data.fulltables["Q2"].values,
+        x=data.table["x"].values,
+        y=data.table["y"].values,
+        Q2=data.table["Q2"].values,
         obs=np.random.choice(list(sfmap.keys()) + ["XS"], size=n),
         proj=np.random.randint(-1, 2, size=n),
         A=np.random.randint(1, 100, size=n),

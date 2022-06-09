@@ -64,7 +64,7 @@ def coefficients(name: str, datapath: pathlib.Path):
     if data.n_data == 0:
         MissingRequisite("NO data found")
 
-    proj = data.fulltables["projectile"].values[0]
+    proj = data.table["projectile"].values[0]
 
     if proj < 0:
         pos = [3]
@@ -76,18 +76,18 @@ def coefficients(name: str, datapath: pathlib.Path):
         raise ValueError
     pos = np.array(pos)
 
-    if data.data_type in ["F2", "F3"]:
+    if data.obs in ["F2", "F3"]:
         coeffs = np.zeros((data.n_data, 6))
-        pos += 0 if data.data_type == "F2" else 2
+        pos += 0 if data.obs == "F2" else 2
         coeffs[:, pos] = 1
     else:
-        if "y" not in data.fulltables:
+        if "y" not in data.table:
             raise MissingRequisite(f"NO y available for '{name}'")
 
         coeffs = cross_section(
             name,
             kinematics=data.kinematics,
-            y=data.fulltables["y"].values,
+            y=data.table["y"].values,
             proj=proj,
             pos=pos,
         )

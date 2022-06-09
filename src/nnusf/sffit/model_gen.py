@@ -1,8 +1,8 @@
+# -*- coding: utf-8 -*-
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras import layers
-
 from layers import Chi2Layer
+from tensorflow.keras import layers
 
 
 def generate_models(
@@ -25,9 +25,7 @@ def generate_models(
     # (None,3) where None leaves the ndat size free such that we can use the
     # same input layer for models with different input sizes (e.g. training and
     # validation)
-    input_layer = layers.Input(
-        shape=(None, 3), batch_size=1, name="input_layer"
-    )
+    input_layer = layers.Input(shape=(None, 3), batch_size=1, name="input_layer")
 
     # make the dense layers
     dense_layers = []
@@ -83,7 +81,7 @@ def generate_models(
             tr_pseudodata,
             tr_data_domain,
             training_data=True,
-            name=data.data_name,
+            name=data.name,
         )
         vl_layer = Chi2Layer(
             vl_coefficients,
@@ -91,7 +89,7 @@ def generate_models(
             vl_pseudodata,
             vl_data_domain,
             training_data=False,
-            name=data.data_name,
+            name=data.name,
         )
         tr_outputs.append(tr_layer(sf_basis))
         vl_outputs.append(vl_layer(sf_basis))

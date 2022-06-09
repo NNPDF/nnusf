@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Provide a Loader class to retrieve data information."""
 import logging
 import pathlib
 from typing import Optional
@@ -28,7 +29,7 @@ class Loader:
 
     Parameters
     ----------
-    data_name: str
+    name: str
         dataset name
     path_to_commondata: os.PathLike
         path to commondata folder
@@ -39,24 +40,21 @@ class Loader:
 
     def __init__(
         self,
-        data_name: str,
+        name: str,
         path_to_commondata: pathlib.Path,
         path_to_coefficients: Optional[pathlib.Path] = None,
     ) -> None:
 
-        self.data_name = data_name
-        self.data_type = data_name.split("_")[1]
-        if self.data_type not in OBS_TYPE:
-            raise ObsTypeError(
-                f"Observable '{self.data_type}' not implemented or Wrong!"
-            )
+        self.name = name
+        if self.obs not in OBS_TYPE:
+            raise ObsTypeError(f"Observable '{self.obs}' not implemented or Wrong!")
 
         self.commondata_path = path_to_commondata
         self.coefficients_path = path_to_coefficients
-        self.fulltables = self._load()
-        self.covariance_matrix = self.build_covariance_matrix(self.fulltables)
+        self.table = self._load()
+        self.covariance_matrix = self.build_covariance_matrix(self.table)
 
-        _logger.info(f"Loaded '{data_name}' dataset")
+        _logger.info(f"Loaded '{name}' dataset")
 
     def _load(self) -> pd.DataFrame:
         """Load the dataset information
@@ -67,14 +65,14 @@ class Loader:
 
         """
         # info file
-        exp_name = self.data_name.split("_")[0]
+        exp_name = self.name.split("_")[0]
         info_df = pd.read_csv(f"{self.commondata_path}/info/{exp_name}.csv")
 
         # Extract values from the kinematic tables
-        kin_file = self.commondata_path.joinpath(f"kinematics/KIN_{self.data_name}.csv")
+        kin_file = self.commondata_path.joinpath(f"kinematics/KIN_{self.name}.csv")
         if kin_file.exists():
             kin_df = pd.read_csv(kin_file).iloc[1:, 1:4].reset_index(drop=True)
-        elif self.data_type in ["F2", "F3"]:
+        elif self.obs in ["F2", "F3"]:
             kin_df = (
                 pd.read_csv(
                     f"{self.commondata_path}/kinematics/KIN_{exp_name}_F2F3.csv"
@@ -82,7 +80,7 @@ class Loader:
                 .iloc[1:, 1:4]
                 .reset_index(drop=True)
             )
-        elif self.data_type in ["DXDYNUU", "DXDYNUB"]:
+        elif self.obs in ["DXDYNUU", "DXDYNUB"]:
             kin_df = (
                 pd.read_csv(
                     f"{self.commondata_path}/kinematics/KIN_{exp_name}_DXDY.csv"
@@ -94,7 +92,7 @@ class Loader:
         # Extract values from the central and uncertainties
         data_df = (
             pd.read_csv(
-                f"{self.commondata_path}/data/DATA_{self.data_name}.csv",
+                f"{self.commondata_path}/data/DATA_{self.name}.csv",
                 header=0,
                 na_values=["-", " "],
             )
@@ -103,7 +101,7 @@ class Loader:
         )
         unc_df = (
             pd.read_csv(
-                f"{self.commondata_path}/uncertainties/UNC_{self.data_name}.csv",
+                f"{self.commondata_path}/uncertainties/UNC_{self.name}.csv",
                 na_values=["-", " "],
             )
             .iloc[2:, 1:]
@@ -121,7 +119,7 @@ class Loader:
 
         # Extract the information on the cross section
         # FW is a different case
-        if self.data_type == "FW":
+        if self.obs == "FW":
             data_spec = "FW"
         else:
             data_spec = MAP_EXP_YADISM.get(exp_name, None)
@@ -129,52 +127,59 @@ class Loader:
         # Append all the columns to the `kin_df` table
         new_df["A"] = np.full(number_datapoints, info_df["target"][0])
         new_df["xsec"] = np.full(number_datapoints, data_spec)
-        new_df["Obs"] = np.full(number_datapoints, self.data_type)
+        new_df["Obs"] = np.full(number_datapoints, self.obs)
         new_df["projectile"] = np.full(
             number_datapoints,
-            info_df.loc[info_df["type"] == self.data_type, "projectile"],
+            info_df.loc[info_df["type"] == self.obs, "projectile"],
         )
 
         return new_df
 
     @property
+    def obs(self) -> str:
+        return self.name.split("_")[1]
+
+    @property
     def kinematics(self) -> np.ndarray:
-        """Returns the kinematics variables"""
-        return self.fulltables[["x", "Q2", "A"]].values
+        """Return the kinematics variables."""
+        return self.table[["x", "Q2", "A"]].values
 
     @property
     def n_data(self):
-        """Returns the number of datapoints"""
-        return self.fulltables.shape[0]
+        """Return the number of datapoints."""
+        return self.table.shape[0]
 
     @property
     def central_values(self) -> np.ndarray:
-        """Returns the dataset central values"""
-        return self.fulltables["data"].values
+        """Return the dataset central values."""
+        return self.table["data"].values
 
     @property
     def covmat(self) -> np.ndarray:
-        """Returns the covariance matrix"""
+        """Return the covariance matrix."""
         return self.covariance_matrix
 
     @property
     def coefficients(self) -> np.ndarray:
-        """Returns the coefficients prediction"""
+        """Return the coefficients prediction."""
         if self.coefficients_path is None:
             raise ValueError(
-                f"No path available to load coefficients for '{self.data_name}'"
+                f"No path available to load coefficients for '{self.name}'"
             )
 
-        return np.load((self.coefficients_path / self.data_name).with_suffix(".npy"))
+        return np.load((self.coefficients_path / self.name).with_suffix(".npy"))
 
     @staticmethod
     def build_covariance_matrix(unc_df: pd.DataFrame) -> np.ndarray:
-        """Build the covariance matrix given the statistical and systematics uncertainties
+        """Build the covariance matrix.
+
+        It consumes as input the statistical and systematics uncertainties.
 
         Parameters
         ----------
         unc_df:
             uncertainties table
+
         Returns
         -------
         covariance matrix
