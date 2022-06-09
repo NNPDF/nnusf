@@ -35,6 +35,7 @@ def overlap(datasets: list[str], path: pathlib.Path) -> dict:
     run_nu = copy.deepcopy(yadmark.data.observables.default_card)
     run_nu["prDIS"] = "CC"
     run_nu["ProjectileDIS"] = "neutrino"
+    run_nu["observables"] = {}
 
     run_nb = copy.deepcopy(run_nu)
     run_nb["ProjectileDIS"] = "antineutrino"
@@ -60,6 +61,7 @@ def overlap(datasets: list[str], path: pathlib.Path) -> dict:
             )
             run["observables"][obsname] = obskins
 
+        _logger.info(f"Generated overlapping runcards for '{dataset}'")
         runcards |= ds_cards
 
     _logger.info("Data overlapping runcards generated.")
@@ -75,25 +77,26 @@ def boundary() -> dict:
         id to observables runcard mapping
 
     """
-    run_nu_extra = copy.deepcopy(yadmark.data.observables.default_card)
-    run_nu_extra["prDIS"] = "CC"
-    run_nu_extra["ProjectileDIS"] = "neutrino"
-    run_nu_extra["observables"] = {}
+    runcards = {}
 
-    run_nb_extra = copy.deepcopy(run_nu_extra)
-    run_nu_extra["ProjectileDIS"] = "antineutrino"
-    run_nb_extra["observables"] = {}
+    run_nu = copy.deepcopy(yadmark.data.observables.default_card)
+    run_nu["prDIS"] = "CC"
+    run_nu["ProjectileDIS"] = "neutrino"
+    run_nu["observables"] = {}
 
-    for sfname in load.sfmap.values():
-        run_nu_extra["observables"][sfname] = []
-        run_nb_extra["observables"][sfname] = []
-        for x in load.xgrid:
-            for q2 in load.q2grid:
-                run_nu_extra["observables"][sfname].append(dict(x=x, Q2=q2, y=0))
-                run_nb_extra["observables"][sfname].append(dict(x=x, Q2=q2, y=0))
+    run_nb = copy.deepcopy(run_nu)
+    run_nb["ProjectileDIS"] = "antineutrino"
+
+    for proj, run in [("NU", run_nu), ("NB", run_nb)]:
+        for name, sf in load.sfmap.items():
+            run_sf = copy.deepcopy(run)
+            kins = [dict(x=x, Q2=q2, y=0) for x in load.xgrid for q2 in load.q2grid]
+            run_sf["observables"][sf] = kins
+
+            runcards[f"YADISM_{name}_{proj}"] = run_sf
 
     _logger.info("Large Q2 boundary conditions runcard generated.")
-    return dict(nu_extra=run_nb_extra, nb_extra=run_nb_extra)
+    return runcards
 
 
 def observables(datasets: list[str], path: Optional[pathlib.Path]) -> dict:
