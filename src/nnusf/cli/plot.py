@@ -23,7 +23,13 @@ def subcommand():
     help="Alternative destination path to store the resulting table (default: $PWD/plots)",
 )
 @click.option("-i", "--inverse", is_flag=True)
-def sub_combine(data, destination, inverse):
+@click.option(
+    "-c",
+    "--cuts",
+    default=None,
+    help="""stringified dictionary of cuts, e.g. '{"Q2": {"min": 3.5}}'""",
+)
+def sub_combine(data, destination, inverse, cuts):
     """Combine data tables into a unique one.
 
     The operation is repeated for each DATA path provided (multiple values allowed),
@@ -34,4 +40,7 @@ def sub_combine(data, destination, inverse):
     to repeat the operation for all dataset stored in `data`.
 
     """
-    covmat.main(data, destination, inverse=inverse)
+    if cuts is not None:
+        cuts = eval(cuts)
+
+    covmat.main(data, destination, inverse=inverse, cuts=cuts)
