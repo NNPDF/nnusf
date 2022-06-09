@@ -1,22 +1,28 @@
 #!/usr/bin/env python3
-
-import yaml
-import pandas as pd
+# -*- coding: utf-8 -*-
 
 from pathlib import Path
+
+import pandas as pd
+import yaml
 from rich.console import Console
 from rich.progress import track
 
-from nnusf.data.filters.utils import construct_uncertainties, dump_info_file, write_to_csv, build_obs_dict
+from nnusf.data.filters.utils import (
+    build_obs_dict,
+    construct_uncertainties,
+    dump_info_file,
+    write_to_csv,
+)
 
 console = Console()
 
 # Mass determined using scikithep/particle for Pb208 in GeV
 M_NEUTRON = 939.565346 * 0.001
 M_PROTON = 938.272013 * 0.001
-A = 82 
+A = 82
 N = 208
-M_NUCLEON = 193.729 / ( A * M_PROTON + (N - A) * M_NEUTRON)
+M_NUCLEON = 193.729 / (A * M_PROTON + (N - A) * M_NEUTRON)
 
 # Experiment Metadata
 TARGET = A
@@ -42,14 +48,14 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
         # Extract the dictionary containing the high-level
         # kinematic information
         indep_var_dic = load_table["independent_variables"]
-        dep_var_f2dic = load_table["dependent_variables"][0] # F2
-        dep_var_f3dic = load_table["dependent_variables"][1] # xF3
+        dep_var_f2dic = load_table["dependent_variables"][0]  # F2
+        dep_var_f3dic = load_table["dependent_variables"][1]  # xF3
         # The x values should be the same for F2 & xF3
         f2_x_value = float(dep_var_f2dic["qualifiers"][4]["value"])
         f3_x_value = float(dep_var_f3dic["qualifiers"][4]["value"])
         assert f2_x_value == f3_x_value
-        # The numbers of bins should match the number of values 
-        # contained in the `independent_variables`. Now we can 
+        # The numbers of bins should match the number of values
+        # contained in the `independent_variables`. Now we can
         # loop over the different BINs
         for bin in range(len(indep_var_dic[0]["values"])):
             # ---- Extract only input kinematics ---- #
@@ -57,7 +63,7 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
             kin_dict = {
                 "x": {"mid": f2_x_value, "min": None, "max": None},
                 "Q2": {"mid": q2_value, "min": None, "max": None},
-                "y": {"mid": None, "min": None, "max": None}
+                "y": {"mid": None, "min": None, "max": None},
             }
             kinematics.append(kin_dict)
             # ---- Extract central values for SF ---- #
@@ -68,23 +74,34 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
             # ---- Extract SYS & STAT uncertainties ---- #
             error_dict_f2 = {
                 "stat": dep_var_f2dic["values"][bin]["errors"][0]["symerror"],
-                "syst": dep_var_f2dic["values"][bin]["errors"][1]["symerror"]
+                "syst": dep_var_f2dic["values"][bin]["errors"][1]["symerror"],
             }
             f2_exp_errors.append(error_dict_f2)
             error_dict_f3 = {
                 "stat": dep_var_f3dic["values"][bin]["errors"][0]["symerror"],
-                "syst": dep_var_f3dic["values"][bin]["errors"][1]["symerror"]
+                "syst": dep_var_f3dic["values"][bin]["errors"][1]["symerror"],
             }
             f3_exp_errors.append(error_dict_f3)
 
     # Convert the kinematics dictionaries into Pandas tables
-    full_kin = {i+1: pd.DataFrame(d).stack() for i, d in enumerate(kinematics)}
-    kinematics_pd = pd.concat(full_kin, axis=1, ).swaplevel(0,1).T
+    full_kin = {i + 1: pd.DataFrame(d).stack() for i, d in enumerate(kinematics)}
+    kinematics_pd = (
+        pd.concat(
+            full_kin,
+            axis=1,
+        )
+        .swaplevel(0, 1)
+        .T
+    )
 
     # Convert the central data values dict into Pandas tables
-    f2pd = pd.DataFrame(f2_central, index=range(1, len(f2_central)+1), columns=["data"])
+    f2pd = pd.DataFrame(
+        f2_central, index=range(1, len(f2_central) + 1), columns=["data"]
+    )
     f2pd.index.name = "index"
-    f3pd = pd.DataFrame(f3_central, index=range(1, len(f3_central)+1), columns=["data"])
+    f3pd = pd.DataFrame(
+        f3_central, index=range(1, len(f3_central) + 1), columns=["data"]
+    )
     f3pd.index.name = "index"
 
     # Convert the error dictionaries into Pandas tables
@@ -127,8 +144,8 @@ def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list) -> None:
         # Extract the dictionary containing the high-level
         # kinematic information
         indep_var_dic = load_table["independent_variables"]
-        dep_var_dsig_nu = load_table["dependent_variables"][0] # NU
-        dep_vr_dsig_nub = load_table["dependent_variables"][1] # NUB
+        dep_var_dsig_nu = load_table["dependent_variables"][0]  # NU
+        dep_vr_dsig_nub = load_table["dependent_variables"][1]  # NUB
         # The x values should be the same for dsignu & dsignub
         dsignuu_x_value = float(dep_var_dsig_nu["qualifiers"][3]["value"])
         dsignub_x_value = float(dep_vr_dsig_nub["qualifiers"][3]["value"])
@@ -141,8 +158,8 @@ def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list) -> None:
         dsignuu_sqrts = float(dep_var_dsig_nu["qualifiers"][2]["value"])
         dsignub_sqrts = float(dep_vr_dsig_nub["qualifiers"][2]["value"])
         assert dsignuu_sqrts == dsignub_sqrts
-        # The numbers of bins should match the number of values 
-        # contained in the `independent_variables`. Now we can 
+        # The numbers of bins should match the number of values
+        # contained in the `independent_variables`. Now we can
         # loop over the different BINs
         for bin in range(len(indep_var_dic[0]["values"])):
             # ---- Extract only input kinematics ---- #
@@ -152,7 +169,7 @@ def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list) -> None:
             kin_dict = {
                 "x": {"mid": dsignuu_x_value, "min": None, "max": None},
                 "Q2": {"mid": q2_value, "min": None, "max": None},
-                "y": {"mid": y, "min": None, "max": None}
+                "y": {"mid": y, "min": None, "max": None},
             }
             kinematics.append(kin_dict)
             # ---- Extract central values for SF ---- #
@@ -163,18 +180,25 @@ def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list) -> None:
             # ---- Extract SYS & STAT uncertainties ---- #
             error_dict_1stentry = {
                 "stat": dep_var_dsig_nu["values"][bin]["errors"][0]["symerror"],
-                "syst": dep_var_dsig_nu["values"][bin]["errors"][1]["symerror"]
+                "syst": dep_var_dsig_nu["values"][bin]["errors"][1]["symerror"],
             }
             dsig_nu_errors.append(error_dict_1stentry)
             error_dict_2ndentry = {
                 "stat": dep_vr_dsig_nub["values"][bin]["errors"][0]["symerror"],
-                "syst": dep_vr_dsig_nub["values"][bin]["errors"][1]["symerror"]
+                "syst": dep_vr_dsig_nub["values"][bin]["errors"][1]["symerror"],
             }
             dsig_nub_error.append(error_dict_2ndentry)
 
     # Convert the kinematics dictionaries into Pandas tables
-    full_kin = {i+1: pd.DataFrame(d).stack() for i, d in enumerate(kinematics)}
-    kinematics_pd = pd.concat(full_kin, axis=1, ).swaplevel(0,1).T
+    full_kin = {i + 1: pd.DataFrame(d).stack() for i, d in enumerate(kinematics)}
+    kinematics_pd = (
+        pd.concat(
+            full_kin,
+            axis=1,
+        )
+        .swaplevel(0, 1)
+        .T
+    )
 
     # Convert the central data values dict into Pandas tables
     nval_dnuu = len(dsig_nu_central) + 1
@@ -210,18 +234,19 @@ def main(relative_path: list[Path]) -> None:
     obs_list = []
     # List of tables containing measurements for F2 and xF3
     table_f2_xf3 = [i for i in range(1, 12)]
-    obs_list.extend([
-        build_obs_dict("F2", table_f2_xf3, 0),
-        build_obs_dict("F3", table_f2_xf3, 0)
-    ])
+    obs_list.extend(
+        [build_obs_dict("F2", table_f2_xf3, 0), build_obs_dict("F3", table_f2_xf3, 0)]
+    )
     extract_f2f3(path_to_commondata, EXP_NAME, table_f2_xf3)
 
     # List of tables containing measurements for D2SIG/DX/DY
     table_dsig_dxdy = [i for i in range(23, 122)]
-    obs_list.extend([
-        build_obs_dict("DXDYNUU", table_dsig_dxdy, 14),
-        build_obs_dict("DXDYNUB", table_dsig_dxdy, -14)
-    ])
+    obs_list.extend(
+        [
+            build_obs_dict("DXDYNUU", table_dsig_dxdy, 14),
+            build_obs_dict("DXDYNUB", table_dsig_dxdy, -14),
+        ]
+    )
     extract_d2sigDxDy(path_to_commondata, EXP_NAME, table_dsig_dxdy)
 
     # dump info file
@@ -231,4 +256,3 @@ def main(relative_path: list[Path]) -> None:
 if __name__ == "__main__":
     relative_path = [Path().absolute().parents[3].joinpath("commondata")]
     main(relative_path)
-
