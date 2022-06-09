@@ -27,10 +27,10 @@ def main(list_of_datasets: list[Path]) -> None:
 
     """
     for dataset in list_of_datasets:
-        _logger.info(f"Filter dataset from the '{dataset}' experiment")
+        exp = dataset.stem.strip("DATA_").lower()
+        _logger.info(f"Filter dataset from the '{exp}' experiment")
 
         path_to_commondata = dataset.parents[1]
-        exp = "_".join(dataset.stem.strip("DATA_").lower().split("_")[:-1])
         mod_name = f"filter_{exp}"
 
         try:
