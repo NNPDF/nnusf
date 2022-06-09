@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
+"""Provide data subcommand."""
 import pathlib
 
 import click
 
-from ..data import coefficients, combine_tables
+from ..data import coefficients, combine_tables, filters
 from . import base
 
 
@@ -30,8 +31,25 @@ def sub_combine(data, destination):
         nnu data coefficients commondata/data/*
 
     to repeat the operation for all dataset stored in `data`.
+
     """
     combine_tables.main(data, destination)
+
+
+@subcommand.command("filter")
+@click.argument("data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path))
+def filter_all_data(data):
+    """Filter the raw dataset.
+
+    Do it alltogether at the same time and dump the resulting Pandas objects
+    into the commondata folder.
+
+    The command is run as follows:
+
+        nnu data filter commondata/rawdata/*
+
+    """
+    filters.main(data)
 
 
 @subcommand.command("coefficients")
@@ -55,5 +73,6 @@ def sub_coefficients(data, destination):
         nnu data coefficients commondata/data/*
 
     to repeat the operation for all dataset stored in `data`.
+
     """
     coefficients.main(data, destination)

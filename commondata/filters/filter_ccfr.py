@@ -1,22 +1,40 @@
 #!/usr/bin/env python3
-
-import yaml
-import pandas as pd
+# -*- coding: utf-8 -*-
 
 from pathlib import Path
+
+import pandas as pd
+import yaml
 from rich.console import Console
 from rich.progress import track
 
-from utils import construct_uncertainties, dump_info_file, write_to_csv, build_obs_dict
+from nnusf.data.utils import (
+    build_obs_dict,
+    construct_uncertainties,
+    dump_info_file,
+    write_to_csv,
+)
 
 console = Console()
 
+# Experiment metadata
+TARGET = 26
+EXP_NAME = "CCFR"
+
+
 def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
+    """Extract F2 and xF3 structure functions.
+
+    Parameters
+    ----------
+    path : Path
+        Path to the commondata folder
+    exp_name : str
+        name of the experiment
+    table_id_list : list
+        list of table that corresponds to F2 & xF3
     """
-    Parameters:
-    -----------
-    path: Path
-    """
+
     kinematics = []
     f2_central = []
     f3_central = []
@@ -31,14 +49,14 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
         # Extract the dictionary containing the high-level
         # kinematic information
         indep_var_dic = load_table["independent_variables"]
-        dep_var_f2dic = load_table["dependent_variables"][0] # F2
-        dep_var_f3dic = load_table["dependent_variables"][1] # xF3
+        dep_var_f2dic = load_table["dependent_variables"][0]  # F2
+        dep_var_f3dic = load_table["dependent_variables"][1]  # xF3
         # The x values should be the same for F2 & xF3
         f2_x_value = float(dep_var_f2dic["qualifiers"][3]["value"])
         f3_x_value = float(dep_var_f3dic["qualifiers"][3]["value"])
         assert f2_x_value == f3_x_value
-        # The numbers of bins should match the number of values 
-        # contained in the `independent_variables`. Now we can 
+        # The numbers of bins should match the number of values
+        # contained in the `independent_variables`. Now we can
         # loop over the different BINs
         for bin in range(len(indep_var_dic[0]["values"])):
             # ---- Extract only input kinematics ---- #
@@ -46,7 +64,7 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
             kin_dict = {
                 "x": {"mid": f2_x_value, "min": None, "max": None},
                 "Q2": {"mid": q2_value, "min": None, "max": None},
-                "y": {"mid": None, "min": None, "max": None}
+                "y": {"mid": None, "min": None, "max": None},
             }
             kinematics.append(kin_dict)
             # ---- Extract central values for SF ---- #
@@ -66,7 +84,7 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
                 raise ValueError("The systematics need to be taken in Quadrature.")
             error_dict_f2 = {
                 "stat": dep_var_f2dic["values"][bin]["errors"][0]["symerror"],
-                "syst": (f2_value * f2_sys) / 100 if f2_sys is not None else 0.0
+                "syst": (f2_value * f2_sys) / 100 if f2_sys is not None else 0.0,
             }
             f2_exp_errors.append(error_dict_f2)
 
@@ -80,22 +98,26 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
                 raise ValueError("The systematics need to be taken in Quadrature.")
             error_dict_f3 = {
                 "stat": dep_var_f3dic["values"][bin]["errors"][0]["symerror"],
-                "syst": (f3_value * f3_sys) / 100 if f3_sys is not None else 0.0
+                "syst": (f3_value * f3_sys) / 100 if f3_sys is not None else 0.0,
             }
             f3_exp_errors.append(error_dict_f3)
 
     # Convert the kinematics dictionaries into Pandas tables
-    full_kin = {i+1: pd.DataFrame(d).stack() for i, d in enumerate(kinematics)}
-    kinematics_pd = pd.concat(full_kin, axis=1).swaplevel(0,1).T
+    full_kin = {i + 1: pd.DataFrame(d).stack() for i, d in enumerate(kinematics)}
+    kinematics_pd = pd.concat(full_kin, axis=1).swaplevel(0, 1).T
 
     # Convert the central data values dict into Pandas tables
-    f2pd = pd.DataFrame(f2_central, index=range(1, len(f2_central)+1), columns=["data"])
+    f2pd = pd.DataFrame(
+        f2_central, index=range(1, len(f2_central) + 1), columns=["data"]
+    )
     f2pd.index.name = "index"
-    f3pd = pd.DataFrame(f3_central, index=range(1, len(f3_central)+1), columns=["data"])
+    f3pd = pd.DataFrame(
+        f3_central, index=range(1, len(f3_central) + 1), columns=["data"]
+    )
     f3pd.index.name = "index"
 
     # Convert the error dictionaries into Pandas tables
-    f2_errors_pd = construct_uncertainties(f2_exp_errors) 
+    f2_errors_pd = construct_uncertainties(f2_exp_errors)
     f3_errors_pd = construct_uncertainties(f3_exp_errors)
 
     # Dump everything into files. In the following, F2 and xF3 lie on the central
@@ -115,18 +137,26 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
     write_to_csv(systypes_folder, f"UNC_{exp_name}_F3", f3_errors_pd)
 
 
-if __name__ == "__main__":
-    relative_path = Path().absolute().parents[0]
-    experiment_name = "CCFR"
-    target = 26
+def main(path_to_commondata: Path) -> None:
+    """
+    Parameters
+    ----------
+    path_to_commondata : Path
+        path to the commondata folder
+    """
 
     # List of tables containing measurements for F2 and xF3
     table_f2_xf3 = [i for i in range(1, 23)]
     obs_list = [
         build_obs_dict("F2", table_f2_xf3, 0),
-        build_obs_dict("F3", table_f2_xf3, 0)
+        build_obs_dict("F3", table_f2_xf3, 0),
     ]
-    extract_f2f3(relative_path, experiment_name, table_f2_xf3)
+    extract_f2f3(path_to_commondata, EXP_NAME, table_f2_xf3)
 
     # dump info file
-    dump_info_file(relative_path, experiment_name, obs_list, target)
+    dump_info_file(path_to_commondata, EXP_NAME, obs_list, TARGET)
+
+
+if __name__ == "__main__":
+    relative_path = Path().absolute().parents[3].joinpath("commondata")
+    main(relative_path)
