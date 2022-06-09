@@ -6,8 +6,8 @@ structure function project).
 
 """
 
+import importlib.util
 import logging
-from importlib import import_module
 from pathlib import Path
 
 _logger = logging.getLogger(__name__)
@@ -29,12 +29,18 @@ def main(list_of_datasets: list[Path]) -> None:
         _logger.info(f"Filter dataset from the '{dataset}' experiment")
 
         path_to_commondata = dataset.parents[1]
-        dataset_name = dataset.stem.strip("DATA_").lower()
-        plugin_name = f"nnusf.data.filters.filter_{dataset_name}"
+        dataset_name = "_".join(dataset.stem.strip("DATA_").lower().split("_")[:-1])
+        plugin_name = f"filter_{dataset_name}"
 
-        try:
-            plugin_module = import_module(plugin_name)
-            plugin_module.main(path_to_commondata)
+        spec = importlib.util.spec_from_file_location(
+            plugin_name,
+            (path_to_commondata / "filters" / plugin_name).with_suffix(".py"),
+        )
         # We do not really want to fail at this point
-        except ModuleNotFoundError:
-            _logger.error("Filter not implemented yet!")
+        if spec is None:
+            _logger.error(f"Filter for '{dataset}' not implemented yet!")
+            continue
+
+        plugin_module = importlib.util.module_from_spec(spec)
+        __import__("pdb").set_trace()
+        plugin_module.main(path_to_commondata)

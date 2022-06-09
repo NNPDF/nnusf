@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
+"""Provide data subcommand."""
 import pathlib
 
 import click
 
-from ..data import coefficients, combine_tables, filter_data
+from ..data import coefficients, combine_tables, filters
 from . import base
 
 
@@ -37,13 +38,15 @@ def sub_combine(data, destination):
 @subcommand.command("filter")
 @click.argument("data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path))
 def filter_all_data(data):
-    """Filter the raw dataset alltogether at the same time and dump the resulting
-    Pandas objects into the commondata folder.
+    """Filter the raw dataset.
+
+    Do it alltogether at the same time and dump the resulting Pandas objects
+    into the commondata folder.
 
     The command is run as follows:
         nnu data filter ./commondata/rawdata/*
     """
-    filter_data.main(data)
+    filters.main(data)
 
 
 @subcommand.command("coefficients")
