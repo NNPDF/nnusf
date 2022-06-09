@@ -1,4 +1,7 @@
 fit: /home/roy/github/NNPDF/nnusf/src/nnusf/sffit/fit_runcard
 
+x_slice: 0.01
+a_slice: 26
+
 actions:
-  - plot_sfs
+  - plot_sfs_q
