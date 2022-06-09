@@ -11,15 +11,31 @@ import load_data
 from model_gen import generate_models
 from train_model import perform_fit
 
+import logging
+import tensorflow as tf
+
+
+
+logging.basicConfig(level=logging.INFO)
+log = logging.getLogger(__name__)
 
 def main():
     parser = argparse.ArgumentParser(description="sffit - fits sfs")
     parser.add_argument(
         "runcard",
     )
+    parser.add_argument(
+        "replica", type=int,
+    )
     args = parser.parse_args()
 
     path_to_runcard = pathlib.Path(args.runcard)
+
+    path_to_fit_folder = pathlib.Path(path_to_runcard.stem) / f"replica_{args.replica}"
+    if path_to_fit_folder.exists():
+        log.warning(f"{path_to_fit_folder} already exists, overwriting content.")
+    path_to_fit_folder.mkdir(parents=True, exist_ok=True)
+
     with open(path_to_runcard) as file:
         runcard_content = yaml.load(file, Loader=yaml.FullLoader)
 
@@ -39,6 +55,8 @@ def main():
         tr_model, vl_model, data_info, **runcard_content["fit_parameters"]
     )
 
+    saved_model = tf.keras.Model(inputs=tr_model.inputs, outputs=tr_model.get_layer("SF_output").output)
+    saved_model.save(path_to_fit_folder / "model")
 
 if __name__ == "__main__":
     main()

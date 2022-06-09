@@ -1,0 +1,4 @@
+fit: /home/roy/github/NNPDF/nnusf/src/nnusf/sffit/fit_runcard
+
+actions:
+  - plot_sfs
