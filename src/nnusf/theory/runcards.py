@@ -43,13 +43,7 @@ def dump(
         for name, observable in observables_cards.items():
             utils.write(observable, tmpdir / f"obs-{name}.yaml")
 
-        if destination.exists():
-            if not destination.is_dir():
-                raise NotADirectoryError(
-                    f"The given destination exists, but is not a directory - '{destination}'"
-                )
-        else:
-            destination.mkdir(parents=True)
+        utils.mkdest(destination)
 
         tarpath = destination / "runcards.tar"
         with tarfile.open(tarpath, "w") as tar:

@@ -1,3 +1,4 @@
 # -*- coding: utf-8 -*-
-from . import data, log, theory
+"""Provide 'nnu' CLI."""
+from . import data, log, plot, theory
 from .base import command

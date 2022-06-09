@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Compute DIS grids out of given runcards."""
 import logging
 import pathlib
 import tarfile
@@ -12,6 +13,14 @@ _logger = logging.getLogger(__name__)
 
 
 def main(cards: pathlib.Path):
+    """Run grids computation.
+
+    Parameters
+    ----------
+    cards: pathlib.Path
+        path to runcards archive
+
+    """
     with tempfile.TemporaryDirectory() as tmpdir:
         tmpdir = pathlib.Path(tmpdir).absolute()
 
@@ -25,6 +34,7 @@ def main(cards: pathlib.Path):
 
         theory = utils.read(cards / "theory.yaml")
         for cpath in cards.iterdir():
+            _logger.info(f"Attempt computing '{cpath.name}'")
             if cpath.name.startswith("obs"):
                 observables = utils.read(cpath, what="yaml")
                 output = yadism.run_yadism(theory, observables)

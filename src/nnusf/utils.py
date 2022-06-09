@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import itertools
+"""File management utilities."""
 import pathlib
 import tarfile
 from typing import Optional
@@ -7,9 +7,11 @@ from typing import Optional
 import yaml
 
 pkg = pathlib.Path(__file__).parent.absolute()
+"""Package location, wherever it is installed."""
 
 
 def read(path: pathlib.Path, what=None) -> dict:
+    """Read a file, the suitable way."""
     # autodetect
     if what is None:
         what = path.suffix[1:]
@@ -21,6 +23,7 @@ def read(path: pathlib.Path, what=None) -> dict:
 
 
 def write(content: dict, path: pathlib.Path, what=None):
+    """Write a file, the suitable way."""
     # autodetect
     if what is None:
         what = path.suffix[1:]
@@ -32,6 +35,7 @@ def write(content: dict, path: pathlib.Path, what=None):
 
 
 def extract_tar(path: pathlib.Path, dest: pathlib.Path, subdirs: Optional[int] = None):
+    """Extract a tar archive to given directory."""
     with tarfile.open(path) as tar:
         tar.extractall(dest)
 
@@ -48,8 +52,26 @@ def extract_tar(path: pathlib.Path, dest: pathlib.Path, subdirs: Optional[int] =
         )
 
 
-three_points = [0.5, 1.0, 2.0]
-"Three points prescription for scale variations."
-nine_points = list(itertools.product(three_points, three_points))
-"""Nine points prescription for scale variations (as couples, referred to ``(fact,
-ren)`` scales)."""
+def mkdest(destination: pathlib.Path):
+    """Make sure destination exists.
+
+    Create it if does not exist, else make sure it is a directory.
+
+    Parameters
+    ----------
+    destination: pathlib.Path
+        path to check
+
+    Raises
+    ------
+    NotADirectoryError
+        if it exists but it is not a directory
+
+    """
+    if destination.exists():
+        if not destination.is_dir():
+            raise NotADirectoryError(
+                f"The given destination exists, but is not a directory - '{destination}'"
+            )
+    else:
+        destination.mkdir(parents=True)

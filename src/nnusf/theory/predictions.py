@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Compute DIS predictions, out of given grids."""
 import logging
 import pathlib
 import tarfile
@@ -11,12 +12,27 @@ import numpy as np
 import pineappl
 
 from .. import utils
+from . import defs
 from .bodek_yang import load
 
 logger = logging.getLogger(__name__)
 
 
 def main(grids: pathlib.Path, pdf: str, err: str = "theory", xpoint: int = 20):
+    """Run predictions computation.
+
+    Parameters
+    ----------
+    grids: pathlib.Path
+        path to grids archive
+    pdf: str
+        LHAPDF name of the PDF to be used
+    err: str
+        type of error to be used
+    xpoint: int
+        point in Bjorken x to be used for the slice to plot
+
+    """
     with tempfile.TemporaryDirectory() as tmpdir:
         tmpdir = pathlib.Path(tmpdir).absolute()
 
@@ -32,7 +48,7 @@ def main(grids: pathlib.Path, pdf: str, err: str = "theory", xpoint: int = 20):
         q2grid, xgrid = np.meshgrid(*load.kin_grids())
         gmask = load.mask()
 
-        prescr = utils.nine_points
+        prescr = defs.nine_points
 
         for gpath in grids.iterdir():
             if "pineappl" not in gpath.name:
