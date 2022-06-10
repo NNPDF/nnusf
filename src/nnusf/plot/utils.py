@@ -2,6 +2,7 @@
 """Common tools for plotting and handling related data."""
 import logging
 
+import matplotlib.colors as clr
 import numpy as np
 import pandas as pd
 
@@ -41,3 +42,22 @@ def cuts(cuts: dict[str, dict[str, float]], table: pd.DataFrame) -> np.ndarray:
         _logger.info(f"Cut {ncut} points, in '{var}'")
 
     return mask
+
+
+def symlog_color_scale(ar: np.ndarray) -> clr.SymLogNorm:
+    """Tune symmetric color scale on array.
+
+    Parameters
+    ----------
+    ar: np.ndarray
+        array to fit the scale on
+
+    Returns
+    -------
+    clr.SymLogNorm
+        matplotlib color specification generated
+
+    """
+    c = clr.SymLogNorm(abs(ar[ar != 0.0]).min())
+    _logger.info("Symmetric [b magenta]log scale[/] enabled.", extra={"markup": True})
+    return c

@@ -4,7 +4,6 @@ import logging
 import pathlib
 from typing import Optional
 
-import matplotlib.colors as clr
 import matplotlib.figure
 import matplotlib.pyplot as plt
 import numpy as np
@@ -86,10 +85,7 @@ def heatmap(covmat: np.ndarray, symlog: bool = False) -> matplotlib.figure.Figur
     """
     extra = {}
     if symlog:
-        extra["norm"] = clr.SymLogNorm(abs(covmat[covmat != 0.0]).min())
-        _logger.info(
-            "Symmetric [b magenta]log scale[/] enabled.", extra={"markup": True}
-        )
+        extra["norm"] = putils.symlog_color_scale(covmat)
 
     fig = plt.figure()
     sns.heatmap(covmat, **extra)
