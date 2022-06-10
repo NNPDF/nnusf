@@ -86,8 +86,10 @@ def heatmap(covmat: np.ndarray, symlog: bool = False) -> matplotlib.figure.Figur
     """
     extra = {}
     if symlog:
-        extra["norm"] = clr.SymLogNorm(abs(covmat.min()))
-        _logger.info("Symmetric log scale enabled.")
+        extra["norm"] = clr.SymLogNorm(abs(covmat[covmat != 0.0]).min())
+        _logger.info(
+            "Symmetric [b magenta]log scale[/] enabled.", extra={"markup": True}
+        )
 
     fig = plt.figure()
     sns.heatmap(covmat, **extra)

@@ -37,7 +37,10 @@ def subcommand():
     default=None,
     help="""Stringified dictionary of cuts, e.g. '{"Q2": {"min": 3.5}}'.""",
 )
-def sub_combine(data, destination, inverse, norm, cuts):
+@click.option(
+    "-l", "--symlog", is_flag=True, help="Plot in symmetric logarithmic scale."
+)
+def sub_combine(data, destination, inverse, norm, cuts, symlog):
     """Combine data tables into a unique one.
 
     The operation is repeated for each DATA path provided (multiple values allowed),
@@ -51,4 +54,4 @@ def sub_combine(data, destination, inverse, norm, cuts):
     if cuts is not None:
         cuts = eval(cuts)
 
-    covmat.main(data, destination, inverse=inverse, norm=norm, cuts=cuts)
+    covmat.main(data, destination, inverse=inverse, norm=norm, cuts=cuts, symlog=symlog)
