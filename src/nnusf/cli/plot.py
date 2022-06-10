@@ -4,13 +4,34 @@ import pathlib
 
 import click
 
-from ..plot import covmat
+from ..plot import covmat, kinematics
 from . import base
 
 
 @base.command.group("plot")
 def subcommand():
     """Provide plot utilities."""
+
+
+@subcommand.command("kin")
+@click.argument("data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path))
+@click.option(
+    "-d",
+    "--destination",
+    type=click.Path(path_type=pathlib.Path),
+    default=pathlib.Path.cwd().absolute() / "plots",
+    help="Alternative destination path to store the resulting plots (default: $PWD/plots).",
+)
+def sub_kinematic(data, destination):
+    """Generate kinematics plot.
+
+    The plot will include data from each DATA path provided (multiple values allowed),
+    to include all of them just run:
+
+        nnu plot kin commondata/data/*
+
+    """
+    kinematics.main(data, destination)
 
 
 @subcommand.command("covmat")
@@ -20,7 +41,7 @@ def subcommand():
     "--destination",
     type=click.Path(path_type=pathlib.Path),
     default=pathlib.Path.cwd().absolute() / "plots",
-    help="Alternative destination path to store the resulting table (default: $PWD/plots).",
+    help="Alternative destination path to store the resulting plots (default: $PWD/plots).",
 )
 @click.option(
     "-i", "--inverse", is_flag=True, help="Use inverse covariance matrix instead."
@@ -40,8 +61,8 @@ def subcommand():
 @click.option(
     "-l", "--symlog", is_flag=True, help="Plot in symmetric logarithmic scale."
 )
-def sub_combine(data, destination, inverse, norm, cuts, symlog):
-    """Combine data tables into a unique one.
+def sub_covmat(data, destination, inverse, norm, cuts, symlog):
+    """Generate covariance matrix heatmap.
 
     The operation is repeated for each DATA path provided (multiple values allowed),
     e.g.:
@@ -49,6 +70,9 @@ def sub_combine(data, destination, inverse, norm, cuts, symlog):
         nnu plot covmat commondata/data/*
 
     to repeat the operation for all datasets stored in `data`.
+
+    A further plot will be generated, including the full covariance matrix for
+    the union of the datasets selected.
 
     """
     if cuts is not None:

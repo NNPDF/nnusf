@@ -75,3 +75,24 @@ def mkdest(destination: pathlib.Path):
             )
     else:
         destination.mkdir(parents=True)
+
+
+def split_data_path(ds: pathlib.Path) -> tuple[str, pathlib.Path]:
+    """Extract dataset name, and commondata folder.
+
+    Parameters
+    ----------
+    ds: pathlib.Path
+        path to dataset
+
+    Returns
+    -------
+    str
+        dataset name
+    pathlib.Path
+        commondata base folder
+
+    """
+    name = ds.stem.strip("DATA_")
+
+    return name, ds.parents[1]

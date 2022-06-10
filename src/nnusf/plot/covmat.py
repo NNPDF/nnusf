@@ -109,9 +109,9 @@ def main(
 
     covmats = {}
     for ds in data:
-        name = ds.stem.strip("DATA_")
+        name, datapath = utils.split_data_path(ds)
 
-        covmat = compute(name, ds.parents[1], inverse=inverse, norm=norm, cuts=cuts)
+        covmat = compute(name, datapath, inverse=inverse, norm=norm, cuts=cuts)
         covmats[name] = covmat
 
         fig = heatmap(covmat, symlog=symlog)
