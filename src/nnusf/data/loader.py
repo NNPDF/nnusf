@@ -34,6 +34,7 @@ class Loader:
         name: str,
         path_to_commondata: pathlib.Path,
         path_to_coefficients: Optional[pathlib.Path] = None,
+        include_syst : Optional[bool] = True,
     ):
         """Initialize object.
 
@@ -45,6 +46,8 @@ class Loader:
             path to commondata folder
         path_to_coefficients: os.PathLike or None
             path to theory folder
+        include_syst: 
+            if True include syst
 
         """
         self.name = name
@@ -54,7 +57,7 @@ class Loader:
         self.commondata_path = path_to_commondata
         self.coefficients_path = path_to_coefficients
         self.table = self._load()
-        self.covariance_matrix = self.build_covariance_matrix(self.table)
+        self.covariance_matrix = self.build_covariance_matrix(self.table, include_syst)
 
         _logger.info(f"Loaded '{name}' dataset")
 
@@ -178,7 +181,7 @@ class Loader:
         return np.load((self.coefficients_path / self.name).with_suffix(".npy"))
 
     @staticmethod
-    def build_covariance_matrix(unc_df: pd.DataFrame) -> np.ndarray:
+    def build_covariance_matrix(unc_df: pd.DataFrame, include_syst: bool) -> np.ndarray:
         """Build the covariance matrix.
 
         It consumes as input the statistical and systematics uncertainties.
@@ -187,6 +190,8 @@ class Loader:
         ----------
         unc_df:
             uncertainties table
+        include_syst: 
+            if True include syst
 
         Returns
         -------
@@ -194,5 +199,7 @@ class Loader:
 
         """
         diagonal = np.power(unc_df["stat"], 2)
-        corr_sys = unc_df["syst"]
-        return np.diag(diagonal) + np.outer(corr_sys, corr_sys)
+        if include_syst:
+            corr_sys = unc_df["syst"]
+            return np.diag(diagonal) + np.outer(corr_sys, corr_sys)
+        return np.diag(diagonal)
