@@ -23,9 +23,8 @@ class Chi2Layer(tf.keras.layers.Layer):
     def call(self, inputs):
         if inputs.shape[1]:
             inputs = inputs[:, self.data_domain[0] : self.data_domain[1], :]
-        predictions = tf.einsum("ijk,jk->ij", inputs, self.theory_grid)
+        predictions = tf.einsum("ijk,jk->j", inputs, self.theory_grid)
         distance = predictions - self.experimental_central_value
-        tmp_dot = tf.tensordot(self.invcovmat, distance[0, :], axes=1)
-        chi2 = tf.tensordot(distance[0, :], tmp_dot, axes=1)
-        # tf.print(self.name, ": ", chi2/self.experimental_central_value.shape[0])
+        tmp_dot = tf.tensordot(self.invcovmat, distance, axes=1)
+        chi2 = tf.tensordot(distance, tmp_dot, axes=1)
         return chi2
