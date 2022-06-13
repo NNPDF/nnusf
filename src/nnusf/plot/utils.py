@@ -8,6 +8,8 @@ import pandas as pd
 
 _logger = logging.getLogger(__file__)
 
+MARKERS = ["o", "s", "D", "*", "^", ">", "X"]
+
 
 def cuts(cuts: dict[str, dict[str, float]], table: pd.DataFrame) -> np.ndarray:
     """Generate a mask from given kinematic cuts.

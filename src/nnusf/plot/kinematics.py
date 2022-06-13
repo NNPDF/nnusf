@@ -8,39 +8,42 @@ import numpy as np
 
 from .. import utils
 from ..data import loader
+from . import utils as putils
 
 _logger = logging.getLogger(__file__)
 
 
-def main(data: list[pathlib.Path], destination: pathlib.Path):
+def main(data: list[pathlib.Path], destination: pathlib.Path, grouping: str = "exp"):
     """Run kinematic plot generation."""
     utils.mkdest(destination)
 
     fig = plt.figure()
 
-    experiments = {}
+    groups = {}
     total = 0
     for ds in data:
         name, datapath = utils.split_data_path(ds)
-
         lds = loader.Loader(name, datapath)
+        total += lds.n_data
+
         kins = [lds.table[k].values.tolist() for k in ["x", "Q2"]]
 
-        if lds.exp not in experiments:
-            experiments[lds.exp] = [[], []]
+        if grouping == "exp":
+            label = lds.exp
+        else:
+            raise ValueError
+
+        if label not in groups:
+            groups[label] = [[], []]
 
         for i in range(2):
-            experiments[lds.exp][i].extend(kins[i])
+            groups[label][i].extend(kins[i])
 
-        total += len(kins[0])
-
-    for (exp, kins), marker in zip(
-        experiments.items(), ["o", "s", "D", "*", "^", ">", "X"]
-    ):
+    for (name, kins), marker in zip(groups.items(), putils.MARKERS):
         size = len(kins[0])
         plt.scatter(
             *kins,
-            label=exp,
+            label=name,
             s=100 / np.power(size, 1 / 3),
             marker=marker,
             alpha=1 - np.tanh(2 * size / total)
