@@ -1,7 +1,11 @@
+import logging
 import numpy as np
 import tensorflow as tf
 
-from callbacks import EarlyStopping
+from nnusf.sffit.callbacks import EarlyStopping
+from nnusf.sffit.utils import monitor_validation
+
+log = logging.getLogger(__name__)
 
 optimizer_options = {
     "Adam": tf.keras.optimizers.Adam,
@@ -11,13 +15,12 @@ optimizer_options = {
 
 
 def perform_fit(
-    tr_model,
-    vl_model,
+    fit_dict,
     data_info,
     epochs,
     stopping_patience,
     optimizer_parameters,
-    **kwargs
+    **kwargs,
 ):
     "Compile the models and do the fit"
     del kwargs
@@ -25,32 +28,35 @@ def perform_fit(
     optimizer = optimizer_options[optimizer_parameters.pop("optimizer")]
     optimizer = optimizer(**optimizer_parameters)
 
-    # The model has output nodes corresponding to the chi2 per experiment
-    custom_loss = lambda y_true, y_pred: tf.math.reduce_sum(y_pred)
+    tr_model = fit_dict["tr_model"]
+    vl_model = fit_dict["vl_model"]
 
-    tr_model.compile(optimizer=optimizer, loss=custom_loss)
-    vl_model.compile(loss=custom_loss)
+    tr_model.compile(optimizer=optimizer, loss=fit_dict["tr_losses"])
+    vl_model.compile(optimizer=optimizer, loss=fit_dict["vl_losses"])
+    tr_model.summary()
 
-    tr_kinematics = []
-    vl_kinematics = []
+    kinematics = []
     for data in data_info.values():
-        tr_kinematics.append(data.kinematics[data.tr_filter])
-        vl_kinematics.append(data.kinematics[~data.tr_filter])
-    tr_kinematics = np.concatenate(tr_kinematics)
-    vl_kinematics = np.concatenate(vl_kinematics)
+        kinematics.append(data.kinematics)
 
-    tr_kinematics_array = tf.expand_dims(tr_kinematics, axis=0)
-    vl_kinematics_array = tf.expand_dims(vl_kinematics, axis=0)
+    # TODO: The following needs to be fixed for multi-dataset fit
+    kinematics = np.concatenate(kinematics)
+    kinematics_array = tf.expand_dims(kinematics, axis=0)
 
-    patience_epochs = int(stopping_patience * epochs)
-    early_stopping_callback = EarlyStopping(
-        vl_model, patience_epochs, vl_kinematics_array
-    )
+    for epoch in range(epochs):
+        train_info = tr_model.fit(
+            kinematics_array,
+            y=fit_dict["tr_expdat"],
+            epochs=1,
+            verbose=0,
+        )
 
-    tr_model.fit(
-        tr_kinematics_array,
-        y=tf.constant([0]),
-        epochs=epochs,
-        verbose=2,
-        callbacks=[early_stopping_callback],
-    )
+        if not (epoch % 100):
+            nb_dataset_fit = len(train_info.history)
+            nset = 1 if nb_dataset_fit == 1 else (nb_dataset_fit - 1)
+            tr_chi2 = train_info.history["loss"][0] / nset
+            # Check validation loss
+            vl_chi2 = monitor_validation(
+                vl_model, kinematics_array, fit_dict["vl_expdat"]
+            )
+            log.info(f"Epoch {epoch:.4e}: tr={tr_chi2:.4e}; vl={vl_chi2:.4e}")

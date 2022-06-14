@@ -5,40 +5,33 @@ Executable to perform the structure function fit
 import argparse
 import logging
 import pathlib
+import yaml
 import shutil
 
-import tensorflow as tf
-import yaml
+import nnusf.sffit.load_data as load_data
+from rich.logging import RichHandler
+from nnusf.sffit.model_gen import generate_models
+from nnusf.sffit.train_model import perform_fit
 
-import load_data
-from model_gen import generate_models
-from train_model import perform_fit
+logging.basicConfig(
+    level=logging.INFO, format="%(message)s", datefmt="[%X]", handlers=[RichHandler()]
+)
 
-logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
 
 def main():
     parser = argparse.ArgumentParser(description="sffit - fits sfs")
-    parser.add_argument(
-        "runcard",
-    )
-    parser.add_argument(
-        "replica",
-        type=int,
-    )
+    parser.add_argument("runcard")
+    parser.add_argument("replica", type=int)
     args = parser.parse_args()
 
     path_to_runcard = pathlib.Path(args.runcard)
 
     # Create a folder for the replica
-    path_to_fit_folder = (
-        pathlib.Path(path_to_runcard.stem) / f"replica_{args.replica}"
-    )
+    path_to_fit_folder = pathlib.Path(path_to_runcard.stem) / f"replica_{args.replica}"
     if path_to_fit_folder.exists():
-        log.warning(
-            f"{path_to_fit_folder} already exists, overwriting content."
-        )
+        log.warning(f"{path_to_fit_folder} already exists, overwriting content.")
     path_to_fit_folder.mkdir(parents=True, exist_ok=True)
 
     # copy runcard to the fit folder
@@ -53,23 +46,17 @@ def main():
     # create pseudodata and add it to the data_info object
     load_data.add_pseudodata(data_info)
 
-    # create a training mask and add it to the data_info object
-    load_data.add_tr_filter_mask(data_info, runcard_content["trvlseed"])
-
-    tr_model, vl_model = generate_models(
-        data_info, **runcard_content["fit_parameters"]
-    )
+    fit_dict = generate_models(data_info, **runcard_content["fit_parameters"])
 
     # Compile the training and validationa nd perform the fit
-    perform_fit(
-        tr_model, vl_model, data_info, **runcard_content["fit_parameters"]
-    )
+    perform_fit(fit_dict, data_info, **runcard_content["fit_parameters"])
 
     # Store the models in the relevant replica subfolders
-    saved_model = tf.keras.Model(
-        inputs=tr_model.inputs, outputs=tr_model.get_layer("SF_output").output
-    )
-    saved_model.save(path_to_fit_folder / "model")
+    # saved_model = tf.keras.Model(
+    #     inputs=tr_model.inputs,
+    #     outputs=tr_model.get_layer("SF_output").output
+    # )
+    # saved_model.save(path_to_fit_folder / "model")
 
 
 if __name__ == "__main__":

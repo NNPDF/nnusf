@@ -1,9 +1,14 @@
 # -*- coding: utf-8 -*-
-import numpy as np
 import tensorflow as tf
 from tensorflow.keras import layers
 
-from layers import Chi2Layer
+from nnusf.sffit.layers import GenMaskLayer
+from nnusf.sffit.layers import ObservableLayer
+
+from nnusf.sffit.utils import mask_expdata
+from nnusf.sffit.utils import mask_covmat
+from nnusf.sffit.utils import chi2
+from nnusf.sffit.utils import generate_mask
 
 
 def generate_models(
@@ -26,9 +31,7 @@ def generate_models(
     # (None,3) where None leaves the ndat size free such that we can use the
     # same input layer for models with different input sizes (e.g. training and
     # validation)
-    input_layer = layers.Input(
-        shape=(None, 3), batch_size=1, name="input_layer"
-    )
+    input_layer = layers.Input(shape=(None, 3), batch_size=1, name="input_layer")
 
     # make the dense layers
     dense_layers = []
@@ -42,11 +45,9 @@ def generate_models(
         )
 
     # Connect all the dense layers in the model
-    for enum, dense_layer in enumerate(dense_layers):
-        if enum == 0:
-            dense_nest = dense_layer(input_layer)
-        else:
-            dense_nest = dense_layer(dense_nest)
+    dense_nest = dense_layers[0](input_layer)
+    for dense_layer in dense_layers[1:]:
+        dense_nest = dense_layer(dense_nest)
 
     # make the output layer
     sf_output = layers.Dense(
@@ -57,53 +58,50 @@ def generate_models(
     sf_basis = sf_output(dense_nest)
 
     # Add the layers that calculate the chi2 for trainig and validation
-    tr_outputs = []
-    vl_outputs = []
-    tr_ndata_index_of_experiment = 0
-    vl_ndata_index_of_experiment = 0
+    tr_data, vl_data = [], []
+    tr_obs, vl_obs = [], []
+    tr_chi2, vl_chi2 = [], []
     for data in data_info.values():
+        # Extract theory grid coefficients & datasets
         coefficients = data.coefficients
-        tr_coefficients = coefficients[data.tr_filter]
-        vl_coefficients = coefficients[~data.tr_filter]
-        invcovmat = np.linalg.inv(data.covmat)
-        tr_invcovmat = invcovmat[data.tr_filter][:, data.tr_filter]
-        vl_invcovmat = invcovmat[~data.tr_filter][:, ~data.tr_filter]
-        tr_pseudodata = data.pseudodata[data.tr_filter]
-        vl_pseudodata = data.pseudodata[~data.tr_filter]
-        tr_data_domain = [
-            tr_ndata_index_of_experiment,
-            tr_ndata_index_of_experiment + tr_pseudodata.size,
-        ]
-        vl_data_domain = [
-            vl_ndata_index_of_experiment,
-            vl_ndata_index_of_experiment + vl_pseudodata.size,
-        ]
-        tr_layer = Chi2Layer(
-            tr_coefficients,
-            tr_invcovmat,
-            tr_pseudodata,
-            tr_data_domain,
-            training_data=True,
-            name=data.name,
-        )
-        vl_layer = Chi2Layer(
-            vl_coefficients,
-            vl_invcovmat,
-            vl_pseudodata,
-            vl_data_domain,
-            training_data=False,
-            name=data.name,
-        )
-        tr_outputs.append(tr_layer(sf_basis))
-        vl_outputs.append(vl_layer(sf_basis))
-        tr_ndata_index_of_experiment += tr_pseudodata.size
-        vl_ndata_index_of_experiment += vl_pseudodata.size
+        nb_dapatoints = len(coefficients)
+        exp_datasets = data.pseudodata
 
-    tr_output = tf.stack(tr_outputs)
-    vl_output = tf.stack(vl_outputs)
+        # Construct the full observable for a given dataset
+        observable = ObservableLayer(coefficients)(sf_basis)
 
-    # Initialize the model
-    tr_model = tf.keras.Model(inputs=input_layer, outputs=tr_output)
-    vl_model = tf.keras.Model(inputs=input_layer, outputs=vl_output)
+        # Split the datasets into training & validation
+        tr_mask, vl_mask = generate_mask(nb_dapatoints, frac=data.tr_frac)
+        obs_tr = GenMaskLayer(tr_mask, name=data.name)(observable)
+        obs_vl = GenMaskLayer(vl_mask, name=data.name)(observable)
+        tr_obs.append(obs_tr)
+        vl_obs.append(obs_vl)
 
-    return tr_model, vl_model
+        expd_tr, expd_vl = mask_expdata(exp_datasets, tr_mask, vl_mask)
+        tr_data.append(expd_tr)
+        vl_data.append(expd_vl)
+
+        covm_tr, covm_vl = mask_covmat(data.covmat, tr_mask, vl_mask)
+        chi2_tr = chi2(covm_tr, len(expd_tr))
+        chi2_vl = chi2(covm_vl, len(expd_vl))
+        tr_chi2.append(chi2_tr)
+        vl_chi2.append(chi2_vl)
+
+    # Reshape the exp datasets (y_true) to (1, N)
+    tr_data = [i.reshape(1, -1) for i in tr_data]
+    vl_data = [i.reshape(1, -1) for i in vl_data]
+
+    # Initialize the models for the training & validation
+    tr_model = tf.keras.Model(inputs=input_layer, outputs=tr_obs)
+    vl_model = tf.keras.Model(inputs=input_layer, outputs=vl_obs)
+
+    fit_dic = {
+        "tr_model": tr_model,
+        "vl_model": vl_model,
+        "tr_losses": tr_chi2,
+        "vl_losses": vl_chi2,
+        "tr_expdat": tr_data,
+        "vl_expdat": vl_data,
+    }
+
+    return fit_dic
