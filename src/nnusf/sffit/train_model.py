@@ -25,7 +25,9 @@ def perform_fit(
     "Compile the models and do the fit"
     del kwargs
 
-    optimizer = optimizer_options[optimizer_parameters.pop("optimizer")]
+    optimizer = optimizer_options[
+        optimizer_parameters.pop("optimizer")
+    ]
     optimizer = optimizer(**optimizer_parameters)
 
     tr_model = fit_dict["tr_model"]
@@ -43,6 +45,7 @@ def perform_fit(
     kinematics = np.concatenate(kinematics)
     kinematics_array = tf.expand_dims(kinematics, axis=0)
 
+    # TODO: Monitor training & validation losses (callbacks, etc.)
     for epoch in range(epochs):
         train_info = tr_model.fit(
             kinematics_array,
@@ -59,4 +62,6 @@ def perform_fit(
             vl_chi2 = monitor_validation(
                 vl_model, kinematics_array, fit_dict["vl_expdat"]
             )
-            log.info(f"Epoch {epoch:.4e}: tr={tr_chi2:.4e}; vl={vl_chi2:.4e}")
+            log.info(
+                f"Epoch {epoch:.4e}: tr={tr_chi2:.4e}; vl={vl_chi2:.4e}"
+            )

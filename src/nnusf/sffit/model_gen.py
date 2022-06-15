@@ -70,6 +70,7 @@ def generate_models(
         # Construct the full observable for a given dataset
         observable = ObservableLayer(coefficients)(sf_basis)
 
+        # TODO: Addapt the following to use `data.loader.Loader.tr_filter`
         # Split the datasets into training & validation
         tr_mask, vl_mask = generate_mask(nb_dapatoints, frac=data.tr_frac)
         obs_tr = GenMaskLayer(tr_mask, name=data.name)(observable)
