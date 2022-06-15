@@ -3,6 +3,7 @@
 import logging
 import pathlib
 import shutil
+from typing import Optional
 
 import tensorflow as tf
 import yaml
@@ -14,15 +15,20 @@ from .train_model import perform_fit
 _logger = logging.getLogger(__name__)
 
 
-def main(runcard: pathlib.Path, replica: int):
+def main(
+    runcard: pathlib.Path, replica: int, destination: Optional[pathlib.Path] = None
+):
     # Create a folder for the replica
-    destination = runcard.with_suffix("") / f"replica_{replica}"
-    if destination.exists():
-        _logger.warning(f"{destination} already exists, overwriting content.")
-    destination.mkdir(parents=True, exist_ok=True)
+    if destination is None:
+        destination = runcard.parent / "fits" / runcard.stem
+        if destination.exists():
+            _logger.warning(f"{destination} already exists, overwriting content.")
+
+    replica_dir = destination / f"replica_{replica}"
+    replica_dir.mkdir(parents=True, exist_ok=True)
 
     # copy runcard to the fit folder
-    shutil.copy(runcard, destination.parent / "runcard.yml")
+    shutil.copy(runcard, replica_dir.parent / "runcard.yml")
 
     # load runcard
     runcard_content = yaml.safe_load(runcard.read_text())
@@ -45,4 +51,4 @@ def main(runcard: pathlib.Path, replica: int):
     saved_model = tf.keras.Model(
         inputs=tr_model.inputs, outputs=tr_model.get_layer("SF_output").output
     )
-    saved_model.save(destination / "model")
+    saved_model.save(replica_dir / "model")

@@ -1,6 +1,7 @@
 *.tar
-theory/
+fits/
 plots/
+theory/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
