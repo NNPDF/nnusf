@@ -6,7 +6,11 @@ import matplotlib.colors as clr
 import numpy as np
 import pandas as pd
 
+from ..data import loader
+
 _logger = logging.getLogger(__file__)
+
+MARKERS = ["o", "s", "D", "*", "^", ">", "X"]
 
 
 def cuts(cuts: dict[str, dict[str, float]], table: pd.DataFrame) -> np.ndarray:
@@ -61,3 +65,23 @@ def symlog_color_scale(ar: np.ndarray) -> clr.SymLogNorm:
     c = clr.SymLogNorm(abs(ar[ar != 0.0]).min())
     _logger.info("Symmetric [b magenta]log scale[/] enabled.", extra={"markup": True})
     return c
+
+
+def group_data(
+    data: list[loader.Loader], grouping: str
+) -> dict[str, list[loader.Loader]]:
+    """Group data by given criterion."""
+    groups = {}
+
+    for lds in data:
+        if grouping == "exp":
+            label = lds.exp
+        else:
+            raise ValueError
+
+        if label not in groups:
+            groups[label] = [lds]
+        else:
+            groups[label].append(lds)
+
+    return groups
