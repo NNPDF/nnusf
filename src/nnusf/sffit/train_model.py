@@ -3,6 +3,7 @@ import numpy as np
 import tensorflow as tf
 
 from nnusf.sffit.callbacks import EarlyStopping
+from nnusf.sffit.utils import chi2_logs
 from nnusf.sffit.utils import monitor_validation
 
 log = logging.getLogger(__name__)
@@ -41,9 +42,7 @@ def perform_fit(
     for data in data_info.values():
         kinematics.append(data.kinematics)
 
-    # TODO: The following needs to be fixed for multi-dataset fit
-    kinematics = np.concatenate(kinematics)
-    kinematics_array = tf.expand_dims(kinematics, axis=0)
+    kinematics_array = [tf.expand_dims(i, axis=0) for i in kinematics]
 
     # TODO: Monitor training & validation losses (callbacks, etc.)
     for epoch in range(epochs):
@@ -55,13 +54,8 @@ def perform_fit(
         )
 
         if not (epoch % 100):
-            nb_dataset_fit = len(train_info.history)
-            nset = 1 if nb_dataset_fit == 1 else (nb_dataset_fit - 1)
-            tr_chi2 = train_info.history["loss"][0] / nset
             # Check validation loss
             vl_chi2 = monitor_validation(
                 vl_model, kinematics_array, fit_dict["vl_expdat"]
             )
-            log.info(
-                f"Epoch {epoch:.4e}: tr={tr_chi2:.4e}; vl={vl_chi2:.4e}"
-            )
+            chi2_logs(train_info, vl_chi2, epoch)

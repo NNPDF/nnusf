@@ -1,6 +1,12 @@
 import numpy as np
 import tensorflow as tf
 
+from rich.table import Table
+from rich.style import Style
+from rich.console import Console
+
+console = Console()
+
 
 def generate_mask(ndata, frac=0.75):
     """_summary_
@@ -92,7 +98,9 @@ def chi2(covmat, nb_datapoints):
 
     def chi2_loss(exp_data, fit_pred):
         diff_prediction = exp_data - fit_pred
-        right_dot = tf.tensordot(incovmatf, tf.transpose(diff_prediction), axes=1)
+        right_dot = tf.tensordot(
+            incovmatf, tf.transpose(diff_prediction), axes=1
+        )
         result = tf.tensordot(diff_prediction, right_dot, axes=1)
         return result / nb_datapoints
 
@@ -118,3 +126,27 @@ def monitor_validation(vl_model, kins, exp_data):
     """
     loss = vl_model.evaluate(x=kins, y=exp_data, verbose=0)
     return loss
+
+
+def chi2_logs(train_info, validation_loss, epoch):
+    size_list = len(validation_loss)
+    style = Style(color="white")
+    nb_fitted_sets = 1 if size_list == 1 else (size_list - 1)
+    table = Table(show_header=True, header_style="bold white", style=style)
+    table.add_column(" ", justify="left", width=20)
+    table.add_column("Training chi2", justify="right", width=24)
+    table.add_column("Validation chi2", justify="right", width=24)
+    for idx, (key, value) in enumerate(train_info.history.items()):
+        if key is not "loss":
+            table.add_row(
+                f"{key.strip('_loss')}",
+                f"{value[0]}",
+                f"{validation_loss[idx]}",
+            )
+    table.add_row(
+        "tot chi2",
+        f"{train_info.history['loss'][0] / nb_fitted_sets}",
+        f"{validation_loss[0] / nb_fitted_sets}",
+    )
+    console.print(f"Epoch {epoch}:", style="bold magenta")
+    console.print(table)
