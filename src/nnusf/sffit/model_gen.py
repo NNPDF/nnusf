@@ -28,11 +28,6 @@ def generate_models(
 
     initializer = tf.keras.initializers.GlorotUniform(seed=initializer_seed)
 
-    # (None,3) where None leaves the ndat size free such that we can use the
-    # same input layer for models with different input sizes (e.g. training and
-    # validation)
-    input_layer = layers.Input(shape=(None, 3), batch_size=1, name="input_layer")
-
     # make the dense layers
     dense_layers = []
     for units, activation in zip(units_per_layer, activation_per_layer):
@@ -44,20 +39,21 @@ def generate_models(
             )
         )
 
-    # Connect all the dense layers in the model
-    dense_nest = dense_layers[0](input_layer)
-    for dense_layer in dense_layers[1:]:
-        dense_nest = dense_layer(dense_nest)
-
     # make the output layer
     sf_output = layers.Dense(
         output_units, activation=output_activation, name="SF_output"
     )
 
-    # output layer
-    sf_basis = sf_output(dense_nest)
+    # Connect all the HIDDEN dense layers in the model
+    def sequential(layer_input):
+        dense_nest = dense_layers[0](layer_input)
+        for dense_layer in dense_layers[1:]:
+            dense_nest = dense_layer(dense_nest)
+        dense_nest = sf_output(dense_nest)
+        return dense_nest
 
     # Add the layers that calculate the chi2 for trainig and validation
+    model_inputs = []
     tr_data, vl_data = [], []
     tr_obs, vl_obs = [], []
     tr_chi2, vl_chi2 = [], []
@@ -67,7 +63,12 @@ def generate_models(
         nb_dapatoints = len(coefficients)
         exp_datasets = data.pseudodata
 
+        # Construct the input layer as placeholders
+        input_layer = layers.Input(shape=(None, 3), batch_size=1)
+        model_inputs.append(input_layer)
+
         # Construct the full observable for a given dataset
+        sf_basis = sequential(input_layer)
         observable = ObservableLayer(coefficients)(sf_basis)
 
         # TODO: Addapt the following to use `data.loader.Loader.tr_filter`
@@ -93,8 +94,8 @@ def generate_models(
     vl_data = [i.reshape(1, -1) for i in vl_data]
 
     # Initialize the models for the training & validation
-    tr_model = tf.keras.Model(inputs=input_layer, outputs=tr_obs)
-    vl_model = tf.keras.Model(inputs=input_layer, outputs=vl_obs)
+    tr_model = tf.keras.Model(inputs=model_inputs, outputs=tr_obs)
+    vl_model = tf.keras.Model(inputs=model_inputs, outputs=vl_obs)
 
     fit_dic = {
         "tr_model": tr_model,
