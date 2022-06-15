@@ -1,12 +1,16 @@
+import logging
 import pathlib
 
 import numpy as np
 from matplotlib import pyplot as plt
-from nnusf.data.loader import Loader
 import tensorflow as tf
+import yaml
 
-from .load_data import path_to_coefficients, path_to_commondata
-from .load_fit_data import load_models, get_predictions_q
+from ..data.loader import Loader
+from ..sffit.load_data import path_to_coefficients, path_to_commondata
+from ..sffit.load_fit_data import load_models, get_predictions_q
+
+_logger = logging.getLogger(__name__)
 
 basis = [
     r"$F_2$",
@@ -18,7 +22,20 @@ basis = [
 ]
 
 
-def plot_sfs_q_replicas(**kwargs):
+def main(runcard: pathlib.Path, output: pathlib.Path):
+    if output.exists():
+        _logger.warning(f"{output} already exists, overwriting content.")
+    output.mkdir(parents=True, exist_ok=True)
+
+    runcard_content = yaml.safe_load(runcard.read_text())
+    runcard_content["output"] = str(output.absolute())
+
+    for action in runcard_content["actions"]:
+        func = globals()[action]
+        func(**runcard_content)
+
+
+def sfs_q_replicas(**kwargs):
     prediction_info = get_predictions_q(**kwargs)
     predictions = prediction_info.predictions
     q_grid = prediction_info.q
@@ -37,7 +54,7 @@ def plot_sfs_q_replicas(**kwargs):
         fig.savefig(savepath)
 
 
-def plot_sf_q_band(**kwargs):
+def sf_q_band(**kwargs):
     prediction_info = get_predictions_q(**kwargs)
     predictions = prediction_info.predictions
     q_grid = prediction_info.q
@@ -78,6 +95,10 @@ def plot_sf_q_band(**kwargs):
 
 def prediction_data_comparison(**kwargs):
     models = load_models(**kwargs)
+    if len(models) == 0:
+        _logger.error("No model available")
+        return
+
     count_plots = 0
     for experiment in kwargs["experiments"]:
         data = Loader(experiment, path_to_commondata, path_to_coefficients)

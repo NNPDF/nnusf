@@ -26,5 +26,5 @@ experiments:
 
 actions:
   - prediction_data_comparison
-  # - plot_sf_q_band
-  # - plot_sfs_q_replicas
+  # - sf_q_band
+  # - sfs_q_replicas
