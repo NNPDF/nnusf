@@ -14,11 +14,13 @@ from pylab import *
 #---------------------------------------------------------
 #---------------------------------------------------------
 # General plot settings
-nx = 200
-logxmin=-3.5
-xmax=0.9
+nq = 200
+qmin = 1.65
+qmax=10
 # set x grid
-X = np.concatenate([np.logspace(logxmin,-1,nx),np.linspace(0.11,xmax,nx)],axis=0)
+Q = np.logspace(np.log10(qmin),np.log10(qmax),nq)
+
+print(Q)
 
 # Number of PDF sets to be compared
 nset =3
@@ -32,10 +34,10 @@ nset =3
 pdfset=["JR14NLO08VF","NNPDF40_nnlo_as_01180","cteq61"]
 pdfsetlab=[r"${\rm JR14}$",r"${\rm NNPDF4.0}$",r"${\rm CTEQ6.1}$"]
 error_option=["symmhessian","mc_68cl","ct"]
-filelabel="-oldpdfs_q5gev"
+filelabel="-oldpdfs_x0p794"
 
-# Value of momentum transfer
-q = 5 # GeV
+# Value of x
+x = 0.794
 
 # Reduce verbosity of LHAPDF
 lhapdf.setVerbosity(0)
@@ -56,24 +58,24 @@ for iset in range(nset):
     print("nrep =", nrep[iset])
     # Arrays to store LHAPDF results
     if(iset==0):
-        fit1 = np.zeros((nrep[iset],nsf,2*nx))
-        fit1_cv = np.zeros((nsf,2*nx))
+        fit1 = np.zeros((nrep[iset],nsf,nq))
+        fit1_cv = np.zeros((nsf,nq))
     if(iset==1):
-        fit2 = np.zeros((nrep[iset],nsf,2*nx))
-        fit2_cv = np.zeros((nsf,2*nx))
+        fit2 = np.zeros((nrep[iset],nsf,nq))
+        fit2_cv = np.zeros((nsf,nq))
     if(iset==2):
-        fit3 = np.zeros((nrep[iset],nsf,2*nx))
-        fit3_cv = np.zeros((nsf,2*nx))
+        fit3 = np.zeros((nrep[iset],nsf,nq))
+        fit3_cv = np.zeros((nsf,nq))
         
     # Run over replicas
     for i in range(1,nrep[iset]+1):
         p=lhapdf.mkPDF(pdfset[iset],i)
 
         # Run over x arrat
-        for k in range(2*nx):
+        for k in range(nq):
             
-            x = X[k]
-
+            q = Q[k]
+          
             # run over flavours
             for isf in range(nsf):
 
@@ -128,8 +130,8 @@ for iset in range(nset):
                 
     # Central values
     p=lhapdf.mkPDF(pdfset[iset],0)
-    for k in range(2*nx):
-        x = X[k]
+    for k in range(nq):
+        q = Q[k]
         
         for isf in range(nsf):
 
@@ -261,7 +263,7 @@ for iset in range(nset):
             p1_error = np.std(fit1,axis=0)
             neig = int(nrep[iset]/2) # Number of eigenvectors
             # Run over x points and flavour
-            for ix in range(2*nx):
+            for ix in range(nq):
                 for isf in range(nsf):
                     p1_mid[isf][ix]=fit1_cv[isf][ix]
                     p1_error[isf][ix]=0 # initialisation
@@ -279,7 +281,7 @@ for iset in range(nset):
             p2_error = np.std(fit2,axis=0)
             neig = int(nrep[iset]/2) # Number of eigenvectors
             # Run over x points and flavour
-            for ix in range(2*nx):
+            for ix in range(nq):
                 for isf in range(nsf):
                     p2_mid[isf][ix]=fit2_cv[isf][ix]
                     p2_error[isf][ix]=0 # initialisation
@@ -297,7 +299,7 @@ for iset in range(nset):
             p3_error = np.std(fit3,axis=0)
             neig = int(nrep[iset]/2) # Number of eigenvectors
             # Run over x points and flavour
-            for ix in range(2*nx):
+            for ix in range(nq):
                 for isf in range(nsf):
                     p3_mid[isf][ix]=fit3_cv[isf][ix]
                     p3_error[isf][ix]=0 # initialisation
@@ -321,7 +323,7 @@ for iset in range(nset):
             p1_error = np.std(fit1,axis=0)
             neig =  int(nrep[iset]) # Number of eigenvectors
             # Run over x points and flavour
-            for ix in range(2*nx):
+            for ix in range(nq):
                 for isf in range(nsf):
                     p1_mid[isf][ix]=fit1_cv[isf][ix] # Central Hessian value
                     p1_error[isf][ix]=0 # initialisation
@@ -351,32 +353,31 @@ ncols,nrows=2,4
 py.figure(figsize=(ncols*5,nrows*3.5))
 gs = gridspec.GridSpec(nrows,ncols)
 rescolors = py.rcParams['axes.prop_cycle'].by_key()['color']
-yranges=[[0,4],[0,4],[-0.0,2.0],[-1.0,3.0]]
+yranges=[[0,0.01],[0,0.08],[-0.0,0.01],[-0.0,0.07]]
 labelpdf=[r"$F_2^{\nu p}(x,Q)$",r"$F_2^{\bar{\nu} p}(x,Q)$",\
           r"$xF_3^{\nu p}(x,Q)$",r"$xF_3^{\bar{\nu} p}(x,Q)$"]
 
 for isf in range(nsf):
 
     ax = py.subplot(gs[isf])
-    p1=ax.plot(X,p1_mid[isf],ls="dashed")
-    ax.fill_between(X,p1_high[isf],p1_low[isf],color=rescolors[0],alpha=0.2)
+    p1=ax.plot(Q,p1_mid[isf],ls="dashed")
+    ax.fill_between(Q,p1_high[isf],p1_low[isf],color=rescolors[0],alpha=0.2)
     p2=ax.fill(np.NaN,np.NaN,color=rescolors[0],alpha=0.2)
-    p3=ax.plot(X,p2_mid[isf],ls="solid")
-    ax.fill_between(X,p2_high[isf],p2_low[isf],color=rescolors[1],alpha=0.2)
+    p3=ax.plot(Q,p2_mid[isf],ls="solid")
+    ax.fill_between(Q,p2_high[isf],p2_low[isf],color=rescolors[1],alpha=0.2)
     p4=ax.fill(np.NaN,np.NaN,color=rescolors[1],alpha=0.2)
-    p5=ax.plot(X,p3_mid[isf],ls="dashdot")
-    ax.fill_between(X,p3_high[isf],p3_low[isf],color=rescolors[2],alpha=0.2)
+    p5=ax.plot(Q,p3_mid[isf],ls="dashdot")
+    ax.fill_between(Q,p3_high[isf],p3_low[isf],color=rescolors[2],alpha=0.2)
     p6=ax.fill(np.NaN,np.NaN,color=rescolors[2],alpha=0.2)
-    ax.set_xscale('log')
-    ax.set_xlim(10**(logxmin),xmax)
+    ax.set_xscale('linear')
+    ax.set_xlim(qmin,qmax)
     ax.tick_params(which='both',direction='in',labelsize=12,right=True)
     ax.tick_params(which='major',length=7)
     ax.tick_params(which='minor',length=4)
     ax.set_ylabel(labelpdf[isf],fontsize=21)
     ax.set_ylim(yranges[isf][0],yranges[isf][1])
-    ax.set_xlabel(r'$x$',fontsize=20)
-    ax.text(0.05,0.85,r'$Q=5~{\rm GeV}$',fontsize=16,transform=ax.transAxes)
-        
+    ax.set_xlabel(r'$Q~({\rm GeV})$',fontsize=20)
+    ax.text(0.05,0.85,r'$x=0.794$',fontsize=16,transform=ax.transAxes)
 
     ax.legend([(p1[0],p2[0]),(p3[0],p4[0]),(p5[0],p6[0])],[pdfsetlab[0],pdfsetlab[1],pdfsetlab[2]], \
                   frameon="True",loc=1,prop={'size':16})
@@ -392,24 +393,24 @@ for isf in range(nsf):
     norm = p1_mid[isf]
     
     ax = py.subplot(gs[4+isf])
-    p1=ax.plot(X,p1_mid[isf]/norm,ls="dashed")
-    ax.fill_between(X,p1_high[isf]/norm,p1_low[isf]/norm,color=rescolors[0],alpha=0.2)
+    p1=ax.plot(Q,p1_mid[isf]/norm,ls="dashed")
+    ax.fill_between(Q,p1_high[isf]/norm,p1_low[isf]/norm,color=rescolors[0],alpha=0.2)
     p2=ax.fill(np.NaN,np.NaN,color=rescolors[0],alpha=0.2)
-    p3=ax.plot(X,p2_mid[isf]/norm,ls="solid")
-    ax.fill_between(X,p2_high[isf]/norm,p2_low[isf]/norm,color=rescolors[1],alpha=0.2)
+    p3=ax.plot(Q,p2_mid[isf]/norm,ls="solid")
+    ax.fill_between(Q,p2_high[isf]/norm,p2_low[isf]/norm,color=rescolors[1],alpha=0.2)
     p4=ax.fill(np.NaN,np.NaN,color=rescolors[1],alpha=0.2)
-    p5=ax.plot(X,p3_mid[isf]/norm,ls="dashdot")
-    ax.fill_between(X,p3_high[isf]/norm,p3_low[isf]/norm,color=rescolors[2],alpha=0.2)
+    p5=ax.plot(Q,p3_mid[isf]/norm,ls="dashdot")
+    ax.fill_between(Q,p3_high[isf]/norm,p3_low[isf]/norm,color=rescolors[2],alpha=0.2)
     p6=ax.fill(np.NaN,np.NaN,color=rescolors[2],alpha=0.2)
-    ax.set_xscale('log')
-    ax.set_xlim(10**(logxmin),xmax)
+    ax.set_xscale('linear')
+    ax.set_xlim(qmin,qmax)
     ax.tick_params(which='both',direction='in',labelsize=12,right=True)
     ax.tick_params(which='major',length=7)
     ax.tick_params(which='minor',length=4)
     ax.set_ylabel(labelpdf[isf],fontsize=21)
     ax.set_ylim(yranges[isf][0],yranges[isf][1])
-    ax.set_xlabel(r'$x$',fontsize=20)
-    ax.text(0.05,0.85,r'$Q=5~{\rm GeV}$',fontsize=16,transform=ax.transAxes)
+    ax.set_xlabel(r'$Q~({\rm GeV})$',fontsize=20)
+    ax.text(0.05,0.85,r'$x=0.794$',fontsize=16,transform=ax.transAxes)
     
 
     ax.legend([(p1[0],p2[0]),(p3[0],p4[0]),(p5[0],p6[0])],[pdfsetlab[0],pdfsetlab[1],pdfsetlab[2]], \
