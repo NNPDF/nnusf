@@ -3,6 +3,7 @@
 import pathlib
 
 import click
+from traitlets.traitlets import default
 
 from ..plot import covmat, kinematics
 from . import base
@@ -22,7 +23,14 @@ def subcommand():
     default=pathlib.Path.cwd().absolute() / "plots",
     help="Alternative destination path to store the resulting plots (default: $PWD/plots).",
 )
-def sub_kinematic(data, destination):
+@click.option("--ylog/--no-ylog", default=True, help="Set logarithmic scale on y axis.")
+@click.option(
+    "-c",
+    "--cuts",
+    default=None,
+    help="""Stringified dictionary of cuts, e.g. '{"Q2": {"min": 3.5}}'.""",
+)
+def sub_kinematic(data, destination, ylog, cuts):
     """Generate kinematics plot.
 
     The plot will include data from each DATA path provided (multiple values allowed),
@@ -31,7 +39,10 @@ def sub_kinematic(data, destination):
         nnu plot kin commondata/data/*
 
     """
-    kinematics.main(data, destination)
+    if cuts is not None:
+        cuts = eval(cuts)
+
+    kinematics.main(data, destination, ylog=ylog, cuts=cuts)
 
 
 @subcommand.command("covmat")

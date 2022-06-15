@@ -40,9 +40,9 @@ def cuts(cuts: dict[str, dict[str, float]], table: pd.DataFrame) -> np.ndarray:
         maxk = cuts[var]["max"] if "max" in cuts[var] else np.inf
         mincut = mink < kin.values
         maxcut = kin.values < maxk
-        mask = np.logical_and(mask, mincut, maxcut)
+        mask = mask & mincut & maxcut
 
-        ncut = -(mincut - 1).sum() - (maxcut - 1).sum()
+        ncut = (1 - mincut).sum() + (1 - maxcut).sum()
         _logger.info(f"Cut {ncut} points, in '{var}'")
 
     return mask
