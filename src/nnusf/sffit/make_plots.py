@@ -8,10 +8,9 @@ import pathlib
 
 import yaml
 
-import plots
+from . import plots
 
-logging.basicConfig(level=logging.INFO)
-log = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 
 def main():
@@ -26,9 +25,7 @@ def main():
     path_to_output_folder = pathlib.Path(args.output)
 
     if path_to_output_folder.exists():
-        log.warning(
-            f"{path_to_output_folder} already exists, overwriting content."
-        )
+        _logger.warning(f"{path_to_output_folder} already exists, overwriting content.")
     path_to_output_folder.mkdir(parents=True, exist_ok=True)
 
     with open(path_to_runcard) as file:
@@ -39,7 +36,3 @@ def main():
     for action in runcard_content["actions"]:
         func = getattr(plots, action)
         func(**runcard_content)
-
-
-if __name__ == "__main__":
-    main()

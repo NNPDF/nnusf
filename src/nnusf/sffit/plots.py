@@ -5,8 +5,8 @@ from matplotlib import pyplot as plt
 from nnusf.data.loader import Loader
 import tensorflow as tf
 
-from load_data import path_to_coefficients, path_to_commondata
-from load_fit_data import load_models, get_predictions_q
+from .load_data import path_to_coefficients, path_to_commondata
+from .load_fit_data import load_models, get_predictions_q
 
 basis = [
     r"$F_2$",
@@ -71,8 +71,7 @@ def plot_sf_q_band(**kwargs):
             alpha=0.4,
         )
         savepath = (
-            pathlib.Path(kwargs["output"])
-            / f"plot_sf_q_band_{prediction_index}.png"
+            pathlib.Path(kwargs["output"]) / f"plot_sf_q_band_{prediction_index}.png"
         )
         fig.savefig(savepath)
 
@@ -87,22 +86,38 @@ def prediction_data_comparison(**kwargs):
         observable_predictions = []
         for model in models:
             prediction = model(data.kinematics)
-            observable_predictions.append(tf.einsum("ij,ij->i",prediction, coefficients))
+            observable_predictions.append(
+                tf.einsum("ij,ij->i", prediction, coefficients)
+            )
         observable_predictions = np.array(observable_predictions)
         mean_observable_predictions = observable_predictions.mean(axis=0)
         std_observable_predictions = observable_predictions.std(axis=0)
-        for x_slice in np.unique(kinematics[:,0]):
+        for x_slice in np.unique(kinematics[:, 0]):
             fig, ax = plt.subplots()
             ax.set_title(f"{experiment}: A={kinematics[0,2]}, x={x_slice}")
-            mask = np.where(kinematics[:,0]==x_slice)[0]
+            mask = np.where(kinematics[:, 0] == x_slice)[0]
             tmp_kinematics = kinematics[mask]
             diag_covmat = np.diag(data.covmat)[mask]
-            ax.errorbar(tmp_kinematics[:,1], data.central_values[mask], yerr=np.sqrt(diag_covmat), fmt='.', color='black',capsize=5)
-            ax.errorbar(tmp_kinematics[:,1], mean_observable_predictions[mask], yerr=std_observable_predictions[mask], fmt='.', color='C0',capsize=5)
+            ax.errorbar(
+                tmp_kinematics[:, 1],
+                data.central_values[mask],
+                yerr=np.sqrt(diag_covmat),
+                fmt=".",
+                color="black",
+                capsize=5,
+            )
+            ax.errorbar(
+                tmp_kinematics[:, 1],
+                mean_observable_predictions[mask],
+                yerr=std_observable_predictions[mask],
+                fmt=".",
+                color="C0",
+                capsize=5,
+            )
             savepath = (
                 pathlib.Path(kwargs["output"])
                 / f"prediction_data_comparison_{count_plots}.png"
             )
-            count_plots+=1
-            fig.savefig(savepath,dpi=300)
+            count_plots += 1
+            fig.savefig(savepath, dpi=300)
             plt.close(fig)

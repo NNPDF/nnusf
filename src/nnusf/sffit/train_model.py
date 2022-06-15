@@ -1,7 +1,7 @@
 import numpy as np
 import tensorflow as tf
 
-from callbacks import EarlyStopping
+from .callbacks import EarlyStopping
 
 optimizer_options = {
     "Adam": tf.keras.optimizers.Adam,
