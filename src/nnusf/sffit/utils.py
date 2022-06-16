@@ -125,7 +125,7 @@ def monitor_validation(vl_model, kins, exp_data):
         _description_
     """
     loss = vl_model.evaluate(x=kins, y=exp_data, verbose=0)
-    return loss
+    return [loss] if isinstance(loss, float) else loss
 
 
 def chi2_logs(train_info, validation_loss, epoch):
@@ -137,7 +137,7 @@ def chi2_logs(train_info, validation_loss, epoch):
     table.add_column("Training chi2", justify="right", width=24)
     table.add_column("Validation chi2", justify="right", width=24)
     for idx, (key, value) in enumerate(train_info.history.items()):
-        if key is not "loss":
+        if key != "loss":
             table.add_row(
                 f"{key.strip('_loss')}",
                 f"{value[0]}",

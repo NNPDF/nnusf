@@ -1,5 +1,6 @@
 import logging
 import tensorflow as tf
+import numpy as np
 
 from .utils import chi2_logs
 from .utils import monitor_validation
@@ -7,7 +8,7 @@ from .utils import monitor_validation
 from dataclasses import dataclass
 
 
-log = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 optimizer_options = {
     "Adam": tf.keras.optimizers.Adam,
@@ -83,5 +84,11 @@ def perform_fit(
         # `patience_epochs`, stop the fit.
         if epoch - best_model.epoch > patience_epochs:
             break
-
+    _logger.info(f"Fit ended at epoch {epoch}")
+    _logger.info(f"Best epoch {best_model.epoch}")
+    _logger.info(
+        f"""Losses at stopping:
+            - training: {best_model.vl_chi2}
+            - validation: {best_model.tr_chi2}"""
+    )
     return best_model
