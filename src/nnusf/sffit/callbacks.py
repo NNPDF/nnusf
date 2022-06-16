@@ -2,7 +2,7 @@ import logging
 
 import tensorflow as tf
 
-log = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 
 class EarlyStopping(tf.keras.callbacks.Callback):
@@ -28,5 +28,5 @@ class EarlyStopping(tf.keras.callbacks.Callback):
             self.model.stop_training = True
 
     def on_train_end(self, logs=None):
-        log.info(f"best epoch: {self.best_epoch}")
+        _logger.info(f"best epoch: {self.best_epoch}")
         self.model.set_weights(self.best_weights)

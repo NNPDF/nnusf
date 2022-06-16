@@ -3,7 +3,7 @@ import numpy as np
 import tensorflow as tf
 from tensorflow.keras import layers
 
-from layers import Chi2Layer
+from .layers import Chi2Layer
 
 
 def generate_models(
@@ -26,9 +26,7 @@ def generate_models(
     # (None,3) where None leaves the ndat size free such that we can use the
     # same input layer for models with different input sizes (e.g. training and
     # validation)
-    input_layer = layers.Input(
-        shape=(None, 3), batch_size=1, name="input_layer"
-    )
+    input_layer = layers.Input(shape=(None, 3), batch_size=1, name="input_layer")
 
     # make the dense layers
     dense_layers = []

@@ -27,4 +27,10 @@ class Chi2Layer(tf.keras.layers.Layer):
         distance = predictions - self.experimental_central_value
         tmp_dot = tf.tensordot(self.invcovmat, distance, axes=1)
         chi2 = tf.tensordot(distance, tmp_dot, axes=1)
+        if self.training_data:
+            tf.print("training")
+            tf.print(chi2 / self.experimental_central_value.shape[0])
+        else:
+            tf.print("validation")
+            tf.print(chi2 / self.experimental_central_value.shape[0])
         return chi2

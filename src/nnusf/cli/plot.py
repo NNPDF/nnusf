@@ -3,9 +3,8 @@
 import pathlib
 
 import click
-from traitlets.traitlets import default
 
-from ..plot import covmat, kinematics
+from ..plot import covmat, kinematics, fit
 from . import base
 
 
@@ -90,3 +89,17 @@ def sub_covmat(data, destination, inverse, norm, cuts, symlog):
         cuts = eval(cuts)
 
     covmat.main(data, destination, inverse=inverse, norm=norm, cuts=cuts, symlog=symlog)
+
+
+@subcommand.command("fit")
+@click.argument("runcard", type=click.Path(exists=True, path_type=pathlib.Path))
+@click.option(
+    "-d",
+    "--destination",
+    type=click.Path(path_type=pathlib.Path),
+    default=pathlib.Path.cwd().absolute() / "plots",
+    help="Alternative destination path to store the resulting plots (default: $PWD/plots).",
+)
+def sub_fit(runcard, destination):
+    """Plots coming from fit machinery"""
+    fit.main(runcard, destination)
