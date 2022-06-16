@@ -6,10 +6,6 @@ import numpy as np
 
 from ...data import loader
 
-sfmap = dict(F2="F2_total", FL="FL_total", F3="F3_total")
-xsmap = dict(CHORUS="XSCHORUSCC", NUTEV="XSNUTEVCC", CDHSW="XSCHORUSCC", FW="FW")
-projectiles = dict(NU="neutrino", NB="antineutrino")
-
 Q2CUT = 5
 
 xgrid = np.geomspace(1e-4, 1, 20)
