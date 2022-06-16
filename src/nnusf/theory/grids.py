@@ -12,13 +12,14 @@ from .. import utils
 _logger = logging.getLogger(__name__)
 
 
-def main(cards: pathlib.Path):
+def main(cards: pathlib.Path, destination: pathlib.Path):
     """Run grids computation.
 
     Parameters
     ----------
     cards: pathlib.Path
         path to runcards archive
+    destination: pathlib.Path
 
     """
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -44,6 +45,6 @@ def main(cards: pathlib.Path):
                     output.dump_pineappl_to_file(res_path, obs)
                     _logger.info(f"Dumped {res_path.name}")
 
-        with tarfile.open(pathlib.Path.cwd() / "grids.tar", "w") as tar:
+        with tarfile.open(destination / "grids.tar", "w") as tar:
             for path in tmpdir.iterdir():
                 tar.add(path.absolute(), path.relative_to(tmpdir))

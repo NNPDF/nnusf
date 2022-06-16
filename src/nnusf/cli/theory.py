@@ -76,7 +76,7 @@ def sub_grids(runcards, destination):
     The internal `name` key is used for the generated grids.
 
     """
-    grids.main(runcards.absolute())
+    grids.main(runcards.absolute(), destination)
 
 
 @subcommand.command("predictions")
