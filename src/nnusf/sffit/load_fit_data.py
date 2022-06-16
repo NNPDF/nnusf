@@ -14,7 +14,8 @@ class PredictionInfo:
     n_sfs: int
 
 
-def load_models(fit):
+def load_models(fit, **kwargs):
+    del kwargs
     path_to_fit_folder = pathlib.Path(fit)
     models = []
     for replica_folder in path_to_fit_folder.rglob("replica_*/"):

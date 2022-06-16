@@ -2,7 +2,7 @@ import pathlib
 import random
 import numpy as np
 
-from nnusf.data.loader import Loader
+from ..data.loader import Loader
 
 path_to_commondata = pathlib.Path(__file__).parents[3].joinpath("commondata")
 path_to_coefficients = pathlib.Path(__file__).parents[3].joinpath("coefficients")
