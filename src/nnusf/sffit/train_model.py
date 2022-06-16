@@ -60,7 +60,7 @@ def perform_fit(
 
     kinematics_array = [tf.expand_dims(i, axis=0) for i in kinematics]
 
-    best_model = FitInfo()
+    best_model = ModelInfo()
     patience_epochs = int(stopping_patience * epochs)
     for epoch in range(epochs):
         train_info = tr_model.fit(
@@ -81,7 +81,7 @@ def perform_fit(
 
         # If vl chi2 has not improved for a number of epochs equal to
         # `patience_epochs`, stop the fit.
-        if epoch - bestmodel.epoch > patience_epochs:
+        if epoch - best_model.epoch > patience_epochs:
             break
 
     return best_model
