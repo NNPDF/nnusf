@@ -17,6 +17,7 @@ import pandas as pd
 import yadmark.data.observables
 
 from . import load
+from .. import defs
 
 _logger = logging.getLogger(__name__)
 
@@ -54,14 +55,14 @@ def overlap(datasets: list[str], path: pathlib.Path) -> dict:
 
         obs = kins["obs"]
         try:
-            if obs in load.sfmap:
-                obsname = load.sfmap[obs]
+            if obs in defs.sfmap:
+                obsname = defs.sfmap[obs]
             else:
                 exp = kins["exp"]
-                if obs in load.xsmap:
-                    obsname = load.xsmap[obs]
+                if obs in defs.xsmap:
+                    obsname = defs.xsmap[obs]
                 else:
-                    obsname = load.xsmap[exp]
+                    obsname = defs.xsmap[exp]
         except KeyError:
             _logger.error(f"No definition found for '{dataset}'")
             continue
@@ -101,7 +102,7 @@ def boundary() -> dict:
     run_nb["ProjectileDIS"] = "antineutrino"
 
     for proj, run in [("NU", run_nu), ("NB", run_nb)]:
-        for name, sf in load.sfmap.items():
+        for name, sf in defs.sfmap.items():
             run_sf = copy.deepcopy(run)
             kins = [dict(x=x, Q2=q2, y=0) for x in load.xgrid for q2 in load.q2grid]
             run_sf["observables"][sf] = kins

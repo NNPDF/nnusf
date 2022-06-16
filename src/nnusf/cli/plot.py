@@ -4,7 +4,8 @@ import pathlib
 
 import click
 
-from ..plot import covmat, kinematics, fit
+from ..plot import covmat, kinematics, fit, sf
+from ..theory import defs
 from . import base
 
 
@@ -101,5 +102,31 @@ def sub_covmat(data, destination, inverse, norm, cuts, symlog):
     help="Alternative destination path to store the resulting plots (default: $PWD/plots).",
 )
 def sub_fit(runcard, destination):
-    """Plots coming from fit machinery"""
+    """Plots coming from fit machinery."""
     fit.main(runcard, destination)
+
+
+sfkinds = list(defs.sfmap.keys())
+
+
+@subcommand.command("sf")
+@click.argument("source", type=click.Choice(["by", "hiq", "fit"]))
+@click.option(
+    "-k",
+    "--kind",
+    multiple=True,
+    type=click.Choice(sfkinds),
+    default=sfkinds,
+    help="Structure functions kinds to be plotted",
+)
+@click.option(
+    "-d",
+    "--destination",
+    type=click.Path(path_type=pathlib.Path),
+    default=pathlib.Path.cwd().absolute() / "plots",
+    help="Alternative destination path to store the resulting plots (default: $PWD/plots).",
+)
+def sub_sf(source, kind, destination):
+    """Plots structure functions."""
+
+    sf.main(kind, destination)
