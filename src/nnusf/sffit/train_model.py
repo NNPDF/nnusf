@@ -2,9 +2,11 @@ import logging
 import numpy as np
 import tensorflow as tf
 
-from nnusf.sffit.callbacks import EarlyStopping
 from nnusf.sffit.utils import chi2_logs
 from nnusf.sffit.utils import monitor_validation
+
+from dataclasses import dataclass
+
 
 log = logging.getLogger(__name__)
 
@@ -14,6 +16,21 @@ optimizer_options = {
     "Adadelta": tf.keras.optimizers.Adadelta,
 }
 
+@dataclass
+class FitInfo:
+    """Class to collect information about the best model found during training
+    """    
+    epoch: int = None
+    vl_chi2: float = None
+    tr_chi2: float = None
+    model: tf.keras.Model = None
+
+    def collect_info(self, train_info, vl_chi2, epoch):
+        if self.vl_chi2==None or self.vl_chi2 > vl_chi2:
+            self.epoch = epoch
+            self.vl_chi2 = vl_chi2
+            self.tr_chi2 = train_info.history["loss"][0]
+            self.model = train_info.model
 
 def perform_fit(
     fit_dict,
@@ -44,7 +61,8 @@ def perform_fit(
 
     kinematics_array = [tf.expand_dims(i, axis=0) for i in kinematics]
 
-    # TODO: Monitor training & validation losses (callbacks, etc.)
+    bestmodel = FitInfo()
+    patience_epochs = int(stopping_patience*epochs)
     for epoch in range(epochs):
         train_info = tr_model.fit(
             kinematics_array,
@@ -53,9 +71,18 @@ def perform_fit(
             verbose=0,
         )
 
+        vl_chi2 = monitor_validation(
+            vl_model, kinematics_array, fit_dict["vl_expdat"]
+        )
+
+        bestmodel.collect_info(train_info, sum(vl_chi2), epoch)
+
         if not (epoch % 100):
-            # Check validation loss
-            vl_chi2 = monitor_validation(
-                vl_model, kinematics_array, fit_dict["vl_expdat"]
-            )
             chi2_logs(train_info, vl_chi2, epoch)
+
+        # If vl chi2 has not improved for a number of epochs equal to
+        # `patience_epochs`, stop the fit.
+        if epoch-bestmodel.epoch > patience_epochs:
+            break
+
+    return bestmodel
