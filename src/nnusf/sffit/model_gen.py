@@ -1,14 +1,9 @@
 # -*- coding: utf-8 -*-
 import tensorflow as tf
-from tensorflow.keras import layers
 
-from nnusf.sffit.layers import GenMaskLayer
-from nnusf.sffit.layers import ObservableLayer
+from .layers import GenMaskLayer, ObservableLayer
 
-from nnusf.sffit.utils import mask_expdata
-from nnusf.sffit.utils import mask_covmat
-from nnusf.sffit.utils import chi2
-from nnusf.sffit.utils import generate_mask
+from .utils import mask_expdata, mask_covmat, chi2, generate_mask
 
 
 def generate_models(
@@ -32,7 +27,7 @@ def generate_models(
     dense_layers = []
     for units, activation in zip(units_per_layer, activation_per_layer):
         dense_layers.append(
-            layers.Dense(
+            tf.keras.layers.Dense(
                 units=units,
                 activation=activation,
                 kernel_initializer=initializer,
@@ -40,7 +35,7 @@ def generate_models(
         )
 
     # make the output layer
-    sf_output = layers.Dense(
+    sf_output = tf.keras.layers.Dense(
         output_units, activation=output_activation, name="SF_output"
     )
 
@@ -64,7 +59,7 @@ def generate_models(
         exp_datasets = data.pseudodata
 
         # Construct the input layer as placeholders
-        input_layer = layers.Input(shape=(None, 3), batch_size=1)
+        input_layer = tf.keras.layers.Input(shape=(None, 3), batch_size=1)
         model_inputs.append(input_layer)
 
         # Construct the full observable for a given dataset
