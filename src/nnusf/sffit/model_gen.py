@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import numpy as np
 import tensorflow as tf
 
 from .layers import GenMaskLayer, ObservableLayer
@@ -78,7 +79,9 @@ def generate_models(
         tr_data.append(expd_tr)
         vl_data.append(expd_vl)
 
-        covm_tr, covm_vl = mask_covmat(data.covmat, tr_mask, vl_mask)
+        # Mask the covmat first before computing the inverse
+        invcovmat = np.linalg.inv(data.covmat)
+        covm_tr, covm_vl = mask_covmat(invcovmat, tr_mask, vl_mask)
         chi2_tr = chi2(covm_tr, len(expd_tr))
         chi2_vl = chi2(covm_vl, len(expd_vl))
         tr_chi2.append(chi2_tr)

@@ -78,7 +78,7 @@ def mask_covmat(covmat, tr_mask, vl_mask):
     return trmat, vlmat
 
 
-def chi2(covmat, nb_datapoints):
+def chi2(invcovmat, nb_datapoints):
     """_summary_
 
     Parameters
@@ -93,7 +93,6 @@ def chi2(covmat, nb_datapoints):
     _type_
         _description_
     """
-    invcovmat = np.linalg.inv(covmat)
     incovmatf = tf.keras.backend.constant(invcovmat)
 
     def chi2_loss(exp_data, fit_pred):
