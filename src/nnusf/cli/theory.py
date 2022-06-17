@@ -10,6 +10,17 @@ from . import base
 
 _logger = logging.getLogger(__name__)
 
+DESTINATION = pathlib.Path.cwd().absolute() / "theory"
+"""Default destination for generated files"""
+
+option_dest = click.option(
+    "-d",
+    "--destination",
+    type=click.Path(path_type=pathlib.Path),
+    default=DESTINATION,
+    help="Alternative destination path to store the resulting table (default: $PWD/theory)",
+)
+
 
 @base.command.group("theory")
 def subcommand():
@@ -32,17 +43,11 @@ def sub_runcards():
 
 @sub_runcards.command("by")
 @click.option(
-    "-d",
-    "--destination",
-    type=click.Path(path_type=pathlib.Path),
-    default=pathlib.Path.cwd().absolute() / "theory",
-    help="Alternative destination path to store the resulting table (default: $PWD/theory)",
-)
-@click.option(
     "-u",
     "--theory-update",
     help="String representation of a dictionary containing update for the theory.",
 )
+@option_dest
 def sub_sub_by(theory_update, destination):
     """Bodek-Yang predictions, made with Genie."""
     if theory_update is not None:
@@ -53,13 +58,7 @@ def sub_sub_by(theory_update, destination):
 
 @sub_runcards.command("hiq")
 @click.argument("data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path))
-@click.option(
-    "-d",
-    "--destination",
-    type=click.Path(path_type=pathlib.Path),
-    default=pathlib.Path.cwd().absolute() / "theory",
-    help="Alternative destination path to store the resulting table (default: $PWD/theory)",
-)
+@option_dest
 def sub_sub_hiq(data, destination):
     """High Q2, from cut values of the dataset."""
     runcards.hiq(data, destination=destination)
@@ -70,13 +69,7 @@ def sub_sub_hiq(data, destination):
     "observables", nargs=-1, type=click.Choice(bodek_yang.load.load().members)
 )
 @click.option("-a", "--action", multiple=True, type=click.Choice(["npy", "txt"]))
-@click.option(
-    "-d",
-    "--destination",
-    type=click.Path(path_type=pathlib.Path),
-    default=pathlib.Path.cwd().absolute() / "theory",
-    help="Alternative destination path to store the resulting table (default: $PWD/theory)",
-)
+@option_dest
 def sub_by(observables, action, destination):
     """Genie's Bodek-Yang output inspection."""
 
@@ -91,13 +84,7 @@ def sub_by(observables, action, destination):
 
 @subcommand.command("grids")
 @click.argument("runcards", type=click.Path(exists=True, path_type=pathlib.Path))
-@click.option(
-    "-d",
-    "--destination",
-    type=click.Path(path_type=pathlib.Path),
-    default=pathlib.Path.cwd().absolute() / "theory",
-    help="Alternative destination path to store the resulting table (default: $PWD/theory)",
-)
+@option_dest
 def sub_grids(runcards, destination):
     """Generate grids with yadism.
 
@@ -123,13 +110,7 @@ def sub_grids(runcards, destination):
     default="theory",
 )
 @click.option("-x", type=int, default=None)
-@click.option(
-    "-d",
-    "--destination",
-    type=click.Path(path_type=pathlib.Path),
-    default=pathlib.Path.cwd().absolute() / "theory",
-    help="Alternative destination path to store the resulting table (default: $PWD/theory)",
-)
+@option_dest
 def sub_predictions(grids, pdf, err, destination, x):
     """Generate predictions from yadism grids.
 
