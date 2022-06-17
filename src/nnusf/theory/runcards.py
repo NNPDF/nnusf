@@ -4,6 +4,7 @@ import logging
 import pathlib
 import tarfile
 import tempfile
+from typing import Optional
 
 import yaml
 
@@ -13,13 +14,18 @@ from . import bodek_yang, highq
 _logger = logging.getLogger(__name__)
 
 
-def theory() -> dict:
+def theory(update: Optional[dict]) -> dict:
     """Load and return internal theory runcard."""
     runcard = yaml.safe_load(
         (utils.pkg / "theory" / "assets" / "theory_200.yaml").read_text(
             encoding="utf-8"
         )
     )
+
+    if update is not None:
+        runcard.update(update)
+        _logger.info(f"Base theory updated with {update}")
+
     return runcard
 
 
@@ -55,9 +61,13 @@ def dump(
         )
 
 
-def by(destination: pathlib.Path):
+def by(theory_update: Optional[dict], destination: pathlib.Path):
     """Generate Bodek-Yang yadism runcards."""
-    dump(theory(), bodek_yang.runcards.observables(), destination=destination)
+    dump(
+        theory(theory_update),
+        bodek_yang.runcards.observables(),
+        destination=destination,
+    )
 
 
 def hiq(datasets: list[pathlib.Path], destination: pathlib.Path):

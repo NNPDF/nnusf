@@ -38,9 +38,17 @@ def sub_runcards():
     default=pathlib.Path.cwd().absolute() / "theory",
     help="Alternative destination path to store the resulting table (default: $PWD/theory)",
 )
-def sub_sub_by(destination):
+@click.option(
+    "-u",
+    "--theory-update",
+    help="String representation of a dictionary containing update for the theory.",
+)
+def sub_sub_by(theory_update, destination):
     """Bodek-Yang predictions, made with Genie."""
-    runcards.by(destination=destination)
+    if theory_update is not None:
+        theory_update = eval(theory_update)
+
+    runcards.by(theory_update=theory_update, destination=destination)
 
 
 @sub_runcards.command("hiq")
