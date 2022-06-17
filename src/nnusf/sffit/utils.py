@@ -78,7 +78,7 @@ def mask_covmat(covmat, tr_mask, vl_mask):
     return trmat, vlmat
 
 
-def chi2(invcovmat, nb_datapoints):
+def chi2(invcovmat):
     """_summary_
 
     Parameters
@@ -101,7 +101,7 @@ def chi2(invcovmat, nb_datapoints):
             incovmatf, tf.transpose(diff_prediction), axes=1
         )
         result = tf.tensordot(diff_prediction, right_dot, axes=1)
-        return result / nb_datapoints
+        return result
 
     return chi2_loss
 
@@ -127,25 +127,26 @@ def monitor_validation(vl_model, kins, exp_data):
     return [loss] if isinstance(loss, float) else loss
 
 
-def chi2_logs(train_info, validation_loss, epoch):
-    size_list = len(validation_loss)
+def chi2_logs(train_info, validation_loss, tr_dpts, vl_dpts, epoch):
+    tot_trpts = sum(tr_dpts.values())
+    tot_vlpts = sum(vl_dpts.values())
     style = Style(color="white")
-    nb_fitted_sets = 1 if size_list == 1 else (size_list - 1)
     table = Table(show_header=True, header_style="bold white", style=style)
     table.add_column(" ", justify="left", width=20)
-    table.add_column("Training chi2", justify="right", width=24)
-    table.add_column("Validation chi2", justify="right", width=24)
+    table.add_column("chi2(tr)/Ntr", justify="right", width=24)
+    table.add_column("chi2(vl)/Nvl", justify="right", width=24)
     for idx, (key, value) in enumerate(train_info.history.items()):
         if key != "loss":
+            dataset_name = key.strip('_loss')
             table.add_row(
-                f"{key.strip('_loss')}",
-                f"{value[0]}",
-                f"{validation_loss[idx]}",
+                f"{dataset_name}",
+                f"{value[0] / tr_dpts[dataset_name]}",
+                f"{validation_loss[idx] / vl_dpts[dataset_name]}",
             )
     table.add_row(
-        "tot chi2",
-        f"{train_info.history['loss'][0] / nb_fitted_sets}",
-        f"{validation_loss[0] / nb_fitted_sets}",
+        "Tot chi2",
+        f"{train_info.history['loss'][0] / tot_trpts}",
+        f"{validation_loss[0] / tot_vlpts}",
     )
     console.print(f"Epoch {epoch}:", style="bold magenta")
     console.print(table)

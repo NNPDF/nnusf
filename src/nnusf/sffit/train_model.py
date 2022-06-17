@@ -57,7 +57,8 @@ def perform_fit(
 
     kinematics = []
     for data in data_info.values():
-        kinematics.append(data.kinematics)
+        kinematics_arr = data.kinematics
+        kinematics.append(kinematics_arr)
 
     kinematics_array = [tf.expand_dims(i, axis=0) for i in kinematics]
 
@@ -71,14 +72,14 @@ def perform_fit(
             verbose=0,
         )
 
-        vl_chi2 = monitor_validation(
-            vl_model, kinematics_array, fit_dict["vl_expdat"]
-        )
+        vl_chi2 = monitor_validation(vl_model, kinematics_array, fit_dict["vl_expdat"])
 
         best_model.collect_info(train_info, sum(vl_chi2), epoch)
 
         if not (epoch % 100):
-            chi2_logs(train_info, vl_chi2, epoch)
+            chi2_logs(
+                train_info, vl_chi2, fit_dict["tr_datpts"], fit_dict["vl_datpts"], epoch
+            )
 
         # If vl chi2 has not improved for a number of epochs equal to
         # `patience_epochs`, stop the fit.

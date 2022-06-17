@@ -48,11 +48,11 @@ def generate_models(
         dense_nest = sf_output(dense_nest)
         return dense_nest
 
-    # Add the layers that calculate the chi2 for trainig and validation
     model_inputs = []
     tr_data, vl_data = [], []
     tr_obs, vl_obs = [], []
     tr_chi2, vl_chi2 = [], []
+    tr_dpts, vl_dpts = {}, {}
     for data in data_info.values():
         # Extract theory grid coefficients & datasets
         coefficients = data.coefficients
@@ -82,10 +82,14 @@ def generate_models(
         # Mask the covmat first before computing the inverse
         invcovmat = np.linalg.inv(data.covmat)
         covm_tr, covm_vl = mask_covmat(invcovmat, tr_mask, vl_mask)
-        chi2_tr = chi2(covm_tr, len(expd_tr))
-        chi2_vl = chi2(covm_vl, len(expd_vl))
+        chi2_tr = chi2(covm_tr)
+        chi2_vl = chi2(covm_vl)
         tr_chi2.append(chi2_tr)
         vl_chi2.append(chi2_vl)
+
+        # Save the nb of datapoints for both tr&vl for later use
+        tr_dpts[data.name] = len(expd_tr)
+        vl_dpts[data.name] = len(expd_vl)
 
     # Reshape the exp datasets (y_true) to (1, N)
     tr_data = [i.reshape(1, -1) for i in tr_data]
@@ -102,6 +106,8 @@ def generate_models(
         "vl_losses": vl_chi2,
         "tr_expdat": tr_data,
         "vl_expdat": vl_data,
+        "tr_datpts": tr_dpts,
+        "vl_datpts": vl_dpts,
     }
 
     return fit_dic
