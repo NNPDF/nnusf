@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 """Provide theory subcommand."""
+import logging
 import pathlib
 
 import click
 
-from ..theory import grids, predictions, runcards
+from ..theory import grids, predictions, runcards, bodek_yang
 from . import base
+
+_logger = logging.getLogger(__name__)
 
 
 @base.command.group("theory")
@@ -52,6 +55,30 @@ def sub_sub_by(destination):
 def sub_sub_hiq(data, destination):
     """High Q2, from cut values of the dataset."""
     runcards.hiq(data, destination=destination)
+
+
+@subcommand.command("by")
+@click.argument(
+    "observables", nargs=-1, type=click.Choice(bodek_yang.load.load().members)
+)
+@click.option("-a", "--action", multiple=True, type=click.Choice(["npy", "txt"]))
+@click.option(
+    "-d",
+    "--destination",
+    type=click.Path(path_type=pathlib.Path),
+    default=pathlib.Path.cwd().absolute() / "theory",
+    help="Alternative destination path to store the resulting table (default: $PWD/theory)",
+)
+def sub_by(observables, action, destination):
+    """Genie's Bodek-Yang output inspection."""
+
+    values, labels = bodek_yang.extract(observables)
+    _logger.info(f"Extracted {labels} from Genie data, shape={values.shape}")
+
+    if "txt" in action:
+        bodek_yang.dump_text(values, labels=labels, destination=destination)
+    if "npy" in action:
+        bodek_yang.dump(values, destination=destination)
 
 
 @subcommand.command("grids")
