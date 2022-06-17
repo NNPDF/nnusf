@@ -58,7 +58,6 @@ def main(
         genie = load.load()
         q2grid, xgrid = np.meshgrid(*load.kin_grids())
         gmask = load.mask()
-        __import__("pdb").set_trace()
 
         prescr = defs.nine_points
 
@@ -141,5 +140,5 @@ def main(
                 plt.show()
 
         with tarfile.open(destination / "predictions.tar", "w") as tar:
-            for path in tmpdir.iterdir():
+            for path in preds_dest.iterdir():
                 tar.add(path.absolute(), path.relative_to(tmpdir))

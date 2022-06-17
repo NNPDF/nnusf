@@ -46,5 +46,5 @@ def main(cards: pathlib.Path, destination: pathlib.Path):
                     _logger.info(f"Dumped {res_path.name}")
 
         with tarfile.open(destination / "grids.tar", "w") as tar:
-            for path in tmpdir.iterdir():
+            for path in grids_dest.iterdir():
                 tar.add(path.absolute(), path.relative_to(tmpdir))
