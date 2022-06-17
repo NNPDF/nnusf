@@ -1,11 +1,14 @@
 import logging
 import tensorflow as tf
-import numpy as np
 
-from .utils import chi2_logs
-from .utils import monitor_validation
+# from gc import callbacks
 
-from dataclasses import dataclass
+# from .utils import chi2_logs
+# from .utils import monitor_validation
+from .callbacks import AdaptLearningRate
+from .callbacks import EarlyStopping
+
+# from dataclasses import dataclass
 
 
 _logger = logging.getLogger(__name__)
@@ -17,21 +20,21 @@ optimizer_options = {
 }
 
 
-@dataclass
-class ModelInfo:
-    """Class to collect information about the best model found during training"""
+# @dataclass
+# class ModelInfo:
+#     """Class to collect information about the best model found during training"""
 
-    epoch: int = None
-    vl_chi2: float = None
-    tr_chi2: float = None
-    model: tf.keras.Model = None
+#     epoch: int = None
+#     vl_chi2: float = None
+#     tr_chi2: float = None
+#     model: tf.keras.Model = None
 
-    def collect_info(self, train_info, vl_chi2, epoch):
-        if self.vl_chi2 == None or self.vl_chi2 > vl_chi2:
-            self.epoch = epoch
-            self.vl_chi2 = vl_chi2
-            self.tr_chi2 = train_info.history["loss"][0]
-            self.model = train_info.model
+#     def collect_info(self, train_info, vl_chi2, epoch):
+#         if self.vl_chi2 == None or self.vl_chi2 > vl_chi2:
+#             self.epoch = epoch
+#             self.vl_chi2 = vl_chi2
+#             self.tr_chi2 = train_info.history["loss"][0]
+#             self.model = train_info.model
 
 
 def perform_fit(
@@ -62,34 +65,55 @@ def perform_fit(
 
     kinematics_array = [tf.expand_dims(i, axis=0) for i in kinematics]
 
-    best_model = ModelInfo()
-    patience_epochs = int(stopping_patience * epochs)
-    for epoch in range(epochs):
-        train_info = tr_model.fit(
-            kinematics_array,
-            y=fit_dict["tr_expdat"],
-            epochs=1,
-            verbose=0,
-        )
+    best_model = None
+    # best_model = ModelInfo()
+    # patience_epochs = int(stopping_patience * epochs)
 
-        vl_chi2 = monitor_validation(vl_model, kinematics_array, fit_dict["vl_expdat"])
-
-        best_model.collect_info(train_info, sum(vl_chi2), epoch)
-
-        if not (epoch % 100):
-            chi2_logs(
-                train_info, vl_chi2, fit_dict["tr_datpts"], fit_dict["vl_datpts"], epoch
-            )
-
-        # If vl chi2 has not improved for a number of epochs equal to
-        # `patience_epochs`, stop the fit.
-        if epoch - best_model.epoch > patience_epochs:
-            break
-    _logger.info(f"Fit ended at epoch {epoch}")
-    _logger.info(f"Best epoch {best_model.epoch}")
-    _logger.info(
-        f"""Losses at stopping:
-            - training: {best_model.vl_chi2}
-            - validation: {best_model.tr_chi2}"""
+    # Instantiate the various callbacks
+    adapt_lr = AdaptLearningRate(fit_dict["tr_datpts"])
+    stopping = EarlyStopping(
+        vl_model,
+        kinematics_array,
+        fit_dict["vl_expdat"],
+        fit_dict["tr_datpts"],
+        fit_dict["vl_datpts"],
+        stopping_patience,
     )
+
+    train_info = tr_model.fit(
+        kinematics_array,
+        y=fit_dict["tr_expdat"],
+        epochs=epochs,
+        verbose=0,
+        callbacks=[adapt_lr, stopping],
+    )
+
+    # for epoch in range(epochs):
+    #     train_info = tr_model.fit(
+    #         kinematics_array,
+    #         y=fit_dict["tr_expdat"],
+    #         epochs=1,
+    #         verbose=0,
+    #     )
+
+    #     vl_chi2 = monitor_validation(vl_model, kinematics_array, fit_dict["vl_expdat"])
+
+    #     best_model.collect_info(train_info, sum(vl_chi2), epoch)
+
+    #     if not (epoch % 100):
+    #         chi2_logs(
+    #             train_info, vl_chi2, fit_dict["tr_datpts"], fit_dict["vl_datpts"], epoch
+    #         )
+
+    #     # If vl chi2 has not improved for a number of epochs equal to
+    #     # `patience_epochs`, stop the fit.
+    #     if epoch - best_model.epoch > patience_epochs:
+    #         break
+    # _logger.info(f"Fit ended at epoch {epoch}")
+    # _logger.info(f"Best epoch {best_model.epoch}")
+    # _logger.info(
+    #     f"""Losses at stopping:
+    #         - training: {best_model.vl_chi2}
+    #         - validation: {best_model.tr_chi2}"""
+    # )
     return best_model

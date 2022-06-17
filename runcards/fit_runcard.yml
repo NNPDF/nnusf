@@ -29,12 +29,12 @@ trvlseed: 1
 pseudodataseed: 1
 
 fit_parameters:
-  epochs: 50000
-  stopping_patience: 5
+  epochs: 100000
+  stopping_patience: 1000
   units_per_layer: [70, 55, 40, 20, 20]
   activation_per_layer: [tanh, tanh,tanh,tanh, selu]
   optimizer_parameters:
     optimizer: Adam
     clipnorm: 0.00001
-    learning_rate: 0.001
+    learning_rate: 0.05
   initializer_seed: 1
