@@ -91,18 +91,6 @@ def main(
                     )
                     pred.append(member_pred)
 
-                    #  class mypdf:
-                    #  def __init__(self, pids):
-                    #  self.pids = pids
-
-                    #  def xfxQ2(self, pid, x, Q2):
-                    #  if pid not in self.pids:
-                    #  return 0.0
-                    #  return x * (1 - x)
-
-                    #  def hasFlavor(self, pid):
-                    #  return pid in self.pids
-
                 pred = np.array(pred).T.reshape((*xgrid.shape, len(pred)))
 
                 central = 0
