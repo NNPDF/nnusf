@@ -4,6 +4,7 @@ import logging
 import pathlib
 import tarfile
 import tempfile
+from typing import Optional
 
 import lhapdf
 import matplotlib.colors as clr
@@ -23,7 +24,8 @@ def main(
     pdf: str,
     destination: pathlib.Path,
     err: str = "theory",
-    xpoint: int = 20,
+    xpoint: Optional[int] = None,
+    interactive: bool = False,
 ):
     """Run predictions computation.
 
@@ -35,10 +37,13 @@ def main(
         LHAPDF name of the PDF to be used
     err: str
         type of error to be used
-    xpoint: int
+    xpoint: int or None
         point in Bjorken x to be used for the slice to plot
 
     """
+    if xpoint is None:
+        xpoint = 20
+
     with tempfile.TemporaryDirectory() as tmpdir:
         tmpdir = pathlib.Path(tmpdir).absolute()
 
@@ -53,6 +58,7 @@ def main(
         genie = load.load()
         q2grid, xgrid = np.meshgrid(*load.kin_grids())
         gmask = load.mask()
+        __import__("pdb").set_trace()
 
         prescr = defs.nine_points
 
@@ -131,6 +137,8 @@ def main(
             plt.legend()
 
             plt.savefig(preds_dest / f"{obs}.png")
+            if interactive:
+                plt.show()
 
         with tarfile.open(destination / "predictions.tar", "w") as tar:
             for path in tmpdir.iterdir():

@@ -110,8 +110,9 @@ def sub_grids(runcards, destination):
     default="theory",
 )
 @click.option("-x", type=int, default=None)
+@click.option("--interactive", is_flag=True)
 @option_dest
-def sub_predictions(grids, pdf, err, destination, x):
+def sub_predictions(grids, pdf, err, destination, x, interactive):
     """Generate predictions from yadism grids.
 
     GRIDS is a path to folder (or tar folder) containing the grids, one per
@@ -120,9 +121,11 @@ def sub_predictions(grids, pdf, err, destination, x):
     structure functions predictions.
 
     """
-    if x is None:
-        predictions.main(grids.absolute(), pdf, err=err, destination=destination)
-    else:
-        predictions.main(
-            grids.absolute(), pdf, err=err, xpoint=x, destination=destination
-        )
+    predictions.main(
+        grids.absolute(),
+        pdf,
+        err=err,
+        xpoint=x,
+        interactive=interactive,
+        destination=destination,
+    )
