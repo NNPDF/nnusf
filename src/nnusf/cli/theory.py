@@ -140,6 +140,8 @@ def sub_predictions(grids, pdf, err, destination, x):
 
     """
     if x is None:
-        predictions.main(grids.absolute(), pdf, err=err)
+        predictions.main(grids.absolute(), pdf, err=err, destination=destination)
     else:
-        predictions.main(grids.absolute(), pdf, err=err, xpoint=x)
+        predictions.main(
+            grids.absolute(), pdf, err=err, xpoint=x, destination=destination
+        )

@@ -18,7 +18,13 @@ from .bodek_yang import load
 logger = logging.getLogger(__name__)
 
 
-def main(grids: pathlib.Path, pdf: str, err: str = "theory", xpoint: int = 20):
+def main(
+    grids: pathlib.Path,
+    pdf: str,
+    destination: pathlib.Path,
+    err: str = "theory",
+    xpoint: int = 20,
+):
     """Run predictions computation.
 
     Parameters
@@ -120,6 +126,6 @@ def main(grids: pathlib.Path, pdf: str, err: str = "theory", xpoint: int = 20):
 
             plt.savefig(preds_dest / f"{obs}.pdf")
 
-        with tarfile.open(pathlib.Path.cwd() / "predictions.tar", "w") as tar:
+        with tarfile.open(destination / "predictions.tar", "w") as tar:
             for path in tmpdir.iterdir():
                 tar.add(path.absolute(), path.relative_to(tmpdir))
