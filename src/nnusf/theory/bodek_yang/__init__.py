@@ -36,7 +36,7 @@ def dump_text(ar: np.ndarray, labels: list[str], destination: pathlib.Path):
 
     utils.mkdest(destination)
 
-    np.savetxt(fname, table, header=" ".join(labels))
+    np.savetxt(fname, table.T, header=" ".join(labels))
     _logger.info(f"Saved Genie data in '{fname.relative_to(pathlib.Path.cwd())}'")
 
 
