@@ -1,3 +1,5 @@
+import os
+import random
 import numpy as np
 import tensorflow as tf
 
@@ -6,6 +8,13 @@ from rich.style import Style
 from rich.console import Console
 
 console = Console()
+
+
+def set_global_seeds(global_seed: int=1234):
+    os.environ['PYTHONHASHSEED'] = str(global_seed)
+    random.seed(global_seed)
+    tf.random.set_seed(global_seed)
+    np.random.seed(global_seed)
 
 
 def generate_mask(ndata, frac=0.75):

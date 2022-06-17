@@ -27,6 +27,7 @@ experiments:
 
 trvlseed: 1
 pseudodataseed: 1
+global_seeds: 456
 
 fit_parameters:
   epochs: 100000

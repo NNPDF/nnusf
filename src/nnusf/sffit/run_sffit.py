@@ -9,6 +9,7 @@ import tensorflow as tf
 import yaml
 
 from . import load_data
+from .utils import set_global_seeds
 from .model_gen import generate_models
 from .train_model import perform_fit
 
@@ -26,9 +27,7 @@ def main(
     if destination is None:
         destination = runcard.parent / "fits" / runcard.stem
         if destination.exists():
-            _logger.warning(
-                f"{destination} already exists, overwriting content."
-            )
+            _logger.warning(f"{destination} already exists, overwriting content.")
 
     replica_dir = destination / f"replica_{replica}"
     replica_dir.mkdir(parents=True, exist_ok=True)
@@ -40,6 +39,9 @@ def main(
     runcard_content = yaml.safe_load(runcard.read_text())
     experiments_dict = runcard_content["experiments"]
 
+    # Set global seeds
+    set_global_seeds(global_seed=runcard_content["global_seeds"] + replica)
+
     # load data
     data_info = load_data.load_experimental_data(experiments_dict)
 
@@ -49,9 +51,7 @@ def main(
     fit_dict = generate_models(data_info, **runcard_content["fit_parameters"])
 
     # Compile the training and validationa nd perform the fit
-    best_model = perform_fit(
-        fit_dict, data_info, **runcard_content["fit_parameters"]
-    )
+    best_model = perform_fit(fit_dict, data_info, **runcard_content["fit_parameters"])
 
     # Store the models in the relevant replica subfolders
     saved_model = tf.keras.Model(

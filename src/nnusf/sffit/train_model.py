@@ -56,7 +56,8 @@ def perform_fit(
 
     tr_model.compile(optimizer=optimizer, loss=fit_dict["tr_losses"])
     vl_model.compile(optimizer=optimizer, loss=fit_dict["vl_losses"])
-    tr_model.summary()
+    # tr_model.summary()
+    _logger.info("PDF model generated successfully.")
 
     kinematics = []
     for data in data_info.values():
@@ -80,6 +81,7 @@ def perform_fit(
         stopping_patience,
     )
 
+    _logger.info("Start of the training:")
     train_info = tr_model.fit(
         kinematics_array,
         y=fit_dict["tr_expdat"],
