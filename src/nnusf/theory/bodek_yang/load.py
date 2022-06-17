@@ -50,12 +50,12 @@ def kin_grids() -> tuple[np.ndarray, np.ndarray]:
     xgrid = np.array(list(filter(xcut, genie["xlist"])))
     q2grid = np.array(list(filter(q2cut, genie["q2list"])))
 
+    _logger.info(f"x: #{xgrid.size} {xgrid.min():4.3e} - {xgrid.max()}")
     _logger.info(
         f"Q: #{q2grid.size} {np.sqrt(q2grid.min()):4.3e} - {np.sqrt(q2grid.max()):4.3e}"
     )
-    _logger.info(f"x: #{xgrid.size} {xgrid.min():4.3e} - {xgrid.max()}")
 
-    return q2grid, xgrid
+    return xgrid, q2grid
 
 
 def mask() -> np.ndarray:

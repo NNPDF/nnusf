@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 Q2MIN = 1.5**2
-#  Q2MAX = 15**2
-Q2MAX = 4**2
+Q2MAX = 15**2
 XMIN = 1e-3
 
 

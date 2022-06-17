@@ -56,7 +56,7 @@ def main(
         preds_dest.mkdir()
 
         genie = load.load()
-        q2grid, xgrid = np.meshgrid(*load.kin_grids())
+        xgrid, q2grid = np.meshgrid(*load.kin_grids())
         gmask = load.mask()
 
         prescr = defs.nine_points
@@ -91,6 +91,18 @@ def main(
                     )
                     pred.append(member_pred)
 
+                    #  class mypdf:
+                    #  def __init__(self, pids):
+                    #  self.pids = pids
+
+                    #  def xfxQ2(self, pid, x, Q2):
+                    #  if pid not in self.pids:
+                    #  return 0.0
+                    #  return x * (1 - x)
+
+                    #  def hasFlavor(self, pid):
+                    #  return pid in self.pids
+
                 pred = np.array(pred).T.reshape((*xgrid.shape, len(pred)))
 
                 central = 0
@@ -100,15 +112,15 @@ def main(
                 raise ValueError(f"Invalid error type '{err}'")
 
             plt.plot(
-                q2grid[xpoint],
-                pred[xpoint, :, central],
+                q2grid[:, xpoint],
+                pred[:, xpoint, central],
                 color="tab:blue",
                 label="yadism",
             )
             plt.fill_between(
-                q2grid[xpoint],
-                pred[xpoint, :, bulk].min(axis=1),
-                pred[xpoint, :, bulk].max(axis=1),
+                q2grid[:, xpoint],
+                pred[:, xpoint, bulk].min(axis=1),
+                pred[:, xpoint, bulk].max(axis=1),
                 facecolor=clr.to_rgba("tab:blue", alpha=0.1),
                 label=err_source,
             )
@@ -116,11 +128,11 @@ def main(
 
             genie_pred = genie[f"{kind}_free_p"][gmask]
             if kind == "F3":
-                genie_pred = xgrid.flatten() * genie_pred
+                genie_pred = xgrid.T.flatten() * genie_pred
 
-            genie_pred = genie_pred.reshape(xgrid.shape)
+            genie_pred = genie_pred.reshape(tuple(reversed(xgrid.shape)))
             plt.scatter(
-                q2grid[xpoint],
+                q2grid[:, xpoint],
                 genie_pred[xpoint],
                 color="tab:red",
                 marker="x",
@@ -130,7 +142,7 @@ def main(
             name, qualifier = obs.split("_")
             xpref = "x" if kind == "F3" else ""
             plt.title(
-                f"${xpref}F_{{{name[1]},{qualifier}}}(x = {xgrid[xpoint, 0]:.3g})$"
+                f"${xpref}F_{{{name[1]},{qualifier}}}(x = {xgrid[0, xpoint]:.3g})$"
             )
             plt.xscale("log")
             plt.legend()

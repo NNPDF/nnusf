@@ -8,7 +8,7 @@ from . import load
 
 
 def observables() -> dict:
-    q2grid, xgrid = load.kin_grids()
+    xgrid, q2grid = load.kin_grids()
 
     kinematics = np.array(np.meshgrid(q2grid, xgrid)).T.reshape(
         (q2grid.size * xgrid.size, 2)
