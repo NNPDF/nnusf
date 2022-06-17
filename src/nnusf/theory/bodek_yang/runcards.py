@@ -25,7 +25,7 @@ def observables() -> dict:
         )[0]
     )
     runcard["prDIS"] = "CC"
-    runcard["projectile"] = "neutrino"
+    runcard["ProjectileDIS"] = "neutrino"
     #  runcard["interpolation_xgrid"] = xgrid.tolist()
 
     return {"bodek-yang": runcard}

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 
-Q2MIN = 0.5**2
-Q2MAX = 5**2
+Q2MIN = 1.5**2
+Q2MAX = 15**2
 XMIN = 1e-3
 
 xcut = lambda x: XMIN < x

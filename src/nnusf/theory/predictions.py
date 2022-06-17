@@ -109,8 +109,11 @@ def main(
             )
             np.save(preds_dest / obs, pred)
 
-            genie_pred = genie[f"{kind}_free_p"]
-            genie_pred = genie_pred[gmask].reshape(xgrid.shape)
+            genie_pred = genie[f"{kind}_free_p"][gmask]
+            if kind == "F3":
+                genie_pred = xgrid.flatten() * genie_pred
+
+            genie_pred = genie_pred.reshape(xgrid.shape)
             plt.scatter(
                 q2grid[xpoint],
                 genie_pred[xpoint],
@@ -120,11 +123,14 @@ def main(
             )
 
             name, qualifier = obs.split("_")
-            plt.title(f"$F_{{{name[1]},{qualifier}}}(x = {xgrid[xpoint, 0]:.3g})$")
+            xpref = "x" if kind == "F3" else ""
+            plt.title(
+                f"${xpref}F_{{{name[1]},{qualifier}}}(x = {xgrid[xpoint, 0]:.3g})$"
+            )
             plt.xscale("log")
             plt.legend()
 
-            plt.savefig(preds_dest / f"{obs}.pdf")
+            plt.savefig(preds_dest / f"{obs}.png")
 
         with tarfile.open(destination / "predictions.tar", "w") as tar:
             for path in tmpdir.iterdir():
