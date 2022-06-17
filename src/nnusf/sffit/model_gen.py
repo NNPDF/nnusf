@@ -108,6 +108,7 @@ def generate_models(
         "vl_expdat": vl_data,
         "tr_datpts": tr_dpts,
         "vl_datpts": vl_dpts,
+        "pdf_model": sequential,
     }
 
     return fit_dic

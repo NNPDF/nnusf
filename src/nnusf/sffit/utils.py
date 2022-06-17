@@ -10,8 +10,8 @@ from rich.console import Console
 console = Console()
 
 
-def set_global_seeds(global_seed: int=1234):
-    os.environ['PYTHONHASHSEED'] = str(global_seed)
+def set_global_seeds(global_seed: int = 1234):
+    os.environ["PYTHONHASHSEED"] = str(global_seed)
     random.seed(global_seed)
     tf.random.set_seed(global_seed)
     np.random.seed(global_seed)
@@ -134,11 +134,18 @@ def monitor_validation(vl_model, kins, exp_data):
     return [loss] if isinstance(loss, float) else loss
 
 
-def chi2_logs(train_info, validation_loss, tr_dpts, vl_dpts):
+def chi2_logs(train_info, validation_loss, tr_dpts, vl_dpts, epoch, lr):
     tot_trpts = sum(tr_dpts.values())
     tot_vlpts = sum(vl_dpts.values())
     style = Style(color="white")
-    table = Table(show_header=True, header_style="bold white", style=style)
+    title = f"Epoch {epoch:08d}: LR={lr:6.4f}"
+    table = Table(
+        show_header=True,
+        header_style="bold white",
+        title=title,
+        style=style,
+        title_style="bold cyan",
+    )
     table.add_column(" ", justify="left", width=15)
     table.add_column("chi2(tr)/Ntr", justify="right", width=12)
     table.add_column("chi2(vl)/Nvl", justify="right", width=12)
@@ -158,4 +165,5 @@ def chi2_logs(train_info, validation_loss, tr_dpts, vl_dpts):
         f"{validation_loss[0] / tot_vlpts:.4f}",
         style="bold white",
     )
-    console.print(table)
+    # console.print(table)
+    return table

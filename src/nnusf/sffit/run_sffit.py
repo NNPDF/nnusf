@@ -51,13 +51,12 @@ def main(
     fit_dict = generate_models(data_info, **runcard_content["fit_parameters"])
 
     # Compile the training and validationa nd perform the fit
-    best_model = perform_fit(fit_dict, data_info, **runcard_content["fit_parameters"])
+    perform_fit(fit_dict, data_info, **runcard_content["fit_parameters"])
 
     # Store the models in the relevant replica subfolders
+    final_placeholder = tf.keras.layers.Input(shape=(None, 3))
     saved_model = tf.keras.Model(
-        inputs=best_model.model.get_layer("dense").input,
-        outputs=best_model.model.get_layer("SF_output").output,
+        inputs=final_placeholder,
+        outputs=fit_dict["pdf_model"](final_placeholder)
     )
-    model_path = replica_dir / "model"
-    saved_model.save(model_path)
-    _logger.info(f"Saved the tensorflow model to {model_path.absolute()}")
+    saved_model.save(replica_dir / "model")
