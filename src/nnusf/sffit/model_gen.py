@@ -22,11 +22,10 @@ def generate_models(
     """
     del kwargs  # we don't use the kwargs
 
-    initializer = tf.keras.initializers.GlorotUniform(seed=initializer_seed)
-
     # make the dense layers
     dense_layers = []
-    for units, activation in zip(units_per_layer, activation_per_layer):
+    for i, (units, activation) in enumerate(zip(units_per_layer, activation_per_layer)):
+        initializer = tf.keras.initializers.GlorotUniform(seed=initializer_seed + i)
         dense_layers.append(
             tf.keras.layers.Dense(
                 units=units,
