@@ -45,8 +45,6 @@ class AdaptLearningRate(tf.keras.callbacks.Callback):
         lr = float(tf.keras.backend.get_value(self.model.optimizer.learning_rate))
         scheduled_lr = modify_lr(self.loss_value, lr)
         tf.keras.backend.set_value(self.model.optimizer.lr, scheduled_lr)
-        # if not (epoch % 100):
-        #     _logger.info(f"Epoch {epoch:08d}: Learning rate is {scheduled_lr:6.4f}")
 
 
 class EarlyStopping(tf.keras.callbacks.Callback):
@@ -75,7 +73,8 @@ class EarlyStopping(tf.keras.callbacks.Callback):
         self.patience_epochs = patience_epochs
 
     def on_epoch_end(self, epoch, logs={}):
-        chi2 = self.vl_model.evaluate(self.kinematics, y=self.vl_expdata, verbose=0)
+        chix = self.vl_model.evaluate(self.kinematics, y=self.vl_expdata, verbose=0)
+        chi2 = chix[0] if isinstance(chix, list) else chix
         if self.best_chi2 == None or chi2 < self.best_chi2:
             self.best_chi2 = chi2
             self.best_epoch = epoch
@@ -83,7 +82,7 @@ class EarlyStopping(tf.keras.callbacks.Callback):
 
         if not (epoch % 100):
             lr = float(tf.keras.backend.get_value(self.model.optimizer.learning_rate))
-            self.table = chi2_logs(logs, chi2, self.tr_dpts, self.vl_dpts, epoch, lr)
+            self.table = chi2_logs(logs, chix, self.tr_dpts, self.vl_dpts, epoch, lr)
             self.live.update(self.table)
 
         epochs_since_best_vl_chi2 = epoch - self.best_epoch

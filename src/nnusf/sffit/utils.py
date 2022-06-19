@@ -134,7 +134,7 @@ def monitor_validation(vl_model, kins, exp_data):
     return [loss] if isinstance(loss, float) else loss
 
 
-def chi2_logs(train_info, validation_loss, tr_dpts, vl_dpts, epoch, lr):
+def chi2_logs(train_info, vl_loss, tr_dpts, vl_dpts, epoch, lr):
     tot_trpts = sum(tr_dpts.values())
     tot_vlpts = sum(vl_dpts.values())
     style = Style(color="white")
@@ -146,6 +146,7 @@ def chi2_logs(train_info, validation_loss, tr_dpts, vl_dpts, epoch, lr):
         style=style,
         title_style="bold cyan",
     )
+    vl_loss = vl_loss if isinstance(vl_loss, list) else [vl_loss]
     table.add_column(" ", justify="left", width=15)
     table.add_column("chi2(tr)/Ntr", justify="right", width=12)
     table.add_column("chi2(vl)/Nvl", justify="right", width=12)
@@ -153,7 +154,7 @@ def chi2_logs(train_info, validation_loss, tr_dpts, vl_dpts, epoch, lr):
         if key != "loss":
             dataset_name = key.strip("_loss")
             chi2_tr = value / tr_dpts[dataset_name]
-            chi2_vl = validation_loss[idx] / vl_dpts[dataset_name]
+            chi2_vl = vl_loss[idx] / vl_dpts[dataset_name]
             table.add_row(
                 f"{dataset_name}",
                 f"{chi2_tr:.4f}",
@@ -162,7 +163,7 @@ def chi2_logs(train_info, validation_loss, tr_dpts, vl_dpts, epoch, lr):
     table.add_row(
         "Tot chi2",
         f"{train_info['loss'] / tot_trpts:.4f}",
-        f"{validation_loss[0] / tot_vlpts:.4f}",
+        f"{vl_loss[0] / tot_vlpts:.4f}",
         style="bold white",
     )
     # console.print(table)
