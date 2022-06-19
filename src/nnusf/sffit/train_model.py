@@ -11,12 +11,6 @@ from .callbacks import EarlyStopping
 
 _logger = logging.getLogger(__name__)
 
-optimizer_options = {
-    "Adam": tf.keras.optimizers.Adam,
-    "Nadam": tf.keras.optimizers.Nadam,
-    "Adadelta": tf.keras.optimizers.Adadelta,
-}
-
 
 def perform_fit(
     fit_dict,
@@ -29,7 +23,8 @@ def perform_fit(
     "Compile the models and do the fit"
     del kwargs
 
-    optimizer = optimizer_options[optimizer_parameters.pop("optimizer")]
+    opt_name = optimizer_parameters.pop("optimizer", "Adam")
+    optimizer = getattr(tf.keras.optimizers, opt_name)
     optimizer = optimizer(**optimizer_parameters)
 
     tr_model = fit_dict["tr_model"]
