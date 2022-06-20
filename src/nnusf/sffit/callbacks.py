@@ -56,6 +56,7 @@ class EarlyStopping(tf.keras.callbacks.Callback):
         tr_dpts,
         vl_dpts,
         patience_epochs,
+        chi2_threshold,
         table,
         live,
     ):
@@ -68,6 +69,7 @@ class EarlyStopping(tf.keras.callbacks.Callback):
         self.best_epoch = None
         self.best_chi2 = None
         self.best_weights = None
+        self.threshold = chi2_threshold
         self.tr_dpts = tr_dpts
         self.vl_dpts = vl_dpts
         self.patience_epochs = patience_epochs
@@ -88,7 +90,7 @@ class EarlyStopping(tf.keras.callbacks.Callback):
 
         epochs_since_best_vl_chi2 = epoch - self.best_epoch
         check_val = epochs_since_best_vl_chi2 > self.patience_epochs
-        if check_val and ((self.best_chi2 / self.tot_vl) <= 30):
+        if check_val and ((self.best_chi2 / self.tot_vl) <= self.threshold):
             self.model.stop_training = True
 
     def on_train_end(self, logs=None):

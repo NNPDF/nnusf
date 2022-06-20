@@ -18,6 +18,7 @@ def perform_fit(
     epochs,
     stopping_patience,
     optimizer_parameters,
+    val_chi2_threshold,
     **kwargs,
 ):
     "Compile the models and do the fit"
@@ -59,6 +60,7 @@ def perform_fit(
             fit_dict["tr_datpts"],
             fit_dict["vl_datpts"],
             stopping_patience,
+            val_chi2_threshold,
             table,
             rich_live_instance,
         )
