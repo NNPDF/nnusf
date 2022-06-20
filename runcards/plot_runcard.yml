@@ -1,5 +1,4 @@
-fit: /home/roy/github/NNPDF/nnusf/src/nnusf/sffit/fit_runcard
-
+# Slice of (x, A)
 x_slice: 0.01
 a_slice: 26
 
@@ -10,9 +9,6 @@ experiments:
   - CCFR_F3
   - CDHSW_DXDYNUB
   - CDHSW_DXDYNUU
-  - CDHSW_F2
-  - CDHSW_F3
-  - CDHSW_FW
   - CHARM_F2
   - CHARM_F3
   - CHORUS_DXDYNUB
@@ -21,7 +17,6 @@ experiments:
   - CHORUS_F3
   - NUTEV_DXDYNUB
   - NUTEV_DXDYNUU
-  - NUTEV_F2
   - NUTEV_F3
 
 actions:

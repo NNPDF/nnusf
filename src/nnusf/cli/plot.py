@@ -93,6 +93,7 @@ def sub_covmat(data, destination, inverse, norm, cuts, symlog):
 
 
 @subcommand.command("fit")
+@click.argument("model", type=click.Path(exists=True, path_type=pathlib.Path))
 @click.argument("runcard", type=click.Path(exists=True, path_type=pathlib.Path))
 @click.option(
     "-d",
@@ -101,9 +102,14 @@ def sub_covmat(data, destination, inverse, norm, cuts, symlog):
     default=pathlib.Path.cwd().absolute() / "plots",
     help="Alternative destination path to store the resulting plots (default: $PWD/plots).",
 )
-def sub_fit(runcard, destination):
-    """Plots coming from fit machinery."""
-    fit.main(runcard, destination)
+def sub_fit(model, runcard, destination):
+    """Plot predictions from the fit and/or compare them to the experimental
+    measurements. The command takes two positional arguments and one optional
+    argument. The command should be run as follows:
+
+        nnu plot fit <path_fit_folder> <path_plot_yaml> [destination_foder]
+    """
+    fit.main(model, runcard, destination)
 
 
 sfkinds = list(defs.sfmap.keys())
