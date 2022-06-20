@@ -49,7 +49,7 @@ def perform_fit(
 
     kinematics_array = [tf.expand_dims(i, axis=0) for i in kinematics]
 
-    with Live(table) as rich_live_instance:
+    with Live(table, auto_refresh=False) as rich_live_instance:
         # Instantiate the various callbacks
         adapt_lr = AdaptLearningRate(fit_dict["tr_datpts"])
         stopping = EarlyStopping(

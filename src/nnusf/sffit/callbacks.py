@@ -84,11 +84,11 @@ class EarlyStopping(tf.keras.callbacks.Callback):
         if not (epoch % 100):
             lr = float(tf.keras.backend.get_value(self.model.optimizer.learning_rate))
             self.table = chi2_logs(logs, chix, self.tr_dpts, self.vl_dpts, epoch, lr)
-            self.live.update(self.table)
+            self.live.update(self.table, refresh=True)
 
         epochs_since_best_vl_chi2 = epoch - self.best_epoch
         check_val = epochs_since_best_vl_chi2 > self.patience_epochs
-        if check_val and ((self.best_chi2 / self.tot_vl) <= 5):
+        if check_val and ((self.best_chi2 / self.tot_vl) <= 30):
             self.model.stop_training = True
 
     def on_train_end(self, logs=None):
