@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 """Executable to perform the structure function fit"""
+import json
 import logging
 import pathlib
 import shutil
-from typing import Optional
-
 import tensorflow as tf
 import yaml
 
+from typing import Optional
 from . import load_data
 from .utils import set_global_seeds
 from .model_gen import generate_models
 from .train_model import perform_fit
 
-tf.get_logger().setLevel("WARNING")
+tf.get_logger().setLevel("ERROR")
 
 _logger = logging.getLogger(__name__)
 
@@ -51,12 +51,15 @@ def main(
     fit_dict = generate_models(data_info, **runcard_content["fit_parameters"])
 
     # Compile the training and validationa nd perform the fit
-    perform_fit(fit_dict, data_info, **runcard_content["fit_parameters"])
+    resdic = perform_fit(fit_dict, data_info, **runcard_content["fit_parameters"])
 
     # Store the models in the relevant replica subfolders
     final_placeholder = tf.keras.layers.Input(shape=(None, 3))
     saved_model = tf.keras.Model(
-        inputs=final_placeholder,
-        outputs=fit_dict["pdf_model"](final_placeholder)
+        inputs=final_placeholder, outputs=fit_dict["pdf_model"](final_placeholder)
     )
     saved_model.save(replica_dir / "model")
+
+    # Store the metadata in the relevant replicas subfodlers
+    with open(f"{replica_dir}/fitinfo.json", "w") as ostream:
+        json.dump(resdic, ostream, sort_keys=True, indent=4)

@@ -73,3 +73,11 @@ def perform_fit(
             verbose=0,
             callbacks=[adapt_lr, stopping],
         )
+
+    # Save various metadata into a dictionary
+    final_results = {
+        "best_tr_chi2": adapt_lr.loss_value,
+        "best_vl_chi2": stopping.best_chi2 / stopping.tot_vl,
+        "best_epochs": stopping.best_epoch,
+    }
+    return final_results
