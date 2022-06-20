@@ -71,6 +71,7 @@ class EarlyStopping(tf.keras.callbacks.Callback):
         self.tr_dpts = tr_dpts
         self.vl_dpts = vl_dpts
         self.patience_epochs = patience_epochs
+        self.tot_vl = sum(vl_dpts.values())
 
     def on_epoch_end(self, epoch, logs={}):
         chix = self.vl_model.evaluate(self.kinematics, y=self.vl_expdata, verbose=0)
@@ -87,7 +88,7 @@ class EarlyStopping(tf.keras.callbacks.Callback):
 
         epochs_since_best_vl_chi2 = epoch - self.best_epoch
         check_val = epochs_since_best_vl_chi2 > self.patience_epochs
-        if check_val and (self.best_chi2 <= 3):
+        if check_val and ((self.best_chi2 / self.tot_vl) <= 5):
             self.model.stop_training = True
 
     def on_train_end(self, logs=None):
