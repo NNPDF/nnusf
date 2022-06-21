@@ -80,9 +80,9 @@ def generate_models(
 
         # Mask the covmat first before computing the inverse
         invcovmat = np.linalg.inv(data.covmat)
-        covm_tr, covm_vl = mask_covmat(invcovmat, tr_mask, vl_mask)
-        chi2_tr = chi2(covm_tr)
-        chi2_vl = chi2(covm_vl)
+        invcov_tr, invcov_vl = mask_covmat(invcovmat, tr_mask, vl_mask)
+        chi2_tr = chi2(invcov_tr)
+        chi2_vl = chi2(invcov_vl)
         tr_chi2.append(chi2_tr)
         vl_chi2.append(chi2_vl)
 

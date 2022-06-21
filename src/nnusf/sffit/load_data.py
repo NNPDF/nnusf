@@ -19,6 +19,10 @@ def load_experimental_data(experiment_list):
 
 
 def add_pseudodata(experimental_datasets, shift=True):
+    """If `shift=False` no pseudodata is generated and
+    real data i used instead. This is only relevant for
+    debugging purposed.
+    """
     for dataset in experimental_datasets.values():
         cholesky = np.linalg.cholesky(dataset.covmat)
         random_samples = np.random.randn(dataset.n_data)

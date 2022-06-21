@@ -41,7 +41,7 @@ def generate_mask(ndata, frac=0.75):
     )
     np.random.shuffle(mask)
     tr_mask = mask
-    vl_mask = mask == False
+    vl_mask = ~mask
     return tr_mask, vl_mask
 
 
@@ -166,5 +166,4 @@ def chi2_logs(train_info, vl_loss, tr_dpts, vl_dpts, epoch, lr):
         f"{vl_loss[0] / tot_vlpts:.4f}",
         style="bold white",
     )
-    # console.print(table)
     return table

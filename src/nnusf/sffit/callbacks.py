@@ -83,7 +83,7 @@ class EarlyStopping(tf.keras.callbacks.Callback):
             self.best_epoch = epoch
             self.best_weights = self.model.get_weights()
 
-        if not (epoch % 100):
+        if (epoch % 100) == 0:
             lr = float(tf.keras.backend.get_value(self.model.optimizer.learning_rate))
             self.table = chi2_logs(logs, chix, self.tr_dpts, self.vl_dpts, epoch, lr)
             self.live.update(self.table, refresh=True)

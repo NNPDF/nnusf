@@ -33,9 +33,10 @@ def perform_fit(
 
     tr_model.compile(optimizer=optimizer, loss=fit_dict["tr_losses"])
     vl_model.compile(optimizer=optimizer, loss=fit_dict["vl_losses"])
-    # tr_model.summary()
     _logger.info("PDF model generated successfully.")
 
+    # Prepare some placeholder values to initialize
+    # the printing of `rich` tables.
     kinematics = []
     datas_name = {}
     for data in data_info.values():
@@ -45,6 +46,7 @@ def perform_fit(
     datas_name["loss"] = 1
     dummy_vl = [1 for _ in range(len(kinematics))]
 
+    # Initialize a placeholder table for `rich` outputs
     lr = optimizer_parameters["learning_rate"]
     table = chi2_logs(datas_name, dummy_vl, datas_name, datas_name, 0, lr)
 
@@ -66,7 +68,7 @@ def perform_fit(
         )
 
         _logger.info("Start of the training:")
-        train_info = tr_model.fit(
+        tr_model.fit(
             kinematics_array,
             y=fit_dict["tr_expdat"],
             epochs=epochs,
