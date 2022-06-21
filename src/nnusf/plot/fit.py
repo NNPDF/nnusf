@@ -22,12 +22,13 @@ basis = [
 ]
 
 
-def main(runcard: pathlib.Path, output: pathlib.Path):
+def main(model: pathlib.Path, runcard: pathlib.Path, output: pathlib.Path):
     if output.exists():
         _logger.warning(f"{output} already exists, overwriting content.")
     output.mkdir(parents=True, exist_ok=True)
 
     runcard_content = yaml.safe_load(runcard.read_text())
+    runcard_content["fit"] = str(model.absolute())
     runcard_content["output"] = str(output.absolute())
 
     for action in runcard_content["actions"]:

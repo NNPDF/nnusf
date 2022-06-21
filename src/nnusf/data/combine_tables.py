@@ -4,7 +4,7 @@ import pathlib
 
 import pandas as pd
 
-from nnusf.data.loader import Loader
+from .loader import Loader
 
 _logger = logging.getLogger(__name__)
 

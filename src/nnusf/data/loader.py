@@ -34,7 +34,7 @@ class Loader:
         name: str,
         path_to_commondata: pathlib.Path,
         path_to_coefficients: Optional[pathlib.Path] = None,
-        include_syst : Optional[bool] = True,
+        include_syst: Optional[bool] = True,
     ):
         """Initialize object.
 
@@ -46,7 +46,7 @@ class Loader:
             path to commondata folder
         path_to_coefficients: os.PathLike or None
             path to theory folder
-        include_syst: 
+        include_syst:
             if True include syst
 
         """
@@ -57,6 +57,7 @@ class Loader:
         self.commondata_path = path_to_commondata
         self.coefficients_path = path_to_coefficients
         self.table = self._load()
+        self.tr_frac = None
         self.covariance_matrix = self.build_covariance_matrix(self.table, include_syst)
 
         _logger.info(f"Loaded '{name}' dataset")
@@ -190,7 +191,7 @@ class Loader:
         ----------
         unc_df:
             uncertainties table
-        include_syst: 
+        include_syst:
             if True include syst
 
         Returns

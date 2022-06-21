@@ -1,3 +1,0 @@
-"""
-Executable to make plots
-"""

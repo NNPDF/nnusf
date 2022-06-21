@@ -1,56 +1,82 @@
-import numpy as np
+import logging
+
 import tensorflow as tf
+from rich.live import Live
 
-from .callbacks import EarlyStopping
+from .callbacks import AdaptLearningRate, EarlyStopping
+from .utils import chi2_logs
 
-optimizer_options = {
-    "Adam": tf.keras.optimizers.Adam,
-    "Nadam": tf.keras.optimizers.Nadam,
-    "Adadelta": tf.keras.optimizers.Adadelta,
-}
+_logger = logging.getLogger(__name__)
 
 
 def perform_fit(
-    tr_model,
-    vl_model,
+    fit_dict,
     data_info,
     epochs,
     stopping_patience,
     optimizer_parameters,
-    **kwargs
+    val_chi2_threshold,
+    **kwargs,
 ):
     "Compile the models and do the fit"
     del kwargs
 
-    optimizer = optimizer_options[optimizer_parameters.pop("optimizer")]
+    opt_name = optimizer_parameters.pop("optimizer", "Adam")
+    optimizer = getattr(tf.keras.optimizers, opt_name)
     optimizer = optimizer(**optimizer_parameters)
 
-    # The model has output nodes corresponding to the chi2 per experiment
-    custom_loss = lambda y_true, y_pred: tf.math.reduce_sum(y_pred)
+    tr_model = fit_dict["tr_model"]
+    vl_model = fit_dict["vl_model"]
 
-    tr_model.compile(optimizer=optimizer, loss=custom_loss)
-    vl_model.compile(loss=custom_loss)
+    tr_model.compile(optimizer=optimizer, loss=fit_dict["tr_losses"])
+    vl_model.compile(optimizer=optimizer, loss=fit_dict["vl_losses"])
+    _logger.info("PDF model generated successfully.")
 
-    tr_kinematics = []
-    vl_kinematics = []
+    # Prepare some placeholder values to initialize
+    # the printing of `rich` tables.
+    kinematics = []
+    datas_name = {}
     for data in data_info.values():
-        tr_kinematics.append(data.kinematics[data.tr_filter])
-        vl_kinematics.append(data.kinematics[~data.tr_filter])
-    tr_kinematics = np.concatenate(tr_kinematics)
-    vl_kinematics = np.concatenate(vl_kinematics)
+        kinematics_arr = data.kinematics
+        datas_name[data.name] = 1
+        kinematics.append(kinematics_arr)
+    datas_name["loss"] = 1
+    dummy_vl = [1 for _ in range(len(kinematics))]
 
-    tr_kinematics_array = tf.expand_dims(tr_kinematics, axis=0)
-    vl_kinematics_array = tf.expand_dims(vl_kinematics, axis=0)
+    # Initialize a placeholder table for `rich` outputs
+    lr = optimizer_parameters["learning_rate"]
+    table = chi2_logs(datas_name, dummy_vl, datas_name, datas_name, 0, lr)
 
-    patience_epochs = int(stopping_patience * epochs)
-    early_stopping_callback = EarlyStopping(
-        vl_model, patience_epochs, vl_kinematics_array
-    )
+    kinematics_array = [tf.expand_dims(i, axis=0) for i in kinematics]
 
-    tr_model.fit(
-        tr_kinematics_array,
-        y=tf.constant([0]),
-        epochs=epochs,
-        verbose=2,
-        callbacks=[early_stopping_callback],
-    )
+    with Live(table, auto_refresh=False) as rich_live_instance:
+        # Instantiate the various callbacks
+        adapt_lr = AdaptLearningRate(fit_dict["tr_datpts"])
+        stopping = EarlyStopping(
+            vl_model,
+            kinematics_array,
+            fit_dict["vl_expdat"],
+            fit_dict["tr_datpts"],
+            fit_dict["vl_datpts"],
+            stopping_patience,
+            val_chi2_threshold,
+            table,
+            rich_live_instance,
+        )
+
+        _logger.info("Start of the training:")
+        tr_model.fit(
+            kinematics_array,
+            y=fit_dict["tr_expdat"],
+            epochs=epochs,
+            verbose=0,
+            callbacks=[adapt_lr, stopping],
+        )
+
+    # Save various metadata into a dictionary
+    final_results = {
+        "best_tr_chi2": adapt_lr.loss_value,
+        "best_vl_chi2": stopping.best_chi2 / stopping.tot_vl,
+        "best_epochs": stopping.best_epoch,
+    }
+    return final_results
