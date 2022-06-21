@@ -1,13 +1,10 @@
 import logging
-import tensorflow as tf
 
+import tensorflow as tf
 from rich.live import Live
 
-from nnusf.sffit.utils import chi2_logs
-
-from .callbacks import AdaptLearningRate
-from .callbacks import EarlyStopping
-
+from .callbacks import AdaptLearningRate, EarlyStopping
+from .utils import chi2_logs
 
 _logger = logging.getLogger(__name__)
 

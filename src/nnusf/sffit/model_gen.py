@@ -3,8 +3,7 @@ import numpy as np
 import tensorflow as tf
 
 from .layers import GenMaskLayer, ObservableLayer
-
-from .utils import mask_expdata, mask_covmat, chi2, generate_mask
+from .utils import chi2, generate_mask, mask_covmat, mask_expdata
 
 
 def generate_models(
@@ -24,8 +23,12 @@ def generate_models(
 
     # make the dense layers
     dense_layers = []
-    for i, (units, activation) in enumerate(zip(units_per_layer, activation_per_layer)):
-        initializer = tf.keras.initializers.GlorotUniform(seed=initializer_seed + i)
+    for i, (units, activation) in enumerate(
+        zip(units_per_layer, activation_per_layer)
+    ):
+        initializer = tf.keras.initializers.GlorotUniform(
+            seed=initializer_seed + i
+        )
         dense_layers.append(
             tf.keras.layers.Dense(
                 units=units,
