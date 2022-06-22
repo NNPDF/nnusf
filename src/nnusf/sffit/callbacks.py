@@ -40,9 +40,7 @@ class AdaptLearningRate(tf.keras.callbacks.Callback):
     def on_epoch_begin(self, epoch, logs=None):
         if not hasattr(self.model.optimizer, "lr"):
             raise ValueError("Optimizer does not have LR attribute.")
-        lr = float(
-            tf.keras.backend.get_value(self.model.optimizer.learning_rate)
-        )
+        lr = float(tf.keras.backend.get_value(self.model.optimizer.learning_rate))
         scheduled_lr = modify_lr(self.loss_value, lr)
         tf.keras.backend.set_value(self.model.optimizer.lr, scheduled_lr)
 
@@ -59,6 +57,7 @@ class EarlyStopping(tf.keras.callbacks.Callback):
         chi2_threshold,
         table,
         live,
+        print_rate,
     ):
         super().__init__()
         self.vl_model = vl_model
@@ -74,24 +73,19 @@ class EarlyStopping(tf.keras.callbacks.Callback):
         self.vl_dpts = vl_dpts
         self.patience_epochs = patience_epochs
         self.tot_vl = sum(vl_dpts.values())
+        self.print_rate = print_rate
 
     def on_epoch_end(self, epoch, logs={}):
-        chix = self.vl_model.evaluate(
-            self.kinematics, y=self.vl_expdata, verbose=0
-        )
+        chix = self.vl_model.evaluate(self.kinematics, y=self.vl_expdata, verbose=0)
         chi2 = chix[0] if isinstance(chix, list) else chix
         if self.best_chi2 == None or chi2 < self.best_chi2:
             self.best_chi2 = chi2
             self.best_epoch = epoch
             self.best_weights = self.model.get_weights()
 
-        if (epoch % 100) == 0:
-            lr = float(
-                tf.keras.backend.get_value(self.model.optimizer.learning_rate)
-            )
-            self.table = chi2_logs(
-                logs, chix, self.tr_dpts, self.vl_dpts, epoch, lr
-            )
+        if (epoch % self.print_rate) == 0:
+            lr = float(tf.keras.backend.get_value(self.model.optimizer.learning_rate))
+            self.table = chi2_logs(logs, chix, self.tr_dpts, self.vl_dpts, epoch, lr)
             self.live.update(self.table, refresh=True)
 
         epochs_since_best_vl_chi2 = epoch - self.best_epoch
