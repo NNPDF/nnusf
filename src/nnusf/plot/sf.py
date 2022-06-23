@@ -35,9 +35,16 @@ def plot(path: pathlib.Path) -> matplotlib.figure.Figure:
     obsminus = obsmean - obsstd
 
     fig = plt.figure()
+    xmin = q2.min()
+    xmax = q2.max()
 
-    for values, plus, minus, xval in zip(obsmean, obsplus, obsminus, x):
+    for idx, (values, plus, minus, xval) in enumerate(
+        zip(obsmean, obsplus, obsminus, x)
+    ):
         clr = -np.log(xval) / 8
+        plt.hlines(
+            idx * spread, xmin, xmax, linestyles="--", linewidth=0.5, color="0.8"
+        )
         plt.plot(
             q2, values, label=f"{xval:.2e}", color=(clr, clr / 2, 0.2), linewidth=1
         )
