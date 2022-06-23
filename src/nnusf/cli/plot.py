@@ -4,7 +4,7 @@ import pathlib
 
 import click
 
-from ..plot import covmat, kinematics, fit, sf
+from ..plot import covmat, fit, kinematics, sf
 from ..theory import defs
 from . import base
 
@@ -116,7 +116,7 @@ sfkinds = list(defs.sfmap.keys())
 
 
 @subcommand.command("sf")
-@click.argument("source", type=click.Choice(["by", "hiq", "fit"]))
+@click.argument("source", type=click.Path(path_type=pathlib.Path, exists=True))
 @click.option(
     "-k",
     "--kind",
@@ -135,4 +135,4 @@ sfkinds = list(defs.sfmap.keys())
 def sub_sf(source, kind, destination):
     """Plots structure functions."""
 
-    sf.main(kind, destination)
+    sf.main(source, kind, destination)
