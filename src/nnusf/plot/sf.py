@@ -10,10 +10,13 @@ import matplotlib.figure
 import matplotlib.pyplot as plt
 import numpy as np
 
+from .. import utils
+
 _logger = logging.getLogger(__file__)
 
 
 def plot(path: pathlib.Path) -> matplotlib.figure.Figure:
+    """Do the actual plotting."""
     # load arrays
     xgrid = np.load(path.parent / "xgrid.npy")
     q2grid = np.load(path.parent / "q2grid.npy")
@@ -60,13 +63,15 @@ def plot(path: pathlib.Path) -> matplotlib.figure.Figure:
     ysize = ymax - ymin
     plt.ylim(ymin - ysize / 10, ymax + ysize / 10)
 
-    plt.show()
+    #  plt.show()
 
     return fig
 
 
 def main(source: pathlib.Path, kind: str, destination: pathlib.Path):
-    """"""
+    """Create sliced plots."""
+    utils.mkdest(destination)
+
     observables = []
     with tempfile.TemporaryDirectory() as tmpdir:
         tmpdir = pathlib.Path(tmpdir).absolute()
@@ -84,6 +89,12 @@ def main(source: pathlib.Path, kind: str, destination: pathlib.Path):
                     tarsrc.extract(name, tmpdir)
 
         for obs in observables:
-            plot(obs)
+            fig = plot(obs)
+
+            obsdest = destination / f"{obs.stem}.png"
+            fig.savefig(obsdest)
+            _logger.info(
+                f"Saved 'sliced' plot to '{obsdest.relative_to(pathlib.Path.cwd())}'"
+            )
 
         shutil.rmtree(tmpdir)
