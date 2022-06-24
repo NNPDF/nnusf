@@ -270,7 +270,7 @@ def main(path_to_commondata: Path) -> None:
     extract_d2sigDxDy(path_to_commondata, EXP_NAME, table_dsig_dxdy)
 
     # dump info file
-    dump_info_file(path_to_commondata, EXP_NAME, obs_list, TARGET)
+    dump_info_file(path_to_commondata, EXP_NAME, obs_list, TARGET, M_NUCLEON)
 
 
 if __name__ == "__main__":

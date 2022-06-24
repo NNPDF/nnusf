@@ -247,7 +247,7 @@ def main(path_to_commondata: Path) -> None:
     extract_qbar(path_to_commondata, EXP_NAME, [2])
 
     # dump info file
-    dump_info_file(path_to_commondata, EXP_NAME, obs_list, target=A)
+    dump_info_file(path_to_commondata, EXP_NAME, obs_list, target=A, nucleon_mass=M_NUCLEON)
 
 
 if __name__ == "__main__":

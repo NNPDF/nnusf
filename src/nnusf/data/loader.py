@@ -138,6 +138,10 @@ class Loader:
             number_datapoints,
             info_df.loc[info_df["type"] == self.obs, "projectile"],
         )
+        new_df["m_nucleon"] = np.full(
+            number_datapoints,
+            info_df["m_nucleon"][0],
+        )
 
         return new_df
 
