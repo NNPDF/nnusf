@@ -11,9 +11,9 @@ experiments:
 - {dataset: CCFR_F3, frac: 0.75}
 - {dataset: CDHSW_DXDYNUB, frac: 0.75}
 - {dataset: CDHSW_DXDYNUU, frac: 0.75}
-# - {dataset: CDHSW_F2, frac: 0.75}
-# - {dataset: CDHSW_F3, frac: 0.75}
-# - {dataset: CDHSW_FW, frac: 0.75}
+- {dataset: CDHSW_F2, frac: 0.75}
+- {dataset: CDHSW_F3, frac: 0.75}
+- {dataset: CDHSW_FW, frac: 0.75}
 - {dataset: CHARM_F2, frac: 0.75}
 - {dataset: CHARM_F3, frac: 0.75}
 - {dataset: CHORUS_DXDYNUB, frac: 0.75}
@@ -22,12 +22,12 @@ experiments:
 - {dataset: CHORUS_F3, frac: 0.75}
 - {dataset: NUTEV_DXDYNUB, frac: 0.75}
 - {dataset: NUTEV_DXDYNUU, frac: 0.75}
-# - {dataset: NUTEV_F2, frac: 0.75}
+- {dataset: NUTEV_F2, frac: 0.75}
 - {dataset: NUTEV_F3, frac: 0.75}
 
-trvlseed: 1
-pseudodataseed: 1
+trvlseed: 123
 global_seeds: 456
+pseudodataseed: 789
 
 fit_parameters:
   epochs: 50000
@@ -39,4 +39,4 @@ fit_parameters:
     clipnorm: 0.00001
     learning_rate: 0.05
   val_chi2_threshold: 30
-  initializer_seed: 1
+  initializer_seed: 1218

@@ -69,9 +69,8 @@ def generate_models(
         sf_basis = sequential(input_layer)
         observable = ObservableLayer(coefficients)(sf_basis)
 
-        # TODO: Addapt the following to use `data.loader.Loader.tr_filter`
         # Split the datasets into training & validation
-        tr_mask, vl_mask = generate_mask(nb_dapatoints, frac=data.tr_frac)
+        tr_mask, vl_mask = data.tr_filter, ~data.tr_filter
         obs_tr = GenMaskLayer(tr_mask, name=data.name)(observable)
         obs_vl = GenMaskLayer(vl_mask, name=data.name)(observable)
         tr_obs.append(obs_tr)

@@ -45,11 +45,12 @@ def main(
     # Set global seeds
     set_global_seeds(global_seed=runcard_content["global_seeds"] + replica)
 
-    # load data
+    # Instantiate class that loads the datasets
     data_info = load_data.load_experimental_data(experiments_dict)
-
     # create pseudodata and add it to the data_info object
     load_data.add_pseudodata(data_info)
+    # create a training mask and add it to the data_info object
+    load_data.add_tr_filter_mask(data_info, runcard_content["trvlseed"])
 
     fit_dict = generate_models(data_info, **runcard_content["fit_parameters"])
 
