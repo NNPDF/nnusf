@@ -17,34 +17,6 @@ def set_global_seeds(global_seed: int = 1234):
     np.random.seed(global_seed)
 
 
-def generate_mask(ndata, frac=0.75):
-    """_summary_
-
-    Parameters
-    ----------
-    ndata : _type_
-        _description_
-    frac : float, optional
-        _description_, by default 0.75
-
-    Returns
-    -------
-    _type_
-        _description_
-    """
-    trmax = int(frac * ndata)
-    mask = np.concatenate(
-        [
-            np.ones(trmax, dtype=np.bool_),
-            np.zeros(ndata - trmax, dtype=np.bool_),
-        ]
-    )
-    np.random.shuffle(mask)
-    tr_mask = mask
-    vl_mask = ~mask
-    return tr_mask, vl_mask
-
-
 def mask_expdata(y, tr_mask, vl_mask):
     """_summary_
 
@@ -113,27 +85,6 @@ def chi2(invcovmat):
         return result
 
     return chi2_loss
-
-
-def monitor_validation(vl_model, kins, exp_data):
-    """_summary_
-
-    Parameters
-    ----------
-    vl_model : _type_
-        _description_
-    kins : _type_
-        _description_
-    exp_data : _type_
-        _description_
-
-    Returns
-    -------
-    _type_
-        _description_
-    """
-    loss = vl_model.evaluate(x=kins, y=exp_data, verbose=0)
-    return [loss] if isinstance(loss, float) else loss
 
 
 def chi2_logs(train_info, vl_loss, tr_dpts, vl_dpts, epoch, lr):

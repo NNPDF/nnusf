@@ -3,7 +3,7 @@ import numpy as np
 import tensorflow as tf
 
 from .layers import GenMaskLayer, ObservableLayer
-from .utils import chi2, generate_mask, mask_covmat, mask_expdata
+from .utils import chi2, mask_covmat, mask_expdata
 
 
 def generate_models(
