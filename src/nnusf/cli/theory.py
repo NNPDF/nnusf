@@ -145,11 +145,10 @@ def sub_predictions(grids, pdf, err, destination, x, interactive):
     type=click.Choice(["pdf", "theory"], case_sensitive=False),
     default="pdf",
 )
-@click.option("-x", type=int, default=None)
 @click.option("--interactive", is_flag=True)
 @option_dest
-def sub_predictions(grids, data, pdf, err, destination, x, interactive):
-    """Generate predictions from yadism grids.
+def sub_predictions(grids, data, pdf, err, destination, interactive):
+    """Generate predictions from yadism grids and compare with data.
 
     GRIDS is a path to folder (or tar folder) containing the grids, one per
     observable.
@@ -162,7 +161,6 @@ def sub_predictions(grids, data, pdf, err, destination, x, interactive):
         data.absolute(),
         pdf,
         err=err,
-        xpoint=x,
         interactive=interactive,
         destination=destination,
     )

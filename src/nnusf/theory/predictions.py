@@ -85,18 +85,22 @@ def theory_error(
     pdf: str,
     prescription: list[tuple[float, float]],
     xgrid: npt.NDArray[np.float_],
+    reshape: Optional[bool] = True
 ) -> Prediction:
     # theory uncertainties
     pdfset = lhapdf.mkPDF(pdf)
     pred = grid.convolute_with_one(2212, pdfset.xfxQ2, pdfset.alphasQ2, xi=prescription)
     __import__("pdb").set_trace()
-    pred = np.array(pred).T.reshape((*xgrid.shape, len(prescription)))
+    if reshape:
+        pred = np.array(pred).T.reshape((*xgrid.shape, len(pred)))
+    else:
+        pred = np.array(pred).T
 
     return pred, 4, slice(0, -1), "9 pts."
 
 
 def pdf_error(
-    grid: pineappl.grid.Grid, pdf: str, xgrid: npt.NDArray[np.float_]
+    grid: pineappl.grid.Grid, pdf: str, xgrid: npt.NDArray[np.float_], reshape: Optional[bool] = True
 ) -> Prediction:
     """Compute PDF uncertainties"""
     pred = []
@@ -104,8 +108,10 @@ def pdf_error(
         member_pred = grid.convolute_with_one(2212, pdfset.xfxQ2, pdfset.alphasQ2)
         pred.append(member_pred)
 
-    pred = np.array(pred).T.reshape((*xgrid.shape, len(pred)))
-
+    if reshape:
+        pred = np.array(pred).T.reshape((*xgrid.shape, len(pred)))
+    else:
+        pred = np.array(pred).T
     return pred, 0, slice(1, -1), "PDF replicas"
 
 

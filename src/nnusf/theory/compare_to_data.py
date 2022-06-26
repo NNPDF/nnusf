@@ -4,9 +4,7 @@ import logging
 import pathlib
 import tarfile
 import tempfile
-from typing import Optional
 
-import matplotlib.colors as clr
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -17,19 +15,15 @@ from .. import utils
 from . import defs
 from ..data import loader
 from .predictions import theory_error, pdf_error
-from .runcards import datsets_path
 
 _logger = logging.getLogger(__name__)
 
 
 def plot(
     pred: npt.NDArray,
-    exp_data: pd.DataFrame,
-    obs: str,
-    kind: str,
-    xgrid: npt.NDArray,
-    q2grid: npt.NDArray,
-    xpoint: int,
+    data: pd.DataFrame,
+    data_name: str,
+    x: float,
     central: int,
     bulk: slice,
     err_source: str,
@@ -37,44 +31,35 @@ def plot(
     preds_dest: pathlib.Path,
 ):
     """"""
-    plt.plot(
-        q2grid[: xpoint],
-        pred[:, xpoint, central],
+    err = np.abs(pred[:, bulk].max(axis=1) - pred[:, bulk].min(axis=1)) / 2
+    plt.errorbar(
+        data["Q2"],
+        pred[:, central],
+        yerr=err,
         color="tab:blue",
-        label="yadism",
+        label=f"yadism $\pm$ {err_source}",
+        fmt="o",
+        capsize=5,
     )
-    plt.fill_between(
-        q2grid[:, xpoint],
-        pred[:, xpoint, bulk].min(axis=1),
-        pred[:, xpoint, bulk].max(axis=1),
-        facecolor=clr.to_rgba("tab:blue", alpha=0.1),
-        label=err_source,
-    )
-    np.save(preds_dest / obs, pred)
-    np.save(preds_dest / "xgrid", xgrid)
-    np.save(preds_dest / "q2grid", q2grid)
 
     plt.errorbar(
-        q2grid[:, xpoint],
-        exp_data['data'],
-        yerr=np.sqrt(exp_data['stat']**2 + exp_data['syst']**2),
+        data["Q2"],
+        data["data"],
+        yerr=np.sqrt(data["stat"] ** 2 + data["syst"] ** 2),
         color="tab:red",
-        marker="x",
-        label="data",
+        label="data $\pm$ (stat+syst)",
+        fmt="x",
     )
 
-    name, qualifier = obs.split("_")
-    xpref = "x" if kind == "F3" else ""
-    plt.title(f"${xpref}F_{{{name[1]},{qualifier}}}(x = {xgrid[0, xpoint]:.3g})$")
+    plt.title(f"{data_name}, x={x}")
+    plt.xlabel("$Q^2$")
     plt.xscale("log")
     plt.legend()
+    plt.tight_layout()
 
-    plt.savefig(preds_dest / f"{obs}.png")
+    plt.savefig(preds_dest / f"{data_name}_x_{x}.pdf")
     if interactive:
         plt.show()
-
-
-Prediction = tuple[npt.NDArray[np.float_], int, slice, str]
 
 
 def main(
@@ -82,8 +67,7 @@ def main(
     dataset: pathlib.Path,
     pdf: str,
     destination: pathlib.Path,
-    err: str = "theory",
-    xpoint: Optional[int] = None,
+    err: str = "pdf",
     interactive: bool = False,
 ):
     """Run predictions computation.
@@ -98,14 +82,9 @@ def main(
         LHAPDF name of the PDF to be used
     err: str
         type of error to be used
-    xpoint: int or None
-        point in Bjorken x to be used for the slice to plot
 
     """
     utils.mkdest(destination)
-
-    if xpoint is None:
-        xpoint = 20
 
     with tempfile.TemporaryDirectory() as tmpdir:
         tmpdir = pathlib.Path(tmpdir).absolute()
@@ -115,41 +94,47 @@ def main(
             utils.extract_tar(grids, tmpdir)
             grids = tmpdir / "grids"
 
-        preds_dest = tmpdir / "predictions"
+        data_name = "_".join(dataset.stem.split("_")[1:])
+        preds_dest = tmpdir / f"predictions-{data_name}"
         preds_dest.mkdir()
 
-        data_name = "_".join(dataset.stem.split("_")[1:])
-        exp_data = loader.Loader(data_name, dataset.parents[1]).table
-        xgrid, q2grid = np.meshgrid(*(exp_data['x'], exp_data['Q2']))
+        data = loader.Loader(data_name, dataset.parents[1]).table
+        xgrid, q2grid = data["x"], data["Q2"]
+
+        # do the average if necessary
+        full_pred = []
         for gpath in grids.iterdir():
             if "pineappl" not in gpath.name:
                 continue
-            obs = gpath.stem.split(".")[0]
-            kind = obs.split("_")[0]
-
             grid = pineappl.grid.Grid.read(gpath)
-            import pdb; pdb.set_trace()
-
-
-            plt.figure()
-
             if err == "theory":
                 pred, central, bulk, err_source = theory_error(
-                    grid, pdf, defs.nine_points, xgrid
+                    grid, pdf, defs.nine_points, xgrid, reshape=False
                 )
             elif err == "pdf":
-                pred, central, bulk, err_source = pdf_error(grid, pdf, xgrid)
+                pred, central, bulk, err_source = pdf_error(
+                    grid, pdf, xgrid, reshape=False
+                )
             else:
                 raise ValueError(f"Invalid error type '{err}'")
+            full_pred.append(pred)
+        pred = np.average(full_pred, axis=0)
 
+        # save predictions
+        np.save(preds_dest / data_name, pred)
+        np.save(preds_dest / "xgrid", xgrid)
+        np.save(preds_dest / "q2grid", q2grid)
+
+        # plot data with same x
+        data = data.reset_index()
+        for x in np.unique(xgrid):
+            plt.figure()
+            idx = data[data["x"] == x].index
             plot(
-                pred,
-                exp_data,
-                obs,
-                kind,
-                xgrid,
-                q2grid,
-                xpoint,
+                pred[idx, :],
+                data[data["x"] == x],
+                data_name,
+                x,
                 central,
                 bulk,
                 err_source,
