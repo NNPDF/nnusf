@@ -51,6 +51,14 @@ def plot(
         fmt="x",
     )
 
+    log_tab = {}
+    log_tab["Q2"] = data["Q2"]
+    log_tab["data"] = data["data"]
+    log_tab["yadism"] = pred[:, central]
+    log_tab["ratio"] = pred[:, central] / data["data"]
+    _logger.info(f"x = {x}")
+    _logger.info(pd.DataFrame(log_tab))
+
     plt.title(f"{data_name}, x={x}")
     plt.xlabel("$Q^2$")
     plt.xscale("log")
