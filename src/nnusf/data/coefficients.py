@@ -52,9 +52,6 @@ def cross_section(
         [0, 2, 1],
     ).reshape(yadcoeffs.shape[0], yadcoeffs.shape[1] * pos.size)
 
-    if exp == "NUTEV":
-        coeffs /= 100.0
-
     return coeffs
 
 
