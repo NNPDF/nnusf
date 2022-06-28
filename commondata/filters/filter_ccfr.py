@@ -18,7 +18,7 @@ from nnusf.data.utils import (
 console = Console()
 
 # Experiment metadata
-TARGET = 26
+TARGET = 56 # A(Fe): Atomic Mass
 EXP_NAME = "CCFR"
 
 

@@ -19,11 +19,10 @@ console = Console()
 
 M_NEUTRON = 939.565346 * 0.001
 M_PROTON = 938.272013 * 0.001
-A = 20 + 3 * 8 + 6
-N = 40 + 3 * 16 + 12
-M_NUCLEON = 100.08969 * 0.93149432 / (A * M_PROTON + (N - A) * M_NEUTRON)
+A = 40 + 3 * 16 + 12 # A(CaCO3): Atomic MAss
+Z = 20 + 3 * 8 + 6   # Z(CaCO3): Atomic Number
+M_NUCLEON = 100.08969 * 0.93149432 / (Z * M_PROTON + (A - Z) * M_NEUTRON)
 EXP_NAME = "CHARM"
-"Experiment name"
 
 
 def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:

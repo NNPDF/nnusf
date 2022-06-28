@@ -20,9 +20,9 @@ console = Console()
 # Mass determined using scikithep/particle for Pb208 in GeV
 M_NEUTRON = 939.565346 * 0.001
 M_PROTON = 938.272013 * 0.001
-A = 82
-N = 208
-M_NUCLEON = 193.729 / (A * M_PROTON + (N - A) * M_NEUTRON)
+A = 208 # A(Pb): Atomic Mass
+Z = 82  # Z(Pb): Atomic Number
+M_NUCLEON = 193.729 / (Z * M_PROTON + (A - Z) * M_NEUTRON)
 
 # Experiment Metadata
 TARGET = A

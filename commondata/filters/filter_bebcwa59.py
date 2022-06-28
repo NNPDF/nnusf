@@ -19,7 +19,7 @@ from nnusf.data.utils import (
 console = Console()
 
 
-TARGET = 10
+TARGET = 20 # A(Ne): Atomic Mass
 EXP_NAME = "BEBCWA59"
 
 

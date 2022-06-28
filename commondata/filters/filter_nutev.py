@@ -18,7 +18,7 @@ console = Console()
 M_PROTON = 0.938  # GeV
 
 # Exxperiment Metadata
-TARGET = 26
+TARGET = 56
 EXP_NAME = "NUTEV"
 
 
