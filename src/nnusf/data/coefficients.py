@@ -21,6 +21,8 @@ def cross_section(
     exp = name.split("_")[0]
     try:
         xs = loader.MAP_EXP_YADISM[exp]
+        if name == "CDHSW_FW":
+            xs = "FW"
     except KeyError:
         raise MissingRequisite(f"NO available cross-section for '{exp}'")
 
