@@ -1,14 +1,15 @@
+# -*- coding: utf-8 -*-
 import logging
 import pathlib
 
 import numpy as np
-from matplotlib import pyplot as plt
 import tensorflow as tf
 import yaml
+from matplotlib import pyplot as plt
 
 from ..data.loader import Loader
 from ..sffit.load_data import path_to_coefficients, path_to_commondata
-from ..sffit.load_fit_data import load_models, get_predictions_q
+from ..sffit.load_fit_data import get_predictions_q, load_models
 
 _logger = logging.getLogger(__name__)
 
@@ -20,6 +21,10 @@ basis = [
     r"$\bar{F}_L$",
     r"$x\bar{F}_3$",
 ]
+
+
+class InputError(Exception):
+    pass
 
 
 def main(model: pathlib.Path, runcard: pathlib.Path, output: pathlib.Path):
@@ -39,6 +44,8 @@ def main(model: pathlib.Path, runcard: pathlib.Path, output: pathlib.Path):
 def sfs_q_replicas(**kwargs):
     prediction_info = get_predictions_q(**kwargs)
     predictions = prediction_info.predictions
+    if not isinstance(predictions, np.ndarray):
+        raise InputError("The input x should be a float.")
     q_grid = prediction_info.q
     for prediction_index in range(predictions.shape[2]):
         fig, ax = plt.subplots()
@@ -58,6 +65,8 @@ def sfs_q_replicas(**kwargs):
 def sf_q_band(**kwargs):
     prediction_info = get_predictions_q(**kwargs)
     predictions = prediction_info.predictions
+    if not isinstance(predictions, np.ndarray):
+        raise InputError("The input x should be a float.")
     q_grid = prediction_info.q
     n_sfs = prediction_info.n_sfs
     lower_68 = np.sort(predictions, axis=0)[int(0.16 * n_sfs)]
@@ -89,9 +98,42 @@ def sf_q_band(**kwargs):
             alpha=0.4,
         )
         savepath = (
-            pathlib.Path(kwargs["output"]) / f"plot_sf_q_band_{prediction_index}.png"
+            pathlib.Path(kwargs["output"]) / f"plot_sf_q_band_{prediction_index}.pdf"
         )
-        fig.savefig(savepath)
+        fig.savefig(savepath, dpi=350)
+
+
+def save_predictions_txt(**kwargs):
+    predinfo = get_predictions_q(**kwargs)
+    pred = predinfo.predictions
+    q2_grids = predinfo.q
+    xval = predinfo.x
+    # Make sure that everything is a list
+    pred = [pred] if not isinstance(pred, list) else pred
+    xval = [xval] if not isinstance(xval, list) else xval
+    q2_grids = q2_grids[np.newaxis, :]
+
+    # Loop over the different values of x
+    stacked_results = []
+    for idx, pr in enumerate(pred):
+        predshape = pr[:, :, 0].shape
+        broad_xvalues = np.broadcast_to(xval[idx], predshape)
+        broad_qvalues = np.broadcast_to(q2_grids, predshape)
+        # Construct the replica index array
+        repindex = np.arange(pr.shape[0])[:, np.newaxis]
+        repindex = np.broadcast_to(repindex, predshape)
+        # Stack all the arrays together
+        stacked_list = [repindex, broad_xvalues, broad_qvalues]
+        stacked_list += [pr[:, :, i] for i in range(pr.shape[-1])]
+        stacked = np.stack(stacked_list).reshape((9, -1)).T
+        stacked_results.append(stacked)
+    predictions = np.concatenate(stacked_results, axis=0)
+    np.savetxt(
+        f"{pathlib.Path(kwargs['output'])}/sfs_{predinfo.A}.txt",
+        predictions,
+        header=f"replica x Q2 F2nu FLnu xF3nu F2nub FLnub xF3nub",
+        fmt="%d %e %e %e %e %e %e %e %e",
+    )
 
 
 def prediction_data_comparison(**kwargs):
@@ -138,8 +180,8 @@ def prediction_data_comparison(**kwargs):
             )
             savepath = (
                 pathlib.Path(kwargs["output"])
-                / f"prediction_data_comparison_{count_plots}.png"
+                / f"prediction_data_comparison_{count_plots}.pdf"
             )
             count_plots += 1
-            fig.savefig(savepath, dpi=300)
+            fig.savefig(savepath, dpi=350)
             plt.close(fig)

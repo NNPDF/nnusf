@@ -2,6 +2,7 @@ import os
 import random
 
 import numpy as np
+from numpy.core.fromnumeric import std
 import tensorflow as tf
 from rich.console import Console
 from rich.style import Style
@@ -78,9 +79,7 @@ def chi2(invcovmat):
 
     def chi2_loss(exp_data, fit_pred):
         diff_prediction = exp_data - fit_pred
-        right_dot = tf.tensordot(
-            incovmatf, tf.transpose(diff_prediction), axes=1
-        )
+        right_dot = tf.tensordot(incovmatf, tf.transpose(diff_prediction), axes=1)
         result = tf.tensordot(diff_prediction, right_dot, axes=1)
         return result
 
@@ -94,7 +93,7 @@ def chi2_logs(train_info, vl_loss, tr_dpts, vl_dpts, epoch, lr):
     title = f"Epoch {epoch:08d}: LR={lr:6.4f}"
     table = Table(
         show_header=True,
-        header_style="bold white",
+        header_style="bold green",
         title=title,
         style=style,
         title_style="bold cyan",
@@ -103,20 +102,42 @@ def chi2_logs(train_info, vl_loss, tr_dpts, vl_dpts, epoch, lr):
     table.add_column(" ", justify="left", width=15)
     table.add_column("chi2(tr)/Ntr", justify="right", width=12)
     table.add_column("chi2(vl)/Nvl", justify="right", width=12)
+    tot_val = vl_loss[0] / tot_vlpts
+
+    vl_datpts = []
+    for key in train_info:
+        if key == "loss":
+            continue
+        vl_datpts.append(vl_dpts[key.strip("_loss")])
+    if len(vl_loss) == len(vl_datpts):
+        vl_loss.insert(0, 1.0)
+    sigma_val = (np.array(vl_loss[1:]) / vl_datpts).std()
+
     for idx, (key, value) in enumerate(train_info.items()):
-        if key != "loss":
-            dataset_name = key.strip("_loss")
-            chi2_tr = value / tr_dpts[dataset_name]
-            chi2_vl = vl_loss[idx] / vl_dpts[dataset_name]
-            table.add_row(
-                f"{dataset_name}",
-                f"{chi2_tr:.4f}",
-                f"{chi2_vl:.4f}",
-            )
+        if key == "loss":
+            continue
+
+        dataset_name = key.strip("_loss")
+        chi2_tr = value / tr_dpts[dataset_name]
+        chi2_vl = vl_loss[idx] / vl_dpts[dataset_name]
+        highlight = ""
+        endhl = ""
+        if chi2_vl > tot_val + sigma_val:
+            endhl = "[/]"
+            if chi2_vl > tot_val + 2 * sigma_val:
+                highlight = "[red]"
+            else:
+                highlight = "[yellow]"
+        table.add_row(
+            f"{highlight}{dataset_name}{endhl}",
+            f"{chi2_tr:.4f}",
+            f"{highlight}{chi2_vl:.4f}{endhl}",
+        )
+
     table.add_row(
         "Tot chi2",
         f"{train_info['loss'] / tot_trpts:.4f}",
-        f"{vl_loss[0] / tot_vlpts:.4f}",
-        style="bold white",
+        f"{tot_val:.4f}",
+        style="bold magenta",
     )
     return table

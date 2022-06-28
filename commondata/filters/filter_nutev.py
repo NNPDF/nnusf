@@ -17,8 +17,8 @@ from nnusf.data.utils import (
 console = Console()
 M_PROTON = 0.938  # GeV
 
-# Experiment Metadata
-TARGET = 26
+# Exxperiment Metadata
+TARGET = 56
 EXP_NAME = "NUTEV"
 
 
