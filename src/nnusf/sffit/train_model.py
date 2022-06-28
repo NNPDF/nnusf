@@ -16,6 +16,7 @@ def perform_fit(
     stopping_patience,
     optimizer_parameters,
     val_chi2_threshold,
+    print_rate=100,
     **kwargs,
 ):
     "Compile the models and do the fit"
@@ -62,6 +63,7 @@ def perform_fit(
             val_chi2_threshold,
             table,
             rich_live_instance,
+            print_rate,
         )
 
         _logger.info("Start of the training:")
