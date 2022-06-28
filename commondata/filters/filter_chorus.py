@@ -187,19 +187,20 @@ def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list) -> None:
             }
             kinematics.append(kin_dict)
             # ---- Extract central values for SF ---- #
+            # Note the additional factor to convert the xs to cm^2/Gev
             dsig_nuu_value = dep_var_dsig_nu["values"][bin]["value"]
-            dsig_nu_central.append(dsig_nuu_value)
+            dsig_nu_central.append(float(dsig_nuu_value)/10)
             dsig_nub_value = dep_vr_dsig_nub["values"][bin]["value"]
-            dsig_nub_centrl.append(dsig_nub_value)
+            dsig_nub_centrl.append(float(dsig_nub_value)/10)
             # ---- Extract SYS & STAT uncertainties ---- #
             error_dict_1stentry = {
-                "stat": dep_var_dsig_nu["values"][bin]["errors"][0]["symerror"],
-                "syst": dep_var_dsig_nu["values"][bin]["errors"][1]["symerror"],
+                "stat": float(dep_var_dsig_nu["values"][bin]["errors"][0]["symerror"])/10,
+                "syst": float(dep_var_dsig_nu["values"][bin]["errors"][1]["symerror"])/10,
             }
             dsig_nu_errors.append(error_dict_1stentry)
             error_dict_2ndentry = {
-                "stat": dep_vr_dsig_nub["values"][bin]["errors"][0]["symerror"],
-                "syst": dep_vr_dsig_nub["values"][bin]["errors"][1]["symerror"],
+                "stat": float(dep_vr_dsig_nub["values"][bin]["errors"][0]["symerror"])/10,
+                "syst": float(dep_vr_dsig_nub["values"][bin]["errors"][1]["symerror"])/10,
             }
             dsig_nub_error.append(error_dict_2ndentry)
 
