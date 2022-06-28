@@ -11,7 +11,7 @@ _logger = logging.getLogger(__name__)
 
 OBS_TYPE = ["F2", "F3", "FW", "DXDYNUU", "DXDYNUB", "QBAR"]
 
-MAP_EXP_YADISM = {"NUTEV": "XSNUTEVCC", "CHORUS": "XSCHORUSCC", "CDHSW": "XSCHORUSCC"}
+MAP_EXP_YADISM = {"NUTEV": "XSNUTEVNU", "CHORUS": "XSCHORUSCC", "CDHSW": "XSCHORUSCC"}
 
 
 class ObsTypeError(Exception):
