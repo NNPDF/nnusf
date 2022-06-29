@@ -1,6 +1,6 @@
 <h1 align="center">NνSF</h1>
 
-NνSF is a python module that provides predictions for neutrino structure functions. It relies on [Yadism]([GitHub - N3PDF/yadism: Yet Another DIS Module](https://github.com/N3PDF/yadism)) for the large-$Q^2$ region while the low-$Q^2$ regime is modelled in terms of a Neural Network (NN).
+NνSF is a python module that provides predictions for neutrino structure functions. It relies on [Yadism](https://github.com/N3PDF/yadism) for the large-$Q^2$ region while the low-$Q^2$ regime is modelled in terms of a Neural Network (NN).
 
 ## Installation & Development
 
