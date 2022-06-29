@@ -21,6 +21,8 @@ def cross_section(
     exp = name.split("_")[0]
     try:
         xs = loader.MAP_EXP_YADISM[exp]
+        if name == "CDHSW_FW":
+            xs = "FW"
     except KeyError:
         raise MissingRequisite(f"NO available cross-section for '{exp}'")
 
@@ -51,9 +53,6 @@ def cross_section(
         yadcoeffs[:, :, np.newaxis] * np.ones_like(pos)[np.newaxis, np.newaxis, :],
         [0, 2, 1],
     ).reshape(yadcoeffs.shape[0], yadcoeffs.shape[1] * pos.size)
-
-    if exp == "NUTEV":
-        coeffs /= 100.0
 
     return coeffs
 

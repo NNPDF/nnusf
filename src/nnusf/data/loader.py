@@ -11,7 +11,7 @@ _logger = logging.getLogger(__name__)
 
 OBS_TYPE = ["F2", "F3", "FW", "DXDYNUU", "DXDYNUB", "QBAR"]
 
-MAP_EXP_YADISM = {"NUTEV": "XSNUTEVCC", "CHORUS": "XSCHORUSCC", "CDHSW": "XSCHORUSCC"}
+MAP_EXP_YADISM = {"NUTEV": "XSNUTEVNU", "CHORUS": "XSCHORUSCC", "CDHSW": "XSCHORUSCC"}
 
 
 class ObsTypeError(Exception):
@@ -137,6 +137,10 @@ class Loader:
         new_df["projectile"] = np.full(
             number_datapoints,
             info_df.loc[info_df["type"] == self.obs, "projectile"],
+        )
+        new_df["m_nucleon"] = np.full(
+            number_datapoints,
+            info_df["m_nucleon"][0],
         )
 
         return new_df

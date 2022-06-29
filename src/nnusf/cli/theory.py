@@ -5,7 +5,7 @@ import pathlib
 
 import click
 
-from ..theory import grids, predictions, runcards, bodek_yang
+from ..theory import grids, predictions, runcards, bodek_yang, compare_to_data
 from . import base
 
 _logger = logging.getLogger(__name__)
@@ -63,6 +63,12 @@ def sub_sub_hiq(data, destination):
     """High Q2, from cut values of the dataset."""
     runcards.hiq(data, destination=destination)
 
+@sub_runcards.command("all")
+@click.argument("data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path))
+@option_dest
+def sub_sub_all(data, destination):
+    """Full datasets runcards"""
+    runcards.dvst(data, destination=destination)
 
 @subcommand.command("by")
 @click.argument(
@@ -126,6 +132,35 @@ def sub_predictions(grids, pdf, err, destination, x, interactive):
         pdf,
         err=err,
         xpoint=x,
+        interactive=interactive,
+        destination=destination,
+    )
+
+@subcommand.command("compare_to_data")
+@click.argument("grids", type=click.Path(exists=True, path_type=pathlib.Path))
+@click.argument("data",  type=click.Path(exists=True, path_type=pathlib.Path))
+@click.argument("pdf")
+@click.option(
+    "--err",
+    type=click.Choice(["pdf", "theory"], case_sensitive=False),
+    default="pdf",
+)
+@click.option("--interactive", is_flag=True)
+@option_dest
+def sub_predictions(grids, data, pdf, err, destination, interactive):
+    """Generate predictions from yadism grids and compare with data.
+
+    GRIDS is a path to folder (or tar folder) containing the grids, one per
+    observable.
+    PDF is the pdf to be convoluted with the grids, in order to obtain the
+    structure functions predictions.
+
+    """
+    compare_to_data.main(
+        grids.absolute(),
+        data.absolute(),
+        pdf,
+        err=err,
         interactive=interactive,
         destination=destination,
     )
