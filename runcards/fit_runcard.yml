@@ -27,16 +27,16 @@ experiments:
 
 trvlseed: 123
 global_seeds: 456
-pseudodataseed: 789
+pseudodataseed: 2
 
 fit_parameters:
   epochs: 50000
   stopping_patience: 2000
   units_per_layer: [70, 55, 40, 20, 20]
-  activation_per_layer: [tanh, tanh,tanh,tanh, selu]
+  activation_per_layer: [tanh, tanh, tanh, tanh, selu]
   optimizer_parameters:
     optimizer: Adam
     clipnorm: 0.00001
     learning_rate: 0.05
   val_chi2_threshold: 30
-  initializer_seed: 1218
+  initializer_seed: 1

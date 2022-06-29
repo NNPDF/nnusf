@@ -1,6 +1,6 @@
 # Slice of (x, A)
+a_slice: 56
 x_slice: 0.01
-a_slice: 26
 
 experiments:
   - BEBCWA59_F2
@@ -9,6 +9,9 @@ experiments:
   - CCFR_F3
   - CDHSW_DXDYNUB
   - CDHSW_DXDYNUU
+  - CDHSW_F2
+  - CDHSW_F3
+  - CDHSW_FW
   - CHARM_F2
   - CHARM_F3
   - CHORUS_DXDYNUB
@@ -21,5 +24,4 @@ experiments:
 
 actions:
   - prediction_data_comparison
-  # - sf_q_band
-  # - sfs_q_replicas
+  - sf_q_band
