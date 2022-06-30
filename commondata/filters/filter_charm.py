@@ -17,11 +17,15 @@ from nnusf.data.utils import (
 
 console = Console()
 
+# Mass determined using pdg values
 M_NEUTRON = 939.565346 * 0.001
 M_PROTON = 938.272013 * 0.001
 A = 40 + 3 * 16 + 12 # A(CaCO3): Atomic MAss
 Z = 20 + 3 * 8 + 6   # Z(CaCO3): Atomic Number
 M_NUCLEON = 100.08969 * 0.93149432 / (Z * M_PROTON + (A - Z) * M_NEUTRON)
+
+# Experiment metadata
+TARGET = A
 EXP_NAME = "CHARM"
 
 
@@ -246,7 +250,7 @@ def main(path_to_commondata: Path) -> None:
     extract_qbar(path_to_commondata, EXP_NAME, [2])
 
     # dump info file
-    dump_info_file(path_to_commondata, EXP_NAME, obs_list, target=A, nucleon_mass=M_NUCLEON)
+    dump_info_file(path_to_commondata, EXP_NAME, obs_list, TARGET, M_NUCLEON)
 
 
 if __name__ == "__main__":

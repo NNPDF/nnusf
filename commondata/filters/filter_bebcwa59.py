@@ -18,8 +18,16 @@ from nnusf.data.utils import (
 
 console = Console()
 
+# Mass determined using Ne pdg values
+M_NEUTRON = 939.565346 * 0.001
+M_PROTON = 938.272013 * 0.001
+A = 20 # A(Ne): Atomic Mass
+Z = 10 # Z(Ne): Atomic Number
+M_NUCLEON = 20.1797 * 0.93149432 / (Z * M_PROTON + (A - Z) * M_NEUTRON)
 
-TARGET = 20 # A(Ne): Atomic Mass
+
+# Experiment metadata
+TARGET = A
 EXP_NAME = "BEBCWA59"
 
 
@@ -149,7 +157,7 @@ def main(path_to_commondata: Path):
     extract_f2f3(path_to_commondata, EXP_NAME, table_f2_xf3)
 
     # dump info file
-    dump_info_file(path_to_commondata, EXP_NAME, obs_list, TARGET)
+    dump_info_file(path_to_commondata, EXP_NAME, obs_list, TARGET, M_NUCLEON)
 
 
 if __name__ == "__main__":
