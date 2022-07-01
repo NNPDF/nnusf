@@ -84,14 +84,19 @@ def generate_models(
         input_layer = tf.keras.layers.Input(shape=(None, 3), batch_size=1)
         model_inputs.append(input_layer)
 
-        # Connect the input to the dense layers
-        nn_output = sequential(input_layer)
+        def pdf_model(input_layer):
+            # Connect the input to the dense layers
+            nn_output = sequential(input_layer)
 
-        # Ensure F_i(x=1)=0
-        x_equal_one_layer = TheoryConstraint()(input_layer)
-        nn_output_x_equal_one = sequential(x_equal_one_layer)
-        sf_basis = tf.keras.layers.subtract([nn_output, nn_output_x_equal_one])
+            # Ensure F_i(x=1)=0
+            x_equal_one_layer = TheoryConstraint()(input_layer)
+            nn_output_x_equal_one = sequential(x_equal_one_layer)
+            sf_basis = tf.keras.layers.subtract(
+                [nn_output, nn_output_x_equal_one]
+            )
+            return sf_basis
 
+        sf_basis = pdf_model(input_layer)
         # Construct the full observable for a given dataset
         observable = ObservableLayer(coefficients)(sf_basis)
 
@@ -135,7 +140,7 @@ def generate_models(
         "vl_expdat": vl_data,
         "tr_datpts": tr_dpts,
         "vl_datpts": vl_dpts,
-        "pdf_model": sequential,
+        "pdf_model": pdf_model,
     }
 
     return fit_dic
