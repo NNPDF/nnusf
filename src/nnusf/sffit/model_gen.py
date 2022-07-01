@@ -84,8 +84,8 @@ def generate_models(
         input_layer = tf.keras.layers.Input(shape=(None, 3), batch_size=1)
         model_inputs.append(input_layer)
 
+        # The pdf model: kinematics -> structure functions
         def pdf_model(input_layer):
-            # Connect the input to the dense layers
             nn_output = sequential(input_layer)
 
             # Ensure F_i(x=1)=0
