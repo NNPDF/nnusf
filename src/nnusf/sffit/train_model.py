@@ -51,10 +51,7 @@ def perform_fit(
     lr = optimizer_parameters["learning_rate"]
     table = chi2_logs(datas_name, dummy_vl, datas_name, datas_name, 0, lr)
 
-    # prepare the inputs, including an input with all x=1 used to enforce F_i(x=1)=0
-    kinematics_array = []
-    for kinematic_arr in kinematics:
-        kinematics_array.append(tf.expand_dims(kinematic_arr, axis=0))
+    kinematics_array = [tf.expand_dims(i, axis=0) for i in kinematics]
 
     with Live(table, auto_refresh=False) as rich_live_instance:
         # Instantiate the various callbacks
