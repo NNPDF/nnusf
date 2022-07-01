@@ -21,6 +21,7 @@ experiments:
   - NUTEV_DXDYNUB
   - NUTEV_DXDYNUU
   - NUTEV_F3
+  - NUTEV_F2
 
 actions:
   - prediction_data_comparison

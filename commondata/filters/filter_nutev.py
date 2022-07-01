@@ -15,10 +15,16 @@ from nnusf.data.utils import (
 )
 
 console = Console()
-M_PROTON = 0.938  # GeV
 
-# Exxperiment Metadata
-TARGET = 56
+# Mass determined using Fe pdg values
+M_NEUTRON = 939.565346 * 0.001
+M_PROTON = 938.272013 * 0.001
+A = 56 # A(Fe): Atomic Mass
+Z = 26 # Z(Fe): Atomic Number
+M_NUCLEON = 55.845 * 0.93149432 / (Z * M_PROTON + (A - Z) * M_NEUTRON)
+
+# Experiment metadata
+TARGET = A
 EXP_NAME = "NUTEV"
 
 
@@ -223,7 +229,7 @@ def main(path_to_commondata: Path) -> None:
     extract_d2sigDxDy(path_to_commondata, EXP_NAME, table_dsig_dxdynub, "NUB")
 
     # dump info file
-    dump_info_file(path_to_commondata, EXP_NAME, obs_list, TARGET)
+    dump_info_file(path_to_commondata, EXP_NAME, obs_list, TARGET, M_PROTON)
 
 
 if __name__ == "__main__":

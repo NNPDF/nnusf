@@ -7,7 +7,7 @@ import itertools
 sfmap = dict(F2="F2_total", FL="FL_total", F3="F3_total")
 xsmap = dict(CHORUS="XSCHORUSCC", NUTEV="XSNUTEVNU", CDHSW="XSCHORUSCC", FW="FW")
 projectiles = dict(NU="neutrino", NB="antineutrino")
-# TODO: do we need to change the taget as well here? 
+targets = {20: "neon", 100: "marble", 56: "iron", 208: "lead"}
 
 three_points = [0.5, 1.0, 2.0]
 "Three points prescription for scale variations."

@@ -43,6 +43,8 @@ def overlap(datasets: list[str], path: pathlib.Path) -> dict:
 
     for dataset in datasets:
         kins = load.kinematics(dataset, path)
+        run_nu["TargetDIS"] = defs.targets[kins["A"]]
+        run_nb["TargetDIS"] = defs.targets[kins["A"]]
 
         ds_cards = {}
         if kins["proj"] > 0:
