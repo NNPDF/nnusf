@@ -24,12 +24,12 @@ To run a fit, one can simplify type the following commands:
 nnu fit run ./runcards/fit_runcard.yml -r <replica> -d <output_path>
 ```
 
-This will generate inside the folder `<output_path>` a folder named `replica_<replica>` which in turn contains a tensorflow model that can be used to generate predictions. In general, one needs to run the above command for `replica={1, ..., n}`. 
+This will generate inside the folder `<output_path>` a folder named `replica_<replica>` which in turn contains a tensorflow model that can be used to generate predictions. In general, one needs to run the above command for `replica={1, ..., n}`.
 
 Finally, to generate predictions using the trained models, just run the following commands:
 
 ```bash
-nnu plot fit <output_path> ./runcard/generate_predictions.yml 
+nnu plot fit <output_path> ./runcards/generate_predictions.yml
 ```
 
 This will generate a `.txt` file containing the NN predictions for the different structure functions.
