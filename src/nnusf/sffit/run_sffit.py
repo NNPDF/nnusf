@@ -69,8 +69,6 @@ def main(
         fit_dict, data_info, **runcard_content["fit_parameters"]
     )
 
-    # import ipdb; ipdb.set_trace()
-
     # Store the models in the relevant replica subfolders
     final_placeholder = tf.keras.layers.Input(shape=(None, 3))
     saved_model = tf.keras.Model(
