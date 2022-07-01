@@ -73,7 +73,7 @@ def main(
     final_placeholder = tf.keras.layers.Input(shape=(None, 3))
     saved_model = tf.keras.Model(
         inputs=final_placeholder,
-        outputs=fit_dict["pdf_model"](final_placeholder),
+        outputs=fit_dict["sf_model"](final_placeholder),
     )
     saved_model.save(replica_dir / "model")
 

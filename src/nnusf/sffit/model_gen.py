@@ -85,7 +85,7 @@ def generate_models(
         model_inputs.append(input_layer)
 
         # The pdf model: kinematics -> structure functions
-        def pdf_model(input_layer):
+        def sf_model(input_layer):
             nn_output = sequential(input_layer)
 
             # Ensure F_i(x=1)=0
@@ -96,7 +96,7 @@ def generate_models(
             )
             return sf_basis
 
-        sf_basis = pdf_model(input_layer)
+        sf_basis = sf_model(input_layer)
         # Construct the full observable for a given dataset
         observable = ObservableLayer(coefficients)(sf_basis)
 
@@ -140,7 +140,7 @@ def generate_models(
         "vl_expdat": vl_data,
         "tr_datpts": tr_dpts,
         "vl_datpts": vl_dpts,
-        "pdf_model": pdf_model,
+        "sf_model": sf_model,
     }
 
     return fit_dic
