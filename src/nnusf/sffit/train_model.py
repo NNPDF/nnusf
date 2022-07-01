@@ -55,8 +55,6 @@ def perform_fit(
     kinematics_array = []
     for kinematic_arr in kinematics:
         kinematics_array.append(tf.expand_dims(kinematic_arr, axis=0))
-        kinematic_arr[:, 0] = 1
-        kinematics_array.append(tf.expand_dims(kinematic_arr, axis=0))
 
     with Live(table, auto_refresh=False) as rich_live_instance:
         # Instantiate the various callbacks

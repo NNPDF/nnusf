@@ -4,7 +4,7 @@
 import numpy as np
 import tensorflow as tf
 
-from .layers import GenMaskLayer, ObservableLayer
+from .layers import GenMaskLayer, ObservableLayer, TheoryConstraint
 from .utils import chi2, mask_covmat, mask_expdata
 
 
@@ -84,14 +84,13 @@ def generate_models(
         input_layer = tf.keras.layers.Input(shape=(None, 3), batch_size=1)
         model_inputs.append(input_layer)
 
-        # Ensure F_i(x=1)=0
+        # Connect the input to the dense layers
         nn_output = sequential(input_layer)
-        input_layer_for_x_equal_1 = tf.keras.layers.Input(
-            shape=(None, 3), batch_size=1
-        )
-        model_inputs.append(input_layer_for_x_equal_1)
-        nn_output_at_x_equal_1 = sequential(input_layer_for_x_equal_1)
-        sf_basis = tf.keras.layers.subtract([nn_output, nn_output_at_x_equal_1])
+
+        # Ensure F_i(x=1)=0
+        x_equal_one_layer = TheoryConstraint()(input_layer)
+        nn_output_x_equal_one = sequential(x_equal_one_layer)
+        sf_basis = tf.keras.layers.subtract([nn_output, nn_output_x_equal_one])
 
         # Construct the full observable for a given dataset
         observable = ObservableLayer(coefficients)(sf_basis)
