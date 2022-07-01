@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+"""Compile and train the models."""
+
 import logging
 
 import tensorflow as tf
@@ -19,7 +22,7 @@ def perform_fit(
     print_rate=100,
     **kwargs,
 ):
-    "Compile the models and do the fit"
+    """Compile the models and do the fit."""
     del kwargs
 
     opt_name = optimizer_parameters.pop("optimizer", "Adam")
@@ -48,7 +51,12 @@ def perform_fit(
     lr = optimizer_parameters["learning_rate"]
     table = chi2_logs(datas_name, dummy_vl, datas_name, datas_name, 0, lr)
 
-    kinematics_array = [tf.expand_dims(i, axis=0) for i in kinematics]
+    # prepare the inputs, including an input with all x=1 used to enforce F_i(x=1)=0
+    kinematics_array = []
+    for kinematic_arr in kinematics:
+        kinematics_array.append(tf.expand_dims(kinematic_arr, axis=0))
+        kinematic_arr[:, 0] = 1
+        kinematics_array.append(tf.expand_dims(kinematic_arr, axis=0))
 
     with Live(table, auto_refresh=False) as rich_live_instance:
         # Instantiate the various callbacks

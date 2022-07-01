@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+"""Generate the models parametrizing the structure functions."""
+
 import numpy as np
 import tensorflow as tf
 
@@ -15,9 +17,27 @@ def generate_models(
     output_activation="linear",
     **kwargs
 ):
-    """
-    Function that prepares the parametrization of the structure function using
-    tf.keras.layers.Dense layers
+    """Generate the parametrization of the structure functions.
+
+    Parameters
+    ----------
+    data_info : dict(Loader)
+        loaders of the datasets that are to be fitted
+    units_per_layer : list(int)
+        the number of nodes in each later
+    activation_per_layer : list(str)
+        the activation function used in each layer
+    initializer_seed : int, optional
+        seed given the the initializer of the neural network, by default 0
+    output_units : int, optional
+        number of output nodes, by default 6
+    output_activation : str, optional
+        activation function of the output nodes, by default "linear"
+
+    Returns
+    -------
+    dict
+        info needed to train the models
     """
     del kwargs  # we don't use the kwargs
 
@@ -58,15 +78,22 @@ def generate_models(
     for data in data_info.values():
         # Extract theory grid coefficients & datasets
         coefficients = data.coefficients
-        nb_dapatoints = len(coefficients)
         exp_datasets = data.pseudodata
 
         # Construct the input layer as placeholders
         input_layer = tf.keras.layers.Input(shape=(None, 3), batch_size=1)
         model_inputs.append(input_layer)
 
+        # Ensure F_i(x=1)=0
+        nn_output = sequential(input_layer)
+        input_layer_for_x_equal_1 = tf.keras.layers.Input(
+            shape=(None, 3), batch_size=1
+        )
+        model_inputs.append(input_layer_for_x_equal_1)
+        nn_output_at_x_equal_1 = sequential(input_layer_for_x_equal_1)
+        sf_basis = tf.keras.layers.subtract([nn_output, nn_output_at_x_equal_1])
+
         # Construct the full observable for a given dataset
-        sf_basis = sequential(input_layer)
         observable = ObservableLayer(coefficients)(sf_basis)
 
         # Split the datasets into training & validation
