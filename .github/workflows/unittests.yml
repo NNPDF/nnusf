@@ -4,6 +4,8 @@ name: Automatically perform a fit
 # Define events whent the workflow should be triggered or
 # manually triggered through the `workflow_dispatch`
 on:
+  push:
+    branches: ["master"]
   pull_request:
     types:
       - closed
