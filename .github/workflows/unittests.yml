@@ -1,0 +1,49 @@
+# A Github workflow that runs the tests
+name: Automatically perform a fit
+
+# Define events whent the workflow should be triggered or
+# manually triggered through the `workflow_dispatch`
+on:
+  pull_request:
+    types:
+      - closed
+      - review_requested
+  pull_request_review:
+    types:
+      - submitted
+  workflow_dispatch:
+
+# Define global environment variables
+env:
+  POETRY: https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py
+
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: [3.9]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 🐍
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: x64
+
+      - name: Install poetry and Dependencies 📦
+        shell: bash --login {0}
+        run: |
+          curl -sSL $POETRY | python -
+
+      - name: Install nnusf package 🔨
+        shell: bash --login {0}
+        run: |
+          poetry install
+
+      - name: Run all the unit tests 🚀
+        shell: bash --login {0}
+        run: |
+          poetry run pytest
