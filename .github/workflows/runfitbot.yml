@@ -67,10 +67,10 @@ jobs:
         shell: bash --login {0}
         run: |
           export COMMIT=`git rev-parse --short HEAD`
-          export TIMESTAMP=`date --iso-8601`
+          export TIMESTAMP=`date +"%Y-%m-%dT%H-%M-%S"`
           echo "OUTNAME=results-$COMMIT-$TIMESTAMP" >> $GITHUB_ENV
           tar -zcvf "results-$COMMIT-$TIMESTAMP.tar.gz" $PLOT_FOLDER/*.pdf
-          scp "results-$COMMIT-$TIMESTAMP.tar.gz" ${{ secrets.USER }}@${{ secrets.ADDR }}:/tmp/
+          scp "results-$COMMIT-$TIMESTAMP.tar.gz" ${{ secrets.USER }}@${{ secrets.ADDR }}:/home/nnpdf/WEB/NNUSF/botfits
 
 
       - name: Update PR with some comments 📮
@@ -81,4 +81,4 @@ jobs:
           msg: |
             :robot: The reports from the fits are now ready :robot: !
 
-            They are available in `artemis:/tmp/` with the name ${{ env.OUTNAME }}
+            They are available in `nnpdf:/home/nnpdf/WEB/NNUSF/botfits` with the name ${{ env.OUTNAME }}
