@@ -1,0 +1,84 @@
+# A Github workflow that automatically run a fit
+name: Automatically perform a fit
+
+# Trigger Workflow when PR is labelled
+on:
+  pull_request:
+    types: [labeled]
+
+# Define global environment variables
+env:
+  NUMBER_REPLICAS: 20
+  OUTPUT_FOLDER: RESUTLS
+  PLOT_FOLDER: PLOTS
+  POETRY: https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py
+  FITSCARD: ./runcards/fit_runcard.yml 
+  PLOTCARD: ./runcards/plot_runcard.yml
+
+
+jobs:
+  build:
+    if: contains(github.event.pull_request.labels.*.name, 'run-fit-bot')
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: [3.9]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 🐍
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: x64
+
+      - name: Install SSH key 🔑
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SERVER_SSH }}
+          name: id_rsa
+          known_hosts: ${{ secrets.SERVER_HOSTS }}
+
+      - name: Install poetry and Dependencies 📦
+        shell: bash --login {0}
+        run: |
+          curl -sSL $POETRY | python -
+
+      - name: Install nnusf package 🔨
+        shell: bash --login {0}
+        run: |
+          poetry install
+
+      - name: Perform a fit 🚀
+        shell: bash --login {0}
+        run: |
+          mkdir $OUTPUT_FOLDER
+          for ((i=1; i<=$NUMBER_REPLICAS; i+=1))
+          do
+            poetry run nnu fit run $FITSCARD -r $i -d $OUTPUT_FOLDER
+          done
+
+      - name: Compare predictions with data 📘
+        shell: bash --login {0}
+        run: |
+          poetry run nnu plot fit $OUTPUT_FOLDER $PLOTCARD -d $PLOT_FOLDER
+
+      - name: Upload the results into the server 🚀
+        shell: bash --login {0}
+        run: |
+          export COMMIT=`git rev-parse --short HEAD`
+          export TIMESTAMP=`date --iso-8601`
+          echo "OUTNAME=results-$COMMIT-$TIMESTAMP" >> $GITHUB_ENV
+          tar -zcvf "results-$COMMIT-$TIMESTAMP.tar.gz" $PLOT_FOLDER/*.pdf
+          scp "results-$COMMIT-$TIMESTAMP.tar.gz" ${{ secrets.USER }}@${{ secrets.ADDR }}:/tmp/
+
+
+      - name: Update PR with some comments 📮
+        uses: unsplash/comment-on-pr@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.NNUSF_FIT }}
+        with:
+          msg: |
+            :robot: The reports from the fits are now ready :robot: !
+
+            They are available in `artemis:/tmp/` with the name ${{ env.OUTNAME }}
