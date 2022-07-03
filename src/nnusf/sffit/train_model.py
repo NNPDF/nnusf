@@ -6,7 +6,13 @@ import logging
 import tensorflow as tf
 from rich.live import Live
 
-from .callbacks import AdaptLearningRate, EarlyStopping
+from .callbacks import (
+    AdaptLearningRate,
+    EarlyStopping,
+    GetTrainingInfo,
+    LogTrainingInfo,
+    TrainingInfo,
+)
 from .utils import chi2_logs
 
 _logger = logging.getLogger(__name__)
@@ -15,6 +21,7 @@ _logger = logging.getLogger(__name__)
 def perform_fit(
     fit_dict,
     data_info,
+    replica_dir,
     epochs,
     stopping_patience,
     optimizer_parameters,
@@ -53,13 +60,13 @@ def perform_fit(
 
     kinematics_array = [tf.expand_dims(i, axis=0) for i in kinematics]
 
+    train_info_class = TrainingInfo
+
     with Live(table, auto_refresh=False) as rich_live_instance:
         # Instantiate the various callbacks
         adapt_lr = AdaptLearningRate(fit_dict["tr_datpts"])
         stopping = EarlyStopping(
             vl_model,
-            kinematics_array,
-            fit_dict["vl_expdat"],
             fit_dict["tr_datpts"],
             fit_dict["vl_datpts"],
             stopping_patience,
@@ -67,7 +74,12 @@ def perform_fit(
             table,
             rich_live_instance,
             print_rate,
+            train_info_class,
         )
+        get_train_info = GetTrainingInfo(
+            vl_model, kinematics_array, fit_dict["vl_expdat"], train_info_class
+        )
+        log_train_info = LogTrainingInfo(replica_dir, train_info_class)
 
         _logger.info("Start of the training:")
         tr_model.fit(
@@ -75,7 +87,7 @@ def perform_fit(
             y=fit_dict["tr_expdat"],
             epochs=epochs,
             verbose=0,
-            callbacks=[adapt_lr, stopping],
+            callbacks=[get_train_info, log_train_info, adapt_lr, stopping],
         )
 
     # Save various metadata into a dictionary

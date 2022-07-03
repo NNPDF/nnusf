@@ -66,7 +66,7 @@ def main(
 
     # Compile the training and validationa nd perform the fit
     resdic = perform_fit(
-        fit_dict, data_info, **runcard_content["fit_parameters"]
+        fit_dict, data_info, replica_dir, **runcard_content["fit_parameters"]
     )
 
     # Store the models in the relevant replica subfolders
