@@ -15,6 +15,7 @@ repos:
     rev: 22.3.0
     hooks:
       - id: black
+        args: [--line-length=80]
   - repo: https://github.com/asottile/blacken-docs
     rev: v1.12.1
     hooks:

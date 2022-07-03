@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Executable to perform the structure function fit"""
+"""Executable to perform the structure function fit."""
 import json
 import logging
 import pathlib
@@ -22,15 +22,25 @@ _logger = logging.getLogger(__name__)
 def main(
     runcard: pathlib.Path,
     replica: int,
-    destination: Optional[pathlib.Path] = None,
+    destination: Optional[pathlib.Path],
 ):
+    """Run the structure function fit.
+
+    Parameters
+    ----------
+    runcard : pathlib.Path
+        Path to the fit runcard
+    replica : int
+        replica number
+    destination : Optional[pathlib.Path]
+        Path to the output folder
+    """
     # Create a folder for the replica
     if destination is None:
-        destination = runcard.parent / "fits" / runcard.stem
-        if destination.exists():
-            _logger.warning(
-                f"{destination} already exists, overwriting content."
-            )
+        destination = pathlib.Path.cwd().absolute() / runcard.stem
+
+    if destination.exists():
+        _logger.warning(f"{destination} already exists, overwriting content.")
 
     replica_dir = destination / f"replica_{replica}"
     replica_dir.mkdir(parents=True, exist_ok=True)
@@ -63,10 +73,10 @@ def main(
     final_placeholder = tf.keras.layers.Input(shape=(None, 3))
     saved_model = tf.keras.Model(
         inputs=final_placeholder,
-        outputs=fit_dict["pdf_model"](final_placeholder),
+        outputs=fit_dict["sf_model"](final_placeholder),
     )
     saved_model.save(replica_dir / "model")
 
     # Store the metadata in the relevant replicas subfodlers
-    with open(f"{replica_dir}/fitinfo.json", "w", encoding='UTF-8') as ostream:
+    with open(f"{replica_dir}/fitinfo.json", "w", encoding="UTF-8") as ostream:
         json.dump(resdic, ostream, sort_keys=True, indent=4)

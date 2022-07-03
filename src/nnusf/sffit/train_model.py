@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+"""Compile and train the models."""
+
 import logging
 
 import tensorflow as tf
@@ -19,7 +22,7 @@ def perform_fit(
     print_rate=100,
     **kwargs,
 ):
-    "Compile the models and do the fit"
+    """Compile the models and do the fit."""
     del kwargs
 
     opt_name = optimizer_parameters.pop("optimizer", "Adam")

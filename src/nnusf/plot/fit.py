@@ -98,7 +98,8 @@ def sf_q_band(**kwargs):
             alpha=0.4,
         )
         savepath = (
-            pathlib.Path(kwargs["output"]) / f"plot_sf_q_band_{prediction_index}.pdf"
+            pathlib.Path(kwargs["output"])
+            / f"plot_sf_q_band_{prediction_index}.pdf"
         )
         fig.savefig(savepath, dpi=350)
 
@@ -149,7 +150,9 @@ def prediction_data_comparison(**kwargs):
         coefficients = data.coefficients
         observable_predictions = []
         for model in models:
-            prediction = model(data.kinematics)
+            kins = np.expand_dims(data.kinematics, axis=0) # add batch dimension
+            prediction = model(kins)
+            prediction = prediction[0] # remove batch dimension
             observable_predictions.append(
                 tf.einsum("ij,ij->i", prediction, coefficients)
             )
