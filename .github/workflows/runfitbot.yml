@@ -55,7 +55,7 @@ jobs:
           mkdir $OUTPUT_FOLDER
           for ((i=1; i<=$NUMBER_REPLICAS; i+=1))
           do
-            poetry run nnu fit run $FITSCARD -r $i -d $OUTPUT_FOLDER
+            poetry run nnu fit run $FITSCARD $i -d $OUTPUT_FOLDER
           done
 
       - name: Compare predictions with data 📘
