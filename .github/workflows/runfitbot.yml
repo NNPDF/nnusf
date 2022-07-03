@@ -8,7 +8,7 @@ on:
 
 # Define global environment variables
 env:
-  NUMBER_REPLICAS: 20
+  NUMBER_REPLICAS: 5
   OUTPUT_FOLDER: RESUTLS
   PLOT_FOLDER: PLOTS
   POETRY: https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py
