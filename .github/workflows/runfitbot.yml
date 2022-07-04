@@ -76,7 +76,7 @@ jobs:
       - name: Update PR with some comments 📮
         uses: unsplash/comment-on-pr@master
         env:
-          GITHUB_TOKEN: ${{ secrets.NNUSF_FIT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           msg: |
             :robot: The reports from the fits are now ready :robot: !
