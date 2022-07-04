@@ -10,8 +10,9 @@ from .callbacks import (
     AdaptLearningRate,
     EarlyStopping,
     GetTrainingInfo,
-    LogTrainingInfo,
-    TrainingInfo,
+    LiveUpdater,
+    LogTrainingHistory,
+    TrainingStatusInfo,
 )
 from .utils import chi2_logs
 
@@ -60,26 +61,26 @@ def perform_fit(
 
     kinematics_array = [tf.expand_dims(i, axis=0) for i in kinematics]
 
-    train_info_class = TrainingInfo
+    # Initialize callbacks
+    train_info_class = TrainingStatusInfo(
+        tr_dpts=fit_dict["tr_datpts"], vl_dpts=fit_dict["vl_datpts"]
+    )
+    adapt_lr = AdaptLearningRate(train_info_class)
+    stopping = EarlyStopping(
+        vl_model,
+        stopping_patience,
+        val_chi2_threshold,
+        train_info_class,
+    )
+    get_train_info = GetTrainingInfo(
+        vl_model, kinematics_array, fit_dict["vl_expdat"], train_info_class
+    )
+    log_train_info = LogTrainingHistory(replica_dir, train_info_class)
 
     with Live(table, auto_refresh=False) as rich_live_instance:
-        # Instantiate the various callbacks
-        adapt_lr = AdaptLearningRate(fit_dict["tr_datpts"])
-        stopping = EarlyStopping(
-            vl_model,
-            fit_dict["tr_datpts"],
-            fit_dict["vl_datpts"],
-            stopping_patience,
-            val_chi2_threshold,
-            table,
-            rich_live_instance,
-            print_rate,
-            train_info_class,
+        live_updater = LiveUpdater(
+            print_rate, train_info_class, table, rich_live_instance
         )
-        get_train_info = GetTrainingInfo(
-            vl_model, kinematics_array, fit_dict["vl_expdat"], train_info_class
-        )
-        log_train_info = LogTrainingInfo(replica_dir, train_info_class)
 
         _logger.info("Start of the training:")
         tr_model.fit(
@@ -87,13 +88,11 @@ def perform_fit(
             y=fit_dict["tr_expdat"],
             epochs=epochs,
             verbose=0,
-            callbacks=[get_train_info, log_train_info, adapt_lr, stopping],
+            callbacks=[
+                get_train_info,
+                log_train_info,
+                adapt_lr,
+                stopping,
+                # live_updater,
+            ],
         )
-
-    # Save various metadata into a dictionary
-    final_results = {
-        "best_tr_chi2": adapt_lr.loss_value,
-        "best_vl_chi2": stopping.best_chi2 / stopping.tot_vl,
-        "best_epochs": stopping.best_epoch,
-    }
-    return final_results
