@@ -9,10 +9,10 @@ on:
 # Define global environment variables
 env:
   NUMBER_REPLICAS: 5
-  OUTPUT_FOLDER: RESUTLS
+  OUTPUT_FOLDER: RESULTS
   PLOT_FOLDER: PLOTS
   POETRY: https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py
-  FITSCARD: ./runcards/fit_runcard.yml 
+  FITCARD: ./runcards/fit_runcard.yml 
   PLOTCARD: ./runcards/plot_runcard.yml
 
 
@@ -55,7 +55,7 @@ jobs:
           mkdir $OUTPUT_FOLDER
           for ((i=1; i<=$NUMBER_REPLICAS; i+=1))
           do
-            poetry run nnu fit run $FITSCARD $i -d $OUTPUT_FOLDER
+            poetry run nnu fit run $FITCARD $i -d $OUTPUT_FOLDER
           done
 
       - name: Compare predictions with data 📘
