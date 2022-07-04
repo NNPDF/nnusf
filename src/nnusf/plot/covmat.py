@@ -22,6 +22,7 @@ def compute(
     datapath: pathlib.Path,
     inverse: bool = False,
     norm: bool = True,
+    w2min: Optional[float] = None,
     cuts: Optional[dict[str, dict[str, float]]] = None,
 ) -> np.ndarray:
     """Compute covmat.
@@ -47,7 +48,7 @@ def compute(
         (inverse) covariance matrix computed
 
     """
-    data = loader.Loader(name, datapath)
+    data = loader.Loader(name, datapath, w2min=w2min)
     covmat = data.covariance_matrix
     cv = data.central_values
 
@@ -67,7 +68,9 @@ def compute(
     return covmat
 
 
-def heatmap(covmat: np.ndarray, symlog: bool = False) -> matplotlib.figure.Figure:
+def heatmap(
+    covmat: np.ndarray, symlog: bool = False
+) -> matplotlib.figure.Figure:
     """Plot covariance matrix.
 
     Parameters
@@ -99,6 +102,7 @@ def main(
     inverse: bool = False,
     norm: bool = True,
     symlog: bool = False,
+    w2min: Optional[float] = None,
     cuts: Optional[dict[str, dict[str, float]]] = None,
 ):
     """Run covmat plot generation."""
@@ -111,7 +115,9 @@ def main(
     for ds in data:
         name, datapath = utils.split_data_path(ds)
 
-        covmat = compute(name, datapath, inverse=inverse, norm=norm, cuts=cuts)
+        covmat = compute(
+            name, datapath, inverse=inverse, norm=norm, w2min=w2min, cuts=cuts
+        )
         covmats[name] = covmat
 
         fig = heatmap(covmat, symlog=symlog)
