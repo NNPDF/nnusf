@@ -93,6 +93,6 @@ def perform_fit(
                 log_train_info,
                 adapt_lr,
                 stopping,
-                # live_updater,
+                live_updater,
             ],
         )

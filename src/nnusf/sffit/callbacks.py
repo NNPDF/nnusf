@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 import tensorflow as tf
 
@@ -32,16 +32,19 @@ def modify_lr(tr_loss_val, lr):
 
 @dataclass
 class TrainingStatusInfo:
-    """Class for storing info to be shared among callbacks (in particular prevents evaluating multiple times for each individual callback)"""
+    """Class for storing info to be shared among callbacks
+    (in particular prevents evaluating multiple times for each individual
+    callback).
+    """
 
     tr_dpts: int
     vl_dpts: int
-    tot_vl: float = field(init=False)
     best_chi2: float = None
     vl_chi2: float = None
     chix: list = None
-    vl_chi2_history: dict = None
+    chi2_history: dict = None
     loss_value: float = 1e5
+    vl_loss_value: float = None
     best_epoch: int = None
 
     def __post_init__(self):
@@ -50,7 +53,9 @@ class TrainingStatusInfo:
 
 
 class GetTrainingInfo(tf.keras.callbacks.Callback):
-    """Fill the TrainingInfo class. This is the first callback being called at each epoch"""
+    """Fill the TrainingInfo class.
+    This is the first callback being called at each epoch
+    """
 
     def __init__(self, vl_model, kinematics, vl_expdata, traininfo_class):
         self.vl_model = vl_model
@@ -66,6 +71,9 @@ class GetTrainingInfo(tf.keras.callbacks.Callback):
         vl_chi2 = chix[0] if isinstance(chix, list) else chix
         self.traininfo_class.vl_chi2 = vl_chi2
         self.traininfo_class.chix = chix
+        self.traininfo_class.vl_loss_value = (
+            vl_chi2 / self.traininfo_class.tot_vl
+        )
 
 
 class AdaptLearningRate(tf.keras.callbacks.Callback):
@@ -75,8 +83,9 @@ class AdaptLearningRate(tf.keras.callbacks.Callback):
 
     def on_batch_end(self, batch, logs={}):
         """Update value of LR after each epochs"""
+        self.train_info_class.tr_chi2 = logs.get("loss")
         self.train_info_class.loss_value = (
-            logs.get("loss") / self.train_info_class.nbdpts
+            self.train_info_class.tr_chi2 / self.train_info_class.nbdpts
         )
 
     def on_epoch_begin(self, epoch, logs=None):
@@ -104,7 +113,7 @@ class EarlyStopping(tf.keras.callbacks.Callback):
         self.patience_epochs = patience_epochs
         self.traininfo_class = traininfo_class
 
-    def on_epoch_end(self, epoch, logs={}):
+    def on_epoch_end(self, epoch, logs=None):
         chi2 = self.traininfo_class.vl_chi2
         if (
             self.traininfo_class.best_chi2 == None
@@ -155,13 +164,14 @@ class LogTrainingHistory(tf.keras.callbacks.Callback):
     def __init__(self, replica_dir, traininfo_class):
         self.replica_dir = replica_dir
         self.traininfo_class = traininfo_class
-        self.traininfo_class.vl_chi2_history = {}
+        self.traininfo_class.chi2_history = {}
         super().__init__()
 
     def on_epoch_end(self, epoch, logs=None):
-        self.traininfo_class.vl_chi2_history[
-            epoch
-        ] = self.traininfo_class.vl_chi2
+        self.traininfo_class.chi2_history[epoch] = {
+            "vl": self.traininfo_class.vl_loss_value,
+            "tr": self.traininfo_class.loss_value,
+        }
 
     def on_train_end(self, logs=None):
         # write log of chi2 history
@@ -169,7 +179,7 @@ class LogTrainingHistory(tf.keras.callbacks.Callback):
             f"{self.replica_dir}/chi2_history.json", "w", encoding="UTF-8"
         ) as ostream:
             json.dump(
-                self.traininfo_class.vl_chi2_history,
+                self.traininfo_class.chi2_history,
                 ostream,
                 sort_keys=True,
                 indent=4,
