@@ -2,6 +2,7 @@
 import json
 import logging
 from dataclasses import dataclass
+from typing import Union
 
 import tensorflow as tf
 
@@ -39,13 +40,13 @@ class TrainingStatusInfo:
 
     tr_dpts: int
     vl_dpts: int
-    best_chi2: float = None
-    vl_chi2: float = None
-    chix: list = None
-    chi2_history: dict = None
+    best_chi2: Union[float, None] = None
+    vl_chi2: Union[float, None] = None
+    chix: Union[list, None] = None
+    chi2_history: Union[dict, None] = None
     loss_value: float = 1e5
-    vl_loss_value: float = None
-    best_epoch: int = None
+    vl_loss_value: Union[float, None] = None
+    best_epoch: Union[int, None] = None
 
     def __post_init__(self):
         self.tot_vl = sum(self.vl_dpts.values())
