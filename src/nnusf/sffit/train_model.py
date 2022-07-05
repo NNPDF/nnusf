@@ -6,7 +6,14 @@ import logging
 import tensorflow as tf
 from rich.live import Live
 
-from .callbacks import AdaptLearningRate, EarlyStopping
+from .callbacks import (
+    AdaptLearningRate,
+    EarlyStopping,
+    GetTrainingInfo,
+    LiveUpdater,
+    LogTrainingHistory,
+    TrainingStatusInfo,
+)
 from .utils import chi2_logs
 
 _logger = logging.getLogger(__name__)
@@ -15,6 +22,7 @@ _logger = logging.getLogger(__name__)
 def perform_fit(
     fit_dict,
     data_info,
+    replica_dir,
     epochs,
     stopping_patience,
     optimizer_parameters,
@@ -53,20 +61,25 @@ def perform_fit(
 
     kinematics_array = [tf.expand_dims(i, axis=0) for i in kinematics]
 
+    # Initialize callbacks
+    train_info_class = TrainingStatusInfo(
+        tr_dpts=fit_dict["tr_datpts"], vl_dpts=fit_dict["vl_datpts"]
+    )
+    adapt_lr = AdaptLearningRate(train_info_class)
+    stopping = EarlyStopping(
+        vl_model,
+        stopping_patience,
+        val_chi2_threshold,
+        train_info_class,
+    )
+    get_train_info = GetTrainingInfo(
+        vl_model, kinematics_array, fit_dict["vl_expdat"], train_info_class
+    )
+    log_train_info = LogTrainingHistory(replica_dir, train_info_class)
+
     with Live(table, auto_refresh=False) as rich_live_instance:
-        # Instantiate the various callbacks
-        adapt_lr = AdaptLearningRate(fit_dict["tr_datpts"])
-        stopping = EarlyStopping(
-            vl_model,
-            kinematics_array,
-            fit_dict["vl_expdat"],
-            fit_dict["tr_datpts"],
-            fit_dict["vl_datpts"],
-            stopping_patience,
-            val_chi2_threshold,
-            table,
-            rich_live_instance,
-            print_rate,
+        live_updater = LiveUpdater(
+            print_rate, train_info_class, table, rich_live_instance
         )
 
         _logger.info("Start of the training:")
@@ -75,13 +88,11 @@ def perform_fit(
             y=fit_dict["tr_expdat"],
             epochs=epochs,
             verbose=0,
-            callbacks=[adapt_lr, stopping],
+            callbacks=[
+                get_train_info,
+                log_train_info,
+                adapt_lr,
+                stopping,
+                live_updater,
+            ],
         )
-
-    # Save various metadata into a dictionary
-    final_results = {
-        "best_tr_chi2": adapt_lr.loss_value,
-        "best_vl_chi2": stopping.best_chi2 / stopping.tot_vl,
-        "best_epochs": stopping.best_epoch,
-    }
-    return final_results

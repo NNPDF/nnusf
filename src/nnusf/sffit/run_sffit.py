@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """Executable to perform the structure function fit."""
-import json
 import logging
 import pathlib
 import shutil
@@ -65,8 +64,8 @@ def main(
     fit_dict = generate_models(data_info, **runcard_content["fit_parameters"])
 
     # Compile the training and validationa nd perform the fit
-    resdic = perform_fit(
-        fit_dict, data_info, **runcard_content["fit_parameters"]
+    perform_fit(
+        fit_dict, data_info, replica_dir, **runcard_content["fit_parameters"]
     )
 
     # Store the models in the relevant replica subfolders
@@ -76,7 +75,3 @@ def main(
         outputs=fit_dict["sf_model"](final_placeholder),
     )
     saved_model.save(replica_dir / "model")
-
-    # Store the metadata in the relevant replicas subfodlers
-    with open(f"{replica_dir}/fitinfo.json", "w", encoding="UTF-8") as ostream:
-        json.dump(resdic, ostream, sort_keys=True, indent=4)
