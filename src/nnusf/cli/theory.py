@@ -147,7 +147,7 @@ def sub_predictions(grids, pdf, err, destination, x, interactive):
 )
 @click.option("--interactive", is_flag=True)
 @option_dest
-def sub_predictions(grids, data, pdf, err, destination, interactive):
+def theory_predictions(grids, data, pdf, err, destination, interactive):
     """Generate predictions from yadism grids and compare with data.
 
     GRIDS is a path to folder (or tar folder) containing the grids, one per
