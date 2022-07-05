@@ -36,6 +36,8 @@ nnu = "nnusf.cli:command"
 coverage = "$BROWSER htmlcov/index.html"
 test = "pytest tests"
 test-cov = ["test", "coverage"]
+lint = "pylint src/**/*.py -E"
+lint-warnings = "pylint src/**/*.py --exit-zero"
 
 [tool.pytest.ini_options]
 testpaths = ['tests/']
