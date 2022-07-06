@@ -110,7 +110,7 @@ class Loader:
         # Add a column to `kin_df` that stores the W
         q2 = kin_df["Q2"].astype(float, errors="raise")  # Object -> float
         xx = kin_df["x"].astype(float, errors="raise")   # Object -> float
-        kin_df["W"] = q2 * (1 - xx) / xx + info_df["m_nucleon"][0]
+        kin_df["W2"] = q2 * (1 - xx) / xx + info_df["m_nucleon"][0]
 
         # Concatenate enverything into one single big table
         new_df = pd.concat([kin_df, data_df, unc_df], axis=1)
@@ -126,7 +126,7 @@ class Loader:
         # from `Yadism`.
         new_df.reset_index(drop=True, inplace=True)
         # Only now we can perform the cuts on W
-        new_df = new_df[new_df["W"] >= w2min] if w2min else new_df
+        new_df = new_df[new_df["W2"] >= w2min] if w2min else new_df
 
         number_datapoints = new_df.shape[0]
 
