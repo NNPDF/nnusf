@@ -29,19 +29,12 @@ def subcommand():
     "--ylog/--no-ylog", default=True, help="Set logarithmic scale on y axis."
 )
 @click.option(
-    "-w",
-    "--w2min",
-    type=float,
-    default=None,
-    help="Set a minimum value for W2.",
-)
-@click.option(
     "-c",
     "--cuts",
     default=None,
     help="""Stringified dictionary of cuts, e.g. '{"Q2": {"min": 3.5}}'.""",
 )
-def sub_kinematic(data, destination, ylog, w2min, cuts):
+def sub_kinematic(data, destination, ylog, cuts):
     """Generate kinematics plot.
 
     The plot will include data from each DATA path provided (multiple values allowed),
@@ -53,7 +46,7 @@ def sub_kinematic(data, destination, ylog, w2min, cuts):
     if cuts is not None:
         cuts = eval(cuts)
 
-    kinematics.main(data, destination, ylog=ylog, w2min=w2min, cuts=cuts)
+    kinematics.main(data, destination, ylog=ylog, cuts=cuts)
 
 
 @subcommand.command("covmat")
@@ -80,13 +73,6 @@ def sub_kinematic(data, destination, ylog, w2min, cuts):
     help="Normalize covariance matrix with central values (default: True).",
 )
 @click.option(
-    "-w",
-    "--w2min",
-    type=float,
-    default=None,
-    help="Set a minimum value for W2.",
-)
-@click.option(
     "-c",
     "--cuts",
     default=None,
@@ -95,7 +81,7 @@ def sub_kinematic(data, destination, ylog, w2min, cuts):
 @click.option(
     "-l", "--symlog", is_flag=True, help="Plot in symmetric logarithmic scale."
 )
-def sub_covmat(data, destination, inverse, norm, w2min, cuts, symlog):
+def sub_covmat(data, destination, inverse, norm, cuts, symlog):
     """Generate covariance matrix heatmap.
 
     The operation is repeated for each DATA path provided (multiple values allowed),
@@ -113,13 +99,7 @@ def sub_covmat(data, destination, inverse, norm, w2min, cuts, symlog):
         cuts = eval(cuts)
 
     covmat.main(
-        data,
-        destination,
-        inverse=inverse,
-        norm=norm,
-        w2min=w2min,
-        cuts=cuts,
-        symlog=symlog,
+        data, destination, inverse=inverse, norm=norm, cuts=cuts, symlog=symlog
     )
 
 

@@ -29,7 +29,7 @@ def cuts(cuts: dict[str, dict[str, float]], table: pd.DataFrame) -> np.ndarray:
         the mask generated
 
     """
-    kins = {k: table[k] for k in ["x", "y", "Q2"] if k in table}
+    kins = {k: table[k] for k in ["x", "Q2", "W2"] if k in table}
     mask = np.full_like(table["x"], True, dtype=np.bool_)
 
     for var, kin in kins.items():

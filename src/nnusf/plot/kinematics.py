@@ -60,14 +60,13 @@ def main(
     destination: pathlib.Path,
     grouping: str = "exp",
     ylog: bool = True,
-    w2min: Optional[float] = None,
     cuts: Optional[dict[str, dict[str, float]]] = None,
 ):
     """Run kinematic plot generation."""
     utils.mkdest(destination)
 
     groups = putils.group_data(
-        [loader.Loader(*utils.split_data_path(ds), w2min=w2min) for ds in data],
+        [loader.Loader(*utils.split_data_path(ds)) for ds in data],
         grouping=grouping,
     )
 
