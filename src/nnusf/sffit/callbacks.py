@@ -38,8 +38,8 @@ class TrainingStatusInfo:
     callback).
     """
 
-    tr_dpts: int
-    vl_dpts: int
+    tr_dpts: dict
+    vl_dpts: dict
     best_chi2: Union[float, None] = None
     vl_chi2: Union[float, None] = None
     chix: Union[list, None] = None
