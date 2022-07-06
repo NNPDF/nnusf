@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 import logging
 import pathlib
 
@@ -150,9 +151,11 @@ def prediction_data_comparison(**kwargs):
         coefficients = data.coefficients
         observable_predictions = []
         for model in models:
-            kins = np.expand_dims(data.kinematics, axis=0) # add batch dimension
+            kins = np.expand_dims(
+                data.kinematics, axis=0
+            )  # add batch dimension
             prediction = model(kins)
-            prediction = prediction[0] # remove batch dimension
+            prediction = prediction[0]  # remove batch dimension
             observable_predictions.append(
                 tf.einsum("ij,ij->i", prediction, coefficients)
             )
@@ -188,3 +191,39 @@ def prediction_data_comparison(**kwargs):
             count_plots += 1
             fig.savefig(savepath, dpi=350)
             plt.close(fig)
+
+
+def chi2_history_plot(xmin=None, **kwargs):
+    fitpath = kwargs["fit"]
+    outputpath = kwargs["output"]
+
+    fit_folder = pathlib.Path(fitpath)
+    count_plots = 0
+    for foldercontent in fit_folder.iterdir():
+        if "replica_" in foldercontent.name:
+            chi2_history_file = foldercontent / "chi2_history.json"
+            if chi2_history_file.exists():
+                with open(chi2_history_file, "r") as f:
+                    data = json.load(f)
+                epochs = [int(i) for i in data.keys()]
+                vl_chi2 = [i["vl"] for i in data.values()]
+                tr_chi2 = [i["tr"] for i in data.values()]
+                count_plots += 1
+                fig, ax = plt.subplots()
+                ax.set_title(f"replica {foldercontent.name.split('_')[1]}")
+                ax.set_xlabel("epoch")
+                ax.set_ylabel("loss")
+                if xmin != None:
+                    index_cut = epochs.index(xmin)
+                    epochs = epochs[index_cut:]
+                    vl_chi2 = vl_chi2[index_cut:]
+                    tr_chi2 = tr_chi2[index_cut:]
+                ax.plot(epochs, vl_chi2, label="validation")
+                ax.plot(epochs, tr_chi2, label="training")
+                ax.legend()
+                savepath = (
+                    pathlib.Path(outputpath)
+                    / f"chi2_history_plot_{count_plots}.pdf"
+                )
+                fig.savefig(savepath, dpi=350)
+                plt.close(fig)
