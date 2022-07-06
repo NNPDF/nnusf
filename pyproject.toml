@@ -21,6 +21,7 @@ pandas = "^1.4.2"
 rich = "^10"
 scipy = "^1.8.1"
 tensorflow = "^2.8.2"
+pylint = "^2.14.4"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1"
@@ -35,6 +36,8 @@ nnu = "nnusf.cli:command"
 coverage = "$BROWSER htmlcov/index.html"
 test = "pytest tests"
 test-cov = ["test", "coverage"]
+lint = "pylint src/**/*.py -E"
+lint-warnings = "pylint src/**/*.py --exit-zero"
 
 [tool.pytest.ini_options]
 testpaths = ['tests/']
