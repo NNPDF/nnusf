@@ -17,7 +17,8 @@ class TestLoader:
     def test_drop_zeros(self):
         data = Loader("BEBCWA59_F3", path_to_commondata)
 
-        assert 0 not in data.table["stat"] + data.table["syst"]
+        combined_unc = data.table["stat"] + data.table["syst"]
+        assert 0 not in combined_unc.values
 
     def test_coefficients_load(self):
         data = Loader("CHORUS_F2", path_to_commondata, path_to_coefficients)
