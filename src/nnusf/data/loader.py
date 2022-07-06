@@ -69,7 +69,6 @@ class Loader:
         self.covariance_matrix = self.build_covariance_matrix(
             self.table, include_syst
         )
-
         _logger.info(f"Loaded '{name}' dataset")
 
     def _load(self, w2min: float) -> tuple[pd.DataFrame, pd.Index]:
@@ -99,24 +98,14 @@ class Loader:
         else:
             raise ObsTypeError("{self.obs} is not recognised as an Observable.")
 
-        # Extract values from the central and uncertainties
-        data_df = (
-            pd.read_csv(
-                f"{self.commondata_path}/data/DATA_{self.name}.csv",
-                header=0,
-                na_values=["-", " "],
-            )
-            .iloc[:, 1:]
-            .reset_index(drop=True)
-        )
-        unc_df = (
-            pd.read_csv(
-                f"{self.commondata_path}/uncertainties/UNC_{self.name}.csv",
-                na_values=["-", " "],
-            )
-            .iloc[2:, 1:]
-            .reset_index(drop=True)
-        )
+        # Extract values from the central data
+        dat_name = f"{self.commondata_path}/data/DATA_{self.name}.csv" 
+        data_df = pd.read_csv(dat_name, header=0, na_values=["-", " "])
+        data_df = data_df.iloc[:, 1:].reset_index(drop=True)
+        # Extract values from the uncertainties
+        unc_name = f"{self.commondata_path}/uncertainties/UNC_{self.name}.csv"
+        unc_df = pd.read_csv(unc_name, na_values=["-", " "])
+        unc_df = unc_df.iloc[2:, 1:].reset_index(drop=True)
 
         # Add a column to `kin_df` that stores the W
         q2 = kin_df["Q2"].astype(float, errors="raise")  # Object -> float
@@ -130,12 +119,13 @@ class Loader:
         # drop data with 0 total uncertainty:
         new_df = new_df[new_df["stat"] + new_df["syst"] != 0.0]
 
-        # Since the `index` are screwed upon removal of the zero uncertainty
-        # we need to restor them in order to be able to know what are the
-        # `index` that are removed when performing the `W` cut. This information
-        # is need to also cut the coefficients from `Yadism`
+        # Since the `index are screwed after removal of the uncertainties
+        # that add up to zero, we need to restor them in order to be able 
+        # to know what are the`index` that are removed when performing the
+        # W` cut. This information is need to also cut the coefficients 
+        # from `Yadism`.
         new_df.reset_index(drop=True, inplace=True)
-        # Now we can perform the cuts on W
+        # Only now we can perform the cuts on W
         new_df = new_df[new_df["W"] >= w2min] if w2min else new_df
 
         number_datapoints = new_df.shape[0]
