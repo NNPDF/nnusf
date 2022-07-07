@@ -119,11 +119,7 @@ class Loader:
         # drop data with 0 total uncertainty:
         new_df = new_df[new_df["stat"] + new_df["syst"] != 0.0]
 
-        # Since the `index are screwed after removal of the uncertainties
-        # that add up to zero, we need to restor them in order to be able 
-        # to know what are the`index` that are removed when performing the
-        # W` cut. This information is need to also cut the coefficients 
-        # from `Yadism`.
+        # Restor index before implementing the W cut
         new_df.reset_index(drop=True, inplace=True)
         # Only now we can perform the cuts on W
         new_df = new_df[new_df["W2"] >= w2min] if w2min else new_df
