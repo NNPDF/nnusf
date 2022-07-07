@@ -119,7 +119,7 @@ class Loader:
         # drop data with 0 total uncertainty:
         new_df = new_df[new_df["stat"] + new_df["syst"] != 0.0]
 
-        # Restor index before implementing the W cut
+        # Restore index before implementing the W cut
         new_df.reset_index(drop=True, inplace=True)
         # Only now we can perform the cuts on W
         new_df = new_df[new_df["W2"] >= w2min] if w2min else new_df
