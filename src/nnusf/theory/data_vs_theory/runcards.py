@@ -10,7 +10,6 @@ from ..highq import runcards
 _logger = logging.getLogger(__name__)
 
 
-
 def observables(datasets: list[str], path: Optional[pathlib.Path]) -> dict:
     """Collect all yadism runcards.
 
@@ -27,6 +26,3 @@ def observables(datasets: list[str], path: Optional[pathlib.Path]) -> dict:
             _logger.warning("No data requested.")
 
     return runcards.overlap(datasets, path)
-
-
-

@@ -4,8 +4,8 @@ import logging
 import pathlib
 from typing import Optional
 
-import matplotlib.pyplot as plt
 import matplotlib.figure
+import matplotlib.pyplot as plt
 import numpy as np
 
 from .. import utils

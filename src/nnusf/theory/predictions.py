@@ -68,7 +68,9 @@ def plot(
 
     name, qualifier = obs.split("_")
     xpref = "x" if kind == "F3" else ""
-    plt.title(f"${xpref}F_{{{name[1]},{qualifier}}}(x = {xgrid[0, xpoint]:.3g})$")
+    plt.title(
+        f"${xpref}F_{{{name[1]},{qualifier}}}(x = {xgrid[0, xpoint]:.3g})$"
+    )
     plt.xscale("log")
     plt.legend()
 
@@ -85,11 +87,13 @@ def theory_error(
     pdf: str,
     prescription: list[tuple[float, float]],
     xgrid: npt.NDArray[np.float_],
-    reshape: Optional[bool] = True
+    reshape: Optional[bool] = True,
 ) -> Prediction:
     # theory uncertainties
     pdfset = lhapdf.mkPDF(pdf)
-    pred = grid.convolute_with_one(2212, pdfset.xfxQ2, pdfset.alphasQ2, xi=prescription)
+    pred = grid.convolute_with_one(
+        2212, pdfset.xfxQ2, pdfset.alphasQ2, xi=prescription
+    )
     __import__("pdb").set_trace()
     if reshape:
         pred = np.array(pred).T.reshape((*xgrid.shape, len(pred)))
@@ -100,12 +104,17 @@ def theory_error(
 
 
 def pdf_error(
-    grid: pineappl.grid.Grid, pdf: str, xgrid: npt.NDArray[np.float_], reshape: Optional[bool] = True
+    grid: pineappl.grid.Grid,
+    pdf: str,
+    xgrid: npt.NDArray[np.float_],
+    reshape: Optional[bool] = True,
 ) -> Prediction:
     """Compute PDF uncertainties"""
     pred = []
     for pdfset in lhapdf.mkPDFs(pdf):
-        member_pred = grid.convolute_with_one(2212, pdfset.xfxQ2, pdfset.alphasQ2)
+        member_pred = grid.convolute_with_one(
+            2212, pdfset.xfxQ2, pdfset.alphasQ2
+        )
         pred.append(member_pred)
 
     if reshape:

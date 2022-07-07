@@ -11,7 +11,11 @@ _logger = logging.getLogger(__name__)
 
 OBS_TYPE = ["F2", "F3", "FW", "DXDYNUU", "DXDYNUB", "QBAR"]
 
-MAP_EXP_YADISM = {"NUTEV": "XSNUTEVNU", "CHORUS": "XSCHORUSCC", "CDHSW": "XSCHORUSCC"}
+MAP_EXP_YADISM = {
+    "NUTEV": "XSNUTEVNU",
+    "CHORUS": "XSCHORUSCC",
+    "CDHSW": "XSCHORUSCC",
+}
 
 
 class ObsTypeError(Exception):
@@ -52,13 +56,17 @@ class Loader:
         """
         self.name = name
         if self.obs not in OBS_TYPE:
-            raise ObsTypeError(f"Observable '{self.obs}' not implemented or Wrong!")
+            raise ObsTypeError(
+                f"Observable '{self.obs}' not implemented or Wrong!"
+            )
 
         self.commondata_path = path_to_commondata
         self.coefficients_path = path_to_coefficients
         self.table = self._load()
         self.tr_frac = None
-        self.covariance_matrix = self.build_covariance_matrix(self.table, include_syst)
+        self.covariance_matrix = self.build_covariance_matrix(
+            self.table, include_syst
+        )
 
         _logger.info(f"Loaded '{name}' dataset")
 
@@ -75,7 +83,9 @@ class Loader:
         info_df = pd.read_csv(f"{self.commondata_path}/info/{exp_name}.csv")
 
         # Extract values from the kinematic tables
-        kin_file = self.commondata_path.joinpath(f"kinematics/KIN_{self.name}.csv")
+        kin_file = self.commondata_path.joinpath(
+            f"kinematics/KIN_{self.name}.csv"
+        )
         if kin_file.exists():
             kin_df = pd.read_csv(kin_file).iloc[1:, 1:4].reset_index(drop=True)
         elif self.obs in ["F2", "F3"]:
@@ -186,7 +196,9 @@ class Loader:
         return np.load((self.coefficients_path / self.name).with_suffix(".npy"))
 
     @staticmethod
-    def build_covariance_matrix(unc_df: pd.DataFrame, include_syst: bool) -> np.ndarray:
+    def build_covariance_matrix(
+        unc_df: pd.DataFrame, include_syst: bool
+    ) -> np.ndarray:
         """Build the covariance matrix.
 
         It consumes as input the statistical and systematics uncertainties.

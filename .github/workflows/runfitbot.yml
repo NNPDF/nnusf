@@ -12,7 +12,7 @@ env:
   OUTPUT_FOLDER: RESULTS
   PLOT_FOLDER: PLOTS
   POETRY: https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py
-  FITCARD: ./runcards/fit_runcard.yml 
+  FITCARD: ./runcards/fit_runcard.yml
   PLOTCARD: ./runcards/plot_runcard.yml
 
 

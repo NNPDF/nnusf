@@ -19,7 +19,9 @@ def read(path: pathlib.Path, what=None) -> dict:
     if what == "yaml":
         return yaml.safe_load(path.read_text(encoding="utf-8"))
     else:
-        raise ValueError(f"Format to be read undetected (attempted for '{what}')")
+        raise ValueError(
+            f"Format to be read undetected (attempted for '{what}')"
+        )
 
 
 def write(content: dict, path: pathlib.Path, what=None):
@@ -31,10 +33,14 @@ def write(content: dict, path: pathlib.Path, what=None):
     if what == "yaml":
         path.write_text(yaml.dump(content), encoding="utf-8")
     else:
-        raise ValueError(f"Format to be read undetected (attempted for '{what}')")
+        raise ValueError(
+            f"Format to be read undetected (attempted for '{what}')"
+        )
 
 
-def extract_tar(path: pathlib.Path, dest: pathlib.Path, subdirs: Optional[int] = None):
+def extract_tar(
+    path: pathlib.Path, dest: pathlib.Path, subdirs: Optional[int] = None
+):
     """Extract a tar archive to given directory."""
     with tarfile.open(path) as tar:
         tar.extractall(dest)
@@ -44,7 +50,9 @@ def extract_tar(path: pathlib.Path, dest: pathlib.Path, subdirs: Optional[int] =
         if count == subdirs:
             return
 
-        expected = f"{subdirs} folders are" if subdirs > 1 else "A single folder is"
+        expected = (
+            f"{subdirs} folders are" if subdirs > 1 else "A single folder is"
+        )
         found = f"{count} files" if count > 1 else "a single file"
         raise ValueError(
             f"{expected} supposed to be contained by the tar file,"

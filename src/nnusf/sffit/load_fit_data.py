@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 import pathlib
-import numpy as np
-import tensorflow as tf
-
 from dataclasses import dataclass
 from typing import Union
+
+import numpy as np
+import tensorflow as tf
 
 
 @dataclass

@@ -46,13 +46,24 @@ def plot(path: pathlib.Path) -> matplotlib.figure.Figure:
     ):
         clr = -np.log(xval) / 8
         plt.hlines(
-            idx * spread, xmin, xmax, linestyles="--", linewidth=0.5, color="0.8"
+            idx * spread,
+            xmin,
+            xmax,
+            linestyles="--",
+            linewidth=0.5,
+            color="0.8",
         )
         plt.plot(
-            q2, values, label=f"{xval:.2e}", color=(clr, clr / 2, 0.2), linewidth=1
+            q2,
+            values,
+            label=f"{xval:.2e}",
+            color=(clr, clr / 2, 0.2),
+            linewidth=1,
         )
         plt.fill_between(q2, minus, plus, alpha=0.2, color=(clr, clr / 2, 0.2))
-        plt.text(q2[-2], values[-1] - spread / 4, rf"$x=${xval:3.2e}", fontsize=10)
+        plt.text(
+            q2[-2], values[-1] - spread / 4, rf"$x=${xval:3.2e}", fontsize=10
+        )
 
     plt.title(path.stem)
     plt.xlabel("$Q^2$")

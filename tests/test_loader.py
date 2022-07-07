@@ -4,7 +4,9 @@ import pathlib
 from nnusf.data.loader import Loader
 
 path_to_commondata = pathlib.Path(__file__).parents[1].joinpath("commondata")
-path_to_coefficients = pathlib.Path(__file__).parents[1].joinpath("coefficients")
+path_to_coefficients = (
+    pathlib.Path(__file__).parents[1].joinpath("coefficients")
+)
 
 
 class TestLoader:

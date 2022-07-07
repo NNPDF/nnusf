@@ -42,14 +42,20 @@ def main(cards: pathlib.Path, destination: pathlib.Path):
 
                 data_name = cpath.name.split("-")[1][:-5]
                 for obs in observables["observables"]:
-                    file_name = f"{data_name}-{obs}.pineappl.lz4" if data_name != "" else f"{obs}.pineappl.lz4"
+                    file_name = (
+                        f"{data_name}-{obs}.pineappl.lz4"
+                        if data_name != ""
+                        else f"{obs}.pineappl.lz4"
+                    )
                     res_path = grids_dest / file_name
                     output.dump_pineappl_to_file(res_path, obs)
                     _logger.info(f"Dumped {res_path.name}")
 
         if ("NU" in data_name and "DXDY" not in data_name) or "NB" in data_name:
             data_name = data_name[:-3]
-        file_name = f"grids-{data_name}.tar" if data_name != "" else f"grids.tar"
+        file_name = (
+            f"grids-{data_name}.tar" if data_name != "" else f"grids.tar"
+        )
         with tarfile.open(destination / file_name, "w") as tar:
             for path in grids_dest.iterdir():
                 tar.add(path.absolute(), path.relative_to(tmpdir))

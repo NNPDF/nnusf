@@ -50,7 +50,8 @@ def cross_section(
 
     coeffs = np.zeros((len(kinematics), 6))
     coeffs[:, idx] = np.transpose(
-        yadcoeffs[:, :, np.newaxis] * np.ones_like(pos)[np.newaxis, np.newaxis, :],
+        yadcoeffs[:, :, np.newaxis]
+        * np.ones_like(pos)[np.newaxis, np.newaxis, :],
         [0, 2, 1],
     ).reshape(yadcoeffs.shape[0], yadcoeffs.shape[1] * pos.size)
 
@@ -113,4 +114,6 @@ def main(datapaths: list[pathlib.Path], destination: pathlib.Path):
 
         dest = (destination / name).with_suffix(".npy")
         np.save(dest, coeffs)
-        _logger.info(f"{coeffs.shape} saved in {dest.relative_to(pathlib.Path.cwd())}")
+        _logger.info(
+            f"{coeffs.shape} saved in {dest.relative_to(pathlib.Path.cwd())}"
+        )

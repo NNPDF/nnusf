@@ -15,7 +15,9 @@ def subcommand():
 
 
 @subcommand.command("kin")
-@click.argument("data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path))
+@click.argument(
+    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
+)
 @click.option(
     "-d",
     "--destination",
@@ -23,7 +25,9 @@ def subcommand():
     default=pathlib.Path.cwd().absolute() / "plots",
     help="Alternative destination path to store the resulting plots (default: $PWD/plots).",
 )
-@click.option("--ylog/--no-ylog", default=True, help="Set logarithmic scale on y axis.")
+@click.option(
+    "--ylog/--no-ylog", default=True, help="Set logarithmic scale on y axis."
+)
 @click.option(
     "-c",
     "--cuts",
@@ -46,7 +50,9 @@ def sub_kinematic(data, destination, ylog, cuts):
 
 
 @subcommand.command("covmat")
-@click.argument("data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path))
+@click.argument(
+    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
+)
 @click.option(
     "-d",
     "--destination",
@@ -55,7 +61,10 @@ def sub_kinematic(data, destination, ylog, cuts):
     help="Alternative destination path to store the resulting plots (default: $PWD/plots).",
 )
 @click.option(
-    "-i", "--inverse", is_flag=True, help="Use inverse covariance matrix instead."
+    "-i",
+    "--inverse",
+    is_flag=True,
+    help="Use inverse covariance matrix instead.",
 )
 @click.option(
     "-n/-N",
@@ -89,7 +98,9 @@ def sub_covmat(data, destination, inverse, norm, cuts, symlog):
     if cuts is not None:
         cuts = eval(cuts)
 
-    covmat.main(data, destination, inverse=inverse, norm=norm, cuts=cuts, symlog=symlog)
+    covmat.main(
+        data, destination, inverse=inverse, norm=norm, cuts=cuts, symlog=symlog
+    )
 
 
 @subcommand.command("fit")

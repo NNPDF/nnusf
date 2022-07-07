@@ -1,9 +1,10 @@
+# -*- coding: utf-8 -*-
 import os
 import random
 
 import numpy as np
-from numpy.core.fromnumeric import std
 import tensorflow as tf
+from numpy.core.fromnumeric import std
 from rich.console import Console
 from rich.style import Style
 from rich.table import Table
@@ -79,7 +80,9 @@ def chi2(invcovmat):
 
     def chi2_loss(exp_data, fit_pred):
         diff_prediction = exp_data - fit_pred
-        right_dot = tf.tensordot(incovmatf, tf.transpose(diff_prediction), axes=1)
+        right_dot = tf.tensordot(
+            incovmatf, tf.transpose(diff_prediction), axes=1
+        )
         result = tf.tensordot(diff_prediction, right_dot, axes=1)
         return result
 

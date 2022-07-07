@@ -5,7 +5,7 @@ import pathlib
 
 import click
 
-from ..theory import grids, predictions, runcards, bodek_yang, compare_to_data
+from ..theory import bodek_yang, compare_to_data, grids, predictions, runcards
 from . import base
 
 _logger = logging.getLogger(__name__)
@@ -57,24 +57,32 @@ def sub_sub_by(theory_update, destination):
 
 
 @sub_runcards.command("hiq")
-@click.argument("data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path))
+@click.argument(
+    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
+)
 @option_dest
 def sub_sub_hiq(data, destination):
     """High Q2, from cut values of the dataset."""
     runcards.hiq(data, destination=destination)
 
+
 @sub_runcards.command("all")
-@click.argument("data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path))
+@click.argument(
+    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
+)
 @option_dest
 def sub_sub_all(data, destination):
     """Full datasets runcards"""
     runcards.dvst(data, destination=destination)
 
+
 @subcommand.command("by")
 @click.argument(
     "observables", nargs=-1, type=click.Choice(bodek_yang.load.load().members)
 )
-@click.option("-a", "--action", multiple=True, type=click.Choice(["npy", "txt"]))
+@click.option(
+    "-a", "--action", multiple=True, type=click.Choice(["npy", "txt"])
+)
 @option_dest
 def sub_by(observables, action, destination):
     """Genie's Bodek-Yang output inspection."""
@@ -89,7 +97,9 @@ def sub_by(observables, action, destination):
 
 
 @subcommand.command("grids")
-@click.argument("runcards", type=click.Path(exists=True, path_type=pathlib.Path))
+@click.argument(
+    "runcards", type=click.Path(exists=True, path_type=pathlib.Path)
+)
 @option_dest
 def sub_grids(runcards, destination):
     """Generate grids with yadism.
@@ -136,9 +146,10 @@ def sub_predictions(grids, pdf, err, destination, x, interactive):
         destination=destination,
     )
 
+
 @subcommand.command("compare_to_data")
 @click.argument("grids", type=click.Path(exists=True, path_type=pathlib.Path))
-@click.argument("data",  type=click.Path(exists=True, path_type=pathlib.Path))
+@click.argument("data", type=click.Path(exists=True, path_type=pathlib.Path))
 @click.argument("pdf")
 @click.option(
     "--err",

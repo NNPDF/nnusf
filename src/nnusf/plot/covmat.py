@@ -67,7 +67,9 @@ def compute(
     return covmat
 
 
-def heatmap(covmat: np.ndarray, symlog: bool = False) -> matplotlib.figure.Figure:
+def heatmap(
+    covmat: np.ndarray, symlog: bool = False
+) -> matplotlib.figure.Figure:
     """Plot covariance matrix.
 
     Parameters

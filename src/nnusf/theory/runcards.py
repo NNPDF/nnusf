@@ -5,13 +5,13 @@ import pathlib
 import tarfile
 import tempfile
 from typing import Optional
-import numpy as np
 
+import numpy as np
 import yaml
 
 from .. import utils
 from ..data import loader
-from . import bodek_yang, highq, data_vs_theory
+from . import bodek_yang, data_vs_theory, highq
 
 _logger = logging.getLogger(__name__)
 
@@ -71,6 +71,7 @@ def by(theory_update: Optional[dict], destination: pathlib.Path):
         destination=destination,
     )
 
+
 def datsets_path(datasets):
     path = None
     if len(datasets) > 0:
@@ -78,6 +79,7 @@ def datsets_path(datasets):
         for ds in datasets:
             assert ds.parents[1].absolute() == path
     return path
+
 
 def hiq(datasets: list[pathlib.Path], destination: pathlib.Path):
     """Generate large Q2 yadism runcards."""
@@ -90,10 +92,11 @@ def hiq(datasets: list[pathlib.Path], destination: pathlib.Path):
         destination=destination,
     )
 
+
 def update_theory(name: str, path: pathlib.Path) -> dict:
     """Update theory runcard"""
     data = loader.Loader(name, path)
-    th = theory({"MP": float(np.unique(data.table['m_nucleon']))})
+    th = theory({"MP": float(np.unique(data.table["m_nucleon"]))})
     return th
 
 
@@ -103,9 +106,7 @@ def dvst(datasets: list[pathlib.Path], destination: pathlib.Path):
     utils.mkdest(destination)
     for dataset in datasets:
         data_name = "_".join(dataset.stem.split("_")[1:])
-        ocards = data_vs_theory.runcards.observables(
-            [data_name], path
-        )
+        ocards = data_vs_theory.runcards.observables([data_name], path)
         theory_card = update_theory(data_name, path)
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir = pathlib.Path(tmpdir)
@@ -116,8 +117,10 @@ def dvst(datasets: list[pathlib.Path], destination: pathlib.Path):
             tarpath = destination / f"runcards-{data_name}.tar"
             with tarfile.open(tarpath, "w") as tar:
                 for tmppath in tmpdir.iterdir():
-                    tar.add(tmppath.absolute(), arcname="runcards/" + tmppath.name)
+                    tar.add(
+                        tmppath.absolute(), arcname="runcards/" + tmppath.name
+                    )
 
             _logger.info(
-                    f"Runcards have been dumped to '{tarpath.relative_to(pathlib.Path.cwd())}'"
+                f"Runcards have been dumped to '{tarpath.relative_to(pathlib.Path.cwd())}'"
             )
