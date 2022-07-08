@@ -32,7 +32,7 @@ def subcommand():
     "-c",
     "--cuts",
     default=None,
-    help="""Stringified dictionary of cuts, e.g. '{"Q2": {"min": 3.5}}'.""",
+    help="""Stringified dictionary of cuts, e.g. '{"Q2": {"min": 1.65}, "W2": {"min": 3.5}}'.""",
 )
 def sub_kinematic(data, destination, ylog, cuts):
     """Generate kinematics plot.
@@ -76,7 +76,7 @@ def sub_kinematic(data, destination, ylog, cuts):
     "-c",
     "--cuts",
     default=None,
-    help="""Stringified dictionary of cuts, e.g. '{"Q2": {"min": 3.5}}'.""",
+    help="""Stringified dictionary of cuts, e.g. '{"Q2": {"min": 1.65}, "W2": {"min": 3.5}}'.""",
 )
 @click.option(
     "-l", "--symlog", is_flag=True, help="Plot in symmetric logarithmic scale."

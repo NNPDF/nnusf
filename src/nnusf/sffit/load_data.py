@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import pathlib
 import random
-
 import numpy as np
 
+from typing import Optional
 from ..data.loader import Loader
 
 path_to_commondata = pathlib.Path(__file__).parents[3].joinpath("commondata")
@@ -12,12 +12,15 @@ path_to_coefficients = (
 )
 
 
-def load_experimental_data(experiment_list):
+def load_experimental_data(experiment_list, w2min: Optional[float] = None):
     "returns a dictionary with dataset names as keys and data as value"
     experimental_data = {}
     for experiment in experiment_list:
         data = Loader(
-            experiment["dataset"], path_to_commondata, path_to_coefficients
+            experiment["dataset"],
+            path_to_commondata=path_to_commondata,
+            path_to_coefficients=path_to_coefficients,
+            w2min=w2min,
         )
         data.tr_frac = experiment["frac"]
         experimental_data[experiment["dataset"]] = data

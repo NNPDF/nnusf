@@ -39,6 +39,7 @@ class Loader:
         path_to_commondata: pathlib.Path,
         path_to_coefficients: Optional[pathlib.Path] = None,
         include_syst: Optional[bool] = True,
+        w2min: Optional[float] = None,
     ):
         """Initialize object.
 
@@ -52,7 +53,8 @@ class Loader:
             path to theory folder
         include_syst:
             if True include syst
-
+        w2min;
+            if True cut all datapoints below `w2min`
         """
         self.name = name
         if self.obs not in OBS_TYPE:
@@ -62,15 +64,14 @@ class Loader:
 
         self.commondata_path = path_to_commondata
         self.coefficients_path = path_to_coefficients
-        self.table = self._load()
+        self.table, self.leftindex = self._load(w2min)
         self.tr_frac = None
         self.covariance_matrix = self.build_covariance_matrix(
             self.table, include_syst
         )
-
         _logger.info(f"Loaded '{name}' dataset")
 
-    def _load(self) -> pd.DataFrame:
+    def _load(self, w2min: float) -> tuple[pd.DataFrame, pd.Index]:
         """Load the dataset information.
 
         Returns
@@ -89,40 +90,27 @@ class Loader:
         if kin_file.exists():
             kin_df = pd.read_csv(kin_file).iloc[1:, 1:4].reset_index(drop=True)
         elif self.obs in ["F2", "F3"]:
-            kin_df = (
-                pd.read_csv(
-                    f"{self.commondata_path}/kinematics/KIN_{exp_name}_F2F3.csv"
-                )
-                .iloc[1:, 1:4]
-                .reset_index(drop=True)
-            )
+            file = f"{self.commondata_path}/kinematics/KIN_{exp_name}_F2F3.csv"
+            kin_df = pd.read_csv(file).iloc[1:, 1:4].reset_index(drop=True)
         elif self.obs in ["DXDYNUU", "DXDYNUB"]:
-            kin_df = (
-                pd.read_csv(
-                    f"{self.commondata_path}/kinematics/KIN_{exp_name}_DXDY.csv"
-                )
-                .iloc[1:, 1:4]
-                .reset_index(drop=True)
-            )
+            file = f"{self.commondata_path}/kinematics/KIN_{exp_name}_DXDY.csv"
+            kin_df = pd.read_csv(file).iloc[1:, 1:4].reset_index(drop=True)
+        else:
+            raise ObsTypeError("{self.obs} is not recognised as an Observable.")
 
-        # Extract values from the central and uncertainties
-        data_df = (
-            pd.read_csv(
-                f"{self.commondata_path}/data/DATA_{self.name}.csv",
-                header=0,
-                na_values=["-", " "],
-            )
-            .iloc[:, 1:]
-            .reset_index(drop=True)
-        )
-        unc_df = (
-            pd.read_csv(
-                f"{self.commondata_path}/uncertainties/UNC_{self.name}.csv",
-                na_values=["-", " "],
-            )
-            .iloc[2:, 1:]
-            .reset_index(drop=True)
-        )
+        # Extract values from the central data
+        dat_name = f"{self.commondata_path}/data/DATA_{self.name}.csv" 
+        data_df = pd.read_csv(dat_name, header=0, na_values=["-", " "])
+        data_df = data_df.iloc[:, 1:].reset_index(drop=True)
+        # Extract values from the uncertainties
+        unc_name = f"{self.commondata_path}/uncertainties/UNC_{self.name}.csv"
+        unc_df = pd.read_csv(unc_name, na_values=["-", " "])
+        unc_df = unc_df.iloc[2:, 1:].reset_index(drop=True)
+
+        # Add a column to `kin_df` that stores the W
+        q2 = kin_df["Q2"].astype(float, errors="raise")  # Object -> float
+        xx = kin_df["x"].astype(float, errors="raise")   # Object -> float
+        kin_df["W2"] = q2 * (1 - xx) / xx + info_df["m_nucleon"][0]
 
         # Concatenate enverything into one single big table
         new_df = pd.concat([kin_df, data_df, unc_df], axis=1)
@@ -131,10 +119,14 @@ class Loader:
         # drop data with 0 total uncertainty:
         new_df = new_df[new_df["stat"] + new_df["syst"] != 0.0]
 
+        # Restore index before implementing the W cut
+        new_df.reset_index(drop=True, inplace=True)
+        # Only now we can perform the cuts on W
+        new_df = new_df[new_df["W2"] >= w2min] if w2min else new_df
+
         number_datapoints = new_df.shape[0]
 
-        # Extract the information on the cross section
-        # FW is a different case
+        # Extract the information on the cross section (FW is a special case)
         if self.obs == "FW":
             data_spec = "FW"
         else:
@@ -149,11 +141,10 @@ class Loader:
             info_df.loc[info_df["type"] == self.obs, "projectile"],
         )
         new_df["m_nucleon"] = np.full(
-            number_datapoints,
-            info_df["m_nucleon"][0],
+            number_datapoints, info_df["m_nucleon"][0],
         )
 
-        return new_df
+        return new_df, new_df.index
 
     @property
     def exp(self) -> str:
@@ -193,7 +184,10 @@ class Loader:
                 f"No path available to load coefficients for '{self.name}'"
             )
 
-        return np.load((self.coefficients_path / self.name).with_suffix(".npy"))
+        coeffs = np.load(
+            (self.coefficients_path / self.name).with_suffix(".npy")
+        )
+        return coeffs[self.leftindex]
 
     @staticmethod
     def build_covariance_matrix(
