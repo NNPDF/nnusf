@@ -14,7 +14,9 @@ def subcommand():
 
 
 @subcommand.command("combine")
-@click.argument("data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path))
+@click.argument(
+    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
+)
 @click.option(
     "-d",
     "--destination",
@@ -37,7 +39,9 @@ def sub_combine(data, destination):
 
 
 @subcommand.command("filter")
-@click.argument("data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path))
+@click.argument(
+    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
+)
 def filter_all_data(data):
     """Filter the raw dataset.
 
@@ -53,7 +57,9 @@ def filter_all_data(data):
 
 
 @subcommand.command("coefficients")
-@click.argument("data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path))
+@click.argument(
+    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
+)
 @click.option(
     "-d",
     "--destination",

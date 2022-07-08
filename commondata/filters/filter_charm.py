@@ -20,8 +20,8 @@ console = Console()
 # Mass determined using pdg values
 M_NEUTRON = 939.565346 * 0.001
 M_PROTON = 938.272013 * 0.001
-A = 40 + 3 * 16 + 12 # A(CaCO3): Atomic MAss
-Z = 20 + 3 * 8 + 6   # Z(CaCO3): Atomic Number
+A = 40 + 3 * 16 + 12  # A(CaCO3): Atomic MAss
+Z = 20 + 3 * 8 + 6  # Z(CaCO3): Atomic Number
 M_NUCLEON = 100.08969 * 0.93149432 / (Z * M_PROTON + (A - Z) * M_NEUTRON)
 
 # Experiment metadata
@@ -47,7 +47,9 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
     f3_central = []
     f2_exp_errors = []
     f3_exp_errors = []
-    console.print("\n• Extracting F2 and xF3 from HEP tables:", style="bold blue")
+    console.print(
+        "\n• Extracting F2 and xF3 from HEP tables:", style="bold blue"
+    )
     # Loop over the tables that only contains the F2/xF3
     for table_id in track(table_id_list, description="Progress tables"):
         table_path = path.joinpath(f"rawdata/{exp_name}/Table{table_id}.yaml")
@@ -98,7 +100,9 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
                 f3_exp_errors.append(error_dict_f3)
 
     # Convert the kinematics dictionaries into Pandas tables
-    full_kin = {i + 1: pd.DataFrame(d).stack() for i, d in enumerate(kinematics)}
+    full_kin = {
+        i + 1: pd.DataFrame(d).stack() for i, d in enumerate(kinematics)
+    }
     kinematics_pd = (
         pd.concat(
             full_kin,
@@ -194,11 +198,16 @@ def extract_qbar(path: Path, exp_name: str, table_id_list: list) -> None:
                     else:
                         stat_unc = unc_type[0].get("symerror", 0.0)
                     uncertainty_dic[uncertainty_names[idx]] = stat_unc
-                error_dict_QBAR = {"stat": uncertainty_dic["QBAR_unc"], "syst": 0.0}
+                error_dict_QBAR = {
+                    "stat": uncertainty_dic["QBAR_unc"],
+                    "syst": 0.0,
+                }
                 QBAR_exp_errors.append(error_dict_QBAR)
 
     # Convert the kinematics dictionaries into Pandas tables
-    full_kin = {i + 1: pd.DataFrame(d).stack() for i, d in enumerate(kinematics)}
+    full_kin = {
+        i + 1: pd.DataFrame(d).stack() for i, d in enumerate(kinematics)
+    }
     kinematics_pd = (
         pd.concat(
             full_kin,

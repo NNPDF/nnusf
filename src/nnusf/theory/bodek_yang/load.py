@@ -32,7 +32,9 @@ class Data:
             ds = self.data[key]
 
         if not isinstance(ds, h5py.Dataset):
-            raise ValueError(f"Only suitable for `Dataset`, while {key} is {type(ds)}")
+            raise ValueError(
+                f"Only suitable for `Dataset`, while {key} is {type(ds)}"
+            )
 
         return ds
 

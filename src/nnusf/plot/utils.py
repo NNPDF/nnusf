@@ -63,7 +63,9 @@ def symlog_color_scale(ar: np.ndarray) -> clr.SymLogNorm:
 
     """
     c = clr.SymLogNorm(abs(ar[ar != 0.0]).min())
-    _logger.info("Symmetric [b magenta]log scale[/] enabled.", extra={"markup": True})
+    _logger.info(
+        "Symmetric [b magenta]log scale[/] enabled.", extra={"markup": True}
+    )
     return c
 
 

@@ -7,14 +7,14 @@ import tempfile
 
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 import numpy.typing as npt
+import pandas as pd
 import pineappl
 
 from .. import utils
-from . import defs
 from ..data import loader
-from .predictions import theory_error, pdf_error
+from . import defs
+from .predictions import pdf_error, theory_error
 
 _logger = logging.getLogger(__name__)
 
@@ -37,7 +37,7 @@ def plot(
         pred[:, central],
         yerr=err,
         color="tab:blue",
-        label=f"yadism $\pm$ {err_source}",
+        label=rf"yadism $\pm$ {err_source}",
         fmt="o",
         capsize=5,
     )
@@ -47,7 +47,7 @@ def plot(
         data["data"],
         yerr=np.sqrt(data["stat"] ** 2 + data["syst"] ** 2),
         color="tab:red",
-        label="data $\pm$ (stat+syst)",
+        label=r"data $\pm$ (stat+syst)",
         fmt="x",
     )
 

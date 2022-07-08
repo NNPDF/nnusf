@@ -4,8 +4,8 @@ import pathlib
 
 import numpy as np
 
-from . import runcards, load
 from ... import utils
+from . import load, runcards
 
 _logger = logging.getLogger(__name__)
 
@@ -37,7 +37,9 @@ def dump_text(ar: np.ndarray, labels: list[str], destination: pathlib.Path):
     utils.mkdest(destination)
 
     np.savetxt(fname, table.T, header=" ".join(labels))
-    _logger.info(f"Saved Genie data in '{fname.relative_to(pathlib.Path.cwd())}'")
+    _logger.info(
+        f"Saved Genie data in '{fname.relative_to(pathlib.Path.cwd())}'"
+    )
 
 
 def dump(ar: np.ndarray, destination: pathlib.Path):
@@ -46,4 +48,6 @@ def dump(ar: np.ndarray, destination: pathlib.Path):
     utils.mkdest(destination)
 
     np.save(fname, ar)
-    _logger.info(f"Saved Genie data in '{fname.relative_to(pathlib.Path.cwd())}'")
+    _logger.info(
+        f"Saved Genie data in '{fname.relative_to(pathlib.Path.cwd())}'"
+    )
