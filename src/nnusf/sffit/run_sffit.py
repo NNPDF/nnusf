@@ -19,9 +19,7 @@ _logger = logging.getLogger(__name__)
 
 
 def main(
-    runcard: pathlib.Path,
-    replica: int,
-    destination: Optional[pathlib.Path],
+    runcard: pathlib.Path, replica: int, destination: Optional[pathlib.Path],
 ):
     """Run the structure function fit.
 
@@ -55,7 +53,8 @@ def main(
     set_global_seeds(global_seed=runcard_content["global_seeds"] + replica)
 
     # Instantiate class that loads the datasets
-    data_info = load_data.load_experimental_data(experiments_dict)
+    w2min = runcard_content.get("W2min", None)
+    data_info = load_data.load_experimental_data(experiments_dict, w2min)
     # create pseudodata and add it to the data_info object
     load_data.add_pseudodata(data_info)
     # create a training mask and add it to the data_info object
