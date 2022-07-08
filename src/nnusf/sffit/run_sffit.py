@@ -19,7 +19,9 @@ _logger = logging.getLogger(__name__)
 
 
 def main(
-    runcard: pathlib.Path, replica: int, destination: Optional[pathlib.Path],
+    runcard: pathlib.Path,
+    replica: int,
+    destination: Optional[pathlib.Path],
 ):
     """Run the structure function fit.
 
@@ -63,8 +65,13 @@ def main(
     fit_dict = generate_models(data_info, **runcard_content["fit_parameters"])
 
     # Compile the training and validationa nd perform the fit
+    log_freq = runcard_content.get("log_freq", 100)
     perform_fit(
-        fit_dict, data_info, replica_dir, **runcard_content["fit_parameters"]
+        fit_dict,
+        data_info,
+        replica_dir,
+        log_freq,
+        **runcard_content["fit_parameters"],
     )
 
     # Store the models in the relevant replica subfolders

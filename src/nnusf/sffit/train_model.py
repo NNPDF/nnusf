@@ -23,6 +23,7 @@ def perform_fit(
     fit_dict,
     data_info,
     replica_dir,
+    log_freq,
     epochs,
     stopping_patience,
     optimizer_parameters,
@@ -75,7 +76,7 @@ def perform_fit(
     get_train_info = GetTrainingInfo(
         vl_model, kinematics_array, fit_dict["vl_expdat"], train_info_class
     )
-    log_train_info = LogTrainingHistory(replica_dir, train_info_class)
+    log_train_info = LogTrainingHistory(replica_dir, train_info_class, log_freq)
 
     with Live(table, auto_refresh=False) as rich_live_instance:
         live_updater = LiveUpdater(

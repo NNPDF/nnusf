@@ -10,6 +10,7 @@ from .utils import chi2_logs
 
 _logger = logging.getLogger(__name__)
 
+CHI2_HISTORY_FILE = "chi2_history.yaml"
 
 ADAPTIVE_LR = [
     {"range": [100, 250], "lr": 0.025},
@@ -162,10 +163,13 @@ class LiveUpdater(tf.keras.callbacks.Callback):
 
 
 class LogTrainingHistory(tf.keras.callbacks.Callback):
-    def __init__(self, replica_dir, traininfo_class):
+    def __init__(self, replica_dir, traininfo_class, log_freq):
         self.replica_dir = replica_dir
         self.traininfo_class = traininfo_class
+        self.log_freq = log_freq
         self.traininfo_class.chi2_history = {}
+        if (self.replica_dir / CHI2_HISTORY_FILE).exists():
+            (self.replica_dir / CHI2_HISTORY_FILE).unlink()
         super().__init__()
 
     def on_epoch_end(self, epoch, logs=None):
@@ -173,19 +177,15 @@ class LogTrainingHistory(tf.keras.callbacks.Callback):
             "vl": self.traininfo_class.vl_loss_value,
             "tr": self.traininfo_class.loss_value,
         }
+        if epoch % self.log_freq == 0:
+            with open(
+                self.replica_dir / CHI2_HISTORY_FILE, "a", encoding="UTF-8"
+            ) as f:
+                f.write(f"{epoch}:\n")
+                f.write(f"  tr: {self.traininfo_class.loss_value}\n")
+                f.write(f"  vl: {self.traininfo_class.vl_loss_value}\n")
 
     def on_train_end(self, logs=None):
-        # write log of chi2 history
-        with open(
-            f"{self.replica_dir}/chi2_history.json", "w", encoding="UTF-8"
-        ) as ostream:
-            json.dump(
-                self.traininfo_class.chi2_history,
-                ostream,
-                sort_keys=True,
-                indent=4,
-            )
-
         # write info of best model to log
         final_results = {
             "best_tr_chi2": self.traininfo_class.loss_value,

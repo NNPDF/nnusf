@@ -29,6 +29,8 @@ experiments:
 # Define some kinematic cuts (Omit if not needed)
 W2min: 3.5
 
+log_freq: 100 # chi2 history stored for each `log_freq` epochs
+
 # Various seed values
 global_seeds: 456
 trvlseed: 123
@@ -36,7 +38,7 @@ pseudodataseed: 2
 
 # Define Neural Network Parameters
 fit_parameters:
-  epochs: 50000
+  epochs: 500
   stopping_patience: 2000
   units_per_layer: [70, 55, 40, 20, 20]
   activation_per_layer: [tanh, tanh, tanh, tanh, selu]
