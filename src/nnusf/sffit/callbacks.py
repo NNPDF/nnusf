@@ -143,8 +143,14 @@ class LogTrainingHistory(tf.keras.callbacks.Callback):
                 f.write(f"  vl: {self.traininfo_class.vl_loss_value}\n")
 
     def on_train_end(self, logs={}):
+        # Save number of datapoints for the reports
+        datapoints_per_dataset = {
+            k: v + self.traininfo_class.vl_dpts[k]
+            for k, v in self.traininfo_class.tr_dpts.items()
+            if k in self.traininfo_class.vl_dpts
+        }
         # Save the chi2/Ndat for the individual dataset
-        chi2s_per_datasets = {
+        chi2s_per_dataset = {
             k.strip("_loss"): v / self.traininfo_class.tr_dpts[k.strip("_loss")]
             for k, v in logs.items()
             if k.strip("_loss") in self.traininfo_class.tr_dpts
@@ -152,7 +158,8 @@ class LogTrainingHistory(tf.keras.callbacks.Callback):
 
         # write info of best model to log
         final_results = {
-            "chi2s_per_dataset": chi2s_per_datasets,
+            "chi2s_per_dataset": chi2s_per_dataset,
+            "dtpts_per_dataset": datapoints_per_dataset,
             "best_tr_chi2": self.traininfo_class.loss_value,
             "best_vl_chi2": self.traininfo_class.best_chi2
             / self.traininfo_class.tot_vl,
