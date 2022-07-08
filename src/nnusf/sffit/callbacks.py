@@ -185,14 +185,23 @@ class LogTrainingHistory(tf.keras.callbacks.Callback):
                 f.write(f"  tr: {self.traininfo_class.loss_value}\n")
                 f.write(f"  vl: {self.traininfo_class.vl_loss_value}\n")
 
-    def on_train_end(self, logs=None):
+    def on_train_end(self, logs={}):
+        # Save the chi2/Ndat for the individual dataset
+        chi2s_per_datasets = {
+            k.strip("_loss"): v / self.traininfo_class.tr_dpts[k.strip("_loss")]
+            for k, v in logs.items()
+            if k.strip("_loss") in self.traininfo_class.tr_dpts
+        }
+
         # write info of best model to log
         final_results = {
+            "chi2s_per_dataset": chi2s_per_datasets,
             "best_tr_chi2": self.traininfo_class.loss_value,
             "best_vl_chi2": self.traininfo_class.best_chi2
             / self.traininfo_class.tot_vl,
             "best_epochs": self.traininfo_class.best_epoch,
         }
+
         with open(
             f"{self.replica_dir}/fitinfo.json", "w", encoding="UTF-8"
         ) as ostream:
