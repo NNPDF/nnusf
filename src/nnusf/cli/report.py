@@ -15,8 +15,16 @@ def subcommand():
 @click.argument(
     "fitfolder", type=click.Path(exists=True, path_type=pathlib.Path)
 )
+@click.option(
+    "-t", "--title", default=None, type=str, help="Title of the report."
+)
+@click.option(
+    "-a", "--author", default=None, type=str, help="Name of the author."
+)
+@click.option("-k", "--keywords", default=None, type=str, help="Some keywords.")
 @subcommand.command("generate")
-def sub_generate(fitfolder):
+def sub_generate(fitfolder, title, author, keywords):
     """Call the main function the generates the report. It takes the
     fit folder as input."""
-    genhtml.main(fitfolder)
+    metadata = {"title": title, "author": author, "keywords": keywords}
+    genhtml.main(fitfolder, **metadata)

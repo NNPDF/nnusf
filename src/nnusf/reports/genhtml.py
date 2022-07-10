@@ -4,6 +4,7 @@ import pathlib
 from textwrap import dedent
 
 import pandas as pd
+import yaml
 
 from .genfiles import chi2_tables, data_vs_predictions, summary_table
 
@@ -24,26 +25,17 @@ def check_arguments(func):
     return wrapper
 
 
-def main(fitfolder: pathlib.Path) -> None:
-    # Generate the various tables and predictions
-    data_vs_predictions(fitfolder=fitfolder)
-    summtable = summary_table(fitfolder=fitfolder)
-    chi2table = chi2_tables(fitfolder=fitfolder)
-
-    # Construct the paths to the corresponding folders
-    output_folder = fitfolder.absolute().parents[0]
-    figures = output_folder.joinpath("output/figures")
-    tables = output_folder.joinpath("output/tables")
-
-    # Generate the different html files & store them
-    chi2s_html = map(
-        dump_table_html,
-        [tables, tables],
-        [summtable, chi2table],
-        ["summary", "chi2s"],
+def generate_metadata(
+    folder: pathlib.Path, title: str, author: str, keywords: str
+) -> None:
+    index_path = folder.absolute().parents[0].joinpath("output")
+    info = {"title": title, "author": author, "keywords": keywords}
+    with open(f"{index_path}/meta.yaml", "w") as ostream:
+        yaml.dump(info, ostream, sort_keys=False)
+    _logger.info(
+        f"The meda.yaml file stored in folder: "
+        f"'{index_path.relative_to(pathlib.Path.cwd())}'"
     )
-    _ = list(chi2s_html)
-    data_comparison_html(figures)
 
 
 @check_arguments
@@ -98,3 +90,26 @@ def data_comparison_html(figures: pathlib.Path) -> None:
         f"Data-Prediction comparisons HTML stored in "
         f"'{index_path.relative_to(pathlib.Path.cwd())}'"
     )
+
+
+def main(fitfolder: pathlib.Path, **metadata) -> None:
+    # Generate the various tables and predictions
+    data_vs_predictions(fitfolder=fitfolder)
+    summtable = summary_table(fitfolder=fitfolder)
+    chi2table = chi2_tables(fitfolder=fitfolder)
+
+    # Construct the paths to the corresponding folders
+    output_folder = fitfolder.absolute().parents[0]
+    figures = output_folder.joinpath("output/figures")
+    tables = output_folder.joinpath("output/tables")
+
+    # Generate the different html files & store them
+    chi2s_html = map(
+        dump_table_html,
+        [tables, tables],
+        [summtable, chi2table],
+        ["summary", "chi2s"],
+    )
+    _ = list(chi2s_html)
+    data_comparison_html(figures)
+    generate_metadata(fitfolder, **metadata)
