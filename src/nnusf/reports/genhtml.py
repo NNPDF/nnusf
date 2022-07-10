@@ -44,7 +44,7 @@ def dump_table_html(
 ) -> None:
     index_path = folder.absolute().parents[0]
     index = open(f"{index_path}/{name}_table.html", "w")
-    header = f"""<h2 id="summary">Summary</h2>"""
+    header = f"""<h2 id="{name}">{name} Table</h2>"""
 
     # Dump the Panda table into the HTML  file
     index.write(dedent(header))
