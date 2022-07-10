@@ -25,7 +25,7 @@ def dump_to_csv(
     )
 
 
-def summary_table(fitfolder: pathlib.Path) -> None:
+def summary_table(fitfolder: pathlib.Path) -> pd.DataFrame:
     """Generate the table containing the summary of chi2s info.
 
     Parameters:
@@ -47,9 +47,10 @@ def summary_table(fitfolder: pathlib.Path) -> None:
         chi2_summary[chi2type] /= count
     summtable = pd.DataFrame.from_dict({"chi2": chi2_summary})
     dump_to_csv(fitfolder, summtable, "summary")
+    return summtable
 
 
-def chi2_tables(fitfolder: pathlib.Path) -> None:
+def chi2_tables(fitfolder: pathlib.Path) -> pd.DataFrame:
     """Generate the table containing the chi2s info.
 
     Parameters:
@@ -83,6 +84,7 @@ def chi2_tables(fitfolder: pathlib.Path) -> None:
 
     chi2table = pd.DataFrame.from_dict(chi2_dic, orient="index")
     dump_to_csv(fitfolder, chi2table, "chi2datasets")
+    return chi2table
 
 
 def data_vs_predictions(fitfolder: pathlib.Path) -> None:
