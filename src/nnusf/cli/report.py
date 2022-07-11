@@ -26,5 +26,9 @@ def subcommand():
 def sub_generate(fitfolder, title, author, keywords):
     """Call the main function the generates the report. It takes the
     fit folder as input."""
-    metadata = {"title": title, "author": author, "keywords": keywords}
+    metadata = {
+        "report_title": title,
+        "author_name": author,
+        "keyword_notes": keywords,
+    }
     genhtml.main(fitfolder, **metadata)
