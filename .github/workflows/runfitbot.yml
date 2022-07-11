@@ -11,6 +11,9 @@ env:
   NUMBER_REPLICAS: 5
   OUTPUT_FOLDER: RESULTS
   PLOT_FOLDER: PLOTS
+  REPORT_TITLE: REPORT
+  AUTHOR_NAME: FITBOT
+  KEYWORDS: CHECK
   POETRY: https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py
   FITCARD: ./runcards/fit_runcard.yml
   PLOTCARD: ./runcards/plot_runcard.yml
@@ -58,18 +61,18 @@ jobs:
             poetry run nnu fit run $FITCARD $i -d $OUTPUT_FOLDER
           done
 
-      - name: Compare predictions with data 📘
+      - name: Generate fit report 📘
         shell: bash --login {0}
         run: |
-          poetry run nnu plot fit $OUTPUT_FOLDER $PLOTCARD -d $PLOT_FOLDER
+          poetry run nnu report generate $OUTPUT_FOLDER -t $REPORT_TITLE -a $AUTHOR_NAME -k $KEYWORDS
 
-      - name: Upload the results into the server 🚀
+      - name: Upload the reports into the server 🚀
         shell: bash --login {0}
         run: |
           export COMMIT=`git rev-parse --short HEAD`
           export TIMESTAMP=`date +"%Y-%m-%dT%H-%M-%S"`
           echo "OUTNAME=results-$COMMIT-$TIMESTAMP" >> $GITHUB_ENV
-          tar -zcvf "results-$COMMIT-$TIMESTAMP.tar.gz" $PLOT_FOLDER/*.pdf
+          tar -zcvf "results-$COMMIT-$TIMESTAMP.tar.gz" output
           scp "results-$COMMIT-$TIMESTAMP.tar.gz" ${{ secrets.USER }}@${{ secrets.ADDR }}:/home/nnpdf/WEB/NNUSF/botfits
 
 
