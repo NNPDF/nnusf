@@ -11,8 +11,6 @@ import yaml
 from .genfiles import chi2_tables, data_vs_predictions, summary_table
 
 _logger = logging.getLogger(__name__)
-
-
 CURRENT_PATH = pathlib.Path(__file__)
 
 
