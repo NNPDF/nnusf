@@ -1,57 +1,14 @@
 # -*- coding: utf-8 -*-
 import json
 import logging
-from dataclasses import dataclass
-from typing import Union
 
 import tensorflow as tf
 
-from .utils import chi2_logs
+from .utils import chi2_logs, modify_lr
 
 _logger = logging.getLogger(__name__)
 
 CHI2_HISTORY_FILE = "chi2_history.yaml"
-
-ADAPTIVE_LR = [
-    {"range": [100, 250], "lr": 0.025},
-    {"range": [50, 100], "lr": 0.01},
-    {"range": [40, 50], "lr": 0.0075},
-    {"range": [40, 50], "lr": 0.005},
-    {"range": [10, 30], "lr": 0.0025},
-    {"range": [5, 10], "lr": 0.0015},
-    {"range": [1, 5], "lr": 0.001},
-]
-
-
-def modify_lr(tr_loss_val, lr):
-    for dic in ADAPTIVE_LR:
-        range, lrval = dic["range"], dic["lr"]
-        check = range[0] <= tr_loss_val < range[1]
-        if check and (lr > lrval):
-            return lrval
-    return lr
-
-
-@dataclass
-class TrainingStatusInfo:
-    """Class for storing info to be shared among callbacks
-    (in particular prevents evaluating multiple times for each individual
-    callback).
-    """
-
-    tr_dpts: dict
-    vl_dpts: dict
-    best_chi2: Union[float, None] = None
-    vl_chi2: Union[float, None] = None
-    chix: Union[list, None] = None
-    chi2_history: Union[dict, None] = None
-    loss_value: float = 1e5
-    vl_loss_value: Union[float, None] = None
-    best_epoch: Union[int, None] = None
-
-    def __post_init__(self):
-        self.tot_vl = sum(self.vl_dpts.values())
-        self.nbdpts = sum(self.tr_dpts.values())
 
 
 class GetTrainingInfo(tf.keras.callbacks.Callback):
@@ -185,14 +142,30 @@ class LogTrainingHistory(tf.keras.callbacks.Callback):
                 f.write(f"  tr: {self.traininfo_class.loss_value}\n")
                 f.write(f"  vl: {self.traininfo_class.vl_loss_value}\n")
 
-    def on_train_end(self, logs=None):
+    def on_train_end(self, logs={}):
+        # Save number of datapoints for the reports
+        datapoints_per_dataset = {
+            k: v + self.traininfo_class.vl_dpts[k]
+            for k, v in self.traininfo_class.tr_dpts.items()
+            if k in self.traininfo_class.vl_dpts
+        }
+        # Save the chi2/Ndat for the individual dataset
+        chi2s_per_dataset = {
+            k.strip("_loss"): v / self.traininfo_class.tr_dpts[k.strip("_loss")]
+            for k, v in logs.items()
+            if k.strip("_loss") in self.traininfo_class.tr_dpts
+        }
+
         # write info of best model to log
         final_results = {
+            "chi2s_per_dataset": chi2s_per_dataset,
+            "dtpts_per_dataset": datapoints_per_dataset,
             "best_tr_chi2": self.traininfo_class.loss_value,
             "best_vl_chi2": self.traininfo_class.best_chi2
             / self.traininfo_class.tot_vl,
             "best_epochs": self.traininfo_class.best_epoch,
         }
+
         with open(
             f"{self.replica_dir}/fitinfo.json", "w", encoding="UTF-8"
         ) as ostream:

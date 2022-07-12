@@ -12,9 +12,8 @@ from .callbacks import (
     GetTrainingInfo,
     LiveUpdater,
     LogTrainingHistory,
-    TrainingStatusInfo,
 )
-from .utils import chi2_logs
+from .utils import TrainingStatusInfo, chi2_logs
 
 _logger = logging.getLogger(__name__)
 

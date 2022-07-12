@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 import os
 import random
+from dataclasses import dataclass
+from typing import Union
 
 import numpy as np
 import tensorflow as tf
-from numpy.core.fromnumeric import std
 from rich.console import Console
 from rich.style import Style
 from rich.table import Table
@@ -12,11 +13,53 @@ from rich.table import Table
 console = Console()
 
 
+ADAPTIVE_LR = [
+    {"range": [100, 250], "lr": 0.025},
+    {"range": [50, 100], "lr": 0.01},
+    {"range": [40, 50], "lr": 0.0075},
+    {"range": [40, 50], "lr": 0.005},
+    {"range": [10, 30], "lr": 0.0025},
+    {"range": [5, 10], "lr": 0.0015},
+    {"range": [1, 5], "lr": 0.001},
+]
+
+
+@dataclass
+class TrainingStatusInfo:
+    """Class for storing info to be shared among callbacks
+    (in particular prevents evaluating multiple times for each individual
+    callback).
+    """
+
+    tr_dpts: dict
+    vl_dpts: dict
+    best_chi2: Union[float, None] = None
+    vl_chi2: Union[float, None] = None
+    chix: Union[list, None] = None
+    chi2_history: Union[dict, None] = None
+    loss_value: float = 1e5
+    vl_loss_value: Union[float, None] = None
+    best_epoch: Union[int, None] = None
+
+    def __post_init__(self):
+        self.tot_vl = sum(self.vl_dpts.values())
+        self.nbdpts = sum(self.tr_dpts.values())
+
+
 def set_global_seeds(global_seed: int = 1234):
     os.environ["PYTHONHASHSEED"] = str(global_seed)
     random.seed(global_seed)
     tf.random.set_seed(global_seed)
     np.random.seed(global_seed)
+
+
+def modify_lr(tr_loss_val, lr):
+    for dic in ADAPTIVE_LR:
+        range, lrval = dic["range"], dic["lr"]
+        check = range[0] <= tr_loss_val < range[1]
+        if check and (lr > lrval):
+            return lrval
+    return lr
 
 
 def mask_expdata(y, tr_mask, vl_mask):

@@ -50,7 +50,7 @@ def sfs_q_replicas(**kwargs):
     q_grid = prediction_info.q
     for prediction_index in range(predictions.shape[2]):
         fig, ax = plt.subplots()
-        ax.set_xlabel("Q (GeV)")
+        ax.set_xlabel("Q2 (GeV)")
         ax.set_ylabel(basis[prediction_index])
         ax.set_title(f"x={prediction_info.x}, A={prediction_info.A}")
         prediction = predictions[:, :, prediction_index]
@@ -76,7 +76,7 @@ def sf_q_band(**kwargs):
     std_sfs = np.std(predictions, axis=0)
     for prediction_index in range(predictions.shape[2]):
         fig, ax = plt.subplots()
-        ax.set_xlabel("Q (GeV)")
+        ax.set_xlabel("Q2 (GeV)")
         ax.set_ylabel(basis[prediction_index])
         ax.set_title(f"x={prediction_info.x}, A={prediction_info.A}")
         ax.plot(
@@ -162,6 +162,7 @@ def prediction_data_comparison(**kwargs):
         observable_predictions = np.array(observable_predictions)
         mean_observable_predictions = observable_predictions.mean(axis=0)
         std_observable_predictions = observable_predictions.std(axis=0)
+        figformat = kwargs.get("format", "pdf")
         for x_slice in np.unique(kinematics[:, 0]):
             fig, ax = plt.subplots()
             ax.set_title(f"{experiment}: A={kinematics[0,2]}, x={x_slice}")
@@ -186,7 +187,7 @@ def prediction_data_comparison(**kwargs):
             )
             savepath = (
                 pathlib.Path(kwargs["output"])
-                / f"prediction_data_comparison_{count_plots}.pdf"
+                / f"prediction_data_comparison_{count_plots}.{figformat}"
             )
             count_plots += 1
             fig.savefig(savepath, dpi=350)
