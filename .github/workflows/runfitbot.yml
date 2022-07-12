@@ -84,4 +84,4 @@ jobs:
           msg: |
             :robot: The reports from the fits are now ready :robot: !
 
-            Report is available in: 'https://data.nnpdf.science/NNUSF/botfits/${{ env.OUTNAME }}'
+            Report is available in: https://data.nnpdf.science/NNUSF/botfits/${{ env.OUTNAME }}
