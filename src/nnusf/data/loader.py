@@ -81,6 +81,8 @@ class Loader:
         """
         # info file
         exp_name = self.name.split("_")[0]
+        if "MATCHING-" in exp_name:
+            exp_name = exp_name.split("-")[1]
         info_df = pd.read_csv(f"{self.commondata_path}/info/{exp_name}.csv")
 
         # Extract values from the kinematic tables
@@ -117,7 +119,8 @@ class Loader:
         new_df = new_df.dropna().astype(float)
 
         # drop data with 0 total uncertainty:
-        new_df = new_df[new_df["stat"] + new_df["syst"] != 0.0]
+        if "MATCHING-" not in self.name:
+            new_df = new_df[new_df["stat"] + new_df["syst"] != 0.0]
 
         # Restore index before implementing the W cut
         new_df.reset_index(drop=True, inplace=True)

@@ -4,9 +4,17 @@ import pathlib
 
 import click
 
-from ..data import coefficients, combine_tables, filters
+from ..data import coefficients, combine_tables, filters, matching_grids
 from . import base
 
+
+dest = click.option(
+    "-d",
+    "--destination",
+    type=click.Path(exists=True, path_type=pathlib.Path),
+    default=pathlib.Path.cwd().absolute() / "commondata",
+    help="Alternative destination path to store the resulting table (default: $PWD/commondata)",
+)
 
 @base.command.group("data")
 def subcommand():
@@ -17,13 +25,7 @@ def subcommand():
 @click.argument(
     "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
 )
-@click.option(
-    "-d",
-    "--destination",
-    type=click.Path(exists=True, path_type=pathlib.Path),
-    default=pathlib.Path.cwd().absolute() / "commondata",
-    help="Alternative destination path to store the resulting table (default: $PWD/commondata)",
-)
+@dest
 def sub_combine(data, destination):
     """Combine data tables into a unique one.
 
@@ -60,13 +62,7 @@ def filter_all_data(data):
 @click.argument(
     "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
 )
-@click.option(
-    "-d",
-    "--destination",
-    type=click.Path(path_type=pathlib.Path),
-    default=pathlib.Path.cwd().absolute() / "coefficients",
-    help="Alternative destination path to store the coefficients (default: $PWD/coefficients)",
-)
+@dest
 def sub_coefficients(data, destination):
     """Provide coefficients for the observables.
 
@@ -82,3 +78,15 @@ def sub_coefficients(data, destination):
 
     """
     coefficients.main(data, destination)
+
+
+@subcommand.command("matching_grids")
+@click.argument(
+    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
+)
+@dest
+def sub_combine(destination, data):
+    """
+    Generate fake data for matching with theory
+    """
+    matching_grids.main(destination, data)
