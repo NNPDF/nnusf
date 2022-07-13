@@ -13,6 +13,9 @@ from ..sffit.load_data import path_to_coefficients, path_to_commondata
 from ..sffit.load_fit_data import get_predictions_q, load_models
 
 _logger = logging.getLogger(__name__)
+PARRENT_PATH = pathlib.Path(__file__).parents[1]
+MPLSTYLE = PARRENT_PATH.joinpath("plotstyle.mplstyle")
+plt.style.use(MPLSTYLE)
 
 basis = [
     r"$F_2$",
@@ -34,12 +37,31 @@ def main(model: pathlib.Path, runcard: pathlib.Path, output: pathlib.Path):
     output.mkdir(parents=True, exist_ok=True)
 
     runcard_content = yaml.safe_load(runcard.read_text())
+    # TODO: Remove type conversion -> save_path
     runcard_content["fit"] = str(model.absolute())
     runcard_content["output"] = str(output.absolute())
 
     for action in runcard_content["actions"]:
         func = globals()[action]
         func(**runcard_content)
+
+
+def training_validation_split(**kwargs):
+    fitinfo = pathlib.Path(kwargs["fit"]).glob("replica_*/fitinfo.json")
+    tr_chi2s, vl_chi2s = [], []
+
+    for repinfo in fitinfo:
+        with open(repinfo, "r") as file_stream:
+            jsonfile = json.load(file_stream)
+        tr_chi2s.append(jsonfile["best_tr_chi2"])
+        vl_chi2s.append(jsonfile["best_vl_chi2"])
+
+    f, ax = plt.subplots(figsize=(6, 6))
+    ax.scatter(tr_chi2s, vl_chi2s, s=20, marker="s")
+    ax.set_xlabel(r"$\chi^2_{\rm tr}$")
+    ax.set_ylabel(r"$\chi^2_{\rm vl}$")
+    save_path = pathlib.Path(kwargs["output"]) / "chi2_split.png"
+    f.savefig(f"{save_path}", dpi=350)
 
 
 def sfs_q_replicas(**kwargs):
@@ -165,7 +187,7 @@ def prediction_data_comparison(**kwargs):
         figformat = kwargs.get("format", "pdf")
         for x_slice in np.unique(kinematics[:, 0]):
             fig, ax = plt.subplots()
-            ax.set_title(f"{experiment}: A={kinematics[0,2]}, x={x_slice}")
+            ax.set_title(rf"{experiment}: $A$={kinematics[0,2]}, $x$={x_slice}")
             mask = np.where(kinematics[:, 0] == x_slice)[0]
             tmp_kinematics = kinematics[mask]
             diag_covmat = np.diag(data.covmat)[mask]
@@ -174,7 +196,7 @@ def prediction_data_comparison(**kwargs):
                 data.central_values[mask],
                 yerr=np.sqrt(diag_covmat),
                 fmt=".",
-                color="black",
+                label="Data",
                 capsize=5,
             )
             ax.errorbar(
@@ -182,9 +204,12 @@ def prediction_data_comparison(**kwargs):
                 mean_observable_predictions[mask],
                 yerr=std_observable_predictions[mask],
                 fmt=".",
-                color="C0",
+                label="NN Predictions",
                 capsize=5,
             )
+            ax.set_xlabel(r"$Q^2~[\mathrm{GeV}^2]$")
+            ax.set_ylabel(r"$\mathcal{O}(Q^2)$")
+            ax.legend()
             savepath = (
                 pathlib.Path(kwargs["output"])
                 / f"prediction_data_comparison_{count_plots}.{figformat}"
