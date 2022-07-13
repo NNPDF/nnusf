@@ -3,6 +3,7 @@
 import logging
 import pathlib
 from typing import Optional
+from webbrowser import Elinks
 
 import numpy as np
 import pandas as pd
@@ -91,6 +92,12 @@ class Loader:
         )
         if kin_file.exists():
             kin_df = pd.read_csv(kin_file).iloc[1:, 1:4].reset_index(drop=True)
+        elif "MATCHING-" in self.name:
+            if "FW" in self.name or "DXDY" in self.name:
+                file = f"{self.commondata_path}/kinematics/KIN_MATCHING_XSEC.csv"
+            else:
+                file = f"{self.commondata_path}/kinematics/KIN_MATCHING_FX.csv"
+            kin_df = pd.read_csv(file).iloc[1:, 1:4].reset_index(drop=True)
         elif self.obs in ["F2", "F3"]:
             file = f"{self.commondata_path}/kinematics/KIN_{exp_name}_F2F3.csv"
             kin_df = pd.read_csv(file).iloc[1:, 1:4].reset_index(drop=True)
