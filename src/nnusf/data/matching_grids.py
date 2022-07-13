@@ -3,11 +3,11 @@
 Generate matching grids
 """
 
+import itertools
 import logging
 import pathlib
 import shutil
 
-import itertools
 import numpy as np
 import pandas as pd
 from eko.interpolation import make_lambert_grid
@@ -32,10 +32,11 @@ def main(destination: pathlib.Path, datapaths: list[pathlib.Path]):
     _logger.info("Saving coefficients:")
     for dataset in datapaths:
         data_name = dataset.stem.strip("DATA_")
-        obs = data_name.split('_')[-1]
+        obs = data_name.split("_")[-1]
         new_name = f"MATCHING-{data_name}"
 
-        if "DXDY" in obs or "FW" in obs:
+        is_xsec = "DXDY" in obs or "FW" in obs
+        if is_xsec:
             n_xgrid = 30
             n_q2grid = 200
             n_ygrid = 5
@@ -66,7 +67,10 @@ def main(destination: pathlib.Path, datapaths: list[pathlib.Path]):
 
         kinematics_folder = destination.joinpath("kinematics")
         kinematics_folder.mkdir(exist_ok=True)
-        write_to_csv(kinematics_folder, f"KIN_{new_name}", kinematics_pd)
+        if is_xsec:
+            write_to_csv(kinematics_folder, f"KIN_MATCHING_XSEC", kinematics_pd)
+        else:
+            write_to_csv(kinematics_folder, f"KIN_MATCHING_FX", kinematics_pd)
 
         central_val_folder = destination.joinpath("data")
         central_val_folder.mkdir(exist_ok=True)
