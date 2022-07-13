@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
 import json
-import logging
 import pathlib
 
 import pandas as pd
 import yaml
 
 from ..plot.fit import prediction_data_comparison
-
-_logger = logging.getLogger(__name__)
 
 
 def dump_to_csv(
@@ -19,10 +16,6 @@ def dump_to_csv(
     output_path = output_path.parents[0].joinpath("output/tables")
     output_path.mkdir(parents=True, exist_ok=True)
     pdtable.to_csv(f"{output_path}/{filename}.csv")
-    _logger.info(
-        f"The {filename} panda table is stored in "
-        f"'{output_path.relative_to(pathlib.Path.cwd())}'"
-    )
 
 
 def summary_table(fitfolder: pathlib.Path) -> pd.DataFrame:
@@ -105,7 +98,3 @@ def data_vs_predictions(fitfolder: pathlib.Path) -> None:
     input_dic["output"] = str(output_path)
 
     prediction_data_comparison(**input_dic)
-    _logger.info(
-        f"The figures comparing data and predictions are storded in "
-        f"'{output_path.relative_to(pathlib.Path.cwd())}'"
-    )
