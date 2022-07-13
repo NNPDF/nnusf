@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import logging
 import pathlib
 import shutil
 from fileinput import FileInput
@@ -10,7 +9,6 @@ import yaml
 
 from .genfiles import chi2_tables, data_vs_predictions, summary_table
 
-_logger = logging.getLogger(__name__)
 CURRENT_PATH = pathlib.Path(__file__)
 
 
@@ -42,10 +40,6 @@ def generate_metadata(
     }
     with open(f"{index_path}/meta.yaml", "w") as ostream:
         yaml.dump(info, ostream, sort_keys=False)
-    _logger.info(
-        f"The meda.yaml file stored in folder: "
-        f"'{index_path.relative_to(pathlib.Path.cwd())}'"
-    )
 
 
 def dump_table_html(table: pd.DataFrame, name: str) -> str:
@@ -71,7 +65,7 @@ def data_comparison_html(figures: pathlib.Path) -> str:
     html_entry = dedent(html_entry)
     plots = figures.glob("**/prediction_data_comparison_*.png")
 
-    for plot in plots:
+    for plot in sorted(plots):
         name = str(plot).split("/")[-1][:-4]
         path = plot.relative_to(index_path)
         html_entry += f"""
