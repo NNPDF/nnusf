@@ -58,6 +58,8 @@ def main(destination: pathlib.Path, datapaths: list[pathlib.Path]):
 
     for dataset in datapaths:
         data_name = dataset.stem.strip("DATA_")
+        if "MATCHING" in data_name:
+            continue
         obs = data_name.split("_")[-1]
         new_name = f"MATCHING-{data_name}"
 
