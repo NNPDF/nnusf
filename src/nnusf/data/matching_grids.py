@@ -19,7 +19,7 @@ _logger = logging.getLogger(__name__)
 q2_min = 1.0
 q2_max = 1e5
 
-x_min = 1e-7
+x_min = 1e-5
 
 y_min = 0.2
 y_max = 0.8
@@ -76,7 +76,7 @@ def main(destination: pathlib.Path, datapaths: list[pathlib.Path]):
         _logger.info(f"Saving matching grids for {data_name} in {new_name}")
 
         x_grid = make_lambert_grid(n_xgrid, x_min)
-        q2_grid = np.geomspace(q2_min, q2_max, n_q2grid)
+        q2_grid = np.linspace(q2_min, q2_max, n_q2grid)
         n_points = int(n_q2grid * n_ygrid * n_xgrid)
 
         kinematics = {"x": [], "Q2": [], "y": []}
