@@ -7,7 +7,6 @@ import click
 from ..data import coefficients, combine_tables, filters, matching_grids
 from . import base
 
-
 dest = click.option(
     "-d",
     "--destination",
@@ -15,6 +14,7 @@ dest = click.option(
     default=pathlib.Path.cwd().absolute() / "commondata",
     help="Alternative destination path to store the resulting table (default: $PWD/commondata)",
 )
+
 
 @base.command.group("data")
 def subcommand():
@@ -85,7 +85,7 @@ def sub_coefficients(data, destination):
     "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
 )
 @dest
-def sub_combine(destination, data):
+def sub_matching_grids(destination, data):
     """
     Generate fake data for matching with theory
     """
