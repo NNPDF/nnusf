@@ -16,6 +16,9 @@ MAP_EXP_YADISM = {
     "NUTEV": "XSNUTEVNU",
     "CHORUS": "XSCHORUSCC",
     "CDHSW": "XSCHORUSCC",
+    # for the proton boundary condition the xs 
+    # definition is arbitrary 
+    "PROTONBC": "XSCHORUSCC",
 }
 
 
