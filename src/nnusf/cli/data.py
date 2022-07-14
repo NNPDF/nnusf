@@ -81,11 +81,11 @@ def sub_coefficients(data, destination):
 @subcommand.command("matching_grids")
 @data_arg
 @dest
-def sub_matching_grids(destination, data, proton_bounds):
+def sub_matching_grids(destination, data):
     """
     Generate fake data for matching with theory
     """
-    matching_grids.main(destination, data, proton_bounds)
+    matching_grids.main(destination, data)
 
 
 @subcommand.command("proton_bc")
