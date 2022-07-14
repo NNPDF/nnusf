@@ -5,7 +5,7 @@ import pathlib
 import pandas as pd
 import yaml
 
-from ..plot.fit import prediction_data_comparison
+from ..plot.fit import prediction_data_comparison, training_validation_split
 
 
 def dump_to_csv(
@@ -98,3 +98,15 @@ def data_vs_predictions(fitfolder: pathlib.Path) -> None:
     input_dic["output"] = str(output_path)
 
     prediction_data_comparison(**input_dic)
+
+
+def training_validation_plot(fitfolder: pathlib.Path) -> None:
+    # Prepare the output path to store the figures
+    output_path = fitfolder.absolute()
+    output_path = output_path.parents[0].joinpath("output/others")
+    output_path.mkdir(parents=True, exist_ok=True)
+
+    # Create the dictionary to pass to the action
+    input_dic = {"fit": str(fitfolder.absolute()), "output": str(output_path)}
+
+    training_validation_split(**input_dic)

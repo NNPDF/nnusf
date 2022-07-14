@@ -7,7 +7,12 @@ from textwrap import dedent
 import pandas as pd
 import yaml
 
-from .genfiles import chi2_tables, data_vs_predictions, summary_table
+from .genfiles import (
+    chi2_tables,
+    data_vs_predictions,
+    summary_table,
+    training_validation_plot,
+)
 
 CURRENT_PATH = pathlib.Path(__file__)
 
@@ -81,9 +86,35 @@ def data_comparison_html(figures: pathlib.Path) -> str:
     return html_entry + f"\n</div>"
 
 
+@check_arguments
+def split_trvl_html(figures: pathlib.Path) -> str:
+    index_path = figures.absolute().parent
+    html_entry = f"""
+    <h1 id="trvl-split">Traing vs Validation</h1>
+    <div class="figiterwrapper">
+    """
+    html_entry = dedent(html_entry)
+    plots = figures.joinpath("chi2_split.png")
+
+    name = str(plots).split("/")[-1][:-4]
+    path = plots.relative_to(index_path)
+    html_entry += f"""
+    <div>
+    <figure>
+    <img src="{path}" id="{name}"
+    alt=".png" />
+    <figcaption aria-hidden="true"><a
+    href="{path}">.png</a></figcaption>
+    </figure>
+    </div>
+    """
+    return html_entry + f"\n</div>"
+
+
 def main(fitfolder: pathlib.Path, **metadata) -> None:
     # Generate the various tables and predictions
     data_vs_predictions(fitfolder=fitfolder)
+    training_validation_plot(fitfolder=fitfolder)
     summtable = summary_table(fitfolder=fitfolder)
     chi2table = chi2_tables(fitfolder=fitfolder)
     generate_metadata(fitfolder, **metadata)
@@ -91,6 +122,7 @@ def main(fitfolder: pathlib.Path, **metadata) -> None:
     # Construct the paths to the corresponding folders
     output_folder = fitfolder.absolute().parent
     figures = output_folder.joinpath("output/figures")
+    others = output_folder.joinpath("output/others")
 
     # Generate the different html files & store them
     chi2s_html = map(
@@ -100,9 +132,12 @@ def main(fitfolder: pathlib.Path, **metadata) -> None:
     )
     summary_html, chi2s_html = list(chi2s_html)
     comparison_data_html = data_comparison_html(figures)
+    trvl_split_html = split_trvl_html(others)
 
     # Combine all the resulted HTMLs into one
-    combined = summary_html + chi2s_html + comparison_data_html
+    combined = (
+        summary_html + chi2s_html + comparison_data_html + trvl_split_html
+    )
     index = CURRENT_PATH.parent.joinpath("assets/index.html")
     index_store = output_folder.joinpath("output/index.html")
     shutil.copyfile(index, index_store)

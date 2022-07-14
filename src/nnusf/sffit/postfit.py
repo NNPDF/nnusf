@@ -19,7 +19,11 @@ def perform_postfit(
 
         # Create a folder to store the results after postfit
         postfit = model.joinpath("postfit")
-        postfit.mkdir(exist_ok=True)
+        # Overwrite completely the folder if it exists
+        if postfit.exists():
+            _logger.warning(f"{postfit} already exists and will be removed.")
+            shutil.rmtree(postfit)
+        postfit.mkdir(exist_ok=False)
 
         for nbrep, repinfo in enumerate(fitinfos, start=1):
             with open(f"{repinfo}/fitinfo.json", "r") as file:
@@ -38,7 +42,7 @@ def perform_postfit(
                 else np.inf
             )
 
-            if (tr_chi2 <= tr_thr) or (vl_chi2 <= vl_thr):
+            if (tr_chi2 <= tr_thr) and (vl_chi2 <= vl_thr):
                 repindex = str(repinfo).split("_")[-1]
                 dstname = postfit / f"replica_{repindex}"
                 # Copy the replica into the postfit folder
@@ -48,8 +52,8 @@ def perform_postfit(
                 count_replica_status_fail += 1
 
         _logger.info(
-            f"{nbrep - count_replica_status_fail} replica out"
-            f" of the original {nbrep} pass postfit selection."
+            f"{count_replica_status_fail} replica out of "
+            f"the original {nbrep} pass postfit selection."
         )
         _logger.info(
             f"The replicas that passed postfit are stored in: "
