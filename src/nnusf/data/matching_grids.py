@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 from eko.interpolation import make_lambert_grid
 
-from .utils import construct_uncertainties, write_to_csv
+from .utils import construct_uncertainties, write_to_csv, dump_info_file, build_obs_dict
 
 _logger = logging.getLogger(__name__)
 
@@ -25,11 +25,37 @@ y_min = 0.2
 y_max = 0.8
 
 
+N_KINEMATC_GRID_FX = dict(x=50, Q2=400, y=1.0)
+N_KINEMATC_GRID_XSEC = dict(x=30, Q2=200, y=5)
+M_PROTON = 938.272013 * 0.001
+
+
+def proton_boundary_conditions(destination: pathlib.Path):
+    destination.mkdir(parents=True, exist_ok=True)
+    _logger.info(f" Boundary condition grids destination : {destination}")
+
+    datapaths = []
+    obs_list = [
+        build_obs_dict("F2", [0], 0),
+        build_obs_dict("F3", [0], 0),
+        build_obs_dict("DXDYNUU", [0], 14),
+        build_obs_dict("DXDYNUB", [0], -14),
+    ]
+    for obs in obs_list:
+        fx = obs["type"]
+        datapaths.append(pathlib.Path(f"DATA_PROTONBC_{fx}"))
+
+    main(destination, datapaths)
+
+    # dump info file
+    destination
+    dump_info_file(destination, "PROTONBC", obs_list, 1, M_PROTON)
+
+
 def main(destination: pathlib.Path, datapaths: list[pathlib.Path]):
     destination.mkdir(parents=True, exist_ok=True)
     _logger.info(f" Matching grids : {destination}")
 
-    _logger.info("Saving coefficients:")
     for dataset in datapaths:
         data_name = dataset.stem.strip("DATA_")
         obs = data_name.split("_")[-1]
@@ -37,14 +63,14 @@ def main(destination: pathlib.Path, datapaths: list[pathlib.Path]):
 
         is_xsec = "DXDY" in obs or "FW" in obs
         if is_xsec:
-            n_xgrid = 30
-            n_q2grid = 200
-            n_ygrid = 5
+            n_xgrid = N_KINEMATC_GRID_XSEC["x"]
+            n_q2grid = N_KINEMATC_GRID_XSEC["Q2"]
+            n_ygrid = N_KINEMATC_GRID_XSEC["y"]
             y_grid = np.linspace(y_min, y_max, n_ygrid)
         else:
-            n_xgrid = 50
-            n_q2grid = 400
-            n_ygrid = 1.0
+            n_xgrid = N_KINEMATC_GRID_FX["x"]
+            n_q2grid = N_KINEMATC_GRID_FX["Q2"]
+            n_ygrid = N_KINEMATC_GRID_FX["y"]
             y_grid = [0.0]
 
         _logger.info(f"Saving matching grids for {data_name} in {new_name}")

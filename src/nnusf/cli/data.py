@@ -15,6 +15,10 @@ dest = click.option(
     help="Alternative destination path to store the resulting table (default: $PWD/commondata)",
 )
 
+data_arg = click.argument(
+    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
+)
+
 
 @base.command.group("data")
 def subcommand():
@@ -22,9 +26,7 @@ def subcommand():
 
 
 @subcommand.command("combine")
-@click.argument(
-    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
-)
+@data_arg
 @dest
 def sub_combine(data, destination):
     """Combine data tables into a unique one.
@@ -41,9 +43,7 @@ def sub_combine(data, destination):
 
 
 @subcommand.command("filter")
-@click.argument(
-    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
-)
+@data_arg
 def filter_all_data(data):
     """Filter the raw dataset.
 
@@ -59,9 +59,7 @@ def filter_all_data(data):
 
 
 @subcommand.command("coefficients")
-@click.argument(
-    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
-)
+@data_arg
 @dest
 def sub_coefficients(data, destination):
     """Provide coefficients for the observables.
@@ -81,12 +79,19 @@ def sub_coefficients(data, destination):
 
 
 @subcommand.command("matching_grids")
-@click.argument(
-    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
-)
+@data_arg
 @dest
-def sub_matching_grids(destination, data):
+def sub_matching_grids(destination, data, proton_bounds):
     """
     Generate fake data for matching with theory
     """
-    matching_grids.main(destination, data)
+    matching_grids.main(destination, data, proton_bounds)
+
+
+@subcommand.command("proton_bc")
+@dest
+def sub_proton_boundary_conditions(destination):
+    """
+    Generate fake data for boundary proton condition
+    """
+    matching_grids.proton_boundary_conditions(destination)
