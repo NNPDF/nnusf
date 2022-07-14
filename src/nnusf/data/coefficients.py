@@ -19,6 +19,8 @@ def cross_section(
     name: str, kinematics: np.ndarray, y: np.ndarray, proj: int, pos: np.ndarray
 ):
     exp = name.split("_")[0]
+    if "MATCHING-" in name:
+        exp = exp.split("-")[1]
     try:
         xs = loader.MAP_EXP_YADISM[exp]
         if name == "CDHSW_FW":
