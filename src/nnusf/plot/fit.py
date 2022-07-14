@@ -37,7 +37,6 @@ def main(model: pathlib.Path, runcard: pathlib.Path, output: pathlib.Path):
     output.mkdir(parents=True, exist_ok=True)
 
     runcard_content = yaml.safe_load(runcard.read_text())
-    # TODO: Remove type conversion -> save_path
     runcard_content["fit"] = str(model.absolute())
     runcard_content["output"] = str(output.absolute())
 
