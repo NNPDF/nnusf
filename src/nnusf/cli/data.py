@@ -7,7 +7,7 @@ import click
 from ..data import coefficients, combine_tables, filters, matching_grids
 from . import base
 
-dest = click.option(
+destination_path = click.option(
     "-d",
     "--destination",
     type=click.Path(exists=True, path_type=pathlib.Path),
@@ -15,7 +15,7 @@ dest = click.option(
     help="Alternative destination path to store the resulting table (default: $PWD/commondata)",
 )
 
-data_arg = click.argument(
+dataset_path = click.argument(
     "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
 )
 
@@ -26,8 +26,8 @@ def subcommand():
 
 
 @subcommand.command("combine")
-@data_arg
-@dest
+@dataset_path
+@destination_path
 def sub_combine(data, destination):
     """Combine data tables into a unique one.
 
@@ -43,7 +43,7 @@ def sub_combine(data, destination):
 
 
 @subcommand.command("filter")
-@data_arg
+@dataset_path
 def filter_all_data(data):
     """Filter the raw dataset.
 
@@ -59,8 +59,8 @@ def filter_all_data(data):
 
 
 @subcommand.command("coefficients")
-@data_arg
-@dest
+@dataset_path
+@destination_path
 def sub_coefficients(data, destination):
     """Provide coefficients for the observables.
 
@@ -79,8 +79,8 @@ def sub_coefficients(data, destination):
 
 
 @subcommand.command("matching_grids")
-@data_arg
-@dest
+@dataset_path
+@destination_path
 def sub_matching_grids(destination, data):
     """
     Generate fake data for matching with theory
@@ -89,8 +89,8 @@ def sub_matching_grids(destination, data):
 
 
 @subcommand.command("proton_bc")
-@dest
-def sub_proton_boundary_conditions(destination):
+@destination_path
+def sub_proton_bc(destination):
     """
     Generate fake data for boundary proton condition
     """
