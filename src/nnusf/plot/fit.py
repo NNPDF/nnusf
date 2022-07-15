@@ -60,7 +60,7 @@ def training_validation_split(**kwargs):
     ax.set_xlabel(r"$\chi^2_{\rm tr}$")
     ax.set_ylabel(r"$\chi^2_{\rm vl}$")
     save_path = pathlib.Path(kwargs["output"]) / "chi2_split.png"
-    f.savefig(f"{save_path}", dpi=350)
+    f.savefig(f"{save_path}")
 
 
 def sfs_q_replicas(**kwargs):
@@ -214,7 +214,7 @@ def prediction_data_comparison(**kwargs):
                 / f"prediction_data_comparison_{count_plots}.{figformat}"
             )
             count_plots += 1
-            fig.savefig(savepath, dpi=350)
+            fig.savefig(savepath)
             plt.close(fig)
 
 
@@ -250,5 +250,5 @@ def chi2_history_plot(xmin=None, **kwargs):
                     pathlib.Path(outputpath)
                     / f"chi2_history_plot_{count_plots}.pdf"
                 )
-                fig.savefig(savepath, dpi=350)
+                fig.savefig(savepath)
                 plt.close(fig)
