@@ -16,7 +16,7 @@ from pylab import *
 # General plot settings
 nq = 200
 qmin = 1.65
-qmax=10
+qmax=6
 # set x grid
 Q = np.logspace(np.log10(qmin),np.log10(qmax),nq)
 
@@ -29,15 +29,91 @@ nset =3
 #pdfset=["CT18NNLO","NNPDF40_nnlo_as_01180","MSHT20nnlo_as118"]
 #pdfsetlab=[r"${\rm CT18}$",r"${\rm NNPDF4.0}$",r"${\rm MSHT20}$"]
 # error_option=["ct","mc_68cl","mmht"]
-# filelabel="-modernpdfs_q5gev"
-# oldPDFs
-pdfset=["JR14NLO08VF","NNPDF40_nnlo_as_01180","cteq61"]
-pdfsetlab=[r"${\rm JR14}$",r"${\rm NNPDF4.0}$",r"${\rm CTEQ6.1}$"]
-error_option=["symmhessian","mc_68cl","ct"]
-filelabel="-oldpdfs_x0p794"
 
+# oldPDFs
+pdfset=["JR14NLO08VF","NNPDF40_nnlo_as_01180","GRV98lo_patched"]
+pdfsetlab=[r"${\rm LO~SF+JR14NLO}$",r"${\rm LO~SF+NNPDF4.0NNLO}$",r"${\rm LO~SF+GRV98LO}$"]
+error_option=["symmhessian","mc_68cl","ct"]
+filelabel="-oldpdfs_x0p25"
+#filelabel="-oldpdfs_x0p0126"
+
+
+#----------------------------------------------
+#----------------------------------------------
 # Value of x
-x = 0.794
+x = 0.25
+#x = 0.0126
+#----------------------------------------------
+#----------------------------------------------
+
+#---------------------------
+#---------------------------
+print("\n Reading the GENIE structure functions \n")
+
+# Read genie inputs
+#genie_sf=np.loadtxt("Genie_Data/Genie-F2-xF3-BodekYang_x_0p0126.txt")
+genie_sf=np.loadtxt("Genie_Data/Genie-F2-xF3-BodekYang_x0p25.txt")
+
+
+print(genie_sf)
+
+nq2_genie=111
+genie_sf_q=np.zeros(nq2_genie)
+genie_sf_f2=np.zeros(nq2_genie)
+genie_sf_f3=np.zeros(nq2_genie)
+
+for iq2 in range(nq2_genie):
+    genie_sf_q[iq2] = math.sqrt( genie_sf[iq2][1] )
+    genie_sf_f2[iq2] = genie_sf[iq2][2]
+    genie_sf_f3[iq2] = x* genie_sf[iq2][3] # Genie gives F3 instead of xF3
+
+Q = genie_sf_q     
+nq = Q.size
+
+print(genie_sf_q)    
+print(genie_sf_f2)
+print(genie_sf_f3)
+
+#---------------------------
+#---------------------------
+print("\n Reading the YADISM structure functions \n")
+
+# Read YADISM inputs
+#yadism_lo_sf_f2=np.loadtxt("Yadism_data/LO_NNPDF40_yadism/F2_rep0_x0p0126.txt")
+#yadism_nnlo_sf_f2=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism/F2_rep0_x0p0126.txt")
+#yadism_lo_sf_f3=np.loadtxt("Yadism_data/LO_NNPDF40_yadism/F3_rep0_x0p0126.txt")
+#yadism_nnlo_sf_f3=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism/F3_rep0_x0p0126.txt")
+
+yadism_lo_sf_f2=np.loadtxt("Yadism_data/LO_NNPDF40_yadism/F2_rep0_x0p25.txt")
+yadism_nnlo_sf_f2=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism/F2_rep0_x0p25.txt")
+yadism_lo_sf_f3=np.loadtxt("Yadism_data/LO_NNPDF40_yadism/F3_rep0_x0p25.txt")
+yadism_nnlo_sf_f3=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism/F3_rep0_x0p25.txt")
+
+nq2_yadism=20
+yadism_sf_q=np.zeros(nq2_yadism)
+yadism_f2=np.zeros(nq2_yadism)
+yadism_f3=np.zeros(nq2_yadism)
+yadism_nnlo_f2=np.zeros(nq2_yadism)
+yadism_nnlo_f3=np.zeros(nq2_yadism)
+
+for iq2 in range(nq2_yadism):
+    yadism_sf_q[iq2] = math.sqrt( yadism_lo_sf_f2[iq2][2] )
+    yadism_f2[iq2] = yadism_lo_sf_f2[iq2][3]
+    yadism_f3[iq2] = yadism_lo_sf_f3[iq2][3]
+    yadism_nnlo_f2[iq2] = yadism_nnlo_sf_f2[iq2][3]
+    yadism_nnlo_f3[iq2] = yadism_nnlo_sf_f3[iq2][3]
+   
+
+#print(yadism_sf_q)    
+#print(yadism_sf_f2)
+print(yadism_nnlo_f3)
+print(yadism_f3)
+#exit()
+
+
+#---------------------------
+#---------------------------
+
 
 # Reduce verbosity of LHAPDF
 lhapdf.setVerbosity(0)
@@ -349,11 +425,14 @@ for iset in range(nset):
 
 print("\n ****** Plotting absolute Structure Functions ******* \n")
 
-ncols,nrows=2,4
+ncols,nrows=2,2
 py.figure(figsize=(ncols*5,nrows*3.5))
 gs = gridspec.GridSpec(nrows,ncols)
 rescolors = py.rcParams['axes.prop_cycle'].by_key()['color']
-yranges=[[0,0.01],[0,0.08],[-0.0,0.01],[-0.0,0.07]]
+# x = 0.0126
+#yranges=[[1.3,3.3],[1.3,3.3],[-0.2,0.7],[-0.2,0.7]]
+# x = 0.25
+yranges=[[0.55,1.05],[1.2,1.6],[0.45,0.8],[0.8,1.5]]
 labelpdf=[r"$F_2^{\nu p}(x,Q)$",r"$F_2^{\bar{\nu} p}(x,Q)$",\
           r"$xF_3^{\nu p}(x,Q)$",r"$xF_3^{\bar{\nu} p}(x,Q)$"]
 
@@ -377,16 +456,48 @@ for isf in range(nsf):
     ax.set_ylabel(labelpdf[isf],fontsize=21)
     ax.set_ylim(yranges[isf][0],yranges[isf][1])
     ax.set_xlabel(r'$Q~({\rm GeV})$',fontsize=20)
-    ax.text(0.05,0.85,r'$x=0.794$',fontsize=16,transform=ax.transAxes)
+    if(isf==0):
+        #ax.text(0.65,0.85,r'$x=0.0126$',fontsize=16,transform=ax.transAxes)
+        ax.text(0.65,0.85,r'$x=0.25$',fontsize=16,transform=ax.transAxes)
+    
 
-    ax.legend([(p1[0],p2[0]),(p3[0],p4[0]),(p5[0],p6[0])],[pdfsetlab[0],pdfsetlab[1],pdfsetlab[2]], \
-                  frameon="True",loc=1,prop={'size':16})
+    # Add Genie
+    if(isf==0):
+        p7=ax.plot(genie_sf_q, genie_sf_f2,ls="dotted")
+    if(isf==2):
+        p7=ax.plot(genie_sf_q, genie_sf_f3,ls="dotted")
+
+   
+
+    # Add Yadism
+    if(isf==0):
+        p8=ax.plot(yadism_sf_q, yadism_f2,ls="dashdot")
+        p9=ax.plot(yadism_sf_q, yadism_nnlo_f2,ls="solid")
+    if(isf==2):
+        p8=ax.plot(yadism_sf_q, yadism_f3,ls="dashdot")
+        p9=ax.plot(yadism_sf_q, yadism_nnlo_f3,ls="solid")
+
+    if(isf==0):
+        ax.legend([(p1[0],p2[0]),(p3[0],p4[0]),(p5[0],p6[0]),p7[0],p8[0],p9[0]],\
+                  [pdfsetlab[0],pdfsetlab[1],pdfsetlab[2],\
+                   r"${\rm Bodek~Yang~(GENIE)}$",r"${\rm LO~YADISM+NNPDF4.0NNLO}$",r"${\rm NNLO~YADISM+NNPDF4.0NNLO}$"], \
+                  frameon="True",loc=2,prop={'size':8})
+
+
+py.tight_layout(pad=1, w_pad=1, h_pad=1.0)
+py.savefig('StructureFunction'+filelabel+'.pdf')
+print('output plot: StructureFunction'+filelabel+'.pdf')
+
+exit()
     
 print("\n ****** Plotting ratios Structure Functions ******* \n")
 
-yranges=[[0.5,1.5],[0.5,1.5],[0.3,1.7],[0.3,1.7]]
-labelpdf=[r"$F_2^{\nu p}(x,Q)$",r"$F_2^{\bar{\nu} p}(x,Q)$",\
-          r"$xF_3^{\nu p}(x,Q)$",r"$xF_3^{\bar{\nu} p}(x,Q)$"]
+# x = 0.0126
+yranges=[[0.6,1.6],[0.5,1.5],[0.3,2.6],[-1.0,2.9]]
+# x = 0.25
+#yranges=[[0.6,1.5],[0.5,1.5],[0.5,1.5],[0.5,1.5]]
+labelpdf=[r"$F_2^{\nu p}(x,Q)/F_2^{\rm (ref)}$",r"$F_2^{\bar{\nu} p}(x,Q)/F_2^{\rm (ref)}$",\
+          r"$xF_3^{\nu p}(x,Q)/xF_3^{\rm (ref)}$",r"$xF_3^{\bar{\nu} p}(x,Q)/xF_3^{\rm (ref)}$"]
 
 for isf in range(nsf):
 
@@ -410,13 +521,31 @@ for isf in range(nsf):
     ax.set_ylabel(labelpdf[isf],fontsize=21)
     ax.set_ylim(yranges[isf][0],yranges[isf][1])
     ax.set_xlabel(r'$Q~({\rm GeV})$',fontsize=20)
-    ax.text(0.05,0.85,r'$x=0.794$',fontsize=16,transform=ax.transAxes)
+    ax.text(0.05,0.85,r'$x=0.0126$',fontsize=16,transform=ax.transAxes)
+    #ax.text(0.05,0.85,r'$x=0.25$',fontsize=16,transform=ax.transAxes)
+
+    # Add Genie
+    if(isf==0):
+        p7=ax.plot(genie_sf_q, genie_sf_f2/norm,ls="dotted")
+    if(isf==2):
+        p7=ax.plot(genie_sf_q, genie_sf_f3/norm,ls="dotted")
     
 
-    ax.legend([(p1[0],p2[0]),(p3[0],p4[0]),(p5[0],p6[0])],[pdfsetlab[0],pdfsetlab[1],pdfsetlab[2]], \
-                  frameon="True",loc=1,prop={'size':14})
+    if(isf==0 or isf==2):
+        ax.legend([(p1[0],p2[0]),(p3[0],p4[0]),(p5[0],p6[0]),p7[0]],\
+                  [pdfsetlab[0],pdfsetlab[1],pdfsetlab[2],r"${\rm Bodek~Yang}$"], \
+                  frameon="True",loc=1,prop={'size':13})
+
     
-py.tight_layout(pad=1, w_pad=1, h_pad=1.0)
+    if(isf==1 or isf==3):
+        ax.legend([(p1[0],p2[0]),(p3[0],p4[0]),(p5[0],p6[0])],\
+                  [pdfsetlab[0],pdfsetlab[1],pdfsetlab[2]], \
+                  frameon="True",loc=1,prop={'size':13})
+
+        
+            
+    
+py.tight_layout(pad=1, w_pad=2, h_pad=1.0)
 py.savefig('StructureFunction'+filelabel+'.pdf')
 print('output plot: StructureFunction'+filelabel+'.pdf')
 
