@@ -1,11 +1,25 @@
 # -*- coding: utf-8 -*-
 """Provide theory subcommand."""
+import logging
 import pathlib
 
 import click
 
-from ..theory import grids, predictions, runcards
+from ..theory import bodek_yang, compare_to_data, grids, predictions, runcards
 from . import base
+
+_logger = logging.getLogger(__name__)
+
+DESTINATION = pathlib.Path.cwd().absolute() / "theory"
+"""Default destination for generated files"""
+
+option_dest = click.option(
+    "-d",
+    "--destination",
+    type=click.Path(path_type=pathlib.Path),
+    default=DESTINATION,
+    help="Alternative destination path to store the resulting table (default: $PWD/theory)",
+)
 
 
 @base.command.group("theory")
@@ -29,40 +43,64 @@ def sub_runcards():
 
 @sub_runcards.command("by")
 @click.option(
-    "-d",
-    "--destination",
-    type=click.Path(path_type=pathlib.Path),
-    default=pathlib.Path.cwd().absolute() / "theory",
-    help="Alternative destination path to store the resulting table (default: $PWD/theory)",
+    "-u",
+    "--theory-update",
+    help="String representation of a dictionary containing update for the theory.",
 )
-def sub_sub_by(destination):
+@option_dest
+def sub_sub_by(theory_update, destination):
     """Bodek-Yang predictions, made with Genie."""
-    runcards.by(destination=destination)
+    if theory_update is not None:
+        theory_update = eval(theory_update)
+
+    runcards.by(theory_update=theory_update, destination=destination)
 
 
 @sub_runcards.command("hiq")
-@click.argument("data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path))
-@click.option(
-    "-d",
-    "--destination",
-    type=click.Path(path_type=pathlib.Path),
-    default=pathlib.Path.cwd().absolute() / "theory",
-    help="Alternative destination path to store the resulting table (default: $PWD/theory)",
+@click.argument(
+    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
 )
+@option_dest
 def sub_sub_hiq(data, destination):
     """High Q2, from cut values of the dataset."""
     runcards.hiq(data, destination=destination)
 
 
-@subcommand.command("grids")
-@click.argument("runcards", type=click.Path(exists=True, path_type=pathlib.Path))
-@click.option(
-    "-d",
-    "--destination",
-    type=click.Path(path_type=pathlib.Path),
-    default=pathlib.Path.cwd().absolute() / "theory",
-    help="Alternative destination path to store the resulting table (default: $PWD/theory)",
+@sub_runcards.command("all")
+@click.argument(
+    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
 )
+@option_dest
+def sub_sub_all(data, destination):
+    """Full datasets runcards"""
+    runcards.dvst(data, destination=destination)
+
+
+@subcommand.command("by")
+@click.argument(
+    "observables", nargs=-1, type=click.Choice(bodek_yang.load.load().members)
+)
+@click.option(
+    "-a", "--action", multiple=True, type=click.Choice(["npy", "txt"])
+)
+@option_dest
+def sub_by(observables, action, destination):
+    """Genie's Bodek-Yang output inspection."""
+
+    values, labels = bodek_yang.extract(observables)
+    _logger.info(f"Extracted {labels} from Genie data, shape={values.shape}")
+
+    if "txt" in action:
+        bodek_yang.dump_text(values, labels=labels, destination=destination)
+    if "npy" in action:
+        bodek_yang.dump(values, destination=destination)
+
+
+@subcommand.command("grids")
+@click.argument(
+    "runcards", type=click.Path(exists=True, path_type=pathlib.Path)
+)
+@option_dest
 def sub_grids(runcards, destination):
     """Generate grids with yadism.
 
@@ -76,7 +114,7 @@ def sub_grids(runcards, destination):
     The internal `name` key is used for the generated grids.
 
     """
-    grids.main(runcards.absolute())
+    grids.main(runcards.absolute(), destination)
 
 
 @subcommand.command("predictions")
@@ -88,14 +126,9 @@ def sub_grids(runcards, destination):
     default="theory",
 )
 @click.option("-x", type=int, default=None)
-@click.option(
-    "-d",
-    "--destination",
-    type=click.Path(path_type=pathlib.Path),
-    default=pathlib.Path.cwd().absolute() / "theory",
-    help="Alternative destination path to store the resulting table (default: $PWD/theory)",
-)
-def sub_predictions(grids, pdf, err, destination, x):
+@click.option("--interactive", is_flag=True)
+@option_dest
+def sub_predictions(grids, pdf, err, destination, x, interactive):
     """Generate predictions from yadism grids.
 
     GRIDS is a path to folder (or tar folder) containing the grids, one per
@@ -104,7 +137,41 @@ def sub_predictions(grids, pdf, err, destination, x):
     structure functions predictions.
 
     """
-    if x is None:
-        predictions.main(grids.absolute(), pdf, err=err)
-    else:
-        predictions.main(grids.absolute(), pdf, err=err, xpoint=x)
+    predictions.main(
+        grids.absolute(),
+        pdf,
+        err=err,
+        xpoint=x,
+        interactive=interactive,
+        destination=destination,
+    )
+
+
+@subcommand.command("compare_to_data")
+@click.argument("grids", type=click.Path(exists=True, path_type=pathlib.Path))
+@click.argument("data", type=click.Path(exists=True, path_type=pathlib.Path))
+@click.argument("pdf")
+@click.option(
+    "--err",
+    type=click.Choice(["pdf", "theory"], case_sensitive=False),
+    default="pdf",
+)
+@click.option("--interactive", is_flag=True)
+@option_dest
+def sub_compare_to_data(grids, data, pdf, err, destination, interactive):
+    """Generate predictions from yadism grids and compare with data.
+
+    GRIDS is a path to folder (or tar folder) containing the grids, one per
+    observable.
+    PDF is the pdf to be convoluted with the grids, in order to obtain the
+    structure functions predictions.
+
+    """
+    compare_to_data.main(
+        grids.absolute(),
+        data.absolute(),
+        pdf,
+        err=err,
+        interactive=interactive,
+        destination=destination,
+    )

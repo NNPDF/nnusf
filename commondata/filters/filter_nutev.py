@@ -15,14 +15,22 @@ from nnusf.data.utils import (
 )
 
 console = Console()
-M_PROTON = 0.938  # GeV
 
-# Exxperiment Metadata
-TARGET = 26
+# Mass determined using Fe pdg values
+M_NEUTRON = 939.565346 * 0.001
+M_PROTON = 938.272013 * 0.001
+A = 56  # A(Fe): Atomic Mass
+Z = 26  # Z(Fe): Atomic Number
+M_NUCLEON = 55.845 * 0.93149432 / (Z * M_PROTON + (A - Z) * M_NEUTRON)
+
+# Experiment metadata
+TARGET = A
 EXP_NAME = "NUTEV"
 
 
-def extract_sf(path: Path, exp_name: str, table_id_list: list, sfunc: str) -> None:
+def extract_sf(
+    path: Path, exp_name: str, table_id_list: list, sfunc: str
+) -> None:
     """Extract F2 and xF3 structure functions.
 
     Parameters
@@ -38,7 +46,9 @@ def extract_sf(path: Path, exp_name: str, table_id_list: list, sfunc: str) -> No
     kinematics = []
     f2_central = []
     f2_exp_errors = []
-    console.print("\n• Extracting F2 and xF3 from HEP tables:", style="bold blue")
+    console.print(
+        "\n• Extracting F2 and xF3 from HEP tables:", style="bold blue"
+    )
     # Loop over the tables that only contains the F2/xF3
     for table_id in track(table_id_list, description="Progress tables"):
         table_path = path.joinpath(f"rawdata/{exp_name}/Table{table_id}.yaml")
@@ -66,7 +76,9 @@ def extract_sf(path: Path, exp_name: str, table_id_list: list, sfunc: str) -> No
             # ---- Extract SYS & STAT uncertainties ---- #
             # Here we sum the systematic uncertainties over
             syst_dic = dep_var_f2dic["values"][bin]["errors"]
-            syst = sum(syst_dic[i]["symerror"] for i in range(1, len(syst_dic) - 1))
+            syst = sum(
+                syst_dic[i]["symerror"] for i in range(1, len(syst_dic) - 1)
+            )
             error_dict_f2 = {
                 "stat": dep_var_f2dic["values"][bin]["errors"][0]["symerror"],
                 "syst": syst,
@@ -74,7 +86,9 @@ def extract_sf(path: Path, exp_name: str, table_id_list: list, sfunc: str) -> No
             f2_exp_errors.append(error_dict_f2)
 
     # Convert the kinematics dictionaries into Pandas tables
-    full_kin = {i + 1: pd.DataFrame(d).stack() for i, d in enumerate(kinematics)}
+    full_kin = {
+        i + 1: pd.DataFrame(d).stack() for i, d in enumerate(kinematics)
+    }
     kinematics_pd = (
         pd.concat(
             full_kin,
@@ -108,7 +122,9 @@ def extract_sf(path: Path, exp_name: str, table_id_list: list, sfunc: str) -> No
     write_to_csv(systypes_folder, f"UNC_{exp_name}_{sfunc}", f2_errors_pd)
 
 
-def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list, obs: str) -> None:
+def extract_d2sigDxDy(
+    path: Path, exp_name: str, table_id_list: list, obs: str
+) -> None:
     """Extract the double differential cross section.
 
     Parameters
@@ -124,7 +140,9 @@ def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list, obs: str) 
     kinematics = []
     dsig_nu_central = []
     dsig_nu_errors = []
-    console.print("\n• Extracting D2SIG/DX/DY from HEP tables:", style="bold blue")
+    console.print(
+        "\n• Extracting D2SIG/DX/DY from HEP tables:", style="bold blue"
+    )
     # Loop over the tables that only contains the dsig/dx/dy
     for table_id in track(table_id_list, description="Progress tables"):
         table_path = path.joinpath(f"rawdata/{exp_name}/Table{table_id}.yaml")
@@ -160,7 +178,9 @@ def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list, obs: str) 
                 dsig_nu_errors.append(error_dict_1stentry)
 
     # Convert the kinematics dictionaries into Pandas tables
-    full_kin = {i + 1: pd.DataFrame(d).stack() for i, d in enumerate(kinematics)}
+    full_kin = {
+        i + 1: pd.DataFrame(d).stack() for i, d in enumerate(kinematics)
+    }
     kinematics_pd = (
         pd.concat(
             full_kin,
@@ -172,7 +192,9 @@ def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list, obs: str) 
 
     # Convert the central data values dict into Pandas tables
     nval_dnuu = len(dsig_nu_central) + 1
-    dnuupd = pd.DataFrame(dsig_nu_central, index=range(1, nval_dnuu), columns=["data"])
+    dnuupd = pd.DataFrame(
+        dsig_nu_central, index=range(1, nval_dnuu), columns=["data"]
+    )
     dnuupd.index.name = "index"
 
     # Convert the error dictionaries into Pandas tables
@@ -190,7 +212,9 @@ def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list, obs: str) 
 
     systypes_folder = path.joinpath("uncertainties")
     systypes_folder.mkdir(exist_ok=True)
-    write_to_csv(systypes_folder, f"UNC_{exp_name}_DXDY{obs}", dsignuu_errors_pd)
+    write_to_csv(
+        systypes_folder, f"UNC_{exp_name}_DXDY{obs}", dsignuu_errors_pd
+    )
 
 
 def main(path_to_commondata: Path) -> None:
@@ -223,7 +247,7 @@ def main(path_to_commondata: Path) -> None:
     extract_d2sigDxDy(path_to_commondata, EXP_NAME, table_dsig_dxdynub, "NUB")
 
     # dump info file
-    dump_info_file(path_to_commondata, EXP_NAME, obs_list, TARGET)
+    dump_info_file(path_to_commondata, EXP_NAME, obs_list, TARGET, M_PROTON)
 
 
 if __name__ == "__main__":

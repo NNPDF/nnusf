@@ -1,9 +1,10 @@
-#
-# Configuration file for nnufit
-#
 ############################################################
-description: A first trial fit with nnufit
+# Configuration file for nnufit
+############################################################
 
+description: runcard for nnufit
+
+# Datasets to be included in the fit
 experiments:
 - {dataset: BEBCWA59_F2, frac: 0.75}
 - {dataset: BEBCWA59_F3, frac: 0.75}
@@ -25,16 +26,26 @@ experiments:
 - {dataset: NUTEV_F2, frac: 0.75}
 - {dataset: NUTEV_F3, frac: 0.75}
 
-trvlseed: 1
-pseudodataseed: 1
+# Define some kinematic cuts (Omit if not needed)
+W2min: 3.5
 
+# chi2 history stored for each `log_freq` epochs
+log_freq: 100
+
+# Various seed values
+global_seeds: 456
+trvlseed: 123
+pseudodataseed: 2
+
+# Define Neural Network Parameters
 fit_parameters:
-  epochs: 17000
-  stopping_patience: 0.1
+  epochs: 2500
+  stopping_patience: 500
   units_per_layer: [70, 55, 40, 20, 20]
-  activation_per_layer: [tanh, tanh,tanh,tanh, selu]
+  activation_per_layer: [tanh, tanh, tanh, tanh, selu]
   optimizer_parameters:
     optimizer: Adam
     clipnorm: 0.00001
-    learning_rate: 0.001
+    learning_rate: 0.05
+  val_chi2_threshold: 30
   initializer_seed: 1

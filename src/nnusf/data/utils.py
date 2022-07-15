@@ -84,7 +84,11 @@ def build_obs_dict(fx: str, tables: list[pd.DataFrame], pid: int) -> dict:
 
 
 def dump_info_file(
-    path: Path, exp_name: str, obs_list: list, target: Optional[float] = None
+    path: Path,
+    exp_name: str,
+    obs_list: list,
+    target: Optional[float] = None,
+    nucleon_mass: Optional[float] = 0.938,
 ):
     """Generate and dump info file.
 
@@ -104,4 +108,5 @@ def dump_info_file(
     info_folder.mkdir(exist_ok=True)
     df = pd.DataFrame(obs_list)
     df["target"] = target
+    df["m_nucleon"] = nucleon_mass
     df.to_csv(info_folder / f"{exp_name}.csv", encoding="utf-8")

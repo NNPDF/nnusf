@@ -17,8 +17,15 @@ from nnusf.data.utils import (
 
 console = Console()
 
+# Mass determined using Fe pdg values
+M_NEUTRON = 939.565346 * 0.001
+M_PROTON = 938.272013 * 0.001
+A = 56  # A(Fe): Atomic Mass
+Z = 26  # Z(Fe): Atomic Number
+M_NUCLEON = 55.845 * 0.93149432 / (Z * M_PROTON + (A - Z) * M_NEUTRON)
+
 # Experiment metadata
-TARGET = 26
+TARGET = A
 EXP_NAME = "CCFR"
 
 
@@ -40,7 +47,9 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
     f3_central = []
     f2_exp_errors = []
     f3_exp_errors = []
-    console.print("\n• Extracting F2 and xF3 from HEP tables:", style="bold blue")
+    console.print(
+        "\n• Extracting F2 and xF3 from HEP tables:", style="bold blue"
+    )
     # Loop over the tables that only contains the F2/xF3
     for table_id in track(table_id_list, description="Progress tables"):
         table_path = path.joinpath(f"rawdata/{exp_name}/Table{table_id}.yaml")
@@ -76,34 +85,48 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
 
             # Extract the uncertainties for F2
             if len(dep_var_f2dic["values"][bin]["errors"]) == 2:
-                f2_sys = dep_var_f2dic["values"][bin]["errors"][1].get("symerror")
+                f2_sys = dep_var_f2dic["values"][bin]["errors"][1].get(
+                    "symerror"
+                )
                 f2_sys = float(f2_sys.rstrip("%"))
             elif len(dep_var_f2dic["values"][bin]["errors"]) == 1:
                 f2_sys = None
             else:
-                raise ValueError("The systematics need to be taken in Quadrature.")
+                raise ValueError(
+                    "The systematics need to be taken in Quadrature."
+                )
             error_dict_f2 = {
                 "stat": dep_var_f2dic["values"][bin]["errors"][0]["symerror"],
-                "syst": (f2_value * f2_sys) / 100 if f2_sys is not None else 0.0,
+                "syst": (f2_value * f2_sys) / 100
+                if f2_sys is not None
+                else 0.0,
             }
             f2_exp_errors.append(error_dict_f2)
 
             # Extract the uncertainties for F3
             if len(dep_var_f3dic["values"][bin]["errors"]) == 2:
-                f3_sys = dep_var_f3dic["values"][bin]["errors"][1].get("symerror")
+                f3_sys = dep_var_f3dic["values"][bin]["errors"][1].get(
+                    "symerror"
+                )
                 f3_sys = float(f3_sys.rstrip("%"))
             elif len(dep_var_f3dic["values"][bin]["errors"]) == 1:
                 f3_sys = None
             else:
-                raise ValueError("The systematics need to be taken in Quadrature.")
+                raise ValueError(
+                    "The systematics need to be taken in Quadrature."
+                )
             error_dict_f3 = {
                 "stat": dep_var_f3dic["values"][bin]["errors"][0]["symerror"],
-                "syst": (f3_value * f3_sys) / 100 if f3_sys is not None else 0.0,
+                "syst": (f3_value * f3_sys) / 100
+                if f3_sys is not None
+                else 0.0,
             }
             f3_exp_errors.append(error_dict_f3)
 
     # Convert the kinematics dictionaries into Pandas tables
-    full_kin = {i + 1: pd.DataFrame(d).stack() for i, d in enumerate(kinematics)}
+    full_kin = {
+        i + 1: pd.DataFrame(d).stack() for i, d in enumerate(kinematics)
+    }
     kinematics_pd = pd.concat(full_kin, axis=1).swaplevel(0, 1).T
 
     # Convert the central data values dict into Pandas tables
@@ -154,7 +177,7 @@ def main(path_to_commondata: Path) -> None:
     extract_f2f3(path_to_commondata, EXP_NAME, table_f2_xf3)
 
     # dump info file
-    dump_info_file(path_to_commondata, EXP_NAME, obs_list, TARGET)
+    dump_info_file(path_to_commondata, EXP_NAME, obs_list, TARGET, M_NUCLEON)
 
 
 if __name__ == "__main__":

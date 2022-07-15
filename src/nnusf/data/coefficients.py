@@ -21,6 +21,8 @@ def cross_section(
     exp = name.split("_")[0]
     try:
         xs = loader.MAP_EXP_YADISM[exp]
+        if name == "CDHSW_FW":
+            xs = "FW"
     except KeyError:
         raise MissingRequisite(f"NO available cross-section for '{exp}'")
 
@@ -48,12 +50,10 @@ def cross_section(
 
     coeffs = np.zeros((len(kinematics), 6))
     coeffs[:, idx] = np.transpose(
-        yadcoeffs[:, :, np.newaxis] * np.ones_like(pos)[np.newaxis, np.newaxis, :],
+        yadcoeffs[:, :, np.newaxis]
+        * np.ones_like(pos)[np.newaxis, np.newaxis, :],
         [0, 2, 1],
     ).reshape(yadcoeffs.shape[0], yadcoeffs.shape[1] * pos.size)
-
-    if exp == "NUTEV":
-        coeffs /= 100.0
 
     return coeffs
 
@@ -114,4 +114,6 @@ def main(datapaths: list[pathlib.Path], destination: pathlib.Path):
 
         dest = (destination / name).with_suffix(".npy")
         np.save(dest, coeffs)
-        _logger.info(f"{coeffs.shape} saved in {dest.relative_to(pathlib.Path.cwd())}")
+        _logger.info(
+            f"{coeffs.shape} saved in {dest.relative_to(pathlib.Path.cwd())}"
+        )

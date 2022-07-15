@@ -4,8 +4,8 @@ import logging
 import pathlib
 from typing import Optional
 
-import matplotlib.pyplot as plt
 import matplotlib.figure
+import matplotlib.pyplot as plt
 import numpy as np
 
 from .. import utils
@@ -91,6 +91,6 @@ def main(
 
     _logger.info(
         "Plotted [b magenta]kinematics[/] of requested datasets,"
-        f" in '{figname.relative_to(pathlib.Path.cwd())}'",
+        f" in '{figname.absolute().relative_to(pathlib.Path.cwd())}'",
         extra={"markup": True},
     )

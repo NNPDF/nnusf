@@ -12,7 +12,7 @@ authors = ["Alessandro Candido <candido.ale@gmail.com>"]
 python = "^3.9,<3.11"
 h5py = "^3.7.0"
 PyYAML = "^6.0"
-yadism = { version = "^0.11.0", extras = ["pineappl", "mark"] }
+yadism = { version = "^0.11.2", extras = ["pineappl", "mark"] }
 pineappl = "^0.5.0"
 a3b2bbc3ced97675ac3a71df45f55ba = "^6.4.0"
 matplotlib = "^3.5.2"
@@ -21,6 +21,7 @@ pandas = "^1.4.2"
 rich = "^10"
 scipy = "^1.8.1"
 tensorflow = "^2.8.2"
+pylint = "^2.14.4"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1"
@@ -35,6 +36,8 @@ nnu = "nnusf.cli:command"
 coverage = "$BROWSER htmlcov/index.html"
 test = "pytest tests"
 test-cov = ["test", "coverage"]
+lint = "pylint src/**/*.py -E"
+lint-warnings = "pylint src/**/*.py --exit-zero"
 
 [tool.pytest.ini_options]
 testpaths = ['tests/']

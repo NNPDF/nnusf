@@ -8,13 +8,14 @@ from . import load
 
 
 def observables() -> dict:
-    q2grid, xgrid = load.kin_grids()
+    xgrid, q2grid = load.kin_grids()
 
     kinematics = np.array(np.meshgrid(q2grid, xgrid)).T.reshape(
         (q2grid.size * xgrid.size, 2)
     )
     kinematics = [
-        dict(zip(("Q2", "x", "y"), [float(k) for k in (*kin, 0)])) for kin in kinematics
+        dict(zip(("Q2", "x", "y"), [float(k) for k in (*kin, 0)]))
+        for kin in kinematics
     ]
 
     runcard = copy.deepcopy(yadmark.data.observables.default_card)
@@ -25,7 +26,7 @@ def observables() -> dict:
         )[0]
     )
     runcard["prDIS"] = "CC"
-    runcard["projectile"] = "neutrino"
+    runcard["ProjectileDIS"] = "neutrino"
     #  runcard["interpolation_xgrid"] = xgrid.tolist()
 
     return {"bodek-yang": runcard}

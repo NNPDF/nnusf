@@ -1,7 +1,6 @@
-fit: /home/roy/github/NNPDF/nnusf/src/nnusf/sffit/fit_runcard
-
+# Slice of (x, A)
+a_slice: 56
 x_slice: 0.01
-a_slice: 26
 
 experiments:
   - BEBCWA59_F2
@@ -21,10 +20,9 @@ experiments:
   - CHORUS_F3
   - NUTEV_DXDYNUB
   - NUTEV_DXDYNUU
-  - NUTEV_F2
   - NUTEV_F3
+  - NUTEV_F2
 
 actions:
   - prediction_data_comparison
-  # - sf_q_band
-  # - sfs_q_replicas
+  - sf_q_band

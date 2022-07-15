@@ -29,7 +29,7 @@ def cuts(cuts: dict[str, dict[str, float]], table: pd.DataFrame) -> np.ndarray:
         the mask generated
 
     """
-    kins = {k: table[k] for k in ["x", "y", "Q2"] if k in table}
+    kins = {k: table[k] for k in ["x", "Q2", "W2"] if k in table}
     mask = np.full_like(table["x"], True, dtype=np.bool_)
 
     for var, kin in kins.items():
@@ -63,7 +63,9 @@ def symlog_color_scale(ar: np.ndarray) -> clr.SymLogNorm:
 
     """
     c = clr.SymLogNorm(abs(ar[ar != 0.0]).min())
-    _logger.info("Symmetric [b magenta]log scale[/] enabled.", extra={"markup": True})
+    _logger.info(
+        "Symmetric [b magenta]log scale[/] enabled.", extra={"markup": True}
+    )
     return c
 
 

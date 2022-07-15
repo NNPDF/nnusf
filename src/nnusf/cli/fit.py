@@ -18,13 +18,14 @@ def subcommand():
 
 @subcommand.command("run")
 @click.argument("runcard", type=click.Path(exists=True, path_type=pathlib.Path))
-@click.option("-r", "--replica", type=int, default=1)
+@click.argument("replica", type=int)
 @click.option(
     "-d",
     "--destination",
     type=click.Path(path_type=pathlib.Path),
-    default=pathlib.Path.cwd().absolute() / "fits",
+    default=None,
     help="Alternative destination path to store the resulting model (default: $PWD/commondata)",
 )
 def sub_run(runcard, replica, destination):
+    """Call the sffit run function."""
     run_sffit.main(runcard, replica, destination=destination)

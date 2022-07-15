@@ -67,7 +67,9 @@ def compute(
     return covmat
 
 
-def heatmap(covmat: np.ndarray, symlog: bool = False) -> matplotlib.figure.Figure:
+def heatmap(
+    covmat: np.ndarray, symlog: bool = False
+) -> matplotlib.figure.Figure:
     """Plot covariance matrix.
 
     Parameters
@@ -123,7 +125,7 @@ def main(
         _logger.info(
             f"Plotted [b magenta]{normtag}{invtag}[/]covariance matrix"
             f" {covmat.shape} of '{name}',"
-            f" in '{figname.relative_to(pathlib.Path.cwd())}'",
+            f" in '{figname.absolute().relative_to(pathlib.Path.cwd())}'",
             extra={"markup": True},
         )
 
@@ -135,5 +137,5 @@ def main(
 
     _logger.info(
         "Plotted covariance matrix of requested datasets,"
-        f" in '{figname.relative_to(pathlib.Path.cwd())}'"
+        f" in '{figname.absolute().relative_to(pathlib.Path.cwd())}'"
     )

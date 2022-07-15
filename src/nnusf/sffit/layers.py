@@ -1,36 +1,31 @@
+# -*- coding: utf-8 -*-
 import tensorflow as tf
 
 
-class Chi2Layer(tf.keras.layers.Layer):
-    def __init__(
-        self,
-        theory_grid,
-        invcovmat,
-        experimental_central_value,
-        data_domain,
-        training_data,
-        **args
-    ):
-        super(Chi2Layer, self).__init__(**args)
+class ObservableLayer(tf.keras.layers.Layer):
+    def __init__(self, theory_grid, **kwargs):
         self.theory_grid = tf.keras.backend.constant(theory_grid)
-        self.invcovmat = tf.keras.backend.constant(invcovmat)
-        self.experimental_central_value = tf.keras.backend.constant(
-            experimental_central_value
-        )
-        self.data_domain = data_domain
-        self.training_data = training_data
+        super().__init__(**kwargs)
 
     def call(self, inputs):
-        if inputs.shape[1]:
-            inputs = inputs[:, self.data_domain[0] : self.data_domain[1], :]
-        predictions = tf.einsum("ijk,jk->j", inputs, self.theory_grid)
-        distance = predictions - self.experimental_central_value
-        tmp_dot = tf.tensordot(self.invcovmat, distance, axes=1)
-        chi2 = tf.tensordot(distance, tmp_dot, axes=1)
-        if self.training_data:
-            tf.print("training")
-            tf.print(chi2 / self.experimental_central_value.shape[0])
-        else:
-            tf.print("validation")
-            tf.print(chi2 / self.experimental_central_value.shape[0])
-        return chi2
+        result = tf.einsum("ijk,jk->ij", inputs, self.theory_grid)
+        return result
+
+
+class GenMaskLayer(tf.keras.layers.Layer):
+    def __init__(self, bool_mask, **kwargs):
+        self.mask = bool_mask
+        super().__init__(**kwargs)
+
+    def call(self, inputs):
+        return tf.boolean_mask(inputs, self.mask, axis=1)
+
+
+class TheoryConstraint(tf.keras.layers.Layer):
+    def call(self, inputs):
+        unstacked_inputs = tf.unstack(inputs, axis=2)
+        ones = tf.ones_like(unstacked_inputs[0])
+        input_x_equal_one = tf.stack(
+            [ones, unstacked_inputs[1], unstacked_inputs[2]], axis=2
+        )
+        return input_x_equal_one

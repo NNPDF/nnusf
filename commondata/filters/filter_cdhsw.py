@@ -21,9 +21,9 @@ console = Console()
 # Mass determined using Fe pdg values
 M_NEUTRON = 939.565346 * 0.001
 M_PROTON = 938.272013 * 0.001
-A = 26
-N = 56
-M_NUCLEON = 55.845 * 0.93149432 / (A * M_PROTON + (N - A) * M_NEUTRON)
+A = 56  # A(Fe): Atomic Mass
+Z = 26  # Z(Fe): Atomic Number
+M_NUCLEON = 55.845 * 0.93149432 / (Z * M_PROTON + (A - Z) * M_NEUTRON)
 
 # Experiment metadata
 TARGET = A
@@ -48,7 +48,9 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
     f3_central = []
     f2_exp_errors = []
     f3_exp_errors = []
-    console.print("\n• Extracting F2 and xF3 from HEP tables:", style="bold blue")
+    console.print(
+        "\n• Extracting F2 and xF3 from HEP tables:", style="bold blue"
+    )
     # Loop over the tables that only contains the F2/xF3
     for table_id in track(table_id_list, description="Progress tables"):
         table_path = path.joinpath(f"rawdata/{exp_name}/Table{table_id}.yaml")
@@ -123,7 +125,9 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
             f3_exp_errors.append(error_dict_f3)
 
     # Convert the kinematics dictionaries into Pandas tables
-    full_kin = {i + 1: pd.DataFrame(d).stack() for i, d in enumerate(kinematics)}
+    full_kin = {
+        i + 1: pd.DataFrame(d).stack() for i, d in enumerate(kinematics)
+    }
     kinematics_pd = (
         pd.concat(
             full_kin,
@@ -164,7 +168,9 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
     write_to_csv(systypes_folder, f"UNC_{exp_name}_F3", f3_errors_pd)
 
 
-def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list, obs: str) -> None:
+def extract_d2sigDxDy(
+    path: Path, exp_name: str, table_id_list: list, obs: str
+) -> None:
     """Extract the double differential cross sections.
 
     Parameters
@@ -180,7 +186,9 @@ def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list, obs: str) 
     kinematics = []
     dsig_nu_central = []
     dsig_nu_errors = []
-    console.print("\n• Extracting D2SIG/DX/DY from HEP tables:", style="bold blue")
+    console.print(
+        "\n• Extracting D2SIG/DX/DY from HEP tables:", style="bold blue"
+    )
     # Loop over the tables that only contains the dsig/dx/dy
     for table_id in track(table_id_list, description="Progress tables"):
         table_path = path.joinpath(f"rawdata/{exp_name}/Table{table_id}.yaml")
@@ -210,7 +218,11 @@ def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list, obs: str) 
                 kin_dict = {
                     "x": {"mid": x_valmid, "min": x_valmin, "max": x_valmax},
                     "Q2": {"mid": q2_mid, "min": q2_min, "max": q2_max},
-                    "y": {"mid": y_value_mid, "min": y_value_min, "max": y_value_max},
+                    "y": {
+                        "mid": y_value_mid,
+                        "min": y_value_min,
+                        "max": y_value_max,
+                    },
                 }
                 kinematics.append(kin_dict)
                 # ---- Extract central values and uncertainties ---- #
@@ -225,7 +237,9 @@ def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list, obs: str) 
                 dsig_nu_errors.append(error_dict_1stentry)
 
     # Convert the kinematics dictionaries into Pandas tables
-    full_kin = {i + 1: pd.DataFrame(d).stack() for i, d in enumerate(kinematics)}
+    full_kin = {
+        i + 1: pd.DataFrame(d).stack() for i, d in enumerate(kinematics)
+    }
     kinematics_pd = (
         pd.concat(
             full_kin,
@@ -237,7 +251,9 @@ def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list, obs: str) 
 
     # Convert the central data values dict into Pandas tables
     nval_dnuu = len(dsig_nu_central) + 1
-    dnuupd = pd.DataFrame(dsig_nu_central, index=range(1, nval_dnuu), columns=["data"])
+    dnuupd = pd.DataFrame(
+        dsig_nu_central, index=range(1, nval_dnuu), columns=["data"]
+    )
     dnuupd.index.name = "index"
 
     # Convert the error dictionaries into Pandas tables
@@ -255,7 +271,9 @@ def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list, obs: str) 
 
     systypes_folder = path.joinpath("uncertainties")
     systypes_folder.mkdir(exist_ok=True)
-    write_to_csv(systypes_folder, f"UNC_{exp_name}_DXDY{obs}", dsignuu_errors_pd)
+    write_to_csv(
+        systypes_folder, f"UNC_{exp_name}_DXDY{obs}", dsignuu_errors_pd
+    )
 
 
 def extract_fw(path: Path, exp_name: str, table_id_list: list) -> None:
@@ -348,7 +366,9 @@ def extract_fw(path: Path, exp_name: str, table_id_list: list) -> None:
             fw_exp_errors.append(error_dict_fw)
 
     # Convert the kinematics dictionaries into Pandas tables
-    full_kin = {i + 1: pd.DataFrame(d).stack() for i, d in enumerate(kinematics)}
+    full_kin = {
+        i + 1: pd.DataFrame(d).stack() for i, d in enumerate(kinematics)
+    }
     kinematics_pd = (
         pd.concat(
             full_kin,
@@ -395,7 +415,10 @@ def main(path_to_commondata: Path) -> None:
     # List of tables containing measurements for F2 and xF3
     table_f2_xf3 = [i for i in range(19, 30)]
     obs_list.extend(
-        [build_obs_dict("F2", table_f2_xf3, 14), build_obs_dict("F3", table_f2_xf3, 14)]
+        [
+            build_obs_dict("F2", table_f2_xf3, 14),
+            build_obs_dict("F3", table_f2_xf3, 14),
+        ]
     )
     extract_f2f3(path_to_commondata, EXP_NAME, table_f2_xf3)
 
@@ -414,7 +437,7 @@ def main(path_to_commondata: Path) -> None:
     obs_list.append(build_obs_dict("FW", table_fw, 14))
     extract_fw(path_to_commondata, EXP_NAME, table_fw)
     # dump info file
-    dump_info_file(path_to_commondata, EXP_NAME, obs_list, TARGET)
+    dump_info_file(path_to_commondata, EXP_NAME, obs_list, TARGET, M_NUCLEON)
 
 
 if __name__ == "__main__":

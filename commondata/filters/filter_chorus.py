@@ -20,9 +20,9 @@ console = Console()
 # Mass determined using scikithep/particle for Pb208 in GeV
 M_NEUTRON = 939.565346 * 0.001
 M_PROTON = 938.272013 * 0.001
-A = 82
-N = 208
-M_NUCLEON = 193.729 / (A * M_PROTON + (N - A) * M_NEUTRON)
+A = 208  # A(Pb): Atomic Mass
+Z = 82  # Z(Pb): Atomic Number
+M_NUCLEON = 193.729 / (Z * M_PROTON + (A - Z) * M_NEUTRON)
 
 # Experiment Metadata
 TARGET = A
@@ -47,7 +47,9 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
     f3_central = []
     f2_exp_errors = []
     f3_exp_errors = []
-    console.print("\n• Extracting F2 and xF3 from HEP tables:", style="bold blue")
+    console.print(
+        "\n• Extracting F2 and xF3 from HEP tables:", style="bold blue"
+    )
     # Loop over the tables that only contains the F2/xF3
     for table_id in track(table_id_list, description="Progress tables"):
         table_path = path.joinpath(f"rawdata/{exp_name}/Table{table_id}.yaml")
@@ -91,7 +93,9 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list) -> None:
             f3_exp_errors.append(error_dict_f3)
 
     # Convert the kinematics dictionaries into Pandas tables
-    full_kin = {i + 1: pd.DataFrame(d).stack() for i, d in enumerate(kinematics)}
+    full_kin = {
+        i + 1: pd.DataFrame(d).stack() for i, d in enumerate(kinematics)
+    }
     kinematics_pd = (
         pd.concat(
             full_kin,
@@ -150,7 +154,9 @@ def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list) -> None:
     dsig_nub_centrl = []
     dsig_nu_errors = []
     dsig_nub_error = []
-    console.print("\n• Extracting D2SIG/DX/DY from HEP tables:", style="bold blue")
+    console.print(
+        "\n• Extracting D2SIG/DX/DY from HEP tables:", style="bold blue"
+    )
     # Loop over the tables that only contains the dsig/dx/dy
     for table_id in track(table_id_list, description="Progress tables"):
         table_path = path.joinpath(f"rawdata/{exp_name}/Table{table_id}.yaml")
@@ -187,24 +193,39 @@ def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list) -> None:
             }
             kinematics.append(kin_dict)
             # ---- Extract central values for SF ---- #
+            # Note the additional factor to convert the xs to cm^2/Gev
             dsig_nuu_value = dep_var_dsig_nu["values"][bin]["value"]
-            dsig_nu_central.append(dsig_nuu_value)
+            dsig_nu_central.append(float(dsig_nuu_value) / 10)
             dsig_nub_value = dep_vr_dsig_nub["values"][bin]["value"]
-            dsig_nub_centrl.append(dsig_nub_value)
+            dsig_nub_centrl.append(float(dsig_nub_value) / 10)
             # ---- Extract SYS & STAT uncertainties ---- #
             error_dict_1stentry = {
-                "stat": dep_var_dsig_nu["values"][bin]["errors"][0]["symerror"],
-                "syst": dep_var_dsig_nu["values"][bin]["errors"][1]["symerror"],
+                "stat": float(
+                    dep_var_dsig_nu["values"][bin]["errors"][0]["symerror"]
+                )
+                / 10,
+                "syst": float(
+                    dep_var_dsig_nu["values"][bin]["errors"][1]["symerror"]
+                )
+                / 10,
             }
             dsig_nu_errors.append(error_dict_1stentry)
             error_dict_2ndentry = {
-                "stat": dep_vr_dsig_nub["values"][bin]["errors"][0]["symerror"],
-                "syst": dep_vr_dsig_nub["values"][bin]["errors"][1]["symerror"],
+                "stat": float(
+                    dep_vr_dsig_nub["values"][bin]["errors"][0]["symerror"]
+                )
+                / 10,
+                "syst": float(
+                    dep_vr_dsig_nub["values"][bin]["errors"][1]["symerror"]
+                )
+                / 10,
             }
             dsig_nub_error.append(error_dict_2ndentry)
 
     # Convert the kinematics dictionaries into Pandas tables
-    full_kin = {i + 1: pd.DataFrame(d).stack() for i, d in enumerate(kinematics)}
+    full_kin = {
+        i + 1: pd.DataFrame(d).stack() for i, d in enumerate(kinematics)
+    }
     kinematics_pd = (
         pd.concat(
             full_kin,
@@ -217,9 +238,13 @@ def extract_d2sigDxDy(path: Path, exp_name: str, table_id_list: list) -> None:
     # Convert the central data values dict into Pandas tables
     nval_dnuu = len(dsig_nu_central) + 1
     nval_dnub = len(dsig_nub_centrl) + 1
-    dnuupd = pd.DataFrame(dsig_nu_central, index=range(1, nval_dnuu), columns=["data"])
+    dnuupd = pd.DataFrame(
+        dsig_nu_central, index=range(1, nval_dnuu), columns=["data"]
+    )
     dnuupd.index.name = "index"
-    dnubpd = pd.DataFrame(dsig_nub_centrl, index=range(1, nval_dnub), columns=["data"])
+    dnubpd = pd.DataFrame(
+        dsig_nub_centrl, index=range(1, nval_dnub), columns=["data"]
+    )
     dnubpd.index.name = "index"
 
     # Convert the error dictionaries into Pandas tables
@@ -255,7 +280,10 @@ def main(path_to_commondata: Path) -> None:
     # List of tables containing measurements for F2 and xF3
     table_f2_xf3 = [i for i in range(1, 12)]
     obs_list.extend(
-        [build_obs_dict("F2", table_f2_xf3, 0), build_obs_dict("F3", table_f2_xf3, 0)]
+        [
+            build_obs_dict("F2", table_f2_xf3, 0),
+            build_obs_dict("F3", table_f2_xf3, 0),
+        ]
     )
     extract_f2f3(path_to_commondata, EXP_NAME, table_f2_xf3)
 
@@ -270,7 +298,7 @@ def main(path_to_commondata: Path) -> None:
     extract_d2sigDxDy(path_to_commondata, EXP_NAME, table_dsig_dxdy)
 
     # dump info file
-    dump_info_file(path_to_commondata, EXP_NAME, obs_list, TARGET)
+    dump_info_file(path_to_commondata, EXP_NAME, obs_list, TARGET, M_NUCLEON)
 
 
 if __name__ == "__main__":

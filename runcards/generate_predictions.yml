@@ -1,0 +1,14 @@
+# A value
+a_slice: 56
+
+# List of x values
+x_slice:
+  - 0.0126
+  - 0.0256
+  - 0.0534
+  - 0.0794
+  - 0.1250
+  - 0.3160
+
+actions:
+  - save_predictions_txt

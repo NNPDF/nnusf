@@ -18,8 +18,16 @@ from nnusf.data.utils import (
 
 console = Console()
 
+# Mass determined using Ne pdg values
+M_NEUTRON = 939.565346 * 0.001
+M_PROTON = 938.272013 * 0.001
+A = 20  # A(Ne): Atomic Mass
+Z = 10  # Z(Ne): Atomic Number
+M_NUCLEON = 20.1797 * 0.93149432 / (Z * M_PROTON + (A - Z) * M_NEUTRON)
 
-TARGET = 10
+
+# Experiment metadata
+TARGET = A
 EXP_NAME = "BEBCWA59"
 
 
@@ -41,7 +49,9 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list):
     f3_central = []
     f2_exp_errors = []
     f3_exp_errors = []
-    console.print("\n• Extracting F2 and xF3 from HEP tables:", style="bold blue")
+    console.print(
+        "\n• Extracting F2 and xF3 from HEP tables:", style="bold blue"
+    )
     # Loop over the tables that only contains the F2/xF3
     for table_id in track(table_id_list, description="Progress tables"):
         table_path = path.joinpath(f"rawdata/{exp_name}/Table{table_id}.yaml")
@@ -97,7 +107,9 @@ def extract_f2f3(path: Path, exp_name: str, table_id_list: list):
             f3_exp_errors.append(error_dict_f3)
 
     # Convert the kinematics dictionaries into Pandas tables
-    full_kin = {i + 1: pd.DataFrame(d).stack() for i, d in enumerate(kinematics)}
+    full_kin = {
+        i + 1: pd.DataFrame(d).stack() for i, d in enumerate(kinematics)
+    }
     kinematics_pd = pd.concat(full_kin, axis=1).swaplevel(0, 1).T
 
     # Convert the central data values dict into Pandas tables
@@ -149,7 +161,7 @@ def main(path_to_commondata: Path):
     extract_f2f3(path_to_commondata, EXP_NAME, table_f2_xf3)
 
     # dump info file
-    dump_info_file(path_to_commondata, EXP_NAME, obs_list, TARGET)
+    dump_info_file(path_to_commondata, EXP_NAME, obs_list, TARGET, M_NUCLEON)
 
 
 if __name__ == "__main__":
