@@ -16,8 +16,8 @@ MAP_EXP_YADISM = {
     "NUTEV": "XSNUTEVNU",
     "CHORUS": "XSCHORUSCC",
     "CDHSW": "XSCHORUSCC",
-    # for the proton boundary condition the xs 
-    # definition is arbitrary 
+    # for the proton boundary condition the xs
+    # definition is arbitrary
     "PROTONBC": "XSCHORUSCC",
 }
 
@@ -85,8 +85,8 @@ class Loader:
         """
         # info file
         exp_name = self.name.split("_")[0]
-        if "MATCHING-" in exp_name:
-            exp_name = exp_name.split("-")[1]
+        if "_MATCHING-" in exp_name:
+            exp_name = exp_name.strip("_MATCHING")
         info_df = pd.read_csv(f"{self.commondata_path}/info/{exp_name}.csv")
 
         # Extract values from the kinematic tables
@@ -95,9 +95,11 @@ class Loader:
         )
         if kin_file.exists():
             kin_df = pd.read_csv(kin_file).iloc[1:, 1:4].reset_index(drop=True)
-        elif "MATCHING-" in self.name:
+        elif "_MATCHING" in self.name:
             if "FW" in self.name or "DXDY" in self.name:
-                file = f"{self.commondata_path}/kinematics/KIN_MATCHING_XSEC.csv"
+                file = (
+                    f"{self.commondata_path}/kinematics/KIN_MATCHING_XSEC.csv"
+                )
             else:
                 file = f"{self.commondata_path}/kinematics/KIN_MATCHING_FX.csv"
             kin_df = pd.read_csv(file).iloc[1:, 1:4].reset_index(drop=True)
@@ -111,7 +113,7 @@ class Loader:
             raise ObsTypeError("{self.obs} is not recognised as an Observable.")
 
         # Extract values from the central data
-        dat_name = f"{self.commondata_path}/data/DATA_{self.name}.csv" 
+        dat_name = f"{self.commondata_path}/data/DATA_{self.name}.csv"
         data_df = pd.read_csv(dat_name, header=0, na_values=["-", " "])
         data_df = data_df.iloc[:, 1:].reset_index(drop=True)
         # Extract values from the uncertainties
@@ -121,7 +123,7 @@ class Loader:
 
         # Add a column to `kin_df` that stores the W
         q2 = kin_df["Q2"].astype(float, errors="raise")  # Object -> float
-        xx = kin_df["x"].astype(float, errors="raise")   # Object -> float
+        xx = kin_df["x"].astype(float, errors="raise")  # Object -> float
         kin_df["W2"] = q2 * (1 - xx) / xx + info_df["m_nucleon"][0]
 
         # Concatenate enverything into one single big table
@@ -129,7 +131,7 @@ class Loader:
         new_df = new_df.dropna().astype(float)
 
         # drop data with 0 total uncertainty:
-        if "MATCHING-" not in self.name:
+        if "_MATCHING" not in self.name:
             new_df = new_df[new_df["stat"] + new_df["syst"] != 0.0]
 
         # Restore index before implementing the W cut
@@ -154,7 +156,8 @@ class Loader:
             info_df.loc[info_df["type"] == self.obs, "projectile"],
         )
         new_df["m_nucleon"] = np.full(
-            number_datapoints, info_df["m_nucleon"][0],
+            number_datapoints,
+            info_df["m_nucleon"][0],
         )
 
         return new_df, new_df.index

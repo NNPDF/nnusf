@@ -6,13 +6,12 @@ Generate matching grids
 import itertools
 import logging
 import pathlib
-import shutil
 
 import numpy as np
 import pandas as pd
 from eko.interpolation import make_lambert_grid
 
-from .utils import construct_uncertainties, write_to_csv, dump_info_file, build_obs_dict
+from .utils import build_obs_dict, construct_uncertainties, dump_info_file, write_to_csv
 
 _logger = logging.getLogger(__name__)
 
@@ -61,7 +60,7 @@ def main(destination: pathlib.Path, datapaths: list[pathlib.Path]):
         if "MATCHING" in data_name:
             continue
         obs = data_name.split("_")[-1]
-        new_name = f"MATCHING-{data_name}"
+        new_name = f"{data_name}_MATCHING"
 
         is_xsec = "DXDY" in obs or "FW" in obs
         if is_xsec:
@@ -90,7 +89,7 @@ def main(destination: pathlib.Path, datapaths: list[pathlib.Path]):
             err_list.append({"stat": 0.0, "syst": 0.0})
 
         kinematics_pd = pd.DataFrame(kinematics)
-        data_pd = pd.DataFrame({"data": np.zeros((n_points))})
+        data_pd = pd.DataFrame({"data": np.zeros(n_points)})
         errors_pd = construct_uncertainties(err_list)
 
         kinematics_folder = destination.joinpath("kinematics")
