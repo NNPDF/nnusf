@@ -61,7 +61,7 @@ def overlap(datasets: list[str], path: pathlib.Path) -> dict:
                 obsname = defs.sfmap[obs]
             else:
                 exp = kins["exp"]
-                if "MATCHING" in exp:
+                if "_MATCHING" in exp:
                     exp = exp.split("-")[1]
                 if obs in defs.xsmap:
                     obsname = defs.xsmap[obs]
