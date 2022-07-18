@@ -19,7 +19,7 @@ def replica(shape):
 tarpath = pathlib.Path(sys.argv[1])
 files = {
     "F2": "F2_total.npy",
-    "F3": "F2_total.npy",
+    "F3": "F3_total.npy",
     "x": "xgrid.npy",
     "q2": "q2grid.npy",
 }
