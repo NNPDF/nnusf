@@ -61,6 +61,10 @@ jobs:
             poetry run nnu fit run $FITCARD $i -d $OUTPUT_FOLDER
           done
 
+      - name: Install base texlive 🔨
+        shell: bash --login {0}
+        run: sudo apt-get install texlive texlive-science dvipng texlive-latex-extra texlive-fonts-recommended cm-super
+
       - name: Generate fit report 📘
         shell: bash --login {0}
         run: |
