@@ -57,6 +57,8 @@ def sub_sub_by(theory_update, obs_update, destination):
     """Bodek-Yang predictions, made with Genie."""
     if theory_update is not None:
         theory_update = eval(theory_update)
+    if obs_update is not None:
+        obs_update = eval(obs_update)
 
     runcards.by(
         theory_update=theory_update, obs_update=obs_update, destination=destination

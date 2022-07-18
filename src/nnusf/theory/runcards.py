@@ -69,7 +69,8 @@ def by(
     """Generate Bodek-Yang yadism runcards."""
     obs = bodek_yang.runcards.observables()
     if obs_update is not None:
-        obs.update(obs_update)
+        # cryptic code: update `v` and return it, since `v.update` returns `None`
+        obs = {k: v.update(obs_update) or v for k, v in obs.items()}
         _logger.info(f"Base theory updated with {obs_update}")
 
     dump(
