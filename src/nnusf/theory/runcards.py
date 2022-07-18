@@ -63,27 +63,37 @@ def dump(
         )
 
 
-def by(theory_update: Optional[dict], destination: pathlib.Path):
+def by(
+    theory_update: Optional[dict], obs_update: Optional[dict], destination: pathlib.Path
+):
     """Generate Bodek-Yang yadism runcards."""
+    obs = bodek_yang.runcards.observables()
+    if obs_update is not None:
+        obs.update(obs_update)
+        _logger.info(f"Base theory updated with {obs_update}")
+
     dump(
         theory(theory_update),
-        bodek_yang.runcards.observables(),
+        obs,
         destination=destination,
     )
 
 
-def datsets_path(datasets):
+def datasets_path(datasets) -> pathlib.Path:
     path = None
     if len(datasets) > 0:
         path = datasets[0].parents[1].absolute()
         for ds in datasets:
             assert ds.parents[1].absolute() == path
+    else:
+        raise ValueError("No datasets passed, impossible to infer datasets location.")
+
     return path
 
 
 def hiq(datasets: list[pathlib.Path], destination: pathlib.Path):
     """Generate large Q2 yadism runcards."""
-    path = datsets_path(datasets)
+    path = datasets_path(datasets)
     dump(
         theory(),
         highq.runcards.observables(
@@ -102,7 +112,7 @@ def update_theory(name: str, path: pathlib.Path) -> dict:
 
 def dvst(datasets: list[pathlib.Path], destination: pathlib.Path):
     """Generate yadism runcards for all datapoints."""
-    path = datsets_path(datasets)
+    path = datasets_path(datasets)
     utils.mkdest(destination)
     for dataset in datasets:
         data_name = "_".join(dataset.stem.split("_")[1:])
@@ -110,16 +120,14 @@ def dvst(datasets: list[pathlib.Path], destination: pathlib.Path):
         theory_card = update_theory(data_name, path)
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir = pathlib.Path(tmpdir)
-            utils.write(theory_card, tmpdir / f"theory.yaml")
+            utils.write(theory_card, tmpdir / "theory.yaml")
             for name, observable_card in ocards.items():
                 utils.write(observable_card, tmpdir / f"obs-{name}.yaml")
 
             tarpath = destination / f"runcards-{data_name}.tar"
             with tarfile.open(tarpath, "w") as tar:
                 for tmppath in tmpdir.iterdir():
-                    tar.add(
-                        tmppath.absolute(), arcname="runcards/" + tmppath.name
-                    )
+                    tar.add(tmppath.absolute(), arcname="runcards/" + tmppath.name)
 
             _logger.info(
                 f"Runcards have been dumped to '{tarpath.relative_to(pathlib.Path.cwd())}'"
