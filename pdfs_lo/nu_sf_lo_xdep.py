@@ -14,13 +14,12 @@ from pylab import *
 #---------------------------------------------------------
 #---------------------------------------------------------
 # General plot settings
-nq = 200
-qmin = 1.65
-qmax=10
+nx = 200
+xmin = 3e-3
+xmax=1.0
 # set x grid
-Q = np.logspace(np.log10(qmin),np.log10(qmax),nq)
-
-print(Q)
+X = np.logspace(np.log10(xmin),np.log10(xmax),nx)
+print(X)
 
 # Number of PDF sets to be compared
 nset =2
@@ -34,15 +33,12 @@ nset =2
 pdfset=["NNPDF40_nnlo_as_01180","GRV98lo_patched"]
 pdfsetlab=[r"${\rm LO~SF+NNPDF4.0NNLO}$",r"${\rm LO~SF+GRV98LO}$"]
 error_option=["mc_68cl","ct"]
-#filelabel="-allcomp_x0p25"
-filelabel="-allcomp_x0p0126"
-
+filelabel="-allcomp_q2gev"
 
 #----------------------------------------------
 #----------------------------------------------
-# Value of x
-#x = 0.25
-x = 0.0126
+# Value of Q
+q = 2 # gev
 #----------------------------------------------
 #----------------------------------------------
 
@@ -51,95 +47,108 @@ x = 0.0126
 print("\n Reading the GENIE structure functions \n")
 
 # Read genie inputs
-genie_sf=np.loadtxt("Genie_Data/BodekYang/Genie-F2-xF3-BodekYang_x_0p0126.txt")
-#genie_sf=np.loadtxt("Genie_Data/BodekYang/Genie-F2-xF3-BodekYang_x0p25.txt")
-
-print(genie_sf)
+# Bodek-Yang model
+# Neutrino structure functions F2 and F3 on free protons
+genie_sf_nu_p=np.loadtxt("Genie_Data/BodekYang/Genie-F2-xF3-BodekYang.txt")
 
 nq2_genie=111
-genie_sf_q=np.zeros(nq2_genie)
-genie_sf_f2=np.zeros(nq2_genie)
-genie_sf_f3=np.zeros(nq2_genie)
+nx_genie =101
+genie_sf_x=np.zeros(nx_genie)
+genie_sf_f2=np.zeros(nx_genie)
+genie_sf_f3=np.zeros(nx_genie)
 
-for iq2 in range(nq2_genie):
-    genie_sf_q[iq2] = math.sqrt( genie_sf[iq2][1] )
-    genie_sf_f2[iq2] = genie_sf[iq2][2]
-    genie_sf_f3[iq2] = x* genie_sf[iq2][3] # Genie gives F3 instead of xF3
+#iq2_genie=30  # Q = 10 GeV
+iq2_genie=16  # Q = 2 GeV
 
-Q = genie_sf_q     
-nq = Q.size
+# Check
+q_check=math.pow(genie_sf_nu_p[iq2_genie][1],0.5)
+reldiff=abs( (q_check-q) /q )
+if(reldiff > 0.05):
+    print("Q mismatch")
+    print(q_check," ",q)
+    exit()
 
-print(genie_sf_q)    
-print(genie_sf_f2)
-print(genie_sf_f3)
+icount=0
+for ix in range(nx_genie):
+    index = icount*nq2_genie+iq2_genie
+    #print(ix," ",index," ",math.pow(genie_sf_nu_p[index][1],0.5)," ",genie_sf_nu_p[index][0])
+    genie_sf_x[ix] = genie_sf_nu_p[index][0]
+    genie_sf_f2[ix] = genie_sf_nu_p[index][2]
+    genie_sf_f3[ix] = genie_sf_x[ix]* genie_sf_nu_p[index][3] # Genie gives F3 instead of xF3
+    icount = icount+1
 
 
-#
-# BGR18
-#
 # Read genie inputs
-#genie_sf_bgr=np.loadtxt("Genie_Data/BGR18/Genie-F2-xF3-BGR18_x0p25.txt")
-genie_sf_bgr=np.loadtxt("Genie_Data/BGR18/Genie-F2-xF3-BGR18_x0p0126.txt")
-genie_sf_bgr_nubar=np.loadtxt("Genie_Data/BGR18/Genie-F2-xF3-nubar-BGR18_x0p0126.txt")
+# BGR18 calculation
+# Neutrino structure functions F2 and F3 on free protons
+genie_sf_nu_p_bgr=np.loadtxt("Genie_Data/BGR18/BGR_nu_free_p.txt")
+genie_sf_nub_p_bgr=np.loadtxt("Genie_Data/BGR18/BGR_nub_free_p.txt")
 
+genie_sf_bgr_x=np.zeros(nx_genie)
+genie_sf_bgr_f2=np.zeros(nx_genie)
+genie_sf_bgr_f3=np.zeros(nx_genie)
+genie_sf_bgr_f2_nub=np.zeros(nx_genie)
+genie_sf_bgr_f3_nub=np.zeros(nx_genie)
 
-genie_bgr_sf_q=np.zeros(nq2_genie)
-genie_bgr_sf_f2=np.zeros(nq2_genie)
-genie_bgr_sf_f3=np.zeros(nq2_genie)
-genie_bgr_sf_f2_nubar=np.zeros(nq2_genie)
-genie_bgr_sf_f3_nubar=np.zeros(nq2_genie)
+icount=0
+for ix in range(nx_genie):
+    index = icount*nq2_genie+iq2_genie
+    #print(ix," ",index," ",math.pow(genie_sf_nu_p[index][1],0.5)," ",genie_sf_nu_p[index][0])
+    genie_sf_bgr_x[ix] = genie_sf_nu_p_bgr[index][0]
+    genie_sf_bgr_f2[ix] = genie_sf_nu_p_bgr[index][2]
+    genie_sf_bgr_f3[ix] = genie_sf_nu_p_bgr[index][3]
+    genie_sf_bgr_f2_nub[ix] = genie_sf_nub_p_bgr[index][2]
+    genie_sf_bgr_f3_nub[ix] = genie_sf_nub_p_bgr[index][3] 
+    icount = icount+1
 
-for iq2 in range(nq2_genie):
-    genie_bgr_sf_q[iq2] = math.sqrt( genie_sf_bgr[iq2][1] )
-    genie_bgr_sf_f2[iq2] = genie_sf_bgr[iq2][2]
-    genie_bgr_sf_f3[iq2] = genie_sf_bgr[iq2][3]
-    genie_bgr_sf_f2_nubar[iq2] = genie_sf_bgr_nubar[iq2][2]
-    genie_bgr_sf_f3_nubar[iq2] = genie_sf_bgr_nubar[iq2][3] 
-    
-
-#print(genie_sf_q)    
-#print(genie_sf_f2)
-#print(genie_sf_f3)
+#---------------------------
+#---------------------------
 
 #---------------------------
 #---------------------------
 print("\n Reading the YADISM structure functions \n")
 
-# Read YADISM inputs
-yadism_lo_sf_f2=np.loadtxt("Yadism_data/LO_NNPDF40_yadism/F2_rep0_x0p0126.txt")
-yadism_nnlo_sf_f2=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism/F2_rep0_x0p0126.txt")
-yadism_lo_sf_f3=np.loadtxt("Yadism_data/LO_NNPDF40_yadism/F3_rep0_x0p0126.txt")
-yadism_nnlo_sf_f3=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism/F3_rep0_x0p0126.txt")
-
-#yadism_lo_sf_f2=np.loadtxt("Yadism_data/LO_NNPDF40_yadism/F2_rep0_x0p25.txt")
-#yadism_nnlo_sf_f2=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism/F2_rep0_x0p25.txt")
-#yadism_lo_sf_f3=np.loadtxt("Yadism_data/LO_NNPDF40_yadism/F3_rep0_x0p25.txt")
-#yadism_nnlo_sf_f3=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism/F3_rep0_x0p25.txt")
+# Neutrino structure functions F2 and F3 on free protons
+yadism_f2_lo_nu_p=np.loadtxt("Yadism_data/LO_NNPDF40_yadism/F2.txt")
+yadism_f3_lo_nu_p=np.loadtxt("Yadism_data/LO_NNPDF40_yadism/F3.txt")
+yadism_f2_nnlo_nu_p=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism/F2.txt")
+yadism_f3_nnlo_nu_p=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism/F3.txt")
 
 nq2_yadism=20
-yadism_sf_q=np.zeros(nq2_yadism)
-yadism_f2=np.zeros(nq2_yadism)
-yadism_f3=np.zeros(nq2_yadism)
-yadism_nnlo_f2=np.zeros(nq2_yadism)
-yadism_nnlo_f3=np.zeros(nq2_yadism)
+nx_yadism =30
+yadism_sf_x=np.zeros(nx_yadism)
+yadism_sf_f2_lo=np.zeros(nx_yadism)
+yadism_sf_f3_lo=np.zeros(nx_yadism)
+yadism_sf_f2_nnlo=np.zeros(nx_yadism)
+yadism_sf_f3_nnlo=np.zeros(nx_yadism)
 
-for iq2 in range(nq2_yadism):
-    yadism_sf_q[iq2] = math.sqrt( yadism_lo_sf_f2[iq2][2] )
-    yadism_f2[iq2] = yadism_lo_sf_f2[iq2][3]
-    yadism_f3[iq2] = yadism_lo_sf_f3[iq2][3]
-    yadism_nnlo_f2[iq2] = yadism_nnlo_sf_f2[iq2][3]
-    yadism_nnlo_f3[iq2] = yadism_nnlo_sf_f3[iq2][3]
-   
+#iq2_yadism=16  # Q = 10 GeV
+iq2_yadism=2  # Q = 2 GeV
 
-#print(yadism_sf_q)    
-#print(yadism_sf_f2)
-print(yadism_nnlo_f3)
-print(yadism_f3)
-#exit()
+# Check
+q_check=math.pow(yadism_f2_lo_nu_p[iq2_yadism][2],0.5)
+reldiff=abs( (q_check-q) /q )
+if(reldiff > 0.05):
+    print("Q mismatch")
+    print(q_check," ",q)
+    exit()
 
+icount=0
+for ix in range(nx_yadism):
+    index = icount*nq2_yadism+iq2_yadism
+    print(ix," ",index," ",math.pow(yadism_f2_lo_nu_p[index][1],0.5)," ",yadism_f2_lo_nu_p[index][2])
+    yadism_sf_x[ix] = yadism_f2_lo_nu_p[index][1]
+    yadism_sf_f2_lo[ix] = yadism_f2_lo_nu_p[index][3]
+    yadism_sf_f3_lo[ix] = yadism_f3_lo_nu_p[index][3]
+    yadism_sf_f2_nnlo[ix] = yadism_f2_nnlo_nu_p[index][3]
+    yadism_sf_f3_nnlo[ix] = yadism_f3_nnlo_nu_p[index][3] 
+    icount = icount+1
 
-#---------------------------
-#---------------------------
+print(yadism_sf_f3_lo)
+
+#*****************************************************************
+#*****************************************************************
+#*****************************************************************
 
 
 # Reduce verbosity of LHAPDF
@@ -161,24 +170,24 @@ for iset in range(nset):
     print("nrep =", nrep[iset])
     # Arrays to store LHAPDF results
     if(iset==0):
-        fit1 = np.zeros((nrep[iset],nsf,nq))
-        fit1_cv = np.zeros((nsf,nq))
+        fit1 = np.zeros((nrep[iset],nsf,nx))
+        fit1_cv = np.zeros((nsf,nx))
     if(iset==1):
-        fit2 = np.zeros((nrep[iset],nsf,nq))
-        fit2_cv = np.zeros((nsf,nq))
+        fit2 = np.zeros((nrep[iset],nsf,nx))
+        fit2_cv = np.zeros((nsf,nx))
     if(iset==2):
-        fit3 = np.zeros((nrep[iset],nsf,nq))
-        fit3_cv = np.zeros((nsf,nq))
+        fit3 = np.zeros((nrep[iset],nsf,nx))
+        fit3_cv = np.zeros((nsf,nx))
         
     # Run over replicas
     for i in range(1,nrep[iset]+1):
         p=lhapdf.mkPDF(pdfset[iset],i)
 
         # Run over x arrat
-        for k in range(nq):
-            
-            q = Q[k]
-          
+        for k in range(nx):
+
+            x = X[k]
+                     
             # run over flavours
             for isf in range(nsf):
 
@@ -233,8 +242,8 @@ for iset in range(nset):
                 
     # Central values
     p=lhapdf.mkPDF(pdfset[iset],0)
-    for k in range(nq):
-        q = Q[k]
+    for k in range(nx):
+        x = X[k]
         
         for isf in range(nsf):
 
@@ -366,7 +375,7 @@ for iset in range(nset):
             p1_error = np.std(fit1,axis=0)
             neig = int(nrep[iset]/2) # Number of eigenvectors
             # Run over x points and flavour
-            for ix in range(nq):
+            for ix in range(nx):
                 for isf in range(nsf):
                     p1_mid[isf][ix]=fit1_cv[isf][ix]
                     p1_error[isf][ix]=0 # initialisation
@@ -384,7 +393,7 @@ for iset in range(nset):
             p2_error = np.std(fit2,axis=0)
             neig = int(nrep[iset]/2) # Number of eigenvectors
             # Run over x points and flavour
-            for ix in range(nq):
+            for ix in range(nx):
                 for isf in range(nsf):
                     p2_mid[isf][ix]=fit2_cv[isf][ix]
                     p2_error[isf][ix]=0 # initialisation
@@ -402,7 +411,7 @@ for iset in range(nset):
             p3_error = np.std(fit3,axis=0)
             neig = int(nrep[iset]/2) # Number of eigenvectors
             # Run over x points and flavour
-            for ix in range(nq):
+            for ix in range(nx):
                 for isf in range(nsf):
                     p3_mid[isf][ix]=fit3_cv[isf][ix]
                     p3_error[isf][ix]=0 # initialisation
@@ -426,7 +435,7 @@ for iset in range(nset):
             p1_error = np.std(fit1,axis=0)
             neig =  int(nrep[iset]) # Number of eigenvectors
             # Run over x points and flavour
-            for ix in range(nq):
+            for ix in range(nx):
                 for isf in range(nsf):
                     p1_mid[isf][ix]=fit1_cv[isf][ix] # Central Hessian value
                     p1_error[isf][ix]=0 # initialisation
@@ -456,8 +465,8 @@ ncols,nrows=2,2
 py.figure(figsize=(ncols*5,nrows*3.5))
 gs = gridspec.GridSpec(nrows,ncols)
 rescolors = py.rcParams['axes.prop_cycle'].by_key()['color']
-# x = 0.0126
-yranges=[[1.4,3.0],[1.3,3.3],[0.3,0.7],[-0.2,0.2]]
+# Q = 2 GeV
+yranges=[[0,2.2],[0,2.2],[0,0.9],[-0.4,1.3]]
 # x = 0.25
 #yranges=[[0.50,0.75],[1.2,1.6],[0.43,0.62],[0.8,1.5]]
 labelpdf=[r"$F_2^{\nu p}(x,Q)$",r"$F_2^{\bar{\nu} p}(x,Q)$",\
@@ -468,70 +477,67 @@ for isf in range(nsf):
     ax = py.subplot(gs[isf])
 
     # LO SF + NNPDF4.0
-    p1=ax.plot(Q,p1_mid[isf],ls="dotted")
-    ax.fill_between(Q,p1_high[isf],p1_low[isf],color=rescolors[0],alpha=0.2)
+    p1=ax.plot(X,p1_mid[isf],ls="dotted",lw=2)
+    ax.fill_between(X,p1_high[isf],p1_low[isf],color=rescolors[0],alpha=0.2)
     p2=ax.fill(np.NaN,np.NaN,color=rescolors[0],alpha=0.2)
-    
-    # LO YADISM
+
+    # YADISM LO
     if(isf==0):
-        p3=ax.plot(yadism_sf_q, yadism_f2,ls="solid",color=rescolors[1])
+        p3=ax.plot(yadism_sf_x, yadism_sf_f2_lo,ls="dashed",color=rescolors[1])
     if(isf==2):
-        p3=ax.plot(yadism_sf_q, yadism_f3,ls="solid",color=rescolors[1])
-        
+        p3=ax.plot(yadism_sf_x, yadism_sf_f3_lo,ls="dashed",color=rescolors[1])
+    
     # LO SF + GRV98
-    p4=ax.plot(Q,p2_mid[isf],ls="dashed",color=rescolors[2])
+    p4=ax.plot(X,p2_mid[isf],ls="dotted",color=rescolors[2],lw=3)
 
     # GENIE BY
     if(isf==0):
-        p5=ax.plot(genie_sf_q, genie_sf_f2,ls="dotted",color=rescolors[3])
+        p5=ax.plot(genie_sf_x, genie_sf_f2,ls="solid",color=rescolors[3])
     if(isf==2):
-        p5=ax.plot(genie_sf_q, genie_sf_f3,ls="dotted",color=rescolors[3])
+        p5=ax.plot(genie_sf_x, genie_sf_f3,ls="solid",color=rescolors[3])
 
     # NNLO YADISM
     if(isf==0):
-        p6=ax.plot(yadism_sf_q, yadism_nnlo_f2,ls="solid",color=rescolors[4])
+        p6=ax.plot(yadism_sf_x, yadism_sf_f2_nnlo,ls="dashed",color=rescolors[4])
     if(isf==2):
-        p6=ax.plot(yadism_sf_q, yadism_nnlo_f3,ls="solid",color=rescolors[4])
+        p6=ax.plot(yadism_sf_x, yadism_sf_f3_nnlo,ls="dashed",color=rescolors[4])
+        #print(yadism_sf_x)
+        #print(yadism_sf_f3_nnlo)
+        #exit()
 
     # GENIE BGR18
     if(isf==0):
-        p7=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f2,ls="dotted",color=rescolors[5])
+        p7=ax.plot(genie_sf_bgr_x, genie_sf_bgr_f2,ls="dashdot",color=rescolors[5])
     if(isf==1):
-        p7=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f2_nubar,ls="dotted",color=rescolors[5])
+        p7=ax.plot(genie_sf_bgr_x, genie_sf_bgr_f2_nub,ls="dashdot",color=rescolors[5])
     if(isf==2):
-        p7=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f3,ls="dotted",color=rescolors[5])
+        p7=ax.plot(genie_sf_bgr_x, genie_sf_bgr_f3,ls="dashdot",color=rescolors[5])
     if(isf==3):
-        p7=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f3_nubar,ls="dotted",color=rescolors[5])
-        
-
-        
-    
-    ax.set_xscale('linear')
-    ax.set_xlim(qmin,qmax)
+        p7=ax.plot(genie_sf_bgr_x, (-1)*genie_sf_bgr_f3_nub,ls="dashdot",color=rescolors[5])
+      
+    ax.set_xscale('log')
+    ax.set_xlim(xmin,xmax)
     ax.tick_params(which='both',direction='in',labelsize=12,right=True)
     ax.tick_params(which='major',length=7)
     ax.tick_params(which='minor',length=4)
     ax.set_ylabel(labelpdf[isf],fontsize=17)
     ax.set_ylim(yranges[isf][0],yranges[isf][1])
     if(isf>1):
-        ax.set_xlabel(r'$Q~({\rm GeV})$',fontsize=15)
+        ax.set_xlabel(r'$x$',fontsize=15)
     if(isf==0):
-        ax.text(0.05,0.85,r'$x=0.0126$',fontsize=14,transform=ax.transAxes)
+        ax.text(0.67,0.85,r'$Q=2~{\rm GeV}$',fontsize=14,transform=ax.transAxes)
         #ax.text(0.65,0.85,r'$x=0.25$',fontsize=16,transform=ax.transAxes)
-    
 
     if(isf==1):
         ax.legend([(p1[0],p2[0]),p3[0],p4[0],p5[0],p6[0],p7[0]],\
-                  [pdfsetlab[0],r"${\rm LO~YADISM+NNPDF4.0NNLO}$",\
+                  [pdfsetlab[0],r"${\rm LO~YADISM+NNPDF4.0}$",\
                    pdfsetlab[1],\
                    r"${\rm Bodek~Yang~(GENIE)}$",\
-                   r"${\rm NNLO~YADISM+NNPDF4.0NNLO}$",r"${\rm BGR18}$"], \
-                  frameon="True",loc=4,prop={'size':8})
-
-
+                   r"${\rm NNLO~YADISM+NNPDF4.0}$",r"${\rm BGR18~(GENIE)}$"], \
+                  frameon="True",loc=3,prop={'size':9})
+        
 py.tight_layout(pad=1, w_pad=1, h_pad=1.0)
-py.savefig('StructureFunction'+filelabel+'.pdf')
-print('output plot: StructureFunction'+filelabel+'.pdf')
+py.savefig('StructureFunction-xdep'+filelabel+'.pdf')
+print('output plot: StructureFunction-xdep'+filelabel+'.pdf')
 
-x
 exit()
