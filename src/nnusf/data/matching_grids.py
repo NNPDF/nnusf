@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
-"""
 Generate matching grids
 """
+"""
 
+import os
 import itertools
+import pineappl
 import logging
 import pathlib
 
 import numpy as np
 import pandas as pd
+import tempfile
 from eko.interpolation import make_lambert_grid
 
 from .utils import (
@@ -17,10 +20,12 @@ from .utils import (
     dump_info_file,
     write_to_csv,
 )
+from .. import utils
+from ..theory.predictions import pdf_error, theory_error
 
 _logger = logging.getLogger(__name__)
 
-q2_min = 1.0
+q2_min = 300 # PBC: Q2min: 1.65 GeV2
 q2_max = 1e5
 
 x_min = 1e-5
@@ -29,12 +34,12 @@ y_min = 0.2
 y_max = 0.8
 
 
-N_KINEMATC_GRID_FX = dict(x=50, Q2=400, y=1.0)
-N_KINEMATC_GRID_XSEC = dict(x=30, Q2=200, y=5)
+N_KINEMATC_GRID_FX = dict(x=50, Q2=200, y=1.0)
+N_KINEMATC_GRID_XSEC = dict(x=30, Q2=50, y=4)
 M_PROTON = 938.272013 * 0.001
 
 
-def proton_boundary_conditions(destination: pathlib.Path):
+def proton_boundary_conditions(destination: pathlib.Path, pdf:str):
     destination.mkdir(parents=True, exist_ok=True)
     _logger.info(f" Boundary condition grids destination : {destination}")
 
@@ -49,20 +54,26 @@ def proton_boundary_conditions(destination: pathlib.Path):
         fx = obs["type"]
         datapaths.append(pathlib.Path(f"DATA_PROTONBC_{fx}"))
 
-    main(destination, datapaths)
+    main(destination, datapaths, pdf)
 
     dump_info_file(destination, "PROTONBC", obs_list, 1, M_PROTON)
 
 
-def main(destination: pathlib.Path, datapaths: list[pathlib.Path]):
+def main(destination: pathlib.Path, grids: pathlib.Path, pdf: str):
+
     destination.mkdir(parents=True, exist_ok=True)
 
-    for dataset in datapaths:
-        data_name = dataset.stem.strip("DATA_")
-        if "MATCHING" in data_name:
-            continue
-        obs = data_name.split("_")[-1]
-        new_name = f"{data_name}_MATCHING"
+    grids = grids[0]
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmpdir = pathlib.Path(tmpdir).absolute()
+
+        grid_name = grids.stem.strip("grids-")
+        obs = grid_name.split("_")[-1]
+        new_name = f"{grid_name}_MATCHING"
+
+        if grids.suffix == ".tar":
+            utils.extract_tar(grids, tmpdir)
+            grids = tmpdir / "grids"
 
         is_xsec = "DXDY" in obs or "FW" in obs
         if is_xsec:
@@ -79,6 +90,18 @@ def main(destination: pathlib.Path, datapaths: list[pathlib.Path]):
         x_grid = make_lambert_grid(n_xgrid, x_min)
         q2_grid = np.linspace(q2_min, q2_max, int(n_q2grid))
         n_points = int(n_q2grid * n_ygrid * n_xgrid)
+
+        full_pred = []
+        for gpath in grids.iterdir():
+            if "pineappl" not in gpath.name:
+                continue
+            grid = pineappl.grid.Grid.read(gpath)
+            pred, central, bulk, err_source = pdf_error(
+                    grid, pdf, x_grid, reshape=False
+            )
+            full_pred.append(pred)
+        pred = np.average(full_pred, axis=0)
+        __import__('pdb').set_trace()
 
         kinematics = {"x": [], "Q2": [], "y": []}
         err_list = []
@@ -107,6 +130,7 @@ def main(destination: pathlib.Path, datapaths: list[pathlib.Path]):
         systypes_folder.mkdir(exist_ok=True)
         write_to_csv(systypes_folder, f"UNC_{new_name}", errors_pd)
 
-        msg = f"The matching grid for {data_name} are stored in "
+        msg = f"The matching grid for {grid_name} are stored in "
         msg += f"'{destination.absolute().relative_to(pathlib.Path.cwd())}'"
         _logger.info(msg)
+    os.removedirs(tmpdir)

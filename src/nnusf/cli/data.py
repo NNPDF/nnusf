@@ -19,6 +19,8 @@ dataset_path = click.argument(
     "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
 )
 
+pdfset_name = click.argument("pdf", type=str)
+
 
 @base.command.group("data")
 def subcommand():
@@ -80,12 +82,13 @@ def sub_coefficients(data, destination):
 
 @subcommand.command("matching_grids")
 @dataset_path
+@pdfset_name
 @destination_path
-def sub_matching_grids(destination, data):
+def sub_matching_grids(destination, pdf, data):
     """
     Generate fake data for matching with theory
     """
-    matching_grids.main(destination, data)
+    matching_grids.main(destination, data, pdf)
 
 
 @subcommand.command("proton_bc")
