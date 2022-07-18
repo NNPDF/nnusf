@@ -11,7 +11,12 @@ import numpy as np
 import pandas as pd
 from eko.interpolation import make_lambert_grid
 
-from .utils import build_obs_dict, construct_uncertainties, dump_info_file, write_to_csv
+from .utils import (
+    build_obs_dict,
+    construct_uncertainties,
+    dump_info_file,
+    write_to_csv,
+)
 
 _logger = logging.getLogger(__name__)
 
@@ -35,10 +40,10 @@ def proton_boundary_conditions(destination: pathlib.Path):
 
     datapaths = []
     obs_list = [
-        build_obs_dict("F2", [0], 0),
-        build_obs_dict("F3", [0], 0),
-        build_obs_dict("DXDYNUU", [0], 14),
-        build_obs_dict("DXDYNUB", [0], -14),
+        build_obs_dict("F2", [None], 0),
+        build_obs_dict("F3", [None], 0),
+        build_obs_dict("DXDYNUU", [None], 14),
+        build_obs_dict("DXDYNUB", [None], -14),
     ]
     for obs in obs_list:
         fx = obs["type"]
@@ -46,14 +51,11 @@ def proton_boundary_conditions(destination: pathlib.Path):
 
     main(destination, datapaths)
 
-    # dump info file
-    destination
     dump_info_file(destination, "PROTONBC", obs_list, 1, M_PROTON)
 
 
 def main(destination: pathlib.Path, datapaths: list[pathlib.Path]):
     destination.mkdir(parents=True, exist_ok=True)
-    _logger.info(f" Matching grids : {destination}")
 
     for dataset in datapaths:
         data_name = dataset.stem.strip("DATA_")
@@ -74,10 +76,8 @@ def main(destination: pathlib.Path, datapaths: list[pathlib.Path]):
             n_ygrid = N_KINEMATC_GRID_FX["y"]
             y_grid = [0.0]
 
-        _logger.info(f"Saving matching grids for {data_name} in {new_name}")
-
         x_grid = make_lambert_grid(n_xgrid, x_min)
-        q2_grid = np.linspace(q2_min, q2_max, n_q2grid)
+        q2_grid = np.linspace(q2_min, q2_max, int(n_q2grid))
         n_points = int(n_q2grid * n_ygrid * n_xgrid)
 
         kinematics = {"x": [], "Q2": [], "y": []}
@@ -106,3 +106,7 @@ def main(destination: pathlib.Path, datapaths: list[pathlib.Path]):
         systypes_folder = destination.joinpath("uncertainties")
         systypes_folder.mkdir(exist_ok=True)
         write_to_csv(systypes_folder, f"UNC_{new_name}", errors_pd)
+
+        msg = f"The matching grid for {data_name} are stored in "
+        msg += f"'{destination.absolute().relative_to(pathlib.Path.cwd())}'"
+        _logger.info(msg)
