@@ -47,19 +47,24 @@ def sub_runcards():
     "--theory-update",
     help="String representation of a dictionary containing update for the theory.",
 )
+@click.option(
+    "-o",
+    "--obs-update",
+    help="String representation of a dictionary containing update for the observable description.",
+)
 @option_dest
-def sub_sub_by(theory_update, destination):
+def sub_sub_by(theory_update, obs_update, destination):
     """Bodek-Yang predictions, made with Genie."""
     if theory_update is not None:
         theory_update = eval(theory_update)
 
-    runcards.by(theory_update=theory_update, destination=destination)
+    runcards.by(
+        theory_update=theory_update, obs_update=obs_update, destination=destination
+    )
 
 
 @sub_runcards.command("hiq")
-@click.argument(
-    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
-)
+@click.argument("data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path))
 @option_dest
 def sub_sub_hiq(data, destination):
     """High Q2, from cut values of the dataset."""
@@ -67,9 +72,7 @@ def sub_sub_hiq(data, destination):
 
 
 @sub_runcards.command("all")
-@click.argument(
-    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
-)
+@click.argument("data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path))
 @option_dest
 def sub_sub_all(data, destination):
     """Full datasets runcards"""
@@ -80,9 +83,7 @@ def sub_sub_all(data, destination):
 @click.argument(
     "observables", nargs=-1, type=click.Choice(bodek_yang.load.load().members)
 )
-@click.option(
-    "-a", "--action", multiple=True, type=click.Choice(["npy", "txt"])
-)
+@click.option("-a", "--action", multiple=True, type=click.Choice(["npy", "txt"]))
 @option_dest
 def sub_by(observables, action, destination):
     """Genie's Bodek-Yang output inspection."""
@@ -97,9 +98,7 @@ def sub_by(observables, action, destination):
 
 
 @subcommand.command("grids")
-@click.argument(
-    "runcards", type=click.Path(exists=True, path_type=pathlib.Path)
-)
+@click.argument("runcards", type=click.Path(exists=True, path_type=pathlib.Path))
 @option_dest
 def sub_grids(runcards, destination):
     """Generate grids with yadism.
