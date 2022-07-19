@@ -7,19 +7,20 @@ import click
 from ..data import coefficients, combine_tables, filters, matching_grids
 from . import base
 
+dataset_path = click.argument(
+    "data", type=click.Path(exists=True, path_type=pathlib.Path)
+)
+
+obs_type = click.argument("obstype", type=str)
+pdfset_name = click.argument("pdfset", type=str)
+
 destination_path = click.option(
     "-d",
     "--destination",
     type=click.Path(exists=True, path_type=pathlib.Path),
     default=pathlib.Path.cwd().absolute() / "commondata",
-    help="Alternative destination path to store the resulting table (default: $PWD/commondata)",
+    help="Alternative destination path (default: $PWD/commondata)",
 )
-
-dataset_path = click.argument(
-    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
-)
-
-pdfset_name = click.argument("pdf", type=str)
 
 
 @base.command.group("data")
@@ -36,7 +37,7 @@ def sub_combine(data, destination):
     The operation is repeated for each DATA path provided (multiple values allowed),
     e.g.:
 
-        nnu data coefficients commondata/data/*
+        nnu data combine commondata/data/*
 
     to repeat the operation for all dataset stored in `data`.
 
@@ -84,17 +85,25 @@ def sub_coefficients(data, destination):
 @dataset_path
 @pdfset_name
 @destination_path
-def sub_matching_grids(destination, pdf, data):
+def sub_matching_grids(data, pdfset, destination):
+    """Generate the Yadism data (kinematicas & central values) as
+    well as the the predictions for all replicas. The command can
+    be run as follows:
+
+    eg: nnu data matching_grids ./grids-CCFR_F2_MATCHING.tar.gz nNNPDF30_nlo_as_0118_A56_Z26
     """
-    Generate fake data for matching with theory
-    """
-    matching_grids.main(destination, data, pdf)
+    matching_grids.main(data, pdfset, destination)
 
 
 @subcommand.command("proton_bc")
+@pdfset_name
+@obs_type
 @destination_path
-def sub_proton_bc(destination):
+def sub_proton_bc(pdfset, obstype, destination):
+    """Generate the Yadism data (kinematicas & central values) as
+    well as the the predictions for all replicas for A=1 use to
+    impose the Boundary Condition. The command can be run as follows:
+
+    eg: nnu data proton_bc nNNPDF30_nlo_as_0118_A56_Z26 F2
     """
-    Generate fake data for boundary proton condition
-    """
-    matching_grids.proton_boundary_conditions(destination)
+    matching_grids.proton_boundary_conditions(pdfset, obstype, destination)

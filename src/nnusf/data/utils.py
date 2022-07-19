@@ -18,6 +18,8 @@ ERR_DESC = {
     },
 }
 
+MAP_OBS_PID = {"F2": 0, "F3": 0, "DXDYNUU": 14, "DXDYNUB": -14}
+
 
 def write_to_csv(path: Path, exp_name: str, table: pd.DataFrame):
     """Dump table to csv.
