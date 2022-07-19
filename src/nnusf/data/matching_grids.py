@@ -1,31 +1,25 @@
 # -*- coding: utf-8 -*-
+"""
 Generate matching grids
 """
-"""
 
-import os
 import itertools
-import pineappl
 import logging
 import pathlib
+import tempfile
 
 import numpy as np
 import pandas as pd
-import tempfile
+import pineappl
 from eko.interpolation import make_lambert_grid
 
-from .utils import (
-    build_obs_dict,
-    construct_uncertainties,
-    dump_info_file,
-    write_to_csv,
-)
 from .. import utils
-from ..theory.predictions import pdf_error, theory_error
+from ..theory.predictions import pdf_error
+from .utils import MAP_OBS_PID, build_obs_dict, dump_info_file, write_to_csv
 
 _logger = logging.getLogger(__name__)
 
-q2_min = 300 # PBC: Q2min: 1.65 GeV2
+q2_min = 300
 q2_max = 1e5
 
 x_min = 1e-5
@@ -34,44 +28,63 @@ y_min = 0.2
 y_max = 0.8
 
 
-N_KINEMATC_GRID_FX = dict(x=50, Q2=200, y=1.0)
+N_KINEMATC_GRID_FX = dict(x=50, Q2=100, y=1.0)
 N_KINEMATC_GRID_XSEC = dict(x=30, Q2=50, y=4)
 M_PROTON = 938.272013 * 0.001
 
 
-def proton_boundary_conditions(destination: pathlib.Path, pdf:str):
+def proton_boundary_conditions(
+    pdf: str, obstype: str, destination: pathlib.Path
+) -> None:
+    """Generate the Yadism data (kinematicas & central values) as
+    well as the the predictions for all replicas for A=1 used to
+    impose the Boundary Condition.
+
+    Parameters
+    ----------
+    pdf : str
+        name of the PDF set to convolute with
+    obstype : str
+        bservable type: F2, F3, DXDYNUU, DXDYNUB
+    destination : pathlib.Path
+        destination to store the files
+    """
     destination.mkdir(parents=True, exist_ok=True)
     _logger.info(f" Boundary condition grids destination : {destination}")
 
-    datapaths = []
-    obs_list = [
-        build_obs_dict("F2", [None], 0),
-        build_obs_dict("F3", [None], 0),
-        build_obs_dict("DXDYNUU", [None], 14),
-        build_obs_dict("DXDYNUB", [None], -14),
-    ]
-    for obs in obs_list:
-        fx = obs["type"]
-        datapaths.append(pathlib.Path(f"DATA_PROTONBC_{fx}"))
+    obspid = MAP_OBS_PID[obstype]
+    obsdic = build_obs_dict(obstype, [None], obspid)
+    datapath = pathlib.Path(f"DATA_PROTONBC_{obspid}")
 
-    main(destination, datapaths, pdf)
-
-    dump_info_file(destination, "PROTONBC", obs_list, 1, M_PROTON)
+    q2_min = 1.65  # Redifine Q2min in case of A=1
+    main(datapath, pdf, destination)
+    dump_info_file(destination, "PROTONBC", [obsdic], 1, M_PROTON)
 
 
-def main(destination: pathlib.Path, grids: pathlib.Path, pdf: str):
+def main(grids: pathlib.Path, pdf: str, destination: pathlib.Path) -> None:
+    """Generate the Yadism data (kinematicas & central values) as
+    well as the the predictions for all replicas.
 
+    Parameters
+    ----------
+    grids : pathlib.Path
+        path to the pineappl.tar.gz grid
+    pdf : str
+        name of the PDF set to convolute with
+    destination : pathlib.Path
+        destination to store the files
+    """
     destination.mkdir(parents=True, exist_ok=True)
 
-    grids = grids[0]
     with tempfile.TemporaryDirectory() as tmpdir:
         tmpdir = pathlib.Path(tmpdir).absolute()
 
-        grid_name = grids.stem.strip("grids-")
+        grid_name = grids.stem[6:-13]
         obs = grid_name.split("_")[-1]
         new_name = f"{grid_name}_MATCHING"
 
-        if grids.suffix == ".tar":
+        # if grids.suffix == ".tar.gz":
+        if str(grids).endswith(".tar.gz"):
             utils.extract_tar(grids, tmpdir)
             grids = tmpdir / "grids"
 
@@ -89,19 +102,15 @@ def main(destination: pathlib.Path, grids: pathlib.Path, pdf: str):
 
         x_grid = make_lambert_grid(n_xgrid, x_min)
         q2_grid = np.linspace(q2_min, q2_max, int(n_q2grid))
-        n_points = int(n_q2grid * n_ygrid * n_xgrid)
 
         full_pred = []
         for gpath in grids.iterdir():
             if "pineappl" not in gpath.name:
                 continue
             grid = pineappl.grid.Grid.read(gpath)
-            pred, central, bulk, err_source = pdf_error(
-                    grid, pdf, x_grid, reshape=False
-            )
-            full_pred.append(pred)
+            prediction = pdf_error(grid, pdf, x_grid, reshape=False)
+            full_pred.append(prediction[0])
         pred = np.average(full_pred, axis=0)
-        __import__('pdb').set_trace()
 
         kinematics = {"x": [], "Q2": [], "y": []}
         err_list = []
@@ -112,8 +121,8 @@ def main(destination: pathlib.Path, grids: pathlib.Path, pdf: str):
             err_list.append({"stat": 0.0, "syst": 0.0})
 
         kinematics_pd = pd.DataFrame(kinematics)
-        data_pd = pd.DataFrame({"data": np.zeros(n_points)})
-        errors_pd = construct_uncertainties(err_list)
+        # Select only predictions for Replicas_0 in data
+        data_pd = pd.DataFrame({"data": pred[:, 0]})
 
         kinematics_folder = destination.joinpath("kinematics")
         kinematics_folder.mkdir(exist_ok=True)
@@ -128,9 +137,7 @@ def main(destination: pathlib.Path, grids: pathlib.Path, pdf: str):
 
         systypes_folder = destination.joinpath("uncertainties")
         systypes_folder.mkdir(exist_ok=True)
-        write_to_csv(systypes_folder, f"UNC_{new_name}", errors_pd)
 
-        msg = f"The matching grid for {grid_name} are stored in "
+        msg = f"The matching/BC grid for {grid_name} are stored in "
         msg += f"'{destination.absolute().relative_to(pathlib.Path.cwd())}'"
         _logger.info(msg)
-    os.removedirs(tmpdir)
