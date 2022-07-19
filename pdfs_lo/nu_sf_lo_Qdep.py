@@ -32,11 +32,10 @@ nset =2
 
 # oldPDFs
 pdfset=["NNPDF40_nnlo_as_01180","GRV98lo_patched"]
-pdfsetlab=[r"${\rm LO~SF+NNPDF4.0NNLO}$",r"${\rm LO~SF+GRV98LO}$"]
+pdfsetlab=[r"${\rm LO~SF+NNPDF4.0}$",r"${\rm LO~SF+GRV98LO}$"]
 error_option=["mc_68cl","ct"]
 #filelabel="-allcomp_x0p25"
 filelabel="-allcomp_x0p0126"
-
 
 #----------------------------------------------
 #----------------------------------------------
@@ -51,8 +50,10 @@ x = 0.0126
 print("\n Reading the GENIE structure functions \n")
 
 # Read genie inputs
-genie_sf=np.loadtxt("Genie_Data/BodekYang/Genie-F2-xF3-BodekYang_x_0p0126.txt")
-#genie_sf=np.loadtxt("Genie_Data/BodekYang/Genie-F2-xF3-BodekYang_x0p25.txt")
+#genie_sf=np.loadtxt("Genie_Data/BodekYang/Genie-F2-xF3-BodekYang_x_0p0126.txt")
+genie_sf=np.loadtxt("Genie_Data/BodekYang/Genie-F2-xF3-BodekYang_x0p25.txt")
+#genie_sf_nubar=np.loadtxt("Genie_Data/BodekYang/Genie-F2-xF3-nubar-BodekYang_x_0p0126.txt")
+genie_sf_nubar=np.loadtxt("Genie_Data/BodekYang/Genie-F2-xF3-nubar-BodekYang_x_0p25.txt")
 
 print(genie_sf)
 
@@ -60,11 +61,15 @@ nq2_genie=111
 genie_sf_q=np.zeros(nq2_genie)
 genie_sf_f2=np.zeros(nq2_genie)
 genie_sf_f3=np.zeros(nq2_genie)
+genie_sf_f2_nubar=np.zeros(nq2_genie)
+genie_sf_f3_nubar=np.zeros(nq2_genie)
 
 for iq2 in range(nq2_genie):
     genie_sf_q[iq2] = math.sqrt( genie_sf[iq2][1] )
     genie_sf_f2[iq2] = genie_sf[iq2][2]
     genie_sf_f3[iq2] = x* genie_sf[iq2][3] # Genie gives F3 instead of xF3
+    genie_sf_f2_nubar[iq2] = genie_sf_nubar[iq2][2]
+    genie_sf_f3_nubar[iq2] = genie_sf_nubar[iq2][3] # Genie gives F3 instead of xF3
 
 Q = genie_sf_q     
 nq = Q.size
@@ -72,16 +77,18 @@ nq = Q.size
 print(genie_sf_q)    
 print(genie_sf_f2)
 print(genie_sf_f3)
+print(genie_sf_f2_nubar)
+print(genie_sf_f3_nubar)
 
 
 #
 # BGR18
 #
 # Read genie inputs
-#genie_sf_bgr=np.loadtxt("Genie_Data/BGR18/Genie-F2-xF3-BGR18_x0p25.txt")
-genie_sf_bgr=np.loadtxt("Genie_Data/BGR18/Genie-F2-xF3-BGR18_x0p0126.txt")
-genie_sf_bgr_nubar=np.loadtxt("Genie_Data/BGR18/Genie-F2-xF3-nubar-BGR18_x0p0126.txt")
-
+#genie_sf_bgr=np.loadtxt("Genie_Data/BGR18/Genie-F2-xF3-BGR18_x0p0126.txt")
+genie_sf_bgr=np.loadtxt("Genie_Data/BGR18/Genie-F2-xF3-BGR18_x0p25.txt")
+#genie_sf_bgr_nubar=np.loadtxt("Genie_Data/BGR18/Genie-F2-xF3-nubar-BGR18_x0p0126.txt")
+genie_sf_bgr_nubar=np.loadtxt("Genie_Data/BGR18/Genie-F2-xF3-nubar-BGR18_x0p25.txt")
 
 genie_bgr_sf_q=np.zeros(nq2_genie)
 genie_bgr_sf_f2=np.zeros(nq2_genie)
@@ -94,11 +101,12 @@ for iq2 in range(nq2_genie):
     genie_bgr_sf_f2[iq2] = genie_sf_bgr[iq2][2]
     genie_bgr_sf_f3[iq2] = genie_sf_bgr[iq2][3]
     genie_bgr_sf_f2_nubar[iq2] = genie_sf_bgr_nubar[iq2][2]
-    genie_bgr_sf_f3_nubar[iq2] = genie_sf_bgr_nubar[iq2][3] 
+    genie_bgr_sf_f3_nubar[iq2] = -genie_sf_bgr_nubar[iq2][3] 
     
-
 #print(genie_sf_q)    
-#print(genie_sf_f2)
+print(genie_bgr_sf_f3)
+print(genie_bgr_sf_f3_nubar)
+#exit()
 #print(genie_sf_f3)
 
 #---------------------------
@@ -106,15 +114,29 @@ for iq2 in range(nq2_genie):
 print("\n Reading the YADISM structure functions \n")
 
 # Read YADISM inputs
-yadism_lo_sf_f2=np.loadtxt("Yadism_data/LO_NNPDF40_yadism/F2_rep0_x0p0126.txt")
-yadism_nnlo_sf_f2=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism/F2_rep0_x0p0126.txt")
-yadism_lo_sf_f3=np.loadtxt("Yadism_data/LO_NNPDF40_yadism/F3_rep0_x0p0126.txt")
-yadism_nnlo_sf_f3=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism/F3_rep0_x0p0126.txt")
+# x=0.0126
+#yadism_lo_sf_f2=np.loadtxt("Yadism_data/LO_NNPDF40_yadism/F2_rep0_x0p0126.txt")
+#yadism_nnlo_sf_f2=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism/F2_rep0_x0p0126.txt")
+#yadism_lo_sf_f3=np.loadtxt("Yadism_data/LO_NNPDF40_yadism/F3_rep0_x0p0126.txt")
+#yadism_nnlo_sf_f3=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism/F3_rep0_x0p0126.txt")
 
-#yadism_lo_sf_f2=np.loadtxt("Yadism_data/LO_NNPDF40_yadism/F2_rep0_x0p25.txt")
-#yadism_nnlo_sf_f2=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism/F2_rep0_x0p25.txt")
-#yadism_lo_sf_f3=np.loadtxt("Yadism_data/LO_NNPDF40_yadism/F3_rep0_x0p25.txt")
-#yadism_nnlo_sf_f3=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism/F3_rep0_x0p25.txt")
+#yadism_lo_sf_f2_nubar=np.loadtxt("Yadism_data/LO_NNPDF40_yadism_nubar/F2_rep0_x0p0126.txt")
+#yadism_nnlo_sf_f2_nubar=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism_nubar/F2_rep0_x0p0126.txt")
+#yadism_lo_sf_f3_nubar=np.loadtxt("Yadism_data/LO_NNPDF40_yadism_nubar/F3_rep0_x0p0126.txt")
+#yadism_nnlo_sf_f3_nubar=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism_nubar/F3_rep0_x0p0126.txt")
+
+# x =0.25
+# Neutrino
+yadism_lo_sf_f2=np.loadtxt("Yadism_data/LO_NNPDF40_yadism/F2_rep0_x0p25.txt")
+yadism_nnlo_sf_f2=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism/F2_rep0_x0p25.txt")
+yadism_lo_sf_f3=np.loadtxt("Yadism_data/LO_NNPDF40_yadism/F3_rep0_x0p25.txt")
+yadism_nnlo_sf_f3=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism/F3_rep0_x0p25.txt")
+
+# Antineutrino
+yadism_lo_sf_f2_nubar=np.loadtxt("Yadism_data/LO_NNPDF40_yadism_nubar/F2_rep0_x0p25_nubar.txt")
+yadism_nnlo_sf_f2_nubar=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism_nubar/F2_rep0_x0p25_nubar.txt")
+yadism_lo_sf_f3_nubar=np.loadtxt("Yadism_data/LO_NNPDF40_yadism_nubar/F3_rep0_x0p25_nubar.txt")
+yadism_nnlo_sf_f3_nubar=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism_nubar/F3_rep0_x0p25_nubar.txt")
 
 nq2_yadism=20
 yadism_sf_q=np.zeros(nq2_yadism)
@@ -122,6 +144,10 @@ yadism_f2=np.zeros(nq2_yadism)
 yadism_f3=np.zeros(nq2_yadism)
 yadism_nnlo_f2=np.zeros(nq2_yadism)
 yadism_nnlo_f3=np.zeros(nq2_yadism)
+yadism_f2_nubar=np.zeros(nq2_yadism)
+yadism_f3_nubar=np.zeros(nq2_yadism)
+yadism_nnlo_f2_nubar=np.zeros(nq2_yadism)
+yadism_nnlo_f3_nubar=np.zeros(nq2_yadism)
 
 for iq2 in range(nq2_yadism):
     yadism_sf_q[iq2] = math.sqrt( yadism_lo_sf_f2[iq2][2] )
@@ -129,6 +155,10 @@ for iq2 in range(nq2_yadism):
     yadism_f3[iq2] = yadism_lo_sf_f3[iq2][3]
     yadism_nnlo_f2[iq2] = yadism_nnlo_sf_f2[iq2][3]
     yadism_nnlo_f3[iq2] = yadism_nnlo_sf_f3[iq2][3]
+    yadism_f2_nubar[iq2] = yadism_lo_sf_f2_nubar[iq2][3]
+    yadism_f3_nubar[iq2] = yadism_lo_sf_f3_nubar[iq2][3]
+    yadism_nnlo_f2_nubar[iq2] = yadism_nnlo_sf_f2_nubar[iq2][3]
+    yadism_nnlo_f3_nubar[iq2] = yadism_nnlo_sf_f3_nubar[iq2][3]
    
 
 #print(yadism_sf_q)    
@@ -457,9 +487,9 @@ py.figure(figsize=(ncols*5,nrows*3.5))
 gs = gridspec.GridSpec(nrows,ncols)
 rescolors = py.rcParams['axes.prop_cycle'].by_key()['color']
 # x = 0.0126
-yranges=[[1.4,3.0],[1.3,3.3],[0.3,0.7],[-0.2,0.2]]
+#yranges=[[1.4,3.0],[1.4,3.1],[0.3,0.7],[-0.2,0.2]]
 # x = 0.25
-#yranges=[[0.50,0.75],[1.2,1.6],[0.43,0.62],[0.8,1.5]]
+yranges=[[0.53,0.80],[1.07,1.5],[0.38,0.65],[0.9,1.25]]
 labelpdf=[r"$F_2^{\nu p}(x,Q)$",r"$F_2^{\bar{\nu} p}(x,Q)$",\
           r"$xF_3^{\nu p}(x,Q)$",r"$xF_3^{\bar{\nu} p}(x,Q)$"]
 
@@ -474,38 +504,47 @@ for isf in range(nsf):
     
     # LO YADISM
     if(isf==0):
-        p3=ax.plot(yadism_sf_q, yadism_f2,ls="solid",color=rescolors[1])
+        p3=ax.plot(yadism_sf_q, yadism_f2,ls="dashed",color=rescolors[1])
+    if(isf==1):
+        p3=ax.plot(yadism_sf_q, yadism_f2_nubar,ls="dashed",color=rescolors[1])
     if(isf==2):
-        p3=ax.plot(yadism_sf_q, yadism_f3,ls="solid",color=rescolors[1])
+        p3=ax.plot(yadism_sf_q, yadism_f3,ls="dashed",color=rescolors[1])
+    if(isf==3):
+        p3=ax.plot(yadism_sf_q, yadism_f3_nubar,ls="dashed",color=rescolors[1])
         
     # LO SF + GRV98
-    p4=ax.plot(Q,p2_mid[isf],ls="dashed",color=rescolors[2])
+    p4=ax.plot(Q,p2_mid[isf],ls="dotted",color=rescolors[2],lw=3)
 
     # GENIE BY
     if(isf==0):
-        p5=ax.plot(genie_sf_q, genie_sf_f2,ls="dotted",color=rescolors[3])
+        p5=ax.plot(genie_sf_q, genie_sf_f2,ls="solid",color=rescolors[3])
+    if(isf==1):
+        p5=ax.plot(genie_sf_q, genie_sf_f2_nubar,ls="solid",color=rescolors[3])
     if(isf==2):
-        p5=ax.plot(genie_sf_q, genie_sf_f3,ls="dotted",color=rescolors[3])
+        p5=ax.plot(genie_sf_q, genie_sf_f3,ls="solid",color=rescolors[3])
+    if(isf==3):
+        p5=ax.plot(genie_sf_q, genie_sf_f3_nubar,ls="solid",color=rescolors[3])
 
     # NNLO YADISM
     if(isf==0):
-        p6=ax.plot(yadism_sf_q, yadism_nnlo_f2,ls="solid",color=rescolors[4])
+        p6=ax.plot(yadism_sf_q, yadism_nnlo_f2,ls="dashed",color=rescolors[4])
+    if(isf==1):
+        p6=ax.plot(yadism_sf_q, yadism_nnlo_f2_nubar,ls="dashed",color=rescolors[4])
     if(isf==2):
-        p6=ax.plot(yadism_sf_q, yadism_nnlo_f3,ls="solid",color=rescolors[4])
+        p6=ax.plot(yadism_sf_q, yadism_nnlo_f3,ls="dashed",color=rescolors[4])
+    if(isf==3):
+        p6=ax.plot(yadism_sf_q, yadism_nnlo_f3_nubar,ls="dashed",color=rescolors[4])
 
     # GENIE BGR18
     if(isf==0):
-        p7=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f2,ls="dotted",color=rescolors[5])
+        p7=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f2,ls="dashdot",color=rescolors[5])
     if(isf==1):
-        p7=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f2_nubar,ls="dotted",color=rescolors[5])
+        p7=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f2_nubar,ls="dashdot",color=rescolors[5])
     if(isf==2):
-        p7=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f3,ls="dotted",color=rescolors[5])
+        p7=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f3,ls="dashdot",color=rescolors[5])
     if(isf==3):
-        p7=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f3_nubar,ls="dotted",color=rescolors[5])
+        p7=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f3_nubar,ls="dashdot",color=rescolors[5])
         
-
-        
-    
     ax.set_xscale('linear')
     ax.set_xlim(qmin,qmax)
     ax.tick_params(which='both',direction='in',labelsize=12,right=True)
@@ -516,22 +555,73 @@ for isf in range(nsf):
     if(isf>1):
         ax.set_xlabel(r'$Q~({\rm GeV})$',fontsize=15)
     if(isf==0):
-        ax.text(0.05,0.85,r'$x=0.0126$',fontsize=14,transform=ax.transAxes)
-        #ax.text(0.65,0.85,r'$x=0.25$',fontsize=16,transform=ax.transAxes)
+        #ax.text(0.05,0.87,r'$x=0.0126$',fontsize=16,transform=ax.transAxes)
+        ax.text(0.65,0.85,r'$x=0.25$',fontsize=17,transform=ax.transAxes)
     
-
     if(isf==1):
         ax.legend([(p1[0],p2[0]),p3[0],p4[0],p5[0],p6[0],p7[0]],\
-                  [pdfsetlab[0],r"${\rm LO~YADISM+NNPDF4.0NNLO}$",\
+                  [pdfsetlab[0],r"${\rm YADISM~(LO)+NNPDF4.0}$",\
                    pdfsetlab[1],\
                    r"${\rm Bodek~Yang~(GENIE)}$",\
-                   r"${\rm NNLO~YADISM+NNPDF4.0NNLO}$",r"${\rm BGR18}$"], \
-                  frameon="True",loc=4,prop={'size':8})
+                   r"${\rm YADISM~(NNLO)+NNPDF4.0}$",r"${\rm BGR18~{(GENIE)}}$"], \
+                  frameon="True",loc=1,prop={'size':9})
 
 
 py.tight_layout(pad=1, w_pad=1, h_pad=1.0)
 py.savefig('StructureFunction'+filelabel+'.pdf')
 print('output plot: StructureFunction'+filelabel+'.pdf')
 
-x
+
+#
+# Now evaluate the K-factors with YADISM for fixed PDF
+#
+print("\n Evaluate the K-factors with YADISM \n")
+
+print("\n ****** Plotting absolute Structure Functions ******* \n")
+
+py.clf()
+ncols,nrows=1,1
+py.figure(figsize=(ncols*5,nrows*3.5))
+gs = gridspec.GridSpec(nrows,ncols)
+rescolors = py.rcParams['axes.prop_cycle'].by_key()['color']
+
+
+isf=0
+ax = py.subplot(gs[isf])
+
+# F2nu
+p1=ax.plot(yadism_sf_q,  yadism_nnlo_f2/yadism_f2,ls="solid",lw=2,color=rescolors[0])
+
+# F2nubar
+p2=ax.plot(yadism_sf_q,  yadism_nnlo_f2_nubar/yadism_f2_nubar,ls="dashed",lw=2,color=rescolors[1])
+
+# xF3nu
+p3=ax.plot(yadism_sf_q,  yadism_nnlo_f3/yadism_f3,ls="solid",lw=2,color=rescolors[2])
+
+# xF3nubar
+p4=ax.plot(yadism_sf_q,  yadism_nnlo_f3_nubar/yadism_f3_nubar,ls="dashed",lw=2,color=rescolors[3])
+
+
+ax.set_xscale('linear')
+ax.set_xlim(qmin,qmax)
+ax.tick_params(which='both',direction='in',labelsize=12,right=True)
+ax.tick_params(which='major',length=7)
+ax.tick_params(which='minor',length=4)
+ax.set_ylabel(r"${\rm NNLO/LO~}K\,{\rm factor}$",fontsize=17)
+# x = 0.25
+ax.set_ylim(0.80,1.01)
+ax.set_xlabel(r'$Q~({\rm GeV})$',fontsize=15)
+ax.text(0.08,0.87,r'$x=0.25$',fontsize=17,transform=ax.transAxes)
+#ax.text(0.08,0.87,r'$x=0.0126$',fontsize=17,transform=ax.transAxes)
+
+ax.legend([p1[0],p2[0],p3[0],p4[0]],[r"$F_2^{\nu p}$",r"$F_2^{\bar{\nu} p}$",r"$xF_3^{\nu p}$",r"$xF_3^{\bar{\nu} p}$"], \
+          frameon="True",loc=4,prop={'size':14})
+        
+py.tight_layout(pad=1, w_pad=1, h_pad=1.0)
+py.savefig('StructureFunction-Qdep-Kfact'+filelabel+'.pdf')
+print('output plot: StructureFunction-Qdep-Kfact'+filelabel+'.pdf')
+
+
+
+
 exit()
