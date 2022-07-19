@@ -7,7 +7,7 @@ NνSF is a python module that provides predictions for neutrino structure functi
 The package can be installed from source using the following commands:
 
 ```bash
-git clone https://github.com/NNPDF/nnusf.git
+git clone https://github.com/NNPDF/nnusf.git --depth 1
 cd nnusf
 poetry install
 ```
