@@ -2,8 +2,7 @@
 """Provide a Loader class to retrieve data information."""
 import logging
 import pathlib
-from typing import Optional
-from webbrowser import Elinks
+from typing import Optional, Union
 
 import numpy as np
 import pandas as pd
@@ -16,8 +15,6 @@ MAP_EXP_YADISM = {
     "NUTEV": "XSNUTEVNU",
     "CHORUS": "XSCHORUSCC",
     "CDHSW": "XSCHORUSCC",
-    # for the proton boundary condition the xs
-    # definition is arbitrary
     "PROTONBC": "XSCHORUSCC",
 }
 
@@ -71,11 +68,11 @@ class Loader:
         self.table, self.leftindex = self._load(w2min)
         self.tr_frac = None
         self.covariance_matrix = self.build_covariance_matrix(
-            self.table, include_syst
+            self.table, self.name, include_syst
         )
         _logger.info(f"Loaded '{name}' dataset")
 
-    def _load(self, w2min: float) -> tuple[pd.DataFrame, pd.Index]:
+    def _load(self, w2min: Union[float, None]) -> tuple[pd.DataFrame, pd.Index]:
         """Load the dataset information.
 
         Returns
@@ -96,12 +93,11 @@ class Loader:
         if kin_file.exists():
             kin_df = pd.read_csv(kin_file).iloc[1:, 1:4].reset_index(drop=True)
         elif "_MATCHING" in self.name:
+            file_path = f"{self.commondata_path}/kinematics"
             if "FW" in self.name or "DXDY" in self.name:
-                file = (
-                    f"{self.commondata_path}/kinematics/KIN_MATCHING_XSEC.csv"
-                )
+                file = f"{file_path}/KIN_MATCHING_XSEC.csv"
             else:
-                file = f"{self.commondata_path}/kinematics/KIN_MATCHING_FX.csv"
+                file = f"{file_path}/KIN_MATCHING_FX.csv"
             kin_df = pd.read_csv(file).iloc[1:, 1:4].reset_index(drop=True)
         elif self.obs in ["F2", "F3"]:
             file = f"{self.commondata_path}/kinematics/KIN_{exp_name}_F2F3.csv"
@@ -116,6 +112,7 @@ class Loader:
         dat_name = f"{self.commondata_path}/data/DATA_{self.name}.csv"
         data_df = pd.read_csv(dat_name, header=0, na_values=["-", " "])
         data_df = data_df.iloc[:, 1:].reset_index(drop=True)
+
         # Extract values from the uncertainties
         unc_name = f"{self.commondata_path}/uncertainties/UNC_{self.name}.csv"
         unc_df = pd.read_csv(unc_name, na_values=["-", " "])
@@ -207,7 +204,7 @@ class Loader:
 
     @staticmethod
     def build_covariance_matrix(
-        unc_df: pd.DataFrame, include_syst: bool
+        unc_df: pd.DataFrame, dataset_name: str, include_syst: Union[bool, None]
     ) -> np.ndarray:
         """Build the covariance matrix.
 
@@ -225,8 +222,12 @@ class Loader:
         covariance matrix
 
         """
-        diagonal = np.power(unc_df["stat"], 2)
-        if include_syst:
-            corr_sys = unc_df["syst"]
-            return np.diag(diagonal) + np.outer(corr_sys, corr_sys)
-        return np.diag(diagonal)
+        if "_MATCHING" in dataset_name:
+            # TODO: Insert here the actuatl CovMat
+            return np.identity(unc_df.shape[0])
+        else:
+            diagonal = np.power(unc_df["stat"], 2)
+            if include_syst:
+                corr_sys = unc_df["syst"]
+                return np.diag(diagonal) + np.outer(corr_sys, corr_sys)
+            return np.diag(diagonal)

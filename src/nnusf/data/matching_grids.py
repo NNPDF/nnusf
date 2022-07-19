@@ -15,7 +15,13 @@ from eko.interpolation import make_lambert_grid
 
 from .. import utils
 from ..theory.predictions import pdf_error
-from .utils import MAP_OBS_PID, build_obs_dict, dump_info_file, write_to_csv
+from .utils import (
+    MAP_OBS_PID,
+    build_obs_dict,
+    construct_uncertainties,
+    dump_info_file,
+    write_to_csv,
+)
 
 _logger = logging.getLogger(__name__)
 
@@ -123,7 +129,9 @@ def main(grids: pathlib.Path, pdf: str, destination: pathlib.Path) -> None:
         kinematics_pd = pd.DataFrame(kinematics)
         # Select only predictions for Replicas_0 in data
         data_pd = pd.DataFrame({"data": pred[:, 0]})
+        errors_pd = construct_uncertainties(err_list)
 
+        # Dump the kinematics into CSV
         kinematics_folder = destination.joinpath("kinematics")
         kinematics_folder.mkdir(exist_ok=True)
         if is_xsec:
@@ -131,12 +139,22 @@ def main(grids: pathlib.Path, pdf: str, destination: pathlib.Path) -> None:
         else:
             write_to_csv(kinematics_folder, f"KIN_MATCHING_FX", kinematics_pd)
 
+        # Dump the central (replica) data into CSV
         central_val_folder = destination.joinpath("data")
         central_val_folder.mkdir(exist_ok=True)
         write_to_csv(central_val_folder, f"DATA_{new_name}", data_pd)
 
+        # Dump the dummy incertainties into CSV
         systypes_folder = destination.joinpath("uncertainties")
         systypes_folder.mkdir(exist_ok=True)
+        write_to_csv(systypes_folder, f"UNC_{new_name}", errors_pd)
+
+        # Dump the predictions for the REST of the replicas as NPY
+        # NOTE: The following does no longer contain the REPLICA_0
+        pred_folder = destination.joinpath("matching")
+        pred_folder.mkdir(exist_ok=True)
+        mat_dest = (pred_folder / f"MATCH_{new_name}").with_suffix(".npy")
+        np.save(mat_dest, pred[:, 1:])
 
         msg = f"The matching/BC grid for {grid_name} are stored in "
         msg += f"'{destination.absolute().relative_to(pathlib.Path.cwd())}'"
