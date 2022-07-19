@@ -8,7 +8,7 @@ from ..data import coefficients, combine_tables, filters, matching_grids
 from . import base
 
 dataset_path = click.argument(
-    "data", type=click.Path(exists=True, path_type=pathlib.Path)
+    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
 )
 
 obs_type = click.argument("obstype", type=str)
