@@ -115,6 +115,6 @@ def main(datapaths: list[pathlib.Path], destination: pathlib.Path):
         dest = (destination / name).with_suffix(".npy")
         np.save(dest, coeffs)
         _logger.info(
-            f"The coefficient with shape {coeffs.shape} is "
-            f"saved in {dest.relative_to(pathlib.Path.cwd())}"
+            f"The coefficient with shape {coeffs.shape} is saved "
+            f"in {dest.absolute().relative_to(pathlib.Path.cwd())}"
         )
