@@ -94,12 +94,10 @@ def theory_error(
     pred = grid.convolute_with_one(
         2212, pdfset.xfxQ2, pdfset.alphasQ2, xi=prescription
     )
-    __import__("pdb").set_trace()
     if reshape:
         pred = np.array(pred).T.reshape((*xgrid.shape, len(pred)))
     else:
         pred = np.array(pred).T
-
     return pred, 4, slice(0, -1), "9 pts."
 
 
