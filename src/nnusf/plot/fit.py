@@ -26,6 +26,13 @@ basis = [
     r"$x\bar{F}_3$",
 ]
 
+MAP_OBS_LABEL = {
+    "F2": r"$F_2$",
+    "F3": r"$xF_3$",
+    "DXDYNUU": r"$d\sigma^{\nu}/(dxdQ^2)$",
+    "DXDYNUB": r"$d\sigma^{\bar{\nu}}/(dxdQ^2)$",
+}
+
 
 class InputError(Exception):
     pass
@@ -167,6 +174,8 @@ def prediction_data_comparison(**kwargs):
 
     count_plots = 0
     for experiment in kwargs["experiments"]:
+        obs_label = MAP_OBS_LABEL[experiment.split("_")[-1]]
+        expt_name = experiment.split("_")[0]
         data = Loader(experiment, path_to_commondata, path_to_coefficients)
         kinematics = data.kinematics
         coefficients = data.coefficients
@@ -186,7 +195,7 @@ def prediction_data_comparison(**kwargs):
         figformat = kwargs.get("format", "pdf")
         for x_slice in np.unique(kinematics[:, 0]):
             fig, ax = plt.subplots()
-            ax.set_title(rf"{experiment}: $A$={kinematics[0,2]}, $x$={x_slice}")
+            ax.set_title(rf"{expt_name}:~$A$={kinematics[0,2]}, $x$={x_slice}")
             mask = np.where(kinematics[:, 0] == x_slice)[0]
             tmp_kinematics = kinematics[mask]
             diag_covmat = np.diag(data.covmat)[mask]
@@ -207,7 +216,7 @@ def prediction_data_comparison(**kwargs):
                 capsize=5,
             )
             ax.set_xlabel(r"$Q^2~[\mathrm{GeV}^2]$")
-            ax.set_ylabel(r"$\mathcal{O}(Q^2)$")
+            ax.set_ylabel(f"{obs_label}")
             ax.legend()
             savepath = (
                 pathlib.Path(kwargs["output"])
