@@ -90,7 +90,7 @@ def sub_coefficients(data, destination):
 @pdfset_name
 @destination_path
 def sub_matching_grids(data, pdfset, destination):
-    """Generate the Yadism data (kinematicas & central values) as
+    """Generate the Yadism data (kinematics & central values) as
     well as the the predictions for all replicas. The command can
     be run as follows:
 
@@ -99,15 +99,30 @@ def sub_matching_grids(data, pdfset, destination):
     matching_grids.main(data, pdfset, destination)
 
 
+@subcommand.command("matching_grids_empty")
+@dataset_path
+@destination_path
+def sub_matching_grids_empty(data, destination):
+    """Generate the empty matching datasets"""
+    matching_grids.generate_empty(data, destination)
+
+
 @subcommand.command("proton_bc")
 @dataset_path
 @pdfset_name
 @destination_path
 def sub_proton_bc(data, pdfset, destination):
-    """Generate the Yadism data (kinematicas & central values) as
+    """Generate the Yadism data (kinematics & central values) as
     well as the the predictions for all replicas for A=1 use to
     impose the Boundary Condition. The command can be run as follows:
 
     eg: nu data proton_bc ./grids-PROTONBC_*_MATCHING.tar.gz NNPDF40_nnlo_as_01180
     """
     matching_grids.proton_boundary_conditions(data, pdfset, destination)
+
+
+@subcommand.command("proton_bc_empty")
+@destination_path
+def sub_proton_bc(destination):
+    """Generate the kinematics to impose the Boundary Condition"""
+    matching_grids.proton_boundary_conditions(destination)
