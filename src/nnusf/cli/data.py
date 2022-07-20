@@ -100,7 +100,7 @@ def sub_matching_grids(data, pdfset, destination):
 
 
 @subcommand.command("proton_bc")
-@grid_path
+@dataset_path
 @pdfset_name
 @destination_path
 def sub_proton_bc(data, pdfset, destination):
@@ -108,6 +108,6 @@ def sub_proton_bc(data, pdfset, destination):
     well as the the predictions for all replicas for A=1 use to
     impose the Boundary Condition. The command can be run as follows:
 
-    eg: nnu data proton_bc nNNPDF30_nlo_as_0118_A56_Z26 F2
+    eg: nu data proton_bc ./grids-PROTONBC_*_MATCHING.tar.gz NNPDF40_nnlo_as_01180
     """
     matching_grids.proton_boundary_conditions(data, pdfset, destination)
