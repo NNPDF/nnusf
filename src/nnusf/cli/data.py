@@ -123,6 +123,6 @@ def sub_proton_bc(data, pdfset, destination):
 
 @subcommand.command("proton_bc_empty")
 @destination_path
-def sub_proton_bc(destination):
+def sub_proton_bc_empty(destination):
     """Generate the kinematics to impose the Boundary Condition"""
     matching_grids.proton_boundary_conditions(destination)
