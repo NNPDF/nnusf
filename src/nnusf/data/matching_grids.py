@@ -64,7 +64,7 @@ def proton_boundary_conditions(
     obsdic = build_obs_dict(obstype, [None], obspid)
 
     KIN_DESC["q2_min"] = 1.65  # Set Q2min for BC datasets
-    main(grids, pdf, destination, kin=KIN_DESC)
+    main(grids, pdf, destination, kin=KIN_DESC, match_type="KIN_PROTONBC")
     dump_info_file(destination, "PROTONBC", [obsdic], 1, M_PROTON)
 
 
@@ -73,6 +73,7 @@ def main(
     pdf: str,
     destination: pathlib.Path,
     kin: dict = KIN_DESC,
+    match_type: str = "KIN_MATCHING",
 ) -> None:
     """Generate the Yadism data (kinematicas & central values) as
     well as the the predictions for all replicas.
@@ -141,9 +142,9 @@ def main(
         kinematics_folder = destination.joinpath("kinematics")
         kinematics_folder.mkdir(exist_ok=True)
         if is_xsec:
-            write_to_csv(kinematics_folder, f"KIN_MATCHING_XSEC", kinematics_pd)
+            write_to_csv(kinematics_folder, f"{match_type}_XSEC", kinematics_pd)
         else:
-            write_to_csv(kinematics_folder, f"KIN_MATCHING_FX", kinematics_pd)
+            write_to_csv(kinematics_folder, f"{match_type}_FX", kinematics_pd)
 
         # Dump the central (replica) data into CSV
         central_val_folder = destination.joinpath("data")
