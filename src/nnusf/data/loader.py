@@ -82,7 +82,7 @@ class Loader:
         """
         # info file
         exp_name = self.name.split("_")[0]
-        if "_MATCHING-" in exp_name:
+        if "_MATCHING" in exp_name:
             exp_name = exp_name.strip("_MATCHING")
         info_df = pd.read_csv(f"{self.commondata_path}/info/{exp_name}.csv")
 
