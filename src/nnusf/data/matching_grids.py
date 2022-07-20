@@ -40,7 +40,7 @@ M_PROTON = 938.272013 * 0.001
 
 
 def proton_boundary_conditions(
-    grids: pathlib.Path, pdf: str, destination: pathlib.Path
+    grids: list[pathlib.Path], pdf: str, destination: pathlib.Path
 ) -> None:
     """Generate the Yadism data (kinematicas & central values) as
     well as the the predictions for all replicas for A=1 used to
@@ -48,24 +48,28 @@ def proton_boundary_conditions(
 
     Parameters
     ----------
-    grids : pathlib.Path
-        path to the pineappl.tar.gz grid
+    grids : list[pathlib.Path]
+        list of pathes to the pineappl.tar.gz grids
     pdf : str
         name of the PDF set to convolute with
     destination : pathlib.Path
         destination to store the files
     """
     destination.mkdir(parents=True, exist_ok=True)
-    _logger.info(f" Boundary condition grids destination : {destination}")
 
-    grid_name = grids.stem[6:-13]
-    obstype = grid_name.split("_")[-1]
-    obspid = MAP_OBS_PID[obstype]
-    obsdic = build_obs_dict(obstype, [None], obspid)
+    obsdic_list = []
+    for grid in grids:
+        grid_name = grid.stem[6:-13]
+        _logger.info(f"Generating BC data for '{grid_name}'.")
 
-    KIN_DESC["q2_min"] = 1.65  # Set Q2min for BC datasets
-    main(grids, pdf, destination, kin=KIN_DESC, match_type="KIN_PROTONBC")
-    dump_info_file(destination, "PROTONBC", [obsdic], 1, M_PROTON)
+        obstype = grid_name.split("_")[-1]
+        obspid = MAP_OBS_PID[obstype]
+        obsdic = build_obs_dict(obstype, [None], obspid)
+        obsdic_list.append(obsdic)
+
+        KIN_DESC["q2_min"] = 1.65  # Set Q2min for BC datasets
+        main(grid, pdf, destination, kin=KIN_DESC, match_type="KIN_PROTONBC")
+    dump_info_file(destination, "PROTONBC", obsdic_list, 1, M_PROTON)
 
 
 def main(

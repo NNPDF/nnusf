@@ -80,11 +80,12 @@ class Loader:
         table with loaded data
 
         """
-        # info file
+        # Extract the information from the INFO files
         exp_name = self.name.split("_")[0]
         if "_MATCHING" in exp_name:
             exp_name = exp_name.strip("_MATCHING")
-        info_df = pd.read_csv(f"{self.commondata_path}/info/{exp_name}.csv")
+        info_name = exp_name if "PROTONBC" not in self.name else "PROTONBC"
+        info_df = pd.read_csv(f"{self.commondata_path}/info/{info_name}.csv")
 
         # Extract values from the kinematic tables
         kin_file = self.commondata_path.joinpath(
@@ -94,10 +95,13 @@ class Loader:
             kin_df = pd.read_csv(kin_file).iloc[1:, 1:4].reset_index(drop=True)
         elif "_MATCHING" in self.name:
             file_path = f"{self.commondata_path}/kinematics"
+            fname = (
+                "KIN_PROTONBC" if "PROTONBC" in self.name else "KIN_MATCHING"
+            )
             if "FW" in self.name or "DXDY" in self.name:
-                file = f"{file_path}/KIN_MATCHING_XSEC.csv"
+                file = f"{file_path}/{fname}_XSEC.csv"
             else:
-                file = f"{file_path}/KIN_MATCHING_FX.csv"
+                file = f"{file_path}/{fname}_FX.csv"
             kin_df = pd.read_csv(file).iloc[1:, 1:4].reset_index(drop=True)
         elif self.obs in ["F2", "F3"]:
             file = f"{self.commondata_path}/kinematics/KIN_{exp_name}_F2F3.csv"
