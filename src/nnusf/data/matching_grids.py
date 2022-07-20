@@ -40,7 +40,7 @@ M_PROTON = 938.272013 * 0.001
 
 
 def proton_boundary_conditions(
-    pdf: str, obstype: str, destination: pathlib.Path
+    grids: pathlib.Path, pdf: str, destination: pathlib.Path
 ) -> None:
     """Generate the Yadism data (kinematicas & central values) as
     well as the the predictions for all replicas for A=1 used to
@@ -48,22 +48,23 @@ def proton_boundary_conditions(
 
     Parameters
     ----------
+    grids : pathlib.Path
+        path to the pineappl.tar.gz grid
     pdf : str
         name of the PDF set to convolute with
-    obstype : str
-        bservable type: F2, F3, DXDYNUU, DXDYNUB
     destination : pathlib.Path
         destination to store the files
     """
     destination.mkdir(parents=True, exist_ok=True)
     _logger.info(f" Boundary condition grids destination : {destination}")
 
+    grid_name = grids.stem[6:-13]
+    obstype = grid_name.split("_")[-1]
     obspid = MAP_OBS_PID[obstype]
     obsdic = build_obs_dict(obstype, [None], obspid)
-    datapath = pathlib.Path(f"DATA_PROTONBC_{obspid}")
 
     q2_min = 1.65  # Redifine Q2min in case of A=1
-    main(datapath, pdf, destination)
+    main(grids, pdf, destination)
     dump_info_file(destination, "PROTONBC", [obsdic], 1, M_PROTON)
 
 
