@@ -28,9 +28,10 @@ basis = [
 
 MAP_OBS_LABEL = {
     "F2": r"$F_2$",
+    "FW": r"$F_W$",
     "F3": r"$xF_3$",
-    "DXDYNUU": r"$d\sigma^{\nu}/(dxdQ^2)$",
-    "DXDYNUB": r"$d\sigma^{\bar{\nu}}/(dxdQ^2)$",
+    "DXDYNUU": r"$d^2\sigma^{\nu}/(dxdQ^2)$",
+    "DXDYNUB": r"$d^2\sigma^{\bar{\nu}}/(dxdQ^2)$",
 }
 
 
