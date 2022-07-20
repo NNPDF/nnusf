@@ -11,6 +11,10 @@ dataset_path = click.argument(
     "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
 )
 
+grid_path = click.argument(
+    "data", type=click.Path(exists=True, path_type=pathlib.Path)
+)
+
 obs_type = click.argument("obstype", type=str)
 pdfset_name = click.argument("pdfset", type=str)
 
@@ -82,7 +86,7 @@ def sub_coefficients(data, destination):
 
 
 @subcommand.command("matching_grids")
-@dataset_path
+@grid_path
 @pdfset_name
 @destination_path
 def sub_matching_grids(data, pdfset, destination):
@@ -96,14 +100,14 @@ def sub_matching_grids(data, pdfset, destination):
 
 
 @subcommand.command("proton_bc")
+@grid_path
 @pdfset_name
-@obs_type
 @destination_path
-def sub_proton_bc(pdfset, obstype, destination):
+def sub_proton_bc(data, pdfset, destination):
     """Generate the Yadism data (kinematicas & central values) as
     well as the the predictions for all replicas for A=1 use to
     impose the Boundary Condition. The command can be run as follows:
 
     eg: nnu data proton_bc nNNPDF30_nlo_as_0118_A56_Z26 F2
     """
-    matching_grids.proton_boundary_conditions(pdfset, obstype, destination)
+    matching_grids.proton_boundary_conditions(data, pdfset, destination)
