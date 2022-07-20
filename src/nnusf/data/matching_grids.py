@@ -25,13 +25,13 @@ from .utils import (
 
 _logger = logging.getLogger(__name__)
 
-q2_min = 300
-q2_max = 1e5
-
-x_min = 1e-5
-
-y_min = 0.2
-y_max = 0.8
+KIN_DESC = {
+    "x_min": 1e-5,
+    "y_min": 0.2,
+    "y_max": 0.8,
+    "q2_min": 300,
+    "q2_max": 1e5,
+}
 
 
 N_KINEMATC_GRID_FX = dict(x=50, Q2=100, y=1.0)
@@ -63,12 +63,17 @@ def proton_boundary_conditions(
     obspid = MAP_OBS_PID[obstype]
     obsdic = build_obs_dict(obstype, [None], obspid)
 
-    q2_min = 1.65  # Redifine Q2min in case of A=1
-    main(grids, pdf, destination)
+    KIN_DESC["q2_min"] = 1.65  # Set Q2min for BC datasets
+    main(grids, pdf, destination, kin=KIN_DESC)
     dump_info_file(destination, "PROTONBC", [obsdic], 1, M_PROTON)
 
 
-def main(grids: pathlib.Path, pdf: str, destination: pathlib.Path) -> None:
+def main(
+    grids: pathlib.Path,
+    pdf: str,
+    destination: pathlib.Path,
+    kin: dict = KIN_DESC,
+) -> None:
     """Generate the Yadism data (kinematicas & central values) as
     well as the the predictions for all replicas.
 
@@ -100,15 +105,15 @@ def main(grids: pathlib.Path, pdf: str, destination: pathlib.Path) -> None:
             n_xgrid = N_KINEMATC_GRID_XSEC["x"]
             n_q2grid = N_KINEMATC_GRID_XSEC["Q2"]
             n_ygrid = N_KINEMATC_GRID_XSEC["y"]
-            y_grid = np.linspace(y_min, y_max, n_ygrid)
+            y_grid = np.linspace(kin["y_min"], kin["y_max"], n_ygrid)
         else:
             n_xgrid = N_KINEMATC_GRID_FX["x"]
             n_q2grid = N_KINEMATC_GRID_FX["Q2"]
             n_ygrid = N_KINEMATC_GRID_FX["y"]
             y_grid = [0.0]
 
-        x_grid = make_lambert_grid(n_xgrid, x_min)
-        q2_grid = np.linspace(q2_min, q2_max, int(n_q2grid))
+        x_grid = make_lambert_grid(n_xgrid, kin["x_min"])
+        q2_grid = np.linspace(kin["q2_min"], kin["q2_max"], int(n_q2grid))
 
         full_pred = []
         for gpath in grids.iterdir():
