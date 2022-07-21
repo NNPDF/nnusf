@@ -109,7 +109,7 @@ def generate_models(
                 kin_var.min(),
                 kin_var.max(),
                 # num=int((kin_var.max() - kin_var.min()) / min_spacing) + 1,
-                num=int(kin_var.size)*5,
+                num=int(kin_var.size*2),
             )
             kin_equal_spaced_targets.append(
                 np.interp(kin_equal_spaced, kin_unique, kin_scaling_target)
