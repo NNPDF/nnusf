@@ -230,7 +230,8 @@ class Loader:
 
         """
         if "_MATCHING" in dataset_name:
-            dataset_name = "MATCH_" + dataset_name.strip("_MATCHING")
+            # import ipdb; ipdb.set_trace()
+            dataset_name = "MATCH_" + dataset_name.removesuffix("_MATCHING")
             nrep_predictions = np.load(
                 f"{commondata_path}/matching/{dataset_name}.npy"
             )
