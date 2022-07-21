@@ -22,6 +22,7 @@ rich = "^10"
 scipy = "^1.8.1"
 tensorflow = "^2.8.2"
 pylint = "^2.14.4"
+hyperopt = "^0.2.7"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1"
