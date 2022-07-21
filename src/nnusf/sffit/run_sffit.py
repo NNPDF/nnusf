@@ -9,11 +9,7 @@ import tensorflow as tf
 import yaml
 
 from . import load_data
-from .hyperscan import (
-    construct_hyperfunc,
-    construct_hyperspace,
-    perform_hyperscan,
-)
+from .hyperscan import construct_hyperfunc, construct_hyperspace, perform_hyperscan
 from .model_gen import generate_models
 from .train_model import perform_fit
 from .utils import set_global_seeds
