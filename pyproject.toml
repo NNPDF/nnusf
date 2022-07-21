@@ -21,6 +21,7 @@ pandas = "^1.4.2"
 rich = "^10"
 scipy = "^1.8.1"
 tensorflow = "^2.8.2"
+tensorflow_probability = "^0.17.0"
 pylint = "^2.14.4"
 
 [tool.poetry.dev-dependencies]

@@ -32,6 +32,9 @@ W2min: 3.5
 # chi2 history stored for each `log_freq` epochs
 log_freq: 100
 
+# True: fit to pseudodata, False: fit to central values
+genrep: True
+
 # Various seed values
 global_seeds: 456
 trvlseed: 123
@@ -40,12 +43,13 @@ pseudodataseed: 2
 # Define Neural Network Parameters
 fit_parameters:
   epochs: 50000
-  stopping_patience: 8000
+  stopping_patience: 15000
   units_per_layer: [70, 55, 40, 20, 20]
   activation_per_layer: [tanh, tanh, tanh, tanh, selu]
   optimizer_parameters:
     optimizer: Adam
     clipnorm: 0.00001
     learning_rate: 0.05
+  feature_scaling: True
   val_chi2_threshold: 4
   initializer_seed: 1

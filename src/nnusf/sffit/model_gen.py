@@ -4,7 +4,12 @@
 import numpy as np
 import tensorflow as tf
 
-from .layers import GenMaskLayer, ObservableLayer, TheoryConstraint
+from .layers import (
+    FeatureScaling,
+    GenMaskLayer,
+    ObservableLayer,
+    TheoryConstraint,
+)
 from .utils import chi2, mask_covmat, mask_expdata
 
 
@@ -15,6 +20,7 @@ def generate_models(
     initializer_seed=0,
     output_units=6,
     output_activation="linear",
+    feature_scaling=True,
     **kwargs
 ):
     """Generate the parametrization of the structure functions.
@@ -70,6 +76,48 @@ def generate_models(
         dense_nest = sf_output(dense_nest)
         return dense_nest
 
+    # Get kinematics if we need to scale the inputs based on their values
+    if feature_scaling:
+        data_kinematics = []
+        for data in data_info.values():
+            data_kinematics.append(data.kinematics)
+
+        sorted_tr_data = np.sort(
+            np.concatenate(data_kinematics, axis=0), axis=0
+        )
+
+        tr_datasize = sorted_tr_data.shape[0]
+
+        hires_target_grid = np.linspace(
+            start=0, stop=1.0, endpoint=True, num=tr_datasize
+        )
+
+        kin_equal_spaced_targets = []
+        for kin_var in sorted_tr_data.T:
+            kin_unique, kin_counts = np.unique(kin_var, return_counts=True)
+            kin_scaling_target = [
+                hires_target_grid[cumsum - kin_counts[0]]
+                for cumsum in np.cumsum(kin_counts)
+            ]
+            # spacing = [
+            #     kin_var[i + 1] - kin_var[i] for i in range(len(kin_var) - 1)
+            # ]
+            # min_spacing = min(
+            #     spacing[i] for i in range(len(spacing)) if spacing[i] > 0
+            # )
+            kin_equal_spaced = np.linspace(
+                kin_var.min(),
+                kin_var.max(),
+                # num=int((kin_var.max() - kin_var.min()) / min_spacing) + 1,
+                num=int(kin_var.size*2),
+            )
+            kin_equal_spaced_targets.append(
+                np.interp(kin_equal_spaced, kin_unique, kin_scaling_target)
+            )
+            feature_scaling_layer = FeatureScaling(
+                sorted_tr_data, kin_equal_spaced_targets
+            )
+
     model_inputs = []
     tr_data, vl_data = [], []
     tr_obs, vl_obs = [], []
@@ -86,6 +134,9 @@ def generate_models(
 
         # The pdf model: kinematics -> structure functions
         def sf_model(input_layer):
+            if feature_scaling:
+                input_layer = feature_scaling_layer(input_layer)
+
             nn_output = sequential(input_layer)
 
             # Ensure F_i(x=1)=0
