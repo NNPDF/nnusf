@@ -96,3 +96,12 @@ def perform_fit(
                 live_updater,
             ],
         )
+
+    # Save various metadata into a dictionary for hyperscan
+    final_results = {
+        "best_tr_chi2": get_train_info.loss_value,
+        "best_vl_chi2": get_train_info.best_chi2,
+        "best_epochs": get_train_info.best_epoch,
+    }
+
+    return final_results

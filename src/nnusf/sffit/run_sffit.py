@@ -9,6 +9,11 @@ import tensorflow as tf
 import yaml
 
 from . import load_data
+from .hyperscan import (
+    construct_hyperfunc,
+    construct_hyperspace,
+    perform_hyperscan,
+)
 from .model_gen import generate_models
 from .train_model import perform_fit
 from .utils import set_global_seeds
@@ -21,7 +26,8 @@ _logger = logging.getLogger(__name__)
 def main(
     runcard: pathlib.Path,
     replica: int,
-    destination: Optional[pathlib.Path],
+    hyperopt: Optional[bool] = False,
+    destination: Optional[pathlib.Path] = None,
 ):
     """Run the structure function fit.
 
@@ -62,11 +68,25 @@ def main(
     # create a training mask and add it to the data_info object
     load_data.add_tr_filter_mask(data_info, runcard_content["trvlseed"])
 
+    # Control the hyperparameter optimisation
+    if hyperopt and runcard_content["hyperscan"]:
+        log_freq = runcard_content.get("log_freq", 1e10)
+        hyperspace = construct_hyperspace(**runcard_content)
+
+        def fn_hyper_train(hyperspace_dict):
+            return construct_hyperfunc(
+                data_info, hyperspace_dict, replica_dir, log_freq
+            )
+
+        # TODO: Add maxevl=100 as input arguments
+        perform_hyperscan(fn_hyper_train, hyperspace, 100, replica_dir)
+        return
+
     fit_dict = generate_models(data_info, **runcard_content["fit_parameters"])
 
     # Compile the training and validationa nd perform the fit
     log_freq = runcard_content.get("log_freq", 100)
-    perform_fit(
+    _ = perform_fit(
         fit_dict,
         data_info,
         replica_dir,

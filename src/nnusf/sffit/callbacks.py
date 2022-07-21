@@ -149,6 +149,7 @@ class LogTrainingHistory(tf.keras.callbacks.Callback):
             for k, v in self.traininfo_class.tr_dpts.items()
             if k in self.traininfo_class.vl_dpts
         }
+
         # Save the chi2/Ndat for the individual dataset
         chi2s_per_dataset = {
             k.strip("_loss"): v / self.traininfo_class.tr_dpts[k.strip("_loss")]
