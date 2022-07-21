@@ -13,6 +13,9 @@ from ..sffit.load_data import path_to_coefficients, path_to_commondata
 from ..sffit.load_fit_data import get_predictions_q, load_models
 
 _logger = logging.getLogger(__name__)
+PARRENT_PATH = pathlib.Path(__file__).parents[1]
+MPLSTYLE = PARRENT_PATH.joinpath("plotstyle.mplstyle")
+plt.style.use(MPLSTYLE)
 
 basis = [
     r"$F_2$",
@@ -22,6 +25,14 @@ basis = [
     r"$\bar{F}_L$",
     r"$x\bar{F}_3$",
 ]
+
+MAP_OBS_LABEL = {
+    "F2": r"$F_2$",
+    "FW": r"$F_W$",
+    "F3": r"$xF_3$",
+    "DXDYNUU": r"$d^2\sigma^{\nu}/(dxdQ^2)$",
+    "DXDYNUB": r"$d^2\sigma^{\bar{\nu}}/(dxdQ^2)$",
+}
 
 
 class InputError(Exception):
@@ -40,6 +51,24 @@ def main(model: pathlib.Path, runcard: pathlib.Path, output: pathlib.Path):
     for action in runcard_content["actions"]:
         func = globals()[action]
         func(**runcard_content)
+
+
+def training_validation_split(**kwargs):
+    fitinfo = pathlib.Path(kwargs["fit"]).glob("replica_*/fitinfo.json")
+    tr_chi2s, vl_chi2s = [], []
+
+    for repinfo in fitinfo:
+        with open(repinfo, "r") as file_stream:
+            jsonfile = json.load(file_stream)
+        tr_chi2s.append(jsonfile["best_tr_chi2"])
+        vl_chi2s.append(jsonfile["best_vl_chi2"])
+
+    f, ax = plt.subplots(figsize=(6, 6))
+    ax.scatter(tr_chi2s, vl_chi2s, s=20, marker="s")
+    ax.set_xlabel(r"$\chi^2_{\rm tr}$")
+    ax.set_ylabel(r"$\chi^2_{\rm vl}$")
+    save_path = pathlib.Path(kwargs["output"]) / "chi2_split.png"
+    f.savefig(f"{save_path}")
 
 
 def sfs_q_replicas(**kwargs):
@@ -146,6 +175,8 @@ def prediction_data_comparison(**kwargs):
 
     count_plots = 0
     for experiment in kwargs["experiments"]:
+        obs_label = MAP_OBS_LABEL[experiment.split("_")[-1]]
+        expt_name = experiment.split("_")[0]
         data = Loader(experiment, path_to_commondata, path_to_coefficients)
         kinematics = data.kinematics
         coefficients = data.coefficients
@@ -165,7 +196,7 @@ def prediction_data_comparison(**kwargs):
         figformat = kwargs.get("format", "pdf")
         for x_slice in np.unique(kinematics[:, 0]):
             fig, ax = plt.subplots()
-            ax.set_title(f"{experiment}: A={kinematics[0,2]}, x={x_slice}")
+            ax.set_title(rf"{expt_name}:~$A$={kinematics[0,2]}, $x$={x_slice}")
             mask = np.where(kinematics[:, 0] == x_slice)[0]
             tmp_kinematics = kinematics[mask]
             diag_covmat = np.diag(data.covmat)[mask]
@@ -174,7 +205,7 @@ def prediction_data_comparison(**kwargs):
                 data.central_values[mask],
                 yerr=np.sqrt(diag_covmat),
                 fmt=".",
-                color="black",
+                label="Data",
                 capsize=5,
             )
             ax.errorbar(
@@ -182,15 +213,18 @@ def prediction_data_comparison(**kwargs):
                 mean_observable_predictions[mask],
                 yerr=std_observable_predictions[mask],
                 fmt=".",
-                color="C0",
+                label="NN Predictions",
                 capsize=5,
             )
+            ax.set_xlabel(r"$Q^2~[\mathrm{GeV}^2]$")
+            ax.set_ylabel(f"{obs_label}")
+            ax.legend()
             savepath = (
                 pathlib.Path(kwargs["output"])
                 / f"prediction_data_comparison_{count_plots}.{figformat}"
             )
             count_plots += 1
-            fig.savefig(savepath, dpi=350)
+            fig.savefig(savepath)
             plt.close(fig)
 
 
@@ -226,5 +260,5 @@ def chi2_history_plot(xmin=None, **kwargs):
                     pathlib.Path(outputpath)
                     / f"chi2_history_plot_{count_plots}.pdf"
                 )
-                fig.savefig(savepath, dpi=350)
+                fig.savefig(savepath)
                 plt.close(fig)
