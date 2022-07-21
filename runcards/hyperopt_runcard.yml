@@ -1,0 +1,79 @@
+############################################################
+# Configuration file for nnufit
+############################################################
+
+description: runcard for nnufit
+
+# Datasets to be included in the fit
+experiments:
+- {dataset: BEBCWA59_F2, frac: 0.75}
+- {dataset: BEBCWA59_F3, frac: 0.75}
+- {dataset: CCFR_F2, frac: 0.75}
+- {dataset: CCFR_F3, frac: 0.75}
+- {dataset: CDHSW_DXDYNUB, frac: 0.75}
+- {dataset: CDHSW_DXDYNUU, frac: 0.75}
+- {dataset: CDHSW_F2, frac: 0.75}
+- {dataset: CDHSW_F3, frac: 0.75}
+- {dataset: CDHSW_FW, frac: 0.75}
+- {dataset: CHARM_F2, frac: 0.75}
+- {dataset: CHARM_F3, frac: 0.75}
+- {dataset: CHORUS_DXDYNUB, frac: 0.75}
+- {dataset: CHORUS_DXDYNUU, frac: 0.75}
+- {dataset: CHORUS_F2, frac: 0.75}
+- {dataset: CHORUS_F3, frac: 0.75}
+- {dataset: NUTEV_DXDYNUB, frac: 0.75}
+- {dataset: NUTEV_DXDYNUU, frac: 0.75}
+- {dataset: NUTEV_F2, frac: 0.75}
+- {dataset: NUTEV_F3, frac: 0.75}
+
+# Define some kinematic cuts (Omit if not needed)
+W2min: 3.5
+
+# chi2 history stored for each `log_freq` epochs
+log_freq: 100
+
+# Various seed values
+global_seeds: 456
+trvlseed: 123
+pseudodataseed: 2
+
+# Parameter space to be scanned
+hyperscan:
+  optimizers:
+    - Adam
+    - Nadam
+    - RMSprop
+  clipnorms:
+    - 0.000100
+    - 0.000010
+    - 0.000001
+  initial_lr:
+    - 0.05
+    - 0.10
+  number_layers:
+    min: 2
+    max: 6
+  number_nodes:
+    min: 20
+    max: 200
+  activations:
+    - tanh
+    - relu
+    - selu
+    - sigmoid
+  activations_output:
+    - linear
+    - selu
+
+# Define Neural Network Parameters
+fit_parameters:
+  epochs: 75000
+  stopping_patience: 8000
+  units_per_layer: None
+  activation_per_layer: None
+  optimizer_parameters:
+    optimizer: None
+    clipnorm: None
+    learning_rate: None
+  val_chi2_threshold: 4
+  initializer_seed: 1
