@@ -68,7 +68,7 @@ class Loader:
         self.table, self.leftindex = self._load(w2min)
         self.tr_frac = None
         self.covariance_matrix = self.build_covariance_matrix(
-            self.table, self.name, include_syst
+            self.commondata_path, self.table, self.name, include_syst
         )
         _logger.info(f"Loaded '{name}' dataset")
 
@@ -208,7 +208,10 @@ class Loader:
 
     @staticmethod
     def build_covariance_matrix(
-        unc_df: pd.DataFrame, dataset_name: str, include_syst: Union[bool, None]
+        commondata_path: pathlib.Path,
+        unc_df: pd.DataFrame,
+        dataset_name: str,
+        include_syst: Union[bool, None],
     ) -> np.ndarray:
         """Build the covariance matrix.
 
@@ -227,8 +230,11 @@ class Loader:
 
         """
         if "_MATCHING" in dataset_name:
-            # TODO: Insert here the actuatl CovMat
-            return np.identity(unc_df.shape[0])
+            dataset_name = "MATCH_" + dataset_name.strip("_MATCHING")
+            nrep_predictions = np.load(
+                f"{commondata_path}/matching/{dataset_name}.npy"
+            )
+            return np.cov(nrep_predictions)
         else:
             diagonal = np.power(unc_df["stat"], 2)
             if include_syst:
