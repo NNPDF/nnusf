@@ -2,11 +2,14 @@
 """Generate the models parametrizing the structure functions."""
 
 import numpy as np
-import scipy
 import tensorflow as tf
-import tensorflow_probability as tfp
 
-from .layers import GenMaskLayer, ObservableLayer, TheoryConstraint
+from .layers import (
+    FeatureScaling,
+    GenMaskLayer,
+    ObservableLayer,
+    TheoryConstraint,
+)
 from .utils import chi2, mask_covmat, mask_expdata
 
 
@@ -96,12 +99,12 @@ def generate_models(
                 hires_target_grid[cumsum - kin_counts[0]]
                 for cumsum in np.cumsum(kin_counts)
             ]
-            spacing = [
-                kin_var[i + 1] - kin_var[i] for i in range(len(kin_var) - 1)
-            ]
-            min_spacing = min(
-                spacing[i] for i in range(len(spacing)) if spacing[i] > 0
-            )
+            # spacing = [
+            #     kin_var[i + 1] - kin_var[i] for i in range(len(kin_var) - 1)
+            # ]
+            # min_spacing = min(
+            #     spacing[i] for i in range(len(spacing)) if spacing[i] > 0
+            # )
             kin_equal_spaced = np.linspace(
                 kin_var.min(),
                 kin_var.max(),
@@ -110,6 +113,9 @@ def generate_models(
             )
             kin_equal_spaced_targets.append(
                 np.interp(kin_equal_spaced, kin_unique, kin_scaling_target)
+            )
+            feature_scaling_layer = FeatureScaling(
+                sorted_tr_data, kin_equal_spaced_targets
             )
 
     model_inputs = []
@@ -128,6 +134,9 @@ def generate_models(
 
         # The pdf model: kinematics -> structure functions
         def sf_model(input_layer):
+            if feature_scaling:
+                input_layer = feature_scaling_layer(input_layer)
+
             nn_output = sequential(input_layer)
 
             # Ensure F_i(x=1)=0
@@ -137,25 +146,6 @@ def generate_models(
                 [nn_output, nn_output_x_equal_one]
             )
             return sf_basis
-
-        if feature_scaling:
-            unstacked_inputs = tf.unstack(input_layer, axis=2)
-
-            scaled_inputs = []
-            for enum, kin_tensor in enumerate(unstacked_inputs):
-                # import ipdb; ipdb.set_trace()
-                scaled_inputs.append(
-                    tfp.math.interp_regular_1d_grid(
-                        kin_tensor,
-                        sorted_tr_data[:, enum].min().astype("float32"),
-                        sorted_tr_data[:, enum].max().astype("float32"),
-                        kin_equal_spaced_targets[enum].astype("float32"),
-                        axis=-1,
-                        fill_value="extrapolate",
-                        grid_regularizing_transform=None,
-                    )
-                )
-            input_layer = tf.stack(scaled_inputs, axis=2)
 
         sf_basis = sf_model(input_layer)
         # Construct the full observable for a given dataset
@@ -205,19 +195,3 @@ def generate_models(
     }
 
     return fit_dic
-
-
-# class Interpolation:
-#     def __init__(self, uniques, targets):
-#         self.uniques = uniques
-#         self.targets = targets
-
-#     # @tf.function
-#     def __call__(self, input_tensor):
-#         output_tensor = tf.zeros_like(input_tensor)
-#         for ind in range(len(self.uniques)-1):
-#             mask = tf.where(tf.math.logical_and(input_tensor<self.uniques[ind+1], self.uniques[ind]<input_tensor))
-#             import ipdb; ipdb.set_trace()
-#             masked_input = input_tensor[mask]
-#             output_tensor[mask] = ((self.targets[ind+1]-self.targets[ind])/(self.uniques[ind+1]-self.uniques[ind]))*(masked_input-self.uniques[ind])+self.targets[ind]
-#         return output_tensor
