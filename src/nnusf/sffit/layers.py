@@ -33,9 +33,9 @@ class TheoryConstraint(tf.keras.layers.Layer):
 
 
 class FeatureScaling(tf.keras.layers.Layer):
-    def __init__(self, sorted_tr_data, kin_equal_spaced_targets, **kwargs):
-        self.sorted_tr_data = sorted_tr_data.T
-        self.kin_equal_spaced_targets = kin_equal_spaced_targets
+    def __init__(self, map_from, map_to, **kwargs):
+        self.map_from = map_from
+        self.map_to = map_to
         super().__init__(**kwargs)
 
     def call(self, inputs):
@@ -43,10 +43,10 @@ class FeatureScaling(tf.keras.layers.Layer):
 
         scaled_inputs = []
         for input_grid, map_from, map_to in zip(
-            unstacked_inputs, self.sorted_tr_data, self.kin_equal_spaced_targets
+            unstacked_inputs, self.map_from, self.map_to
         ):
-            small_cond = tf.math.less(input_grid, map_to.min())
-            large_cond = tf.math.greater(input_grid, map_to.max())
+            small_cond = tf.math.less(input_grid, map_from.min())
+            large_cond = tf.math.greater(input_grid, map_from.max())
 
             inter_cond = []
             y_inter_coefs = []
