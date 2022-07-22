@@ -34,23 +34,49 @@ class TheoryConstraint(tf.keras.layers.Layer):
 
 class FeatureScaling(tf.keras.layers.Layer):
     def __init__(self, sorted_tr_data, kin_equal_spaced_targets, **kwargs):
-        self.sorted_tr_data = sorted_tr_data
+        self.sorted_tr_data = sorted_tr_data.T
         self.kin_equal_spaced_targets = kin_equal_spaced_targets
         super().__init__(**kwargs)
 
-    def __call__(self, inputs):
+    def call(self, inputs):
         unstacked_inputs = tf.unstack(inputs, axis=2)
+
         scaled_inputs = []
-        for enum, kin_tensor in enumerate(unstacked_inputs):
-            scaled_inputs.append(
-                tfp.math.interp_regular_1d_grid(
-                    kin_tensor,
-                    self.sorted_tr_data[:, enum].min().astype("float32"),
-                    self.sorted_tr_data[:, enum].max().astype("float32"),
-                    self.kin_equal_spaced_targets[enum].astype("float32"),
-                    axis=-1,
-                    fill_value="extrapolate",
-                    grid_regularizing_transform=None,
+        for input_grid, map_from, map_to in zip(
+            unstacked_inputs, self.sorted_tr_data, self.kin_equal_spaced_targets
+        ):
+            small_cond = tf.math.less(input_grid, map_to.min())
+            large_cond = tf.math.greater(input_grid, map_to.max())
+
+            inter_cond = []
+            y_inter_coefs = []
+            for num in range(len(map_from) - 1):
+                x1 = map_from[num]
+                x2 = map_from[num + 1]
+                y1 = map_to[num]
+                y2 = map_to[num + 1]
+
+                y_inter_coefs.append([x1, x2, y1, y2])
+
+                geq_cond = tf.math.greater_equal(input_grid, x1)
+                less_cond = tf.math.less(input_grid, x2)
+
+                inter_cond.append(tf.math.logical_and(geq_cond, less_cond))
+
+            def y_inter(x, coefs):
+                return coefs[2] + (x - coefs[0]) * (coefs[2] - coefs[3]) / (
+                    coefs[0] - coefs[1]
                 )
-            )
+
+            res = input_grid
+            for num in range(len(map_from) - 1):
+                res = tf.where(
+                    inter_cond[num], y_inter(res, y_inter_coefs[num]), res
+                )
+
+            res = tf.where(small_cond, y_inter(res, y_inter_coefs[0]), res)
+            res = tf.where(large_cond, y_inter(res, y_inter_coefs[-1]), res)
+
+            scaled_inputs.append(res)
+
         return tf.stack(scaled_inputs, axis=2)

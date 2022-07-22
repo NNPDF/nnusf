@@ -6,25 +6,25 @@ description: runcard for nnufit
 
 # Datasets to be included in the fit
 experiments:
-- {dataset: BEBCWA59_F2, frac: 0.75}
-- {dataset: BEBCWA59_F3, frac: 0.75}
-- {dataset: CCFR_F2, frac: 0.75}
-- {dataset: CCFR_F3, frac: 0.75}
-- {dataset: CDHSW_DXDYNUB, frac: 0.75}
-- {dataset: CDHSW_DXDYNUU, frac: 0.75}
-- {dataset: CDHSW_F2, frac: 0.75}
-- {dataset: CDHSW_F3, frac: 0.75}
-- {dataset: CDHSW_FW, frac: 0.75}
-- {dataset: CHARM_F2, frac: 0.75}
-- {dataset: CHARM_F3, frac: 0.75}
-- {dataset: CHORUS_DXDYNUB, frac: 0.75}
-- {dataset: CHORUS_DXDYNUU, frac: 0.75}
-- {dataset: CHORUS_F2, frac: 0.75}
-- {dataset: CHORUS_F3, frac: 0.75}
-- {dataset: NUTEV_DXDYNUB, frac: 0.75}
-- {dataset: NUTEV_DXDYNUU, frac: 0.75}
-- {dataset: NUTEV_F2, frac: 0.75}
-- {dataset: NUTEV_F3, frac: 0.75}
+- {dataset: BEBCWA59_F2, frac: 0.5}
+- {dataset: BEBCWA59_F3, frac: 0.5}
+- {dataset: CCFR_F2, frac: 0.5}
+- {dataset: CCFR_F3, frac: 0.5}
+- {dataset: CDHSW_DXDYNUB, frac: 0.5}
+- {dataset: CDHSW_DXDYNUU, frac: 0.5}
+- {dataset: CDHSW_F2, frac: 0.5}
+- {dataset: CDHSW_F3, frac: 0.5}
+- {dataset: CDHSW_FW, frac: 0.5}
+- {dataset: CHARM_F2, frac: 0.5}
+- {dataset: CHARM_F3, frac: 0.5}
+- {dataset: CHORUS_DXDYNUB, frac: 0.5}
+- {dataset: CHORUS_DXDYNUU, frac: 0.5}
+- {dataset: CHORUS_F2, frac: 0.5}
+- {dataset: CHORUS_F3, frac: 0.5}
+- {dataset: NUTEV_DXDYNUB, frac: 0.5}
+- {dataset: NUTEV_DXDYNUU, frac: 0.5}
+- {dataset: NUTEV_F2, frac: 0.5}
+- {dataset: NUTEV_F3, frac: 0.5}
 
 # Define some kinematic cuts (Omit if not needed)
 W2min: 3.5

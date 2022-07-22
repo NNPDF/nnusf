@@ -99,24 +99,18 @@ def generate_models(
                 hires_target_grid[cumsum - kin_counts[0]]
                 for cumsum in np.cumsum(kin_counts)
             ]
-            # spacing = [
-            #     kin_var[i + 1] - kin_var[i] for i in range(len(kin_var) - 1)
-            # ]
-            # min_spacing = min(
-            #     spacing[i] for i in range(len(spacing)) if spacing[i] > 0
-            # )
             kin_equal_spaced = np.linspace(
                 kin_var.min(),
                 kin_var.max(),
-                # num=int((kin_var.max() - kin_var.min()) / min_spacing) + 1,
-                num=int(kin_var.size*2),
+                num=int(kin_var.size),
             )
             kin_equal_spaced_targets.append(
                 np.interp(kin_equal_spaced, kin_unique, kin_scaling_target)
             )
-            feature_scaling_layer = FeatureScaling(
-                sorted_tr_data, kin_equal_spaced_targets
-            )
+
+        feature_scaling_layer = FeatureScaling(
+            sorted_tr_data, kin_equal_spaced_targets
+        )
 
     model_inputs = []
     tr_data, vl_data = [], []
