@@ -73,13 +73,15 @@ def data_comparison_html(figures: pathlib.Path) -> str:
     for plot in sorted(plots):
         name = str(plot).split("/")[-1][:-4]
         path = plot.relative_to(index_path)
+        pdf = path.with_suffix(".pdf")
         html_entry += f"""
     <div>
     <figure>
     <img src="{path}" id="{name}"
     alt=".png" />
     <figcaption aria-hidden="true"><a
-    href="{path}">.png</a></figcaption>
+    href="{path}">.png</a><a href="{pdf}">
+    .pdf</a></figcaption>
     </figure>
     </div>
         """
@@ -98,13 +100,15 @@ def split_trvl_html(figures: pathlib.Path) -> str:
 
     name = str(plots).split("/")[-1][:-4]
     path = plots.relative_to(index_path)
+    pdf = path.with_suffix(".pdf")
     html_entry += f"""
     <div>
     <figure>
     <img src="{path}" id="{name}"
     alt=".png" />
     <figcaption aria-hidden="true"><a
-    href="{path}">.png</a></figcaption>
+    href="{path}">.png</a><a href="{pdf}">
+    .pdf</a></figcaption>
     </figure>
     </div>
     """
