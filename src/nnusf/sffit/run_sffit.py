@@ -103,8 +103,7 @@ def main(
                 data_info, hyperspace_dict, replica_dir, log_freq
             )
 
-        # TODO: Add maxevl=100 as input arguments
-        perform_hyperscan(fn_hyper_train, hyperspace, 100, replica_dir)
+        perform_hyperscan(fn_hyper_train, hyperspace, nbtrials, replica_dir)
         return
 
     fit_dict = generate_models(data_info, **runcard_content["fit_parameters"])
