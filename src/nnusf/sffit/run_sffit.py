@@ -22,7 +22,7 @@ _logger = logging.getLogger(__name__)
 def main(
     runcard: pathlib.Path,
     replica: int,
-    hyperopt: Optional[bool] = False,
+    nbtrials: Optional[int] = None,
     destination: Optional[pathlib.Path] = None,
 ):
     """Run the structure function fit.
@@ -65,7 +65,7 @@ def main(
     load_data.add_tr_filter_mask(data_info, runcard_content["trvlseed"])
 
     # Control the hyperparameter optimisation
-    if hyperopt and runcard_content["hyperscan"]:
+    if nbtrials and runcard_content["hyperscan"]:
         log_freq = runcard_content.get("log_freq", 1e10)
         hyperspace = construct_hyperspace(**runcard_content)
 
@@ -74,8 +74,7 @@ def main(
                 data_info, hyperspace_dict, replica_dir, log_freq
             )
 
-        # TODO: Add maxevl=100 as input arguments
-        perform_hyperscan(fn_hyper_train, hyperspace, 100, replica_dir)
+        perform_hyperscan(fn_hyper_train, hyperspace, nbtrials, replica_dir)
         return
 
     fit_dict = generate_models(data_info, **runcard_content["fit_parameters"])

@@ -20,21 +20,28 @@ def subcommand():
 @click.argument("runcard", type=click.Path(exists=True, path_type=pathlib.Path))
 @click.argument("replica", type=int)
 @click.option(
-    "-h/-H",
-    "--hyperopt/--no-hyperopt",
-    default=False,
-    help="Perform hyperparameter optimisation (default: False).",
+    "-s",
+    "--scan_hyperopt",
+    type=int,
+    default=None,
+    help="Perform a scan of the hyperparameter space using the TPE algorithm."
+    "The argument requires the total number of trials for a given replica."
+    "eg: nnut fit <runcard.yml> <replica_id> -s 100",
 )
 @click.option(
     "-d",
     "--destination",
     type=click.Path(path_type=pathlib.Path),
     default=None,
-    help="Alternative destination path to store the resulting model (default: $PWD/commondata)",
+    help="Alternative destination path to store the resulting model"
+    "eg: nnu fit run <runcard.yml> <replica_id> -d <destination>"
+    "fit model (default: $PWD/commondata)",
 )
-def sub_run(runcard, replica, hyperopt, destination):
+def sub_run(runcard, replica, scan_hyperopt, destination):
     """Call the sffit run function."""
-    run_sffit.main(runcard, replica, hyperopt=hyperopt, destination=destination)
+    run_sffit.main(
+        runcard, replica, nbtrials=scan_hyperopt, destination=destination
+    )
 
 
 @subcommand.command("postfit")
