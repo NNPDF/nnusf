@@ -7,6 +7,7 @@ import numpy as np
 import tensorflow as tf
 import yaml
 from matplotlib import pyplot as plt
+from matplotlib.figure import Figure
 
 from ..data.loader import Loader
 from ..sffit.load_data import path_to_coefficients, path_to_commondata
@@ -39,6 +40,15 @@ class InputError(Exception):
     pass
 
 
+def save_figs(
+    figure: Figure, filename: pathlib.Path, formats: list = [".png", ".pdf"]
+) -> None:
+    """Save all the figures into both PNG and PDF."""
+    for format in formats:
+        figure.savefig(str(filename) + format)
+    plt.close(figure)
+
+
 def main(model: pathlib.Path, runcard: pathlib.Path, output: pathlib.Path):
     if output.exists():
         _logger.warning(f"{output} already exists, overwriting content.")
@@ -63,12 +73,12 @@ def training_validation_split(**kwargs):
         tr_chi2s.append(jsonfile["best_tr_chi2"])
         vl_chi2s.append(jsonfile["best_vl_chi2"])
 
-    f, ax = plt.subplots(figsize=(6, 6))
+    fig, ax = plt.subplots(figsize=(6, 6))
     ax.scatter(tr_chi2s, vl_chi2s, s=20, marker="s")
     ax.set_xlabel(r"$\chi^2_{\rm tr}$")
     ax.set_ylabel(r"$\chi^2_{\rm vl}$")
-    save_path = pathlib.Path(kwargs["output"]) / "chi2_split.png"
-    f.savefig(f"{save_path}")
+    save_path = pathlib.Path(kwargs["output"]) / "chi2_split"
+    save_figs(fig, save_path)
 
 
 def sfs_q_replicas(**kwargs):
@@ -87,9 +97,9 @@ def sfs_q_replicas(**kwargs):
             ax.plot(q_grid, replica_prediction, color="C0")
         savepath = (
             pathlib.Path(kwargs["output"])
-            / f"plot_sfs_q_replicas_{prediction_index}.png"
+            / f"plot_sfs_q_replicas_{prediction_index}"
         )
-        fig.savefig(savepath)
+        save_figs(fig, savepath)
 
 
 def sf_q_band(**kwargs):
@@ -129,9 +139,9 @@ def sf_q_band(**kwargs):
         )
         savepath = (
             pathlib.Path(kwargs["output"])
-            / f"plot_sf_q_band_{prediction_index}.pdf"
+            / f"plot_sf_q_band_{prediction_index}"
         )
-        fig.savefig(savepath, dpi=350)
+        save_figs(fig, savepath)
 
 
 def save_predictions_txt(**kwargs):
@@ -169,6 +179,7 @@ def save_predictions_txt(**kwargs):
 
 def prediction_data_comparison(**kwargs):
     models = load_models(**kwargs)
+    _logger.info("Models successfully loaded.")
     if len(models) == 0:
         _logger.error("No model available")
         return
@@ -193,7 +204,6 @@ def prediction_data_comparison(**kwargs):
         observable_predictions = np.array(observable_predictions)
         mean_observable_predictions = observable_predictions.mean(axis=0)
         std_observable_predictions = observable_predictions.std(axis=0)
-        figformat = kwargs.get("format", "pdf")
         for x_slice in np.unique(kinematics[:, 0]):
             fig, ax = plt.subplots()
             ax.set_title(rf"{expt_name}:~$A$={kinematics[0,2]}, $x$={x_slice}")
@@ -217,15 +227,14 @@ def prediction_data_comparison(**kwargs):
                 capsize=5,
             )
             ax.set_xlabel(r"$Q^2~[\mathrm{GeV}^2]$")
-            ax.set_ylabel(f"{obs_label}")
+            ax.set_ylabel(f"{obs_label}" + r"$~(x, Q^2)$")
             ax.legend()
             savepath = (
                 pathlib.Path(kwargs["output"])
-                / f"prediction_data_comparison_{count_plots}.{figformat}"
+                / f"prediction_data_comparison_{count_plots}"
             )
             count_plots += 1
-            fig.savefig(savepath)
-            plt.close(fig)
+            save_figs(fig, savepath)
 
 
 def chi2_history_plot(xmin=None, **kwargs):
@@ -258,7 +267,6 @@ def chi2_history_plot(xmin=None, **kwargs):
                 ax.legend()
                 savepath = (
                     pathlib.Path(outputpath)
-                    / f"chi2_history_plot_{count_plots}.pdf"
+                    / f"chi2_history_plot_{count_plots}"
                 )
-                fig.savefig(savepath)
-                plt.close(fig)
+                save_figs(fig, savepath)
