@@ -10,7 +10,7 @@ from ..data import loader
 
 _logger = logging.getLogger(__file__)
 
-MARKERS = ["o", "s", "D", "*", "^", ">", "X"]
+MARKERS = ["o", "H", "p", "*", "h", "s", "X"]
 
 
 def cuts(cuts: dict[str, dict[str, float]], table: pd.DataFrame) -> np.ndarray:

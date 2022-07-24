@@ -26,6 +26,14 @@ def subcommand():
     help="Alternative destination path to store the resulting plots (default: $PWD/plots).",
 )
 @click.option(
+    "--wcut/--no-wcut",
+    default=True,
+    help="Plot line corresponding to W2=3.5 GeV2.",
+)
+@click.option(
+    "--xlog/--no-xlog", default=True, help="Set logarithmic scale on x axis."
+)
+@click.option(
     "--ylog/--no-ylog", default=True, help="Set logarithmic scale on y axis."
 )
 @click.option(
@@ -34,7 +42,7 @@ def subcommand():
     default=None,
     help="""Stringified dictionary of cuts, e.g. '{"Q2": {"min": 1.65}, "W2": {"min": 3.5}}'.""",
 )
-def sub_kinematic(data, destination, ylog, cuts):
+def sub_kinematic(data, destination, wcut, xlog, ylog, cuts):
     """Generate kinematics plot.
 
     The plot will include data from each DATA path provided (multiple values allowed),
@@ -46,7 +54,9 @@ def sub_kinematic(data, destination, ylog, cuts):
     if cuts is not None:
         cuts = eval(cuts)
 
-    kinematics.main(data, destination, ylog=ylog, cuts=cuts)
+    kinematics.main(
+        data, destination, wcut=wcut, xlog=xlog, ylog=ylog, cuts=cuts
+    )
 
 
 @subcommand.command("covmat")
