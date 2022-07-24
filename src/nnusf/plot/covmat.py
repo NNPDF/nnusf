@@ -15,6 +15,9 @@ from ..data import loader
 from . import utils as putils
 
 _logger = logging.getLogger(__file__)
+PARRENT_PATH = pathlib.Path(__file__).parents[1]
+MPLSTYLE = PARRENT_PATH.joinpath("plotstyle.mplstyle")
+plt.style.use(MPLSTYLE)
 
 
 def compute(
@@ -117,7 +120,7 @@ def main(
         covmats[name] = covmat
 
         fig = heatmap(covmat, symlog=symlog)
-        figname = destination / f"{name}{normsuf}{invsuf}.png"
+        figname = destination / f"{name}{normsuf}{invsuf}.pdf"
         fig.savefig(figname)
 
         normtag = "normalized " if norm else ""
@@ -132,7 +135,7 @@ def main(
     totcovmat = scipy.linalg.block_diag(*covmats.values())
 
     fig = heatmap(totcovmat, symlog=symlog)
-    figname = destination / f"total{normsuf}{invsuf}.png"
+    figname = destination / f"total{normsuf}{invsuf}.pdf"
     fig.savefig(figname)
 
     _logger.info(
