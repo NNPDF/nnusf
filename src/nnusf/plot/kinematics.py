@@ -56,7 +56,7 @@ def plot(
         ax.set_xscale("log")
         min_value, max_value = ax.get_xlim()
         ax.xaxis.set_ticks(np.arange(min_value, max_value + 0.1, 0.2))
-        ax.xaxis.set_major_formatter(ticker.FormatStrFormatter("%0.1f"))
+        ax.xaxis.set_major_formatter(ticker.FormatStrFormatter("$%0.1f$"))
     if ylog:
         ax.set_yscale("log")
     if wcut:
