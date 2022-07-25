@@ -211,7 +211,7 @@ def main(
         pred_folder = destination.joinpath("matching")
         pred_folder.mkdir(exist_ok=True)
         mat_dest = (pred_folder / f"MATCH_{grid_name}").with_suffix(".npy")
-        np.save(mat_dest, pred[:, 1:])
+        np.save(mat_dest, pred)
 
         msg = f"The matching/BC grid for {grid_name} are stored in "
         msg += f"'{destination.absolute().relative_to(pathlib.Path.cwd())}'"
