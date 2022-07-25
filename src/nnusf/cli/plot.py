@@ -4,7 +4,7 @@ import pathlib
 
 import click
 
-from ..plot import covmat, fit, kinematics, sf
+from ..plot import covmat, fit, kinematics, matching, sf
 from ..theory import defs
 from . import base
 
@@ -147,3 +147,18 @@ def sub_sf(source, kind, destination):
     """Plots structure functions."""
 
     sf.main(source, kind, destination)
+
+
+@subcommand.command("matching_dataset")
+@click.argument("source", type=click.Path(path_type=pathlib.Path, exists=True))
+@click.option(
+    "-d",
+    "--destination",
+    type=click.Path(path_type=pathlib.Path),
+    default=pathlib.Path.cwd().absolute() / "plots",
+    help="Alternative destination path to store the resulting plots (default: $PWD/plots).",
+)
+def sub_matching_dataset(source, destination):
+    """Plots the matching datasets along with the actual data"""
+
+    matching.main(source, destination)
