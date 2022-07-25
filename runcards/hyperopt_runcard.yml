@@ -30,7 +30,7 @@ experiments:
 W2min: 3.5
 
 # chi2 history stored for each `log_freq` epochs
-log_freq: 100
+log_freq: 5000
 
 # Various seed values
 global_seeds: 456
@@ -68,6 +68,7 @@ hyperscan:
 # Define Neural Network Parameters
 fit_parameters:
   epochs: 75000
+  print_rate: 5000
   stopping_patience: 8000
   units_per_layer: None
   activation_per_layer: None
