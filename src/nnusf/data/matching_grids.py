@@ -80,10 +80,10 @@ def proton_boundary_conditions(
     else:
         datapaths = []
         obsdic_list = [
+            build_obs_dict("DXDYNUB", [None], -14),
+            build_obs_dict("DXDYNUU", [None], 14),
             build_obs_dict("F2", [None], 0),
             build_obs_dict("F3", [None], 0),
-            build_obs_dict("DXDYNUU", [None], 14),
-            build_obs_dict("DXDYNUB", [None], -14),
         ]
         for obs in obsdic_list:
             fx = obs["type"]
@@ -126,7 +126,11 @@ def dump_kinematics(
         kinematics["x"].append(x)
         kinematics["Q2"].append(q2)
         kinematics["y"].append(y)
+
     kinematics_pd = pd.DataFrame(kinematics)
+    kinematics_pd.loc[-1] = ["mid", "mid", "mid"]
+    kinematics_pd.index = kinematics_pd.index + 1
+    kinematics_pd = kinematics_pd.sort_index()
     kinematics_folder = destination.joinpath("kinematics")
     kinematics_folder.mkdir(exist_ok=True)
     if is_xsec:
