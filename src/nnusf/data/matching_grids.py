@@ -211,7 +211,6 @@ def main(
         dump_uncertainties(destination, new_name, n_points)
 
         # Dump the predictions for the REST of the replicas as NPY
-        # NOTE: The following does no longer contain the REPLICA_0
         pred_folder = destination.joinpath("matching")
         pred_folder.mkdir(exist_ok=True)
         mat_dest = (pred_folder / f"MATCH_{grid_name}").with_suffix(".npy")
