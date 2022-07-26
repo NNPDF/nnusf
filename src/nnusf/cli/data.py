@@ -118,7 +118,7 @@ def sub_proton_bc(data, pdfset, destination):
 
     eg: nu data proton_bc ./grids-PROTONBC_*_MATCHING.tar.gz NNPDF40_nnlo_as_01180
     """
-    matching_grids.proton_boundary_conditions(data, pdfset, destination)
+    matching_grids.proton_boundary_conditions(destination, data, pdfset)
 
 
 @subcommand.command("proton_bc_empty")
