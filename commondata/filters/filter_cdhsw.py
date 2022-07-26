@@ -434,7 +434,7 @@ def main(path_to_commondata: Path) -> None:
 
     # List of tables containing measurements for FW
     table_fw = [i for i in range(30, 40)]
-    obs_list.append(build_obs_dict("FW", table_fw, 14))
+    obs_list.append(build_obs_dict("FW", table_fw, -14))
     extract_fw(path_to_commondata, EXP_NAME, table_fw)
     # dump info file
     dump_info_file(path_to_commondata, EXP_NAME, obs_list, TARGET, M_NUCLEON)
