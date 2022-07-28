@@ -68,7 +68,11 @@ class Loader:
         self.table, self.leftindex = self._load(w2min)
         self.tr_frac = None
         self.covariance_matrix = self.build_covariance_matrix(
-            self.commondata_path, self.table, self.name, include_syst
+            self.commondata_path,
+            self.table,
+            self.name,
+            include_syst,
+            self.leftindex,
         )
         _logger.info(f"Loaded '{name}' dataset")
 
@@ -212,6 +216,7 @@ class Loader:
         unc_df: pd.DataFrame,
         dataset_name: str,
         include_syst: Union[bool, None],
+        mask_predictions: Union[pd.Index, None],
     ) -> np.ndarray:
         """Build the covariance matrix.
 
@@ -234,7 +239,7 @@ class Loader:
             nrep_predictions = np.load(
                 f"{commondata_path}/matching/{dataset_name}.npy"
             )
-            covmat = np.cov(nrep_predictions)
+            covmat = np.cov(nrep_predictions[mask_predictions])
             return clip_covmat(covmat)
         else:
             diagonal = np.power(unc_df["stat"], 2)
