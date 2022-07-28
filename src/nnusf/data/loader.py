@@ -234,10 +234,32 @@ class Loader:
             nrep_predictions = np.load(
                 f"{commondata_path}/matching/{dataset_name}.npy"
             )
-            return np.cov(nrep_predictions)
+            covmat = np.cov(nrep_predictions)
+            return clip_covmat(covmat)
         else:
             diagonal = np.power(unc_df["stat"], 2)
             if include_syst:
                 corr_sys = unc_df["syst"]
                 return np.diag(diagonal) + np.outer(corr_sys, corr_sys)
             return np.diag(diagonal)
+
+
+def clip_covmat(covmat):
+    """Given a covariance matrix, performs a regularization by cutting
+    negative values.
+    """
+    # eigh gives eigenvals in ascending order
+    e_val, e_vec = np.linalg.eigh(covmat)
+    # if eigenvalues are close to zero, can be negative
+    if e_val[0] < 0:
+        _logger.warning(
+            "Negative eigenvalue encountered in correlation matrix: %s. "
+            "Assuming eigenvalue should be zero and is negative due to numerical "
+            "precision.",
+            e_val[0],
+        )
+    else:
+        return covmat
+    # set negative eigenvalues to 1e-5
+    new_e_val = np.clip(e_val, a_min=1e-5, a_max=None)
+    return (e_vec * new_e_val) @ e_vec.T
