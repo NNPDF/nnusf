@@ -68,7 +68,11 @@ class Loader:
         self.table, self.leftindex = self._load(w2min)
         self.tr_frac = None
         self.covariance_matrix = self.build_covariance_matrix(
-            self.table, self.name, include_syst
+            self.commondata_path,
+            self.table,
+            self.name,
+            include_syst,
+            self.leftindex,
         )
         _logger.info(f"Loaded '{name}' dataset")
 
@@ -208,7 +212,11 @@ class Loader:
 
     @staticmethod
     def build_covariance_matrix(
-        unc_df: pd.DataFrame, dataset_name: str, include_syst: Union[bool, None]
+        commondata_path: pathlib.Path,
+        unc_df: pd.DataFrame,
+        dataset_name: str,
+        include_syst: Union[bool, None],
+        mask_predictions: Union[pd.Index, None],
     ) -> np.ndarray:
         """Build the covariance matrix.
 
@@ -227,11 +235,36 @@ class Loader:
 
         """
         if "_MATCHING" in dataset_name:
-            # TODO: Insert here the actuatl CovMat
-            return np.identity(unc_df.shape[0])
+            dataset_name = "MATCH_" + dataset_name.removesuffix("_MATCHING")
+            nrep_predictions = np.load(
+                f"{commondata_path}/matching/{dataset_name}.npy"
+            )
+            covmat = np.cov(nrep_predictions[mask_predictions])
+            return clip_covmat(covmat)
         else:
             diagonal = np.power(unc_df["stat"], 2)
             if include_syst:
                 corr_sys = unc_df["syst"]
                 return np.diag(diagonal) + np.outer(corr_sys, corr_sys)
             return np.diag(diagonal)
+
+
+def clip_covmat(covmat):
+    """Given a covariance matrix, performs a regularization by cutting
+    negative values.
+    """
+    # eigh gives eigenvals in ascending order
+    e_val, e_vec = np.linalg.eigh(covmat)
+    # if eigenvalues are close to zero, can be negative
+    if e_val[0] < 0:
+        _logger.warning(
+            "Negative eigenvalue encountered in correlation matrix: %s. "
+            "Assuming eigenvalue should be zero and is negative due to numerical "
+            "precision.",
+            e_val[0],
+        )
+    else:
+        return covmat
+    # set negative eigenvalues to 1e-5
+    new_e_val = np.clip(e_val, a_min=1e-5, a_max=None)
+    return (e_vec * new_e_val) @ e_vec.T
