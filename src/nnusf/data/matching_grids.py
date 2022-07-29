@@ -27,7 +27,7 @@ from .utils import (
 _logger = logging.getLogger(__name__)
 
 KIN_DESC = {
-    "x_min": 1e-5,
+    "x_min": 1e-2,
     "y_min": 0.2,
     "y_max": 0.8,
     "q2_min": 300,
@@ -35,8 +35,8 @@ KIN_DESC = {
 }
 
 
-N_KINEMATC_GRID_FX = dict(x=50, Q2=100, y=1.0)
-N_KINEMATC_GRID_XSEC = dict(x=30, Q2=50, y=4)
+N_KINEMATC_GRID_FX = dict(x=5, Q2=20, y=1.0)
+N_KINEMATC_GRID_XSEC = dict(x=5, Q2=20, y=2)
 M_PROTON = 938.272013 * 0.001
 
 
