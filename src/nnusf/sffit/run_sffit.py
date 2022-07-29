@@ -58,7 +58,8 @@ def main(
     w2min = runcard_content.get("W2min", None)
     data_info = load_data.load_experimental_data(experiments_dict, w2min)
     # create pseudodata and add it to the data_info object
-    load_data.add_pseudodata(data_info)
+    genrep = runcard_content.get("genrep", None)
+    load_data.add_pseudodata(data_info, shift=genrep)
     # create a training mask and add it to the data_info object
     load_data.add_tr_filter_mask(data_info, runcard_content["trvlseed"])
 
