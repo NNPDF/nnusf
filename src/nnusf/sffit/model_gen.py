@@ -3,13 +3,10 @@
 
 import numpy as np
 import tensorflow as tf
+from scipy import interpolate
 
-from .layers import (
-    FeatureScaling,
-    GenMaskLayer,
-    ObservableLayer,
-    TheoryConstraint,
-)
+from .layers import GenMaskLayer, ObservableLayer, TheoryConstraint
+from .SFModel import SFModel
 from .utils import chi2, mask_covmat, mask_expdata
 
 
@@ -92,30 +89,22 @@ def generate_models(
             start=0, stop=1.0, endpoint=True, num=tr_datasize
         )
 
-        kin_equal_spaced_targets = []
+        feature_scaling_functions = []
         for kin_var in sorted_tr_data.T:
             kin_unique, kin_counts = np.unique(kin_var, return_counts=True)
             kin_scaling_target = [
                 hires_target_grid[cumsum - kin_counts[0]]
                 for cumsum in np.cumsum(kin_counts)
             ]
-            # spacing = [
-            #     kin_var[i + 1] - kin_var[i] for i in range(len(kin_var) - 1)
-            # ]
-            # min_spacing = min(
-            #     spacing[i] for i in range(len(spacing)) if spacing[i] > 0
-            # )
-            kin_equal_spaced = np.linspace(
-                kin_var.min(),
-                kin_var.max(),
-                # num=int((kin_var.max() - kin_var.min()) / min_spacing) + 1,
-                num=int(kin_var.size*2),
-            )
-            kin_equal_spaced_targets.append(
-                np.interp(kin_equal_spaced, kin_unique, kin_scaling_target)
-            )
-            feature_scaling_layer = FeatureScaling(
-                sorted_tr_data, kin_equal_spaced_targets
+            # debug = True
+            # if debug:
+            #     if len(kin_unique)>10:
+            #         kin_unique = [i for enum, i in enumerate(kin_unique) if enum%5==0]
+            #         kin_scaling_target = [i for enum, i in enumerate(kin_scaling_target) if enum%5==0]
+            feature_scaling_functions.append(
+                interpolate.interp1d(
+                    kin_unique, kin_scaling_target, fill_value="extrapolation"
+                )
             )
 
     model_inputs = []
@@ -134,8 +123,6 @@ def generate_models(
 
         # The pdf model: kinematics -> structure functions
         def sf_model(input_layer):
-            if feature_scaling:
-                input_layer = feature_scaling_layer(input_layer)
 
             nn_output = sequential(input_layer)
 
@@ -179,8 +166,16 @@ def generate_models(
     vl_data = [i.reshape(1, -1) for i in vl_data]
 
     # Initialize the models for the training & validation
-    tr_model = tf.keras.Model(inputs=model_inputs, outputs=tr_obs)
-    vl_model = tf.keras.Model(inputs=model_inputs, outputs=vl_obs)
+    tr_model = SFModel(
+        feature_scaling_functions=feature_scaling_functions,
+        inputs=model_inputs,
+        outputs=tr_obs,
+    )
+    vl_model = SFModel(
+        feature_scaling_functions=feature_scaling_functions,
+        inputs=model_inputs,
+        outputs=vl_obs,
+    )
 
     fit_dic = {
         "tr_model": tr_model,
@@ -192,6 +187,7 @@ def generate_models(
         "tr_datpts": tr_dpts,
         "vl_datpts": vl_dpts,
         "sf_model": sf_model,
+        "fs_funcs": feature_scaling_functions,
     }
 
     return fit_dic

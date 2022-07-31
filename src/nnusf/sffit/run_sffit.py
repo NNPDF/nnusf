@@ -10,6 +10,7 @@ import yaml
 
 from . import load_data
 from .model_gen import generate_models
+from .SFModel import SFModel
 from .train_model import perform_fit
 from .utils import set_global_seeds
 
@@ -77,7 +78,8 @@ def main(
 
     # Store the models in the relevant replica subfolders
     final_placeholder = tf.keras.layers.Input(shape=(None, 3))
-    saved_model = tf.keras.Model(
+    saved_model = SFModel(
+        feature_scaling_functions=fit_dict["fs_funcs"],
         inputs=final_placeholder,
         outputs=fit_dict["sf_model"](final_placeholder),
     )
