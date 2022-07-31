@@ -63,6 +63,11 @@ def main(
     # create a training mask and add it to the data_info object
     load_data.add_tr_filter_mask(data_info, runcard_content["trvlseed"])
 
+    # Rescale input kinematics if required
+    if runcard_content.get("rescale_inputs", None):
+        _logger.info("Kinematic inputs are being rescaled")
+        load_data.rescale_inputs(data_info)
+
     fit_dict = generate_models(data_info, **runcard_content["fit_parameters"])
 
     # Compile the training and validationa nd perform the fit
