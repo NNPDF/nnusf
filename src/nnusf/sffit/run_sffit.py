@@ -2,7 +2,6 @@
 """Executable to perform the structure function fit."""
 import logging
 import pathlib
-import shutil
 from typing import Optional
 
 import tensorflow as tf
@@ -34,7 +33,6 @@ def main(
     destination : Optional[pathlib.Path]
         Path to the output folder
     """
-    # Create a folder for the replica
     if destination is None:
         destination = pathlib.Path.cwd().absolute() / runcard.stem
 
@@ -44,10 +42,7 @@ def main(
     replica_dir = destination / f"replica_{replica}"
     replica_dir.mkdir(parents=True, exist_ok=True)
 
-    # copy runcard to the fit folder
-    shutil.copy(runcard, replica_dir.parent / "runcard.yml")
-
-    # load runcard
+    # Load fit run card
     runcard_content = yaml.safe_load(runcard.read_text())
     experiments_dict = runcard_content["experiments"]
 
@@ -66,7 +61,13 @@ def main(
     # Rescale input kinematics if required
     if runcard_content.get("rescale_inputs", None):
         _logger.info("Kinematic inputs are being rescaled")
-        load_data.rescale_inputs(data_info)
+        kls, esk = load_data.cumulative_rescaling(data_info)
+        load_data.rescale_inputs(data_info, kls, esk)
+        runcard_content["scaling"] = {"map_from": kls, "map_to": esk}
+
+    # Save a copy of the fit runcard to the fit folder
+    with open(replica_dir.parent / "runcard.yml", "w") as fstream:
+        yaml.dump(runcard_content, fstream, sort_keys=False)
 
     fit_dict = generate_models(data_info, **runcard_content["fit_parameters"])
 
