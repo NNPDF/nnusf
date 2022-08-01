@@ -91,7 +91,7 @@ def perform_fit(
             callbacks=[
                 get_train_info,
                 log_train_info,
-                adapt_lr,
+                # adapt_lr,
                 stopping,
                 live_updater,
             ],
