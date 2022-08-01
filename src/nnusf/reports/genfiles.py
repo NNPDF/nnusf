@@ -83,8 +83,8 @@ def chi2_tables(fitfolder: pathlib.Path) -> pd.DataFrame:
 def data_vs_predictions(fitfolder: pathlib.Path) -> None:
     runcard = fitfolder.joinpath("runcard.yml")
     runcard_content = yaml.safe_load(runcard.read_text())
-    datinfo = runcard_content["experiments"]
-    dataset_list = [d["dataset"] for d in datinfo]
+    # datinfo = runcard_content["experiments"]
+    # dataset_list = [d["dataset"] for d in datinfo]
 
     # Prepare the output path to store the figures
     output_path = fitfolder.absolute()
@@ -92,12 +92,12 @@ def data_vs_predictions(fitfolder: pathlib.Path) -> None:
     output_path.mkdir(parents=True, exist_ok=True)
 
     # Create the dictionary to pass to the action
-    input_dic = {"experiments": dataset_list, "fit": "", "output": ""}
-    input_dic["format"] = "png"
-    input_dic["fit"] = str(fitfolder.absolute())
-    input_dic["output"] = str(output_path)
+    # input_dic = {"experiments": dataset_list, "fit": "", "output": ""}
+    runcard_content["output"] = str(output_path)
+    runcard_content["fit"] = str(fitfolder.absolute())
+    # input_dic["rescale_inputs"] = runcard_content.get("rescale_inputs", None)
 
-    prediction_data_comparison(**input_dic)
+    prediction_data_comparison(**runcard_content)
 
 
 def training_validation_plot(fitfolder: pathlib.Path) -> None:
