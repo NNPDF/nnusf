@@ -88,9 +88,8 @@ def cumulative_rescaling(datasets):
     return kin_linear_reference, equally_spaced_kinematics
 
 
-def rescale_inputs(datasets, method=None):
-    kls, esk = cumulative_rescaling(datasets)
-
+def rescale_inputs(datasets, kls, esk, method=None):
+    # kls, esk = cumulative_rescaling(datasets)
     for dataset in datasets.values():
         scaled_inputs = []
         for index, kin_var in enumerate(dataset.kinematics.T):
