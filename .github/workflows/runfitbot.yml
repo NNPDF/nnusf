@@ -8,7 +8,7 @@ on:
 
 # Define global environment variables
 env:
-  NUMBER_REPLICAS: 4
+  NUMBER_REPLICAS: 2
   OUTPUT_FOLDER: RESULTS
   PLOT_FOLDER: PLOTS
   REPORT_TITLE: REPORT
