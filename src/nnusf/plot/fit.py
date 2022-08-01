@@ -10,7 +10,12 @@ from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
 
 from ..data.loader import Loader
-from ..sffit.load_data import path_to_coefficients, path_to_commondata
+from ..sffit.load_data import (
+    load_experimental_data,
+    path_to_coefficients,
+    path_to_commondata,
+    rescale_inputs,
+)
 from ..sffit.load_fit_data import get_predictions_q, load_models
 
 _logger = logging.getLogger(__name__)
@@ -29,10 +34,15 @@ basis = [
 
 MAP_OBS_LABEL = {
     "F2": r"$F_2$",
+    "F2_MATCHING": r"$F_2^{\rm M}$",
     "FW": r"$F_W$",
+    "FW_MATCHING": r"$F_W^{\rm M}$",
     "F3": r"$xF_3$",
+    "F3_MATCHING": r"$xF_3^{\rm M}$",
     "DXDYNUU": r"$d^2\sigma^{\nu}/(dxdQ^2)$",
+    "DXDYNUU_MATCHING": r"$d^2\sigma^{\nu, \rm{M}}/(dxdQ^2)$",
     "DXDYNUB": r"$d^2\sigma^{\bar{\nu}}/(dxdQ^2)$",
+    "DXDYNUB_MATCHING": r"$d^2\sigma^{\bar{\nu}, \rm{M}}/(dxdQ^2)$",
 }
 
 
@@ -184,13 +194,27 @@ def prediction_data_comparison(**kwargs):
         _logger.error("No model available")
         return
 
+    # Load the datasets all at once
+    datasets = load_experimental_data(
+        kwargs["experiments"], w2min=kwargs.get("W2min", None)
+    )
+    # Copy the dataset kinematics regardless of scaling
+    copy_kins = {k: v.kinematics for k, v in datasets.items()}
+    if kwargs.get("rescale_inputs", None):
+        rescale_inputs(datasets)
+
     count_plots = 0
-    for experiment in kwargs["experiments"]:
-        obs_label = MAP_OBS_LABEL[experiment.split("_")[-1]]
+    for experiment, data in datasets.items():
+        _logger.info(f"Plotting data vs. NN for '{experiment}'")
+        if "_MATCHING" not in experiment:
+            obsname = experiment.split("_")[-1]
+        else:
+            obsname = experiment.split("_")[-2] + "_MATCHING"
+
+        obs_label = MAP_OBS_LABEL[obsname]
         expt_name = experiment.split("_")[0]
-        data = Loader(experiment, path_to_commondata, path_to_coefficients)
-        kinematics = data.kinematics
-        coefficients = data.coefficients
+
+        kinematics = copy_kins[experiment]
         observable_predictions = []
         for model in models:
             kins = np.expand_dims(
@@ -199,7 +223,7 @@ def prediction_data_comparison(**kwargs):
             prediction = model(kins)
             prediction = prediction[0]  # remove batch dimension
             observable_predictions.append(
-                tf.einsum("ij,ij->i", prediction, coefficients)
+                tf.einsum("ij,ij->i", prediction, data.coefficients)
             )
         observable_predictions = np.array(observable_predictions)
         mean_observable_predictions = observable_predictions.mean(axis=0)
