@@ -2,7 +2,7 @@
 """Provide a Loader class to retrieve data information."""
 import logging
 import pathlib
-from typing import Optional
+from typing import Optional, Union
 
 import numpy as np
 import pandas as pd
@@ -15,6 +15,7 @@ MAP_EXP_YADISM = {
     "NUTEV": "XSNUTEVNU",
     "CHORUS": "XSCHORUSCC",
     "CDHSW": "XSCHORUSCC",
+    "PROTONBC": "XSCHORUSCC",
 }
 
 
@@ -67,11 +68,15 @@ class Loader:
         self.table, self.leftindex = self._load(w2min)
         self.tr_frac = None
         self.covariance_matrix = self.build_covariance_matrix(
-            self.table, include_syst
+            self.commondata_path,
+            self.table,
+            self.name,
+            include_syst,
+            self.leftindex,
         )
         _logger.info(f"Loaded '{name}' dataset")
 
-    def _load(self, w2min: float) -> tuple[pd.DataFrame, pd.Index]:
+    def _load(self, w2min: Union[float, None]) -> tuple[pd.DataFrame, pd.Index]:
         """Load the dataset information.
 
         Returns
@@ -79,9 +84,12 @@ class Loader:
         table with loaded data
 
         """
-        # info file
+        # Extract the information from the INFO files
         exp_name = self.name.split("_")[0]
-        info_df = pd.read_csv(f"{self.commondata_path}/info/{exp_name}.csv")
+        if "_MATCHING" in exp_name:
+            exp_name = exp_name.strip("_MATCHING")
+        info_name = exp_name if "PROTONBC" not in self.name else "PROTONBC"
+        info_df = pd.read_csv(f"{self.commondata_path}/info/{info_name}.csv")
 
         # Extract values from the kinematic tables
         kin_file = self.commondata_path.joinpath(
@@ -89,6 +97,16 @@ class Loader:
         )
         if kin_file.exists():
             kin_df = pd.read_csv(kin_file).iloc[1:, 1:4].reset_index(drop=True)
+        elif "_MATCHING" in self.name:
+            file_path = f"{self.commondata_path}/kinematics"
+            fname = (
+                "KIN_PROTONBC" if "PROTONBC" in self.name else "KIN_MATCHING"
+            )
+            if "FW" in self.name or "DXDY" in self.name:
+                file = f"{file_path}/{fname}_XSEC.csv"
+            else:
+                file = f"{file_path}/{fname}_FX.csv"
+            kin_df = pd.read_csv(file).iloc[1:, 1:4].reset_index(drop=True)
         elif self.obs in ["F2", "F3"]:
             file = f"{self.commondata_path}/kinematics/KIN_{exp_name}_F2F3.csv"
             kin_df = pd.read_csv(file).iloc[1:, 1:4].reset_index(drop=True)
@@ -99,9 +117,10 @@ class Loader:
             raise ObsTypeError("{self.obs} is not recognised as an Observable.")
 
         # Extract values from the central data
-        dat_name = f"{self.commondata_path}/data/DATA_{self.name}.csv" 
+        dat_name = f"{self.commondata_path}/data/DATA_{self.name}.csv"
         data_df = pd.read_csv(dat_name, header=0, na_values=["-", " "])
         data_df = data_df.iloc[:, 1:].reset_index(drop=True)
+
         # Extract values from the uncertainties
         unc_name = f"{self.commondata_path}/uncertainties/UNC_{self.name}.csv"
         unc_df = pd.read_csv(unc_name, na_values=["-", " "])
@@ -109,7 +128,7 @@ class Loader:
 
         # Add a column to `kin_df` that stores the W
         q2 = kin_df["Q2"].astype(float, errors="raise")  # Object -> float
-        xx = kin_df["x"].astype(float, errors="raise")   # Object -> float
+        xx = kin_df["x"].astype(float, errors="raise")  # Object -> float
         kin_df["W2"] = q2 * (1 - xx) / xx + info_df["m_nucleon"][0]
 
         # Concatenate enverything into one single big table
@@ -117,7 +136,8 @@ class Loader:
         new_df = new_df.dropna().astype(float)
 
         # drop data with 0 total uncertainty:
-        new_df = new_df[new_df["stat"] + new_df["syst"] != 0.0]
+        if "_MATCHING" not in self.name:
+            new_df = new_df[new_df["stat"] + new_df["syst"] != 0.0]
 
         # Restore index before implementing the W cut
         new_df.reset_index(drop=True, inplace=True)
@@ -141,7 +161,8 @@ class Loader:
             info_df.loc[info_df["type"] == self.obs, "projectile"],
         )
         new_df["m_nucleon"] = np.full(
-            number_datapoints, info_df["m_nucleon"][0],
+            number_datapoints,
+            info_df["m_nucleon"][0],
         )
 
         return new_df, new_df.index
@@ -191,7 +212,11 @@ class Loader:
 
     @staticmethod
     def build_covariance_matrix(
-        unc_df: pd.DataFrame, include_syst: bool
+        commondata_path: pathlib.Path,
+        unc_df: pd.DataFrame,
+        dataset_name: str,
+        include_syst: Union[bool, None],
+        mask_predictions: Union[pd.Index, None],
     ) -> np.ndarray:
         """Build the covariance matrix.
 
@@ -209,8 +234,37 @@ class Loader:
         covariance matrix
 
         """
-        diagonal = np.power(unc_df["stat"], 2)
-        if include_syst:
-            corr_sys = unc_df["syst"]
-            return np.diag(diagonal) + np.outer(corr_sys, corr_sys)
-        return np.diag(diagonal)
+        if "_MATCHING" in dataset_name:
+            dataset_name = "MATCH_" + dataset_name.removesuffix("_MATCHING")
+            nrep_predictions = np.load(
+                f"{commondata_path}/matching/{dataset_name}.npy"
+            )
+            covmat = np.cov(nrep_predictions[mask_predictions])
+            return clip_covmat(covmat)
+        else:
+            diagonal = np.power(unc_df["stat"], 2)
+            if include_syst:
+                corr_sys = unc_df["syst"]
+                return np.diag(diagonal) + np.outer(corr_sys, corr_sys)
+            return np.diag(diagonal)
+
+
+def clip_covmat(covmat):
+    """Given a covariance matrix, performs a regularization by cutting
+    negative values.
+    """
+    # eigh gives eigenvals in ascending order
+    e_val, e_vec = np.linalg.eigh(covmat)
+    # if eigenvalues are close to zero, can be negative
+    if e_val[0] < 0:
+        _logger.warning(
+            "Negative eigenvalue encountered in correlation matrix: %s. "
+            "Assuming eigenvalue should be zero and is negative due to numerical "
+            "precision.",
+            e_val[0],
+        )
+    else:
+        return covmat
+    # set negative eigenvalues to 1e-5
+    new_e_val = np.clip(e_val, a_min=1e-5, a_max=None)
+    return (e_vec * new_e_val) @ e_vec.T

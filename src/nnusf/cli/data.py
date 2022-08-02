@@ -4,8 +4,27 @@ import pathlib
 
 import click
 
-from ..data import coefficients, combine_tables, filters
+from ..data import coefficients, combine_tables, filters, matching_grids
 from . import base
+
+dataset_path = click.argument(
+    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
+)
+
+grid_path = click.argument(
+    "data", type=click.Path(exists=True, path_type=pathlib.Path)
+)
+
+obs_type = click.argument("obstype", type=str)
+pdfset_name = click.argument("pdfset", type=str)
+
+destination_path = click.option(
+    "-d",
+    "--destination",
+    type=click.Path(exists=True, path_type=pathlib.Path),
+    default=pathlib.Path.cwd().absolute() / "commondata",
+    help="Alternative destination path (default: $PWD/commondata)",
+)
 
 
 @base.command.group("data")
@@ -14,23 +33,15 @@ def subcommand():
 
 
 @subcommand.command("combine")
-@click.argument(
-    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
-)
-@click.option(
-    "-d",
-    "--destination",
-    type=click.Path(exists=True, path_type=pathlib.Path),
-    default=pathlib.Path.cwd().absolute() / "commondata",
-    help="Alternative destination path to store the resulting table (default: $PWD/commondata)",
-)
+@dataset_path
+@destination_path
 def sub_combine(data, destination):
     """Combine data tables into a unique one.
 
     The operation is repeated for each DATA path provided (multiple values allowed),
     e.g.:
 
-        nnu data coefficients commondata/data/*
+        nnu data combine commondata/data/*
 
     to repeat the operation for all dataset stored in `data`.
 
@@ -39,9 +50,7 @@ def sub_combine(data, destination):
 
 
 @subcommand.command("filter")
-@click.argument(
-    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
-)
+@dataset_path
 def filter_all_data(data):
     """Filter the raw dataset.
 
@@ -57,16 +66,8 @@ def filter_all_data(data):
 
 
 @subcommand.command("coefficients")
-@click.argument(
-    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
-)
-@click.option(
-    "-d",
-    "--destination",
-    type=click.Path(path_type=pathlib.Path),
-    default=pathlib.Path.cwd().absolute() / "coefficients",
-    help="Alternative destination path to store the coefficients (default: $PWD/coefficients)",
-)
+@dataset_path
+@destination_path
 def sub_coefficients(data, destination):
     """Provide coefficients for the observables.
 
@@ -82,3 +83,46 @@ def sub_coefficients(data, destination):
 
     """
     coefficients.main(data, destination)
+
+
+@subcommand.command("matching_grids")
+@grid_path
+@pdfset_name
+@destination_path
+def sub_matching_grids(data, pdfset, destination):
+    """Generate the Yadism data (kinematics & central values) as
+    well as the the predictions for all replicas. The command can
+    be run as follows:
+
+    eg: nnu data matching_grids ./grids-CCFR_F2_MATCHING.tar.gz nNNPDF30_nlo_as_0118_A56_Z26
+    """
+    matching_grids.main(data, pdfset, destination)
+
+
+@subcommand.command("matching_grids_empty")
+@dataset_path
+@destination_path
+def sub_matching_grids_empty(data, destination):
+    """Generate the empty matching datasets"""
+    matching_grids.generate_empty(data, destination)
+
+
+@subcommand.command("proton_bc")
+@dataset_path
+@pdfset_name
+@destination_path
+def sub_proton_bc(data, pdfset, destination):
+    """Generate the Yadism data (kinematics & central values) as
+    well as the the predictions for all replicas for A=1 use to
+    impose the Boundary Condition. The command can be run as follows:
+
+    eg: nu data proton_bc ./grids-PROTONBC_*_MATCHING.tar.gz NNPDF40_nnlo_as_01180
+    """
+    matching_grids.proton_boundary_conditions(destination, data, pdfset)
+
+
+@subcommand.command("proton_bc_empty")
+@destination_path
+def sub_proton_bc_empty(destination):
+    """Generate the kinematics to impose the Boundary Condition"""
+    matching_grids.proton_boundary_conditions(destination)

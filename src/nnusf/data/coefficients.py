@@ -100,9 +100,7 @@ def coefficients(name: str, datapath: pathlib.Path):
 
 def main(datapaths: list[pathlib.Path], destination: pathlib.Path):
     destination.mkdir(parents=True, exist_ok=True)
-    _logger.info(f"Coefficients destination: {destination}")
 
-    _logger.info("Saving coefficients:")
     for dataset in datapaths:
         name = dataset.stem.strip("DATA_")
 
@@ -115,5 +113,6 @@ def main(datapaths: list[pathlib.Path], destination: pathlib.Path):
         dest = (destination / name).with_suffix(".npy")
         np.save(dest, coeffs)
         _logger.info(
-            f"{coeffs.shape} saved in {dest.relative_to(pathlib.Path.cwd())}"
+            f"The coefficient with shape {coeffs.shape} is saved "
+            f"in {dest.absolute().relative_to(pathlib.Path.cwd())}"
         )

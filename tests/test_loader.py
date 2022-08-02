@@ -18,13 +18,22 @@ class TestLoader:
 
     def test_drop_zeros(self):
         data = Loader("BEBCWA59_F3", path_to_commondata)
-
         combined_unc = data.table["stat"] + data.table["syst"]
         assert 0 not in combined_unc.values
 
+        data_match = Loader("BEBCWA59_F3_MATCHING", path_to_commondata)
+        combined_unc_match = data_match.table["stat"] + data_match.table["syst"]
+        assert 0 in combined_unc_match.values
+
     def test_coefficients_load(self):
         data = Loader("CHORUS_F2", path_to_commondata, path_to_coefficients)
-
         assert data.coefficients[0].sum() == 1.0
         assert data.coefficients.sum() == data.n_data
         assert data.coefficients.T[[1, 2, 4, 5]].sum() == 0
+
+        data_match = Loader(
+            "CHORUS_F2_MATCHING", path_to_commondata, path_to_coefficients
+        )
+        assert data_match.coefficients[0].sum() == 1.0
+        assert data_match.coefficients.sum() == data_match.n_data
+        assert data_match.coefficients.T[[1, 2, 4, 5]].sum() == 0

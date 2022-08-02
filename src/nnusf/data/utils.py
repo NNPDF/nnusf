@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Utilities to write raw data filters."""
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
 
 import pandas as pd
 
@@ -17,6 +17,8 @@ ERR_DESC = {
         "description": "Total systematic uncertainty",
     },
 }
+
+MAP_OBS_PID = {"F2": 0, "F3": 0, "DXDYNUU": 14, "DXDYNUB": -14}
 
 
 def write_to_csv(path: Path, exp_name: str, table: pd.DataFrame):
@@ -62,7 +64,9 @@ def construct_uncertainties(full_obs_errors: list[float]) -> pd.DataFrame:
     return errors_pandas_table
 
 
-def build_obs_dict(fx: str, tables: list[pd.DataFrame], pid: int) -> dict:
+def build_obs_dict(
+    fx: str, tables: list[Union[pd.DataFrame, None]], pid: int
+) -> dict:
     """Add proper keys to arguments.
 
     Parameters

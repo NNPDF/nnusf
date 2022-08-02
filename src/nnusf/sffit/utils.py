@@ -145,7 +145,7 @@ def chi2_logs(train_info, vl_loss, tr_dpts, vl_dpts, epoch, lr):
         title_style="bold cyan",
     )
     vl_loss = vl_loss if isinstance(vl_loss, list) else [vl_loss]
-    table.add_column(" ", justify="left", width=15)
+    table.add_column("Dataset", justify="left", width=30)
     table.add_column("chi2(tr)/Ntr", justify="right", width=12)
     table.add_column("chi2(vl)/Nvl", justify="right", width=12)
     tot_val = vl_loss[0] / tot_vlpts
