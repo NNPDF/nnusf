@@ -93,6 +93,20 @@ def main(
     with open(replica_dir.parent / "runcard.yml", "w") as fstream:
         yaml.dump(runcard_content, fstream, sort_keys=False)
 
+    # Control the hyperparameter optimisation
+    if nbtrials and runcard_content["hyperscan"]:
+        log_freq = runcard_content.get("log_freq", 1e10)
+        hyperspace = construct_hyperspace(**runcard_content)
+
+        def fn_hyper_train(hyperspace_dict):
+            return construct_hyperfunc(
+                data_info, hyperspace_dict, replica_dir, log_freq
+            )
+
+        # TODO: Add maxevl=100 as input arguments
+        perform_hyperscan(fn_hyper_train, hyperspace, 100, replica_dir)
+        return
+
     fit_dict = generate_models(data_info, **runcard_content["fit_parameters"])
 
     # Compile the training and validationa nd perform the fit
