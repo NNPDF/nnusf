@@ -52,6 +52,9 @@ log_freq: 100
 # True: fit to pseudodata, False: fit to central values
 genrep: True
 
+# True: rescale the input kinematics
+rescale_inputs: True
+
 # Various seed values
 global_seeds: 456
 trvlseed: 123
@@ -67,6 +70,5 @@ fit_parameters:
     optimizer: Adam
     clipnorm: 0.00001
     learning_rate: 0.05
-  feature_scaling: True
   val_chi2_threshold: 4
   initializer_seed: 1

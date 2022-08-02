@@ -9,7 +9,11 @@ import tensorflow as tf
 import yaml
 
 from . import load_data
-from .hyperscan import construct_hyperfunc, construct_hyperspace, perform_hyperscan
+from .hyperscan import (
+    construct_hyperfunc,
+    construct_hyperspace,
+    perform_hyperscan,
+)
 from .model_gen import generate_models
 from .train_model import perform_fit
 from .utils import set_global_seeds
@@ -77,6 +81,11 @@ def main(
 
         perform_hyperscan(fn_hyper_train, hyperspace, nbtrials, replica_dir)
         return
+
+    # Rescale input kinematics if required
+    if runcard_content.get("rescale_inputs", None):
+        _logger.info("Kinematic inputs are being rescaled")
+        load_data.rescale_inputs(data_info)
 
     fit_dict = generate_models(data_info, **runcard_content["fit_parameters"])
 
