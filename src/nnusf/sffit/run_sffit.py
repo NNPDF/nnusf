@@ -69,19 +69,6 @@ def main(
     # create a training mask and add it to the data_info object
     load_data.add_tr_filter_mask(data_info, runcard_content["trvlseed"])
 
-    # Control the hyperparameter optimisation
-    if nbtrials and runcard_content["hyperscan"]:
-        log_freq = runcard_content.get("log_freq", 1e10)
-        hyperspace = construct_hyperspace(**runcard_content)
-
-        def fn_hyper_train(hyperspace_dict):
-            return construct_hyperfunc(
-                data_info, hyperspace_dict, replica_dir, log_freq
-            )
-
-        perform_hyperscan(fn_hyper_train, hyperspace, nbtrials, replica_dir)
-        return
-
     # Rescale input kinematics if required
     if runcard_content.get("rescale_inputs", None):
         _logger.info("Kinematic inputs are being rescaled")

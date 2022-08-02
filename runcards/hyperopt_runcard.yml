@@ -25,6 +25,29 @@ experiments:
 - {dataset: NUTEV_DXDYNUU, frac: 0.75}
 - {dataset: NUTEV_F2, frac: 0.75}
 - {dataset: NUTEV_F3, frac: 0.75}
+# -- PROTON BC DATASETS (Matching A=1) --
+- {dataset: PROTONBC_F2_MATCHING, frac: 0.75}
+- {dataset: PROTONBC_F3_MATCHING, frac: 0.75}
+- {dataset: PROTONBC_DXDYNUU_MATCHING, frac: 0.75}
+- {dataset: PROTONBC_DXDYNUB_MATCHING, frac: 0.75}
+# -- MATCHING AT HIGH Q2 --
+- {dataset: BEBCWA59_F2_MATCHING, frac: 0.75}
+- {dataset: BEBCWA59_F3_MATCHING, frac: 0.75}
+- {dataset: CCFR_F2_MATCHING, frac: 0.75}
+- {dataset: CCFR_F3_MATCHING, frac: 0.75}
+# - {dataset: CDHSW_DXDYNUU_MATCHING, frac: 0.75}
+# - {dataset: CDHSW_DXDYNUB_MATCHING, frac: 0.75}
+# - {dataset: CDHSW_F2_MATCHING, frac: 0.75}
+# - {dataset: CDHSW_F3_MATCHING, frac: 0.75}
+# - {dataset: CDHSW_FW_MATCHING, frac: 0.75}
+- {dataset: CHORUS_DXDYNUB_MATCHING, frac: 0.75}
+- {dataset: CHORUS_DXDYNUU_MATCHING, frac: 0.75}
+- {dataset: CHORUS_F2_MATCHING, frac: 0.75}
+- {dataset: CHORUS_F3_MATCHING, frac: 0.75}
+- {dataset: NUTEV_DXDYNUB_MATCHING, frac: 0.75}
+- {dataset: NUTEV_DXDYNUU_MATCHING, frac: 0.75}
+- {dataset: NUTEV_F2_MATCHING, frac: 0.75}
+- {dataset: NUTEV_F3_MATCHING, frac: 0.75}
 
 # Define some kinematic cuts (Omit if not needed)
 W2min: 3.5
@@ -69,7 +92,7 @@ hyperscan:
 fit_parameters:
   epochs: 75000
   print_rate: 5000
-  stopping_patience: 8000
+  stopping_patience: 15000
   units_per_layer: None
   activation_per_layer: None
   optimizer_parameters:
