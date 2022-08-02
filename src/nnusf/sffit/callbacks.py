@@ -38,19 +38,16 @@ class GetTrainingInfo(tf.keras.callbacks.Callback):
         self.traininfo_class.vl_loss_value = (
             vl_chi2 / self.traininfo_class.tot_vl
         )
+        self.traininfo_class.tr_chi2 = logs.get("loss")
+        self.traininfo_class.loss_value = (
+            self.traininfo_class.tr_chi2 / self.traininfo_class.nbdpts
+        )
 
 
 class AdaptLearningRate(tf.keras.callbacks.Callback):
     def __init__(self, train_info_class):
         super().__init__()
         self.train_info_class = train_info_class
-
-    def on_batch_end(self, batch, logs={}):
-        """Update value of LR after each epochs"""
-        self.train_info_class.tr_chi2 = logs.get("loss")
-        self.train_info_class.loss_value = (
-            self.train_info_class.tr_chi2 / self.train_info_class.nbdpts
-        )
 
     def on_epoch_begin(self, epoch, logs=None):
         if not hasattr(self.model.optimizer, "lr"):
