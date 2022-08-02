@@ -1,13 +1,17 @@
 # -*- coding: utf-8 -*-
 """Executable to perform the structure function fit."""
+import copy
+import json
 import logging
 import pathlib
+from textwrap import indent
 from typing import Optional
 
 import tensorflow as tf
 import yaml
 
 from . import load_data
+from .compute_expchi2 import compute_exp_chi2
 from .model_gen import generate_models
 from .train_model import perform_fit
 from .utils import set_global_seeds
@@ -52,6 +56,7 @@ def main(
     # Instantiate class that loads the datasets
     w2min = runcard_content.get("W2min", None)
     data_info = load_data.load_experimental_data(experiments_dict, w2min)
+    make_copy_raw_dataset = copy.deepcopy(data_info)
     # create pseudodata and add it to the data_info object
     genrep = runcard_content.get("genrep", None)
     load_data.add_pseudodata(data_info, shift=genrep)
@@ -88,3 +93,16 @@ def main(
         outputs=fit_dict["sf_model"](final_placeholder),
     )
     saved_model.save(replica_dir / "model")
+
+    # Compute the chi2 wrt central real data
+    load_data.add_pseudodata(make_copy_raw_dataset, shift=False)
+    if runcard_content.get("rescale_inputs", None):
+        kls, esk = load_data.cumulative_rescaling(make_copy_raw_dataset)
+        load_data.rescale_inputs(make_copy_raw_dataset, kls, esk)
+    chi2s = compute_exp_chi2(
+        make_copy_raw_dataset,
+        fit_dict["sf_model"],
+        **runcard_content["fit_parameters"],
+    )
+    with open(f"{destination}/expchi2s.json", "w", encoding="UTF-8") as f:
+        json.dump(chi2s, f, sort_keys=True, indent=4)
