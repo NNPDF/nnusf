@@ -24,8 +24,13 @@ class GetTrainingInfo(tf.keras.callbacks.Callback):
         super().__init__()
 
     def on_epoch_end(self, epoch, logs=None):
+        # TODO: clean this up, for some reason doing evalutate in the SFModel
+        # causes problems...
+        scaled_kinematics_array = self.vl_model._scale_kinematics(
+            self.kinematics
+        )
         chix = self.vl_model.evaluate(
-            self.kinematics, y=self.vl_expdata, verbose=0
+            scaled_kinematics_array, y=self.vl_expdata, verbose=0
         )
         vl_chi2 = chix[0] if isinstance(chix, list) else chix
         self.traininfo_class.vl_chi2 = vl_chi2

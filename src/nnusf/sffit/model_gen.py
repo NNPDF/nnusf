@@ -103,7 +103,7 @@ def generate_models(
             #         kin_scaling_target = [i for enum, i in enumerate(kin_scaling_target) if enum%5==0]
             feature_scaling_functions.append(
                 interpolate.interp1d(
-                    kin_unique, kin_scaling_target, fill_value="extrapolation"
+                    kin_unique, kin_scaling_target, fill_value="extrapolate"
                 )
             )
 

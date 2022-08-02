@@ -59,14 +59,14 @@ pseudodataseed: 2
 
 # Define Neural Network Parameters
 fit_parameters:
-  epochs: 30000
+  epochs: 20000
   stopping_patience: 5000
-  units_per_layer: [25,20]
-  activation_per_layer: [tanh, tanh]
+  units_per_layer: [20,15,10]
+  activation_per_layer: [sigmoid, tanh, sigmoid]
   optimizer_parameters:
     optimizer: Adam
-    clipnorm: 1.0e-5
-    learning_rate: 5.0e-3
+    clipnorm: 1.0e-6
+    learning_rate: 5.0e-4
   feature_scaling: True
-  val_chi2_threshold: 4
+  val_chi2_threshold: 400
   initializer_seed: 1
