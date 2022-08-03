@@ -39,14 +39,12 @@ def summary_table(fitfolder: pathlib.Path) -> pd.DataFrame:
         jsonfile = json_loader(repinfo)
         for chi2type in chi2_summary:
             chi2_summary[chi2type] += jsonfile[f"best_{chi2type}_chi2"]
-
-    # Load the json file containing experimental chi2s
-    expchi2s = json_loader(fitfolder.joinpath("expchi2s.json"))
+        chi2_summary["Exp"] += jsonfile["exp_chi2s"]["total_chi2"]
 
     # Average the chi2 over the nb of replicas
     for chi2type in chi2_summary:
         chi2_summary[chi2type] /= count
-    chi2_summary["Exp"] = expchi2s["total_chi2"]
+    chi2_summary["Exp"] /= count
     summtable = pd.DataFrame.from_dict({"chi2": chi2_summary})
     dump_to_csv(fitfolder, summtable, "summary")
     return summtable
@@ -66,9 +64,6 @@ def chi2_tables(fitfolder: pathlib.Path) -> pd.DataFrame:
     datinfo = runcard_content["experiments"]
     fitinfos = fitfolder.glob("**/replica_*/fitinfo.json")
 
-    # Load the json file containing experimental chi2s
-    expchi2s = json_loader(fitfolder.joinpath("expchi2s.json"))
-
     # Initialize dictionary to store the chi2 values
     dpts_dic = {d["dataset"]: d["frac"] for d in datinfo}
     chi2_dic = {
@@ -82,11 +77,12 @@ def chi2_tables(fitfolder: pathlib.Path) -> pd.DataFrame:
             chi2_dic[dat]["Ndat"] = jsonfile["dtpts_per_dataset"][dat]
             chi2_dic[dat]["frac"] = dpts_dic[dat]
             chi2_dic[dat]["tr_chi2"] += jsonfile["chi2s_per_dataset"][dat]
-            chi2_dic[dat]["exp_chi2"] = expchi2s[dat]
+            chi2_dic[dat]["exp_chi2"] += jsonfile["exp_chi2s"][dat]
 
     # Average the chi2 over the nb of replicas
     for dataset_name in chi2_dic:
         chi2_dic[dataset_name]["tr_chi2"] /= count
+        chi2_dic[dataset_name]["exp_chi2"] /= count
 
     chi2table = pd.DataFrame.from_dict(chi2_dic, orient="index")
     dump_to_csv(fitfolder, chi2table, "chi2datasets")
