@@ -104,5 +104,9 @@ def main(
         fit_dict["sf_model"],
         **runcard_content["fit_parameters"],
     )
-    with open(f"{destination}/expchi2s.json", "w", encoding="UTF-8") as f:
-        json.dump(chi2s, f, sort_keys=True, indent=4)
+    with open(f"{replica_dir}/fitinfo.json", "r+") as fstream:
+        json_file = json.load(fstream)
+        json_file.update({"exp_chi2s": chi2s})
+        # Sets file's current position at offset.
+        fstream.seek(0)
+        json.dump(json_file, fstream, sort_keys=True, indent=4)
