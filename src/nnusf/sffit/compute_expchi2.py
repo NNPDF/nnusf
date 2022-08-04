@@ -28,7 +28,7 @@ def compute_exp_chi2(datainfo, nn_layers, optimizer_parameters, **kwargs):
         # Extract theory grid coefficients & datasets
         coefficients = data.coefficients
         nb_dpts_dataset[data.name] = data.n_data
-        exp_datasets.append(data.pseudodata)
+        exp_datasets.append(data.central_values)
 
         # Construct the input layer as placeholders
         input_layer = tf.keras.layers.Input(shape=(None, 3), batch_size=1)

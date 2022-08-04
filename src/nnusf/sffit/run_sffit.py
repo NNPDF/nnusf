@@ -95,7 +95,6 @@ def main(
     saved_model.save(replica_dir / "model")
 
     # Compute the chi2 wrt central real data
-    load_data.add_pseudodata(make_copy_raw_dataset, shift=False)
     if runcard_content.get("rescale_inputs", None):
         kls, esk = load_data.cumulative_rescaling(make_copy_raw_dataset)
         load_data.rescale_inputs(make_copy_raw_dataset, kls, esk)
