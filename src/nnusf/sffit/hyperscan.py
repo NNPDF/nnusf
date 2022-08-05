@@ -19,8 +19,10 @@ def construct_hyperspace(hyperscan={}, fit_parameters={}, **kwargs):
 
     # Select randomly the number of hidden layers
     nb_hidden = np.random.randint(
-        hyperscan["number_layers"]["min"], hyperscan["number_layers"]["max"]
+        hyperscan["number_layers"]["min"],
+        hyperscan["number_layers"]["max"] + 1,
     )
+    print(f"Number of hidden layers: {nb_hidden}")
 
     # Add the information ot `hp` for plotting later
     _nbhidden = hp.choice("hidden_layers", [nb_hidden])

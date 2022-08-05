@@ -7,6 +7,7 @@ import pathlib
 from textwrap import indent
 from typing import Optional
 
+import numpy as np
 import tensorflow as tf
 import yaml
 
@@ -57,7 +58,8 @@ def main(
     experiments_dict = runcard_content["experiments"]
 
     # Set global seeds
-    set_global_seeds(global_seed=runcard_content["global_seeds"] + replica)
+    global_seed = runcard_content["global_seeds"] + replica
+    set_global_seeds(global_seed=global_seed)
 
     # Instantiate class that loads the datasets
     w2min = runcard_content.get("W2min", None)
@@ -67,7 +69,7 @@ def main(
     genrep = runcard_content.get("genrep", None)
     load_data.add_pseudodata(data_info, shift=genrep)
     # create a training mask and add it to the data_info object
-    load_data.add_tr_filter_mask(data_info, runcard_content["trvlseed"])
+    load_data.add_tr_filter_mask(data_info)
 
     # Rescale input kinematics if required
     if runcard_content.get("rescale_inputs", None):

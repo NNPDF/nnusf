@@ -40,8 +40,7 @@ def add_pseudodata(experimental_datasets, shift=True):
         dataset.pseudodata = pseudodata
 
 
-def add_tr_filter_mask(experimental_datasets, trvlseed=None):
-    np.random.seed(seed=trvlseed)
+def add_tr_filter_mask(experimental_datasets):
     for dataset in experimental_datasets.values():
         tr_indices = np.array(
             random.sample(

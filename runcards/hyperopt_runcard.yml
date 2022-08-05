@@ -55,6 +55,12 @@ W2min: 3.5
 # chi2 history stored for each `log_freq` epochs
 log_freq: 5000
 
+# True: fit to pseudodata, False: fit to central values
+genrep: True
+
+# True: rescale the input kinematics
+rescale_inputs: True
+
 # Various seed values
 global_seeds: 456
 trvlseed: 123
@@ -71,8 +77,9 @@ hyperscan:
     - 0.000010
     - 0.000001
   initial_lr:
-    - 0.05
-    - 0.10
+    - 0.100
+    - 0.010
+    - 0.001
   number_layers:
     min: 2
     max: 6
@@ -86,6 +93,7 @@ hyperscan:
     - sigmoid
   activations_output:
     - linear
+    - tanh
     - selu
 
 # Define Neural Network Parameters
@@ -99,5 +107,5 @@ fit_parameters:
     optimizer: None
     clipnorm: None
     learning_rate: None
-  val_chi2_threshold: 4
+  val_chi2_threshold: 10
   initializer_seed: 1
