@@ -9,7 +9,7 @@ import yaml
 from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
 
-from ..sffit.load_data import load_experimental_data, rescale_inputs
+from ..sffit.load_data import load_experimental_data
 from ..sffit.load_fit_data import get_predictions_q, load_models
 
 _logger = logging.getLogger(__name__)
@@ -189,15 +189,13 @@ def prediction_data_comparison(**kwargs):
         return
 
     # Load the datasets all at once in order to rescale
-    datasets = load_experimental_data(
-        kwargs["experiments"], w2min=kwargs.get("W2min", None)
+    raw_datasets, datasets = load_experimental_data(
+        kwargs["experiments"],
+        input_scaling=kwargs.get("rescale_inputs", None),
+        w2min=kwargs.get("W2min", None),
     )
     # Copy the dataset kinematics regardless of scaling
-    copy_kins = {k: v.kinematics for k, v in datasets.items()}
-    if kwargs.get("rescale_inputs", None):
-        kls = kwargs["scaling"]["map_from"]
-        els = kwargs["scaling"]["map_to"]
-        rescale_inputs(datasets, kls, els)
+    copy_kins = {k: v.kinematics for k, v in raw_datasets.items()}
 
     count_plots = 0
     for experiment, data in datasets.items():
