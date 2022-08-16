@@ -12,7 +12,6 @@ def generate_models(
     data_info,
     units_per_layer,
     activation_per_layer,
-    initializer_seed=0,
     output_units=6,
     output_activation="linear",
     **kwargs
@@ -47,7 +46,7 @@ def generate_models(
         zip(units_per_layer, activation_per_layer)
     ):
         initializer = tf.keras.initializers.GlorotUniform(
-            seed=initializer_seed + i
+            seed=np.random.randint(0, pow(2, 31)) + i
         )
         dense_layers.append(
             tf.keras.layers.Dense(

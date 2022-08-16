@@ -58,7 +58,7 @@ def main(
     genrep = runcard_content.get("genrep", None)
     load_data.add_pseudodata(data_info, shift=genrep)
     # create a training mask and add it to the data_info object
-    load_data.add_tr_filter_mask(data_info, runcard_content["trvlseed"])
+    load_data.add_tr_filter_mask(data_info)
 
     # Save a copy of the fit runcard to the fit folder
     with open(replica_dir.parent / "runcard.yml", "w") as fstream:
