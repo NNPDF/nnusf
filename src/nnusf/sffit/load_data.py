@@ -38,8 +38,7 @@ def load_experimental_data(
     # Perform Input Scaling if required
     if input_scaling:
         _logger.info("Input kinematics are being scaled.")
-        kls, esk = cumulative_rescaling(experimental_data)
-        rescale_inputs(experimental_data, kls, esk)
+        rescale_inputs(experimental_data)
     return raw_experimental_data, experimental_data
 
 

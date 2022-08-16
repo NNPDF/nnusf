@@ -10,7 +10,7 @@ def cumulative_rescaling(datasets):
 
     # Define a combined dense target kinematic grids
     target_grids = np.linspace(
-        start=0,
+        start=-1.0,
         stop=1.0,
         endpoint=True,
         num=sorted_kin.shape[0],
@@ -33,14 +33,19 @@ def cumulative_rescaling(datasets):
             np.interp(kin_linear_spaced, kin_unique, scaling_target)
         )
         kin_linear_reference.append(kin_linear_spaced)
-    return kin_linear_reference, equally_spaced_kinematics
 
-
-def rescale_inputs(datasets, kls, esk, method=None):
-    # kls, esk = cumulative_rescaling(datasets)
     for dataset in datasets.values():
         scaled_inputs = []
         for index, kin_var in enumerate(dataset.kinematics.T):
-            input_scaling = np.interp(kin_var, kls[index], esk[index])
+            input_scaling = np.interp(
+                kin_var,
+                kin_linear_reference[index],
+                equally_spaced_kinematics[index],
+            )
             scaled_inputs.append(input_scaling)
         dataset.kinematics = np.array(scaled_inputs).T
+
+
+def rescale_inputs(datasets, method="cumulative_rescaling"):
+    function_call = globals()[method]
+    function_call(datasets)
