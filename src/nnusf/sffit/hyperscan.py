@@ -94,4 +94,4 @@ def construct_hyperfunc(data_info, hyperspace_dict, replica_dir, log_freq):
     result = perform_fit(
         fit_dict, data_info, replica_dir, log_freq, **hyperspace_dict
     )
-    return {"loss": result["best_tr_chi2"], "status": STATUS_OK}
+    return {"loss": result["best_vl_chi2"], "status": STATUS_OK}

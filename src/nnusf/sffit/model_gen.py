@@ -4,15 +4,14 @@
 import numpy as np
 import tensorflow as tf
 
-from .layers import GenMaskLayer, ObservableLayer, TheoryConstraint
-from .utils import chi2, mask_covmat, mask_expdata
+from .layers import ObservableLayer, TheoryConstraint
+from .utils import chi2, mask_coeffs, mask_covmat, mask_expdata
 
 
 def generate_models(
     data_info,
     units_per_layer,
     activation_per_layer,
-    initializer_seed=0,
     output_units=6,
     output_activation="linear",
     **kwargs
@@ -47,7 +46,7 @@ def generate_models(
         zip(units_per_layer, activation_per_layer)
     ):
         initializer = tf.keras.initializers.GlorotUniform(
-            seed=initializer_seed + i
+            seed=np.random.randint(0, pow(2, 31)) + i
         )
         dense_layers.append(
             tf.keras.layers.Dense(
@@ -76,10 +75,6 @@ def generate_models(
     tr_chi2, vl_chi2 = [], []
     tr_dpts, vl_dpts = {}, {}
     for data in data_info.values():
-        # Extract theory grid coefficients & datasets
-        coefficients = data.coefficients
-        exp_datasets = data.pseudodata
-
         # Construct the input layer as placeholders
         input_layer = tf.keras.layers.Input(shape=(None, 3), batch_size=1)
         model_inputs.append(input_layer)
@@ -96,18 +91,20 @@ def generate_models(
             )
             return sf_basis
 
+        # Extract theory grid coefficients & datasets
+        tr_mask, vl_mask = data.tr_filter, ~data.tr_filter
+        coef_tr, coef_vl = mask_coeffs(data.coefficients, tr_mask, vl_mask)
+        expd_tr, expd_vl = mask_expdata(data.pseudodata, tr_mask, vl_mask)
+
         sf_basis = sf_model(input_layer)
         # Construct the full observable for a given dataset
-        observable = ObservableLayer(coefficients)(sf_basis)
+        tr_observable = ObservableLayer(coef_tr, name=data.name)(sf_basis)
+        vl_observable = ObservableLayer(coef_vl, name=data.name)(sf_basis)
 
         # Split the datasets into training & validation
-        tr_mask, vl_mask = data.tr_filter, ~data.tr_filter
-        obs_tr = GenMaskLayer(tr_mask, name=data.name)(observable)
-        obs_vl = GenMaskLayer(vl_mask, name=data.name)(observable)
-        tr_obs.append(obs_tr)
-        vl_obs.append(obs_vl)
+        tr_obs.append(tr_observable)
+        vl_obs.append(vl_observable)
 
-        expd_tr, expd_vl = mask_expdata(exp_datasets, tr_mask, vl_mask)
         tr_data.append(expd_tr)
         vl_data.append(expd_vl)
 

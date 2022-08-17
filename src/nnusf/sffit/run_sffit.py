@@ -1,18 +1,14 @@
 # -*- coding: utf-8 -*-
 """Executable to perform the structure function fit."""
-import copy
-import json
 import logging
 import pathlib
-from textwrap import indent
 from typing import Optional
 
-import numpy as np
 import tensorflow as tf
 import yaml
 
 from . import load_data
-from .compute_expchi2 import compute_exp_chi2
+from .compute_expchi2 import add_expchi2_json, compute_exp_chi2
 from .hyperscan import (
     construct_hyperfunc,
     construct_hyperspace,
@@ -55,7 +51,7 @@ def main(
 
     # Load fit run card
     runcard_content = yaml.safe_load(runcard.read_text())
-    experiments_dict = runcard_content["experiments"]
+    expdicts = runcard_content["experiments"]
 
     # Set global seeds
     global_seed = runcard_content["global_seeds"] + replica
@@ -63,20 +59,13 @@ def main(
 
     # Instantiate class that loads the datasets
     w2min = runcard_content.get("W2min", None)
-    data_info = load_data.load_experimental_data(experiments_dict, w2min)
-    make_copy_raw_dataset = copy.deepcopy(data_info)
+    scale = runcard_content.get("rescale_inputs", None)
+    _, data_info = load_data.load_experimental_data(expdicts, scale, w2min)
     # create pseudodata and add it to the data_info object
     genrep = runcard_content.get("genrep", None)
     load_data.add_pseudodata(data_info, shift=genrep)
     # create a training mask and add it to the data_info object
     load_data.add_tr_filter_mask(data_info)
-
-    # Rescale input kinematics if required
-    if runcard_content.get("rescale_inputs", None):
-        _logger.info("Kinematic inputs are being rescaled")
-        kls, esk = load_data.cumulative_rescaling(data_info)
-        load_data.rescale_inputs(data_info, kls, esk)
-        runcard_content["scaling"] = {"map_from": kls, "map_to": esk}
 
     # Save a copy of the fit runcard to the fit folder
     with open(replica_dir.parent / "runcard.yml", "w") as fstream:
@@ -116,18 +105,9 @@ def main(
     saved_model.save(replica_dir / "model")
 
     # Compute the chi2 wrt central real data
-    load_data.add_pseudodata(make_copy_raw_dataset, shift=False)
-    if runcard_content.get("rescale_inputs", None):
-        kls, esk = load_data.cumulative_rescaling(make_copy_raw_dataset)
-        load_data.rescale_inputs(make_copy_raw_dataset, kls, esk)
     chi2s = compute_exp_chi2(
-        make_copy_raw_dataset,
+        data_info,
         fit_dict["sf_model"],
         **runcard_content["fit_parameters"],
     )
-    with open(f"{replica_dir}/fitinfo.json", "r+") as fstream:
-        json_file = json.load(fstream)
-        json_file.update({"exp_chi2s": chi2s})
-        # Sets file's current position at offset.
-        fstream.seek(0)
-        json.dump(json_file, fstream, sort_keys=True, indent=4)
+    add_expchi2_json(replica_dir, chi2s)

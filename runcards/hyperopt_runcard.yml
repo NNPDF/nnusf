@@ -62,9 +62,7 @@ genrep: True
 rescale_inputs: True
 
 # Various seed values
-global_seeds: 456
-trvlseed: 123
-pseudodataseed: 2
+global_seeds: 1865683875
 
 # Parameter space to be scanned
 hyperscan:
@@ -82,7 +80,7 @@ hyperscan:
     - 0.001
   number_layers:
     min: 2
-    max: 6
+    max: 5
   number_nodes:
     min: 20
     max: 200
@@ -93,14 +91,14 @@ hyperscan:
     - sigmoid
   activations_output:
     - linear
-    - tanh
+    - relu
     - selu
 
 # Define Neural Network Parameters
 fit_parameters:
   epochs: 75000
   print_rate: 5000
-  stopping_patience: 15000
+  stopping_patience: 5000
   units_per_layer: None
   activation_per_layer: None
   optimizer_parameters:
