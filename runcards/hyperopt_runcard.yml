@@ -82,8 +82,8 @@ hyperscan:
     min: 2
     max: 5
   number_nodes:
-    min: 20
-    max: 200
+    min: 10
+    max: 150
   activations:
     - tanh
     - relu
