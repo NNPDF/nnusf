@@ -35,8 +35,6 @@ pdfset=["NNPDF40_nnlo_as_01180","GRV98lo_patched"]
 pdfsetlab=[r"${\rm LO~SFs+NNPDF4.0}$",r"${\rm LO~SFs+GRV98LO}$"]
 error_option=["mc_68cl","ct"]
 
-
-
 #----------------------------------------------
 #----------------------------------------------
 # Value of x
