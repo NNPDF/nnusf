@@ -33,14 +33,14 @@ nset =2
 pdfset=["NNPDF40_nnlo_as_01180","GRV98lo_patched"]
 pdfsetlab=[r"${\rm LO~SF+NNPDF4.0NNLO}$",r"${\rm LO~SF+GRV98LO}$"]
 error_option=["mc_68cl","ct"]
-filelabel="-allcomp_q2gev"
-#filelabel="-allcomp_q10gev"
+#filelabel="-allcomp_q2gev"
+filelabel="-allcomp_q10gev"
 
 #----------------------------------------------
 #----------------------------------------------
 # Value of Q
-q = 2 # gev
-#q = 10 # gev
+#q = 2 # gev
+q = 10 # gev
 #----------------------------------------------
 #----------------------------------------------
 
@@ -63,8 +63,8 @@ genie_sf_f3=np.zeros(nx_genie)
 genie_sf_f2_nubar=np.zeros(nx_genie)
 genie_sf_f3_nubar=np.zeros(nx_genie)
 
-#iq2_genie=30  # Q = 10 GeV
-iq2_genie=16  # Q = 2 GeV
+iq2_genie=30  # Q = 10 GeV
+#iq2_genie=16  # Q = 2 GeV
 
 # Check
 q_check=math.pow(genie_sf_nu_p[iq2_genie][1],0.5)
@@ -140,8 +140,8 @@ yadism_sf_f3_lo_nubar=np.zeros(nx_yadism)
 yadism_sf_f2_nnlo_nubar=np.zeros(nx_yadism)
 yadism_sf_f3_nnlo_nubar=np.zeros(nx_yadism)
 
-#iq2_yadism=16  # Q = 10 GeV
-iq2_yadism=2  # Q = 2 GeV
+iq2_yadism=16  # Q = 10 GeV
+#iq2_yadism=2  # Q = 2 GeV
 
 # Check
 q_check=math.pow(yadism_f2_lo_nu_p[iq2_yadism][2],0.5)
@@ -488,9 +488,9 @@ py.figure(figsize=(ncols*5,nrows*3.5))
 gs = gridspec.GridSpec(nrows,ncols)
 rescolors = py.rcParams['axes.prop_cycle'].by_key()['color']
 # Q = 10 GeV
-#yranges=[[0,4.3],[0,4.3],[0,0.8],[-0.25,1.20]]
+yranges=[[0,4.3],[0,4.3],[0,0.8],[-0.25,1.20]]
 # Q = 2 GeV
-yranges=[[0,2.3],[0,2.3],[0,0.8],[-0.25,1.30]]
+#yranges=[[0,2.3],[0,2.3],[0,0.8],[-0.25,1.30]]
 labelpdf=[r"$F_2^{\nu p}(x,Q)$",r"$F_2^{\bar{\nu} p}(x,Q)$",\
           r"$xF_3^{\nu p}(x,Q)$",r"$xF_3^{\bar{\nu} p}(x,Q)$"]
 
@@ -556,8 +556,8 @@ for isf in range(nsf):
     if(isf>1):
         ax.set_xlabel(r'$x$',fontsize=15)
     if(isf==0):
-        #ax.text(0.67,0.85,r'$Q=10~{\rm GeV}$',fontsize=14,transform=ax.transAxes)
-        ax.text(0.67,0.85,r'$Q=2~{\rm GeV}$',fontsize=15,transform=ax.transAxes)
+        ax.text(0.67,0.85,r'$Q=10~{\rm GeV}$',fontsize=14,transform=ax.transAxes)
+        #ax.text(0.67,0.85,r'$Q=2~{\rm GeV}$',fontsize=15,transform=ax.transAxes)
  
     if(isf==1):
         ax.legend([(p1[0],p2[0]),p3[0],p4[0],p5[0],p6[0],p7[0]],\
@@ -565,7 +565,7 @@ for isf in range(nsf):
                    pdfsetlab[1],\
                    r"${\rm Bodek~Yang~(GENIE)}$",\
                    r"${\rm YADISM~(NNLO)+NNPDF4.0}$",r"${\rm BGR18~(GENIE)}$"], \
-                  frameon="True",loc=3,prop={'size':10})
+                  frameon="True",loc=1,prop={'size':9})
         
 py.tight_layout(pad=1, w_pad=1, h_pad=1.0)
 py.savefig('StructureFunction-xdep'+filelabel+'.pdf')
