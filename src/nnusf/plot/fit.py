@@ -141,9 +141,10 @@ def sf_q_band(**kwargs):
             color="C0",
             alpha=0.4,
         )
+        # ax.set_xscale("log")
         savepath = (
             pathlib.Path(kwargs["output"])
-            / f"plot_sf_q_band_{prediction_index}"
+            / f"sf_q_band_{prediction_index}_A{prediction_info.A}"
         )
         save_figs(fig, savepath)
 
@@ -263,10 +264,9 @@ def chi2_history_plot(xmin=None, **kwargs):
     count_plots = 0
     for foldercontent in fit_folder.iterdir():
         if "replica_" in foldercontent.name:
-            chi2_history_file = foldercontent / "chi2_history.json"
+            chi2_history_file = foldercontent / "chi2_history.yaml"
             if chi2_history_file.exists():
-                with open(chi2_history_file, "r") as f:
-                    data = json.load(f)
+                data = yaml.safe_load(chi2_history_file.read_text())
                 epochs = [int(i) for i in data.keys()]
                 vl_chi2 = [i["vl"] for i in data.values()]
                 tr_chi2 = [i["tr"] for i in data.values()]
@@ -282,6 +282,8 @@ def chi2_history_plot(xmin=None, **kwargs):
                     tr_chi2 = tr_chi2[index_cut:]
                 ax.plot(epochs, vl_chi2, label="validation")
                 ax.plot(epochs, tr_chi2, label="training")
+                ax.set_xscale("log")
+                ax.set_yscale("log")
                 ax.legend()
                 savepath = (
                     pathlib.Path(outputpath)
