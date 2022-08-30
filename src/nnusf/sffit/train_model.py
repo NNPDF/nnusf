@@ -46,20 +46,22 @@ def perform_fit(
 
     # Prepare some placeholder values to initialize
     # the printing of `rich` tables.
-    kinematics = []
     datas_name = {}
+    tr_kinematics = []
+    vl_kinematics = []
     for data in data_info.values():
-        kinematics_arr = data.kinematics
         datas_name[data.name] = 1
-        kinematics.append(kinematics_arr)
+        tr_kinematics.append(data.kinematics[data.tr_filter])
+        vl_kinematics.append(data.kinematics[~data.tr_filter])
     datas_name["loss"] = 1
-    dummy_vl = [1 for _ in range(len(kinematics))]
+    dummy_vl = [1 for _ in range(len(tr_kinematics))]
 
     # Initialize a placeholder table for `rich` outputs
     lr = optimizer_parameters["learning_rate"]
     table = chi2_logs(datas_name, dummy_vl, datas_name, datas_name, 0, lr)
 
-    kinematics_array = [tf.expand_dims(i, axis=0) for i in kinematics]
+    tr_kinarray = [tf.expand_dims(i, axis=0) for i in tr_kinematics]
+    vl_kinarray = [tf.expand_dims(i, axis=0) for i in vl_kinematics]
 
     # Initialize callbacks
     train_info_class = TrainingStatusInfo(
@@ -73,7 +75,7 @@ def perform_fit(
         train_info_class,
     )
     get_train_info = GetTrainingInfo(
-        vl_model, kinematics_array, fit_dict["vl_expdat"], train_info_class
+        vl_model, vl_kinarray, fit_dict["vl_expdat"], train_info_class
     )
     log_train_info = LogTrainingHistory(replica_dir, train_info_class, log_freq)
 
@@ -84,7 +86,7 @@ def perform_fit(
 
         _logger.info("Start of the training:")
         tr_model.fit(
-            kinematics_array,
+            tr_kinarray,
             y=fit_dict["tr_expdat"],
             epochs=epochs,
             verbose=0,
