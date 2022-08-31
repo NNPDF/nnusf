@@ -25,9 +25,9 @@ def cumulative_rescaling(datasets, interpolation_points=None):
             for cumlsum in np.cumsum(kin_counts)
         ]
         if interpolation_points:
-            kin_unique = kin_unique[0:len(kin_unique):int(len(kin_unique)/interpolation_points+1)]
-            scaling_target = scaling_target[0:len(scaling_target):int(len(scaling_target)/interpolation_points+1)]
-        interpolation_func = PchipInterpolator(kin_unique, scaling_target, extrapolate=True)
+            map_from = kin_unique[0:len(kin_unique):int(len(kin_unique)/interpolation_points+1)]
+            map_to = scaling_target[0:len(scaling_target):int(len(scaling_target)/interpolation_points+1)]
+        interpolation_func = PchipInterpolator(map_from, map_to, extrapolate=True)
         scaler_funcs.append(interpolation_func)
 
     for dataset in datasets.values():
