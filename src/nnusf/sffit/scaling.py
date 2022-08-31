@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 import numpy as np
+from scipy.interpolate import PchipInterpolator
 
 
-def cumulative_rescaling(datasets):
+def cumulative_rescaling(datasets, interpolation_points=None):
     data_kin = [data.kinematics for data in datasets.values()]
 
     # Combined and sort each column of the kinematics (x, Q2, A)
@@ -16,36 +17,27 @@ def cumulative_rescaling(datasets):
         num=sorted_kin.shape[0],
     )
 
-    equally_spaced_kinematics = []
-    kin_linear_reference = []
+    scaler_funcs = []
     for kin_var in sorted_kin.T:
         kin_unique, kin_counts = np.unique(kin_var, return_counts=True)
         scaling_target = [
             target_grids[cumlsum - kin_counts[0]]
             for cumlsum in np.cumsum(kin_counts)
         ]
-        kin_linear_spaced = np.linspace(
-            kin_var[0],
-            kin_var[-1],
-            num=int(2 * kin_var.size),
-        )
-        equally_spaced_kinematics.append(
-            np.interp(kin_linear_spaced, kin_unique, scaling_target)
-        )
-        kin_linear_reference.append(kin_linear_spaced)
+        if interpolation_points:
+            kin_unique = kin_unique[0:len(kin_unique):int(len(kin_unique)/interpolation_points+1)]
+            scaling_target = scaling_target[0:len(scaling_target):int(len(scaling_target)/interpolation_points+1)]
+        interpolation_func = PchipInterpolator(kin_unique, scaling_target, extrapolate=True)
+        scaler_funcs.append(interpolation_func)
 
     for dataset in datasets.values():
         scaled_inputs = []
         for index, kin_var in enumerate(dataset.kinematics.T):
-            input_scaling = np.interp(
-                kin_var,
-                kin_linear_reference[index],
-                equally_spaced_kinematics[index],
-            )
+            input_scaling = scaler_funcs[index](kin_var)
             scaled_inputs.append(input_scaling)
         dataset.kinematics = np.array(scaled_inputs).T
 
 
-def rescale_inputs(datasets, method="cumulative_rescaling"):
+def rescale_inputs(datasets, interpolation_points, method="cumulative_rescaling"):
     function_call = globals()[method]
-    function_call(datasets)
+    function_call(datasets, interpolation_points)

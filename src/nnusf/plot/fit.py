@@ -192,6 +192,7 @@ def prediction_data_comparison(**kwargs):
     # Load the datasets all at once in order to rescale
     raw_datasets, datasets = load_experimental_data(
         kwargs["experiments"],
+        kwargs.get("interpolation_points", None),
         input_scaling=kwargs.get("rescale_inputs", None),
         w2min=kwargs.get("W2min", None),
     )

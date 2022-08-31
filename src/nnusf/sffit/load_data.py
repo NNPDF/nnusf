@@ -8,7 +8,7 @@ from typing import Optional
 import numpy as np
 
 from ..data.loader import Loader
-from .scaling import cumulative_rescaling, rescale_inputs
+from .scaling import rescale_inputs
 
 _logger = logging.getLogger(__name__)
 path_to_commondata = pathlib.Path(__file__).parents[3].joinpath("commondata")
@@ -19,6 +19,7 @@ path_to_coefficients = (
 
 def load_experimental_data(
     experiment_list,
+    interpolation_points = None,
     input_scaling: Optional[bool] = None,
     w2min: Optional[float] = None,
 ):
@@ -38,7 +39,7 @@ def load_experimental_data(
     # Perform Input Scaling if required
     if input_scaling:
         _logger.info("Input kinematics are being scaled.")
-        rescale_inputs(experimental_data)
+        rescale_inputs(experimental_data, interpolation_points)
     return raw_experimental_data, experimental_data
 
 
