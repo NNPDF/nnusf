@@ -19,9 +19,10 @@ path_to_coefficients = (
 
 def load_experimental_data(
     experiment_list,
-    interpolation_points = None,
+    interpolation_points=None,
     input_scaling: Optional[bool] = None,
     w2min: Optional[float] = None,
+    save_scaling: Optional[pathlib.Path] = None,
 ):
     "returns a dictionary with dataset names as keys and data as value"
     experimental_data = {}
@@ -39,7 +40,7 @@ def load_experimental_data(
     # Perform Input Scaling if required
     if input_scaling:
         _logger.info("Input kinematics are being scaled.")
-        rescale_inputs(experimental_data, interpolation_points)
+        rescale_inputs(experimental_data, interpolation_points, save_scaling)
     return raw_experimental_data, experimental_data
 
 

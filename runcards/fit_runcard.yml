@@ -67,7 +67,7 @@ global_seeds: 1865683875
 
 # Define Neural Network Parameters
 fit_parameters:
-  epochs: 100000
+  epochs: 100
   stopping_patience: 15000
   units_per_layer: [70, 55, 40, 20, 20]
   activation_per_layer: [tanh, tanh, tanh, tanh, selu]

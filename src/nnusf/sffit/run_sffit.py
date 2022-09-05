@@ -47,6 +47,11 @@ def main(
     runcard_content = yaml.safe_load(runcard.read_text())
     expdicts = runcard_content["experiments"]
 
+    # Save a copy of the fit runcard to the fit folder
+    copied_runcard_path = replica_dir.parent / "runcard.yml"
+    with open(copied_runcard_path, "w") as fstream:
+        yaml.dump(runcard_content, fstream, sort_keys=False)
+
     # Set global seeds
     set_global_seeds(global_seed=runcard_content["global_seeds"] + replica)
 
@@ -54,16 +59,18 @@ def main(
     w2min = runcard_content.get("W2min", None)
     scale = runcard_content.get("rescale_inputs", None)
     interpolation_points = runcard_content.get("interpolation_points", None)
-    _, data_info = load_data.load_experimental_data(expdicts, interpolation_points, scale, w2min)
+    _, data_info = load_data.load_experimental_data(
+        expdicts,
+        interpolation_points=interpolation_points,
+        input_scaling=scale,
+        w2min=w2min,
+        save_scaling=copied_runcard_path,
+    )
     # create pseudodata and add it to the data_info object
     genrep = runcard_content.get("genrep", None)
     load_data.add_pseudodata(data_info, shift=genrep)
     # create a training mask and add it to the data_info object
     load_data.add_tr_filter_mask(data_info)
-
-    # Save a copy of the fit runcard to the fit folder
-    with open(replica_dir.parent / "runcard.yml", "w") as fstream:
-        yaml.dump(runcard_content, fstream, sort_keys=False)
 
     fit_dict = generate_models(data_info, **runcard_content["fit_parameters"])
 
