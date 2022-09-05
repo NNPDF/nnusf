@@ -30,13 +30,13 @@ KIN_DESC = {
     "x_min": 1e-2,
     "y_min": 0.2,
     "y_max": 0.8,
-    "q2_min": 300,
-    "q2_max": 1e5,
+    "q2_min": 25,
+    "q2_max": 500,
 }
 
 
-N_KINEMATC_GRID_FX = dict(x=5, Q2=20, y=1.0)
-N_KINEMATC_GRID_XSEC = dict(x=5, Q2=20, y=2)
+N_KINEMATC_GRID_FX = dict(x=6, Q2=25, y=1)
+N_KINEMATC_GRID_XSEC = dict(x=6, Q2=25, y=2)
 M_PROTON = 938.272013 * 0.001
 
 
