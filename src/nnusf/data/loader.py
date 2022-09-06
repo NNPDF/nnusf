@@ -38,9 +38,9 @@ class Loader:
         self,
         name: str,
         path_to_commondata: pathlib.Path,
+        kincuts: dict = {},
         path_to_coefficients: Optional[pathlib.Path] = None,
         include_syst: Optional[bool] = True,
-        w2min: Optional[float] = None,
     ):
         """Initialize object.
 
@@ -65,7 +65,7 @@ class Loader:
 
         self.commondata_path = path_to_commondata
         self.coefficients_path = path_to_coefficients
-        self.table, self.leftindex = self._load(w2min)
+        self.table, self.leftindex = self._load(kincuts)
         self.tr_frac = None
         self.covariance_matrix = self.build_covariance_matrix(
             self.commondata_path,
@@ -76,7 +76,7 @@ class Loader:
         )
         _logger.info(f"Loaded '{name}' dataset")
 
-    def _load(self, w2min: Union[float, None]) -> tuple[pd.DataFrame, pd.Index]:
+    def _load(self, kincuts: dict) -> tuple[pd.DataFrame, pd.Index]:
         """Load the dataset information.
 
         Returns
@@ -84,6 +84,11 @@ class Loader:
         table with loaded data
 
         """
+        # Extract values of kinematic cuts if any
+        w2min = kincuts.get("w2min", None)
+        q2max = kincuts.get("q2max", None)
+        _logger.info(f"q2max: {q2max}")
+        _logger.info(f"w2min: {w2min}")
         # Extract the information from the INFO files
         exp_name = self.name.split("_")[0]
         if "_MATCHING" in exp_name:
@@ -143,6 +148,8 @@ class Loader:
         new_df.reset_index(drop=True, inplace=True)
         # Only now we can perform the cuts on W
         new_df = new_df[new_df["W2"] >= w2min] if w2min else new_df
+        if "_MATCHING" not in exp_name:
+            new_df = new_df[new_df["Q2"] <= q2max] if q2max else new_df
 
         number_datapoints = new_df.shape[0]
 
