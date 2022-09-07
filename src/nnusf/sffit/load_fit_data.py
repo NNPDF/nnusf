@@ -20,6 +20,14 @@ class PredictionInfo:
     predictions: Union[np.ndarray, list]
 
 
+def input_scaling(input_arr, scaler_funcs):
+    scaled_inputs = []
+    for index, kin_var in enumerate(input_arr.T):
+        input_scaling = scaler_funcs[index](kin_var)
+        scaled_inputs.append(input_scaling)
+    return np.array(scaled_inputs).T
+
+
 def load_models(fit, **kwargs):
     del kwargs
     path_to_fit_folder = pathlib.Path(fit)
@@ -56,7 +64,8 @@ def get_predictions_q(
         raise ValueError("The value of x is of an unrecognised type.")
 
     if fitcard.get("rescale_inputs", None):
-        _logger.error("The Input Scaling have to be Implemented!")
+        input_list = input_scaling(np.array(input_list), fitcard["scaling"])
+        _logger.error("Kinematic inputs are being scaled.")
 
     input_kinematics = [input_list]
     inputs = tf.constant(input_kinematics)
