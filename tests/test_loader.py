@@ -26,13 +26,19 @@ class TestLoader:
         assert 0 in combined_unc_match.values
 
     def test_coefficients_load(self):
-        data = Loader("CHORUS_F2", path_to_commondata, path_to_coefficients)
+        data = Loader(
+            "CHORUS_F2",
+            path_to_commondata=path_to_commondata,
+            path_to_coefficients=path_to_coefficients,
+        )
         assert data.coefficients[0].sum() == 1.0
         assert data.coefficients.sum() == data.n_data
         assert data.coefficients.T[[1, 2, 4, 5]].sum() == 0
 
         data_match = Loader(
-            "CHORUS_F2_MATCHING", path_to_commondata, path_to_coefficients
+            "CHORUS_F2_MATCHING",
+            path_to_commondata=path_to_commondata,
+            path_to_coefficients=path_to_coefficients,
         )
         assert data_match.coefficients[0].sum() == 1.0
         assert data_match.coefficients.sum() == data_match.n_data
