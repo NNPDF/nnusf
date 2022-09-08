@@ -20,6 +20,7 @@ def cumulative_rescaling(
         num=sorted_kin.shape[0],
     )
 
+    mapping_from, mapping_to = [], []
     scaler_funcs = []
     for kin_var in sorted_kin.T:
         kin_unique, kin_counts = np.unique(kin_var, return_counts=True)
@@ -44,11 +45,16 @@ def cumulative_rescaling(
             map_from, map_to, extrapolate=True
         )
         scaler_funcs.append(interpolation_func)
+        mapping_to.append(map_to)
+        mapping_from.append(map_from)
 
     if save_scaling and save_scaling.is_file():
         runcard_file = yaml.load(save_scaling.read_text(), Loader=yaml.Loader)
         with open(save_scaling, "w") as ostream:
-            runcard_file["scaling"] = scaler_funcs
+            runcard_file["scaling"] = {
+                "map_from": mapping_from,
+                "map_to": mapping_to,
+            }
             yaml.dump(runcard_file, ostream, sort_keys=False)
 
     for dataset in datasets.values():

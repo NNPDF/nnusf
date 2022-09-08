@@ -7,6 +7,7 @@ from typing import Union
 import numpy as np
 import tensorflow as tf
 import yaml
+from scipy.interpolate import PchipInterpolator
 
 _logger = logging.getLogger(__name__)
 
@@ -20,10 +21,12 @@ class PredictionInfo:
     predictions: Union[np.ndarray, list]
 
 
-def input_scaling(input_arr, scaler_funcs):
+def input_scaling(input_arr, map_from, map_to):
     scaled_inputs = []
     for index, kin_var in enumerate(input_arr.T):
-        input_scaling = scaler_funcs[index](kin_var)
+        input_scaling = PchipInterpolator(
+            map_from[index], map_to[index], extrapolate=True
+        )(kin_var)
         scaled_inputs.append(input_scaling)
     return np.array(scaled_inputs).T
 
@@ -64,7 +67,11 @@ def get_predictions_q(
         raise ValueError("The value of x is of an unrecognised type.")
 
     if fitcard.get("rescale_inputs", None):
-        input_list = input_scaling(np.array(input_list), fitcard["scaling"])
+        input_list = input_scaling(
+            np.array(input_list),
+            fitcard["scaling"]["map_from"],
+            fitcard["scaling"]["map_to"],
+        )
         _logger.error("Kinematic inputs are being scaled.")
 
     input_kinematics = [input_list]
