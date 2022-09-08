@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
+import logging
 import pathlib
 from dataclasses import dataclass
+from multiprocessing import Pool
 from typing import Union
 
 import numpy as np
 import tensorflow as tf
+
+_logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -16,13 +20,29 @@ class PredictionInfo:
     predictions: Union[np.ndarray, list]
 
 
+def load_single_model(model_path):
+    return tf.keras.models.load_model(model_path, compile=False)
+
+
+def load_models_parallel(fit, **kwargs):
+    del kwargs
+    path_to_fit_folder = pathlib.Path(fit)
+    models = [m / "model" for m in path_to_fit_folder.rglob("replica_*/")]
+    pool = Pool(processes=10)
+    loaded_models = pool.map(load_single_model, models)
+    return loaded_models
+
+
 def load_models(fit, **kwargs):
     del kwargs
     path_to_fit_folder = pathlib.Path(fit)
     models = []
-    for replica_folder in path_to_fit_folder.rglob("replica_*/"):
+    for idx, replica_folder in enumerate(
+        path_to_fit_folder.rglob("replica_*/")
+    ):
         model_folder = replica_folder / "model"
         models.append(tf.keras.models.load_model(model_folder, compile=False))
+        _logger.info(f"Model {idx} loaded.")
     return models
 
 

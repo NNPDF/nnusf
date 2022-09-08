@@ -42,15 +42,14 @@ class FeatureScaling(tf.keras.layers.Layer):
         unstacked_inputs = tf.unstack(inputs, axis=2)
         scaled_inputs = []
         for enum, kin_tensor in enumerate(unstacked_inputs):
-            scaled_inputs.append(
-                tfp.math.interp_regular_1d_grid(
-                    kin_tensor,
-                    self.sorted_tr_data[:, enum].min().astype("float32"),
-                    self.sorted_tr_data[:, enum].max().astype("float32"),
-                    self.kin_equal_spaced_targets[enum].astype("float32"),
-                    axis=-1,
-                    fill_value="extrapolate",
-                    grid_regularizing_transform=None,
-                )
+            scaled_kin = tfp.math.interp_regular_1d_grid(
+                kin_tensor,
+                self.sorted_tr_data[:, enum].min().astype("float32"),
+                self.sorted_tr_data[:, enum].max().astype("float32"),
+                self.kin_equal_spaced_targets[enum].astype("float32"),
+                axis=-1,
+                fill_value="extrapolate",
+                grid_regularizing_transform=None,
             )
+            scaled_inputs.append(scaled_kin)
         return tf.stack(scaled_inputs, axis=2)
