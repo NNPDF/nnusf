@@ -15,8 +15,8 @@ from pylab import *
 #---------------------------------------------------------
 # General plot settings
 nq = 200
-qmin = 1.65
-qmax=10
+qmin = 0.3
+qmax=300
 # set x grid
 Q = np.logspace(np.log10(qmin),np.log10(qmax),nq)
 
@@ -32,14 +32,14 @@ nset =2
 
 # oldPDFs
 pdfset=["NNPDF40_nnlo_as_01180","GRV98lo_patched"]
-pdfsetlab=[r"{\sc LO-SF-NNPDF4.0}",r"{\sc LO-SF-GRV98}"]
+pdfsetlab=[r"${\rm LO~SFs+NNPDF4.0}$",r"${\rm LO~SFs+GRV98LO}$"]
 error_option=["mc_68cl","ct"]
 
 #----------------------------------------------
 #----------------------------------------------
 # Value of x
-x = 0.25
-#x = 0.0126
+#x = 0.25
+x = 0.0126
 #----------------------------------------------
 #----------------------------------------------
 
@@ -265,8 +265,10 @@ print(nnsf_xf3nu_error)
 
 print("nnsf data processed correctly")
 
+
 #---------------------------
 #---------------------------
+
 
 # Reduce verbosity of LHAPDF
 lhapdf.setVerbosity(0)
@@ -363,6 +365,7 @@ for iset in range(nset):
         q = Q[k]
         
         for isf in range(nsf):
+
 
             #----------------------------------------------------------------
             if(isf==0): # F2_nu_p
@@ -577,216 +580,29 @@ for iset in range(nset):
 
 print("\n ****** Plotting absolute Structure Functions (Validation) ******* \n")
 
-ncols,nrows=4,1
+ncols,nrows=2,1
 py.figure(figsize=(ncols*5,nrows*3.5))
 gs = gridspec.GridSpec(nrows,ncols)
 rescolors = py.rcParams['axes.prop_cycle'].by_key()['color']
 
 if( x > 0.0125 and x < 0.0127):
-    yranges=[[1.3,3.3],[1.3,3.3],[0.25,0.7],[-0.15,0.25]]
+    yranges=[[0,3.3],[-0.12,0.30]]
 if( x > 0.24 and x < 0.26):
-    yranges=[[0.53,0.80],[1.07,1.5],[0.43,0.68],[0.9,1.33]]
+    yranges=[[0.53,0.80],[1.07,1.5],[0.38,0.65],[0.9,1.25]]
     
+labelpdf=[r"$F_2^{\nu p}(x,Q)$",r"$xF_3^{\bar{\nu} p}(x,Q)$"]
 
-labelpdf=[r"$F_2^{\nu p}(x,Q)$",r"$F_2^{\bar{\nu} p}(x,Q)$",\
-          r"$xF_3^{\nu p}(x,Q)$",r"$xF_3^{\bar{\nu} p}(x,Q)$"]
-
-for isf in range(nsf):
+for isf in range(2):
 
     ax = py.subplot(gs[isf])
-
-    # LO SF + NNPDF4.0
-    p1=ax.plot(Q,p1_mid[isf],ls="dotted")
-    ax.fill_between(Q,p1_high[isf],p1_low[isf],color=rescolors[0],alpha=0.2)
-    p2=ax.fill(np.NaN,np.NaN,color=rescolors[0],alpha=0.2)
-    
-    # LO YADISM
-    if(isf==0):
-        p3=ax.plot(yadism_sf_q, yadism_f2,ls="dashed",color=rescolors[1])
-    if(isf==1):
-        p3=ax.plot(yadism_sf_q, yadism_f2_nubar,ls="dashed",color=rescolors[1])
-    if(isf==2):
-        p3=ax.plot(yadism_sf_q, yadism_f3,ls="dashed",color=rescolors[1])
-    if(isf==3):
-        p3=ax.plot(yadism_sf_q, yadism_f3_nubar,ls="dashed",color=rescolors[1])
-        
-    # LO SF + GRV98
-    p4=ax.plot(Q,p2_mid[isf],ls="dotted",color=rescolors[2],lw=3)
-
+  
     # GENIE BY
     if(isf==0):
-        p5=ax.plot(genie_sf_q, genie_sf_f2,ls="solid",color=rescolors[3])
+        p1=ax.plot(genie_sf_q, genie_sf_f2,ls="solid",color=rescolors[0])
     if(isf==1):
-        p5=ax.plot(genie_sf_q, genie_sf_f2_nubar,ls="solid",color=rescolors[3])
-    if(isf==2):
-        p5=ax.plot(genie_sf_q, genie_sf_f3,ls="solid",color=rescolors[3])
-    if(isf==3):
-        p5=ax.plot(genie_sf_q, genie_sf_f3_nubar,ls="solid",color=rescolors[3])
+        p1=ax.plot(genie_sf_q, genie_sf_f3_nubar,ls="solid",color=rescolors[0])
         
-    ax.set_xscale('linear')
-    ax.set_xlim(qmin,qmax)
-    ax.tick_params(which='both',direction='in',labelsize=12,right=True)
-    ax.tick_params(which='major',length=7)
-    ax.tick_params(which='minor',length=4)
-    ax.set_ylabel(labelpdf[isf],fontsize=17)
-    ax.set_ylim(yranges[isf][0],yranges[isf][1])
-    if(isf>-1):
-        ax.set_xlabel(r'$Q~({\rm GeV})$',fontsize=15)
-    if( x > 0.0125 and x < 0.0127):
-        if(isf==0):
-            ax.text(0.05,0.88,r'$x=0.0126$',fontsize=17,transform=ax.transAxes)
-    if( x > 0.24 and x < 0.26):
-        if(isf==0):
-            ax.text(0.70,0.88,r'$x=0.25$',fontsize=17,transform=ax.transAxes)
-    
-    if(isf==1):
-        ax.legend([(p1[0],p2[0]),p3[0],p4[0],p5[0]],\
-                  [pdfsetlab[0],r"{\sc YADISM-LO}",\
-                   pdfsetlab[1],\
-                   r"{\sc Bodek-Yang}"], \
-                  frameon="True",loc=4,prop={'size':12})
-        
-
-py.tight_layout(pad=1, w_pad=1, h_pad=1.0)
-py.savefig('StructureFunction-Validation'+filelabel+'.pdf')
-print('output plot: StructureFunction-Validation'+filelabel+'.pdf')
-
-#################################################################################
-#################################################################################
-
-
-print("\n ****** Plotting absolute Structure Functions (Perturbative Convergence) ******* \n")
-
-py.clf()
-ncols,nrows=2,2
-py.figure(figsize=(ncols*5,nrows*3.5))
-gs = gridspec.GridSpec(nrows,ncols)
-rescolors = py.rcParams['axes.prop_cycle'].by_key()['color']
-
-if( x > 0.0125 and x < 0.0127):
-    yranges=[[1.3,3.3],[1.3,3.3],[0.25,0.7],[-0.15,0.25]]
-if( x > 0.24 and x < 0.26):
-    yranges=[[0.5,0.80],[1.05,1.5],[0.38,0.65],[0.9,1.25]]
-
-labelpdf=[r"$F_2^{\nu p}(x,Q)$",r"$F_2^{\bar{\nu} p}(x,Q)$",\
-          r"$xF_3^{\nu p}(x,Q)$",r"$xF_3^{\bar{\nu} p}(x,Q)$"]
-
-for isf in range(nsf):
-
-    ax = py.subplot(gs[isf])
-
-    # LO YADISM
-    if(isf==0):
-        p1=ax.plot(yadism_sf_q, yadism_f2,ls="dashed",color=rescolors[0])
-    if(isf==1):
-        p1=ax.plot(yadism_sf_q, yadism_f2_nubar,ls="dashed",color=rescolors[0])
-    if(isf==2):
-        p1=ax.plot(yadism_sf_q, yadism_f3,ls="dashed",color=rescolors[0])
-    if(isf==3):
-        p1=ax.plot(yadism_sf_q, yadism_f3_nubar,ls="dashed",color=rescolors[0])
-
-    # GENIE BGR18 (NNPDF3.1 NLO)
-    if(isf==0):
-        p2=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f2,ls="dashdot",color=rescolors[1])
-    if(isf==1):
-        p2=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f2_nubar,ls="dashdot",color=rescolors[1])
-    if(isf==2):
-        p2=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f3,ls="dashdot",color=rescolors[1])
-    if(isf==3):
-        p2=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f3_nubar,ls="dashdot",color=rescolors[1])
-
-    # NNLO YADISM
-    if(isf==0):
-        p3=ax.plot(yadism_sf_q, yadism_nnlo_f2,ls="solid",color=rescolors[2])
-    if(isf==1):
-        p3=ax.plot(yadism_sf_q, yadism_nnlo_f2_nubar,ls="solid",color=rescolors[2])
-    if(isf==2):
-        p3=ax.plot(yadism_sf_q, yadism_nnlo_f3,ls="solid",color=rescolors[2])
-    if(isf==3):
-        p3=ax.plot(yadism_sf_q, yadism_nnlo_f3_nubar,ls="solid",color=rescolors[2])
-        
-    ax.set_xscale('linear')
-    ax.set_xlim(qmin,qmax)
-    ax.tick_params(which='both',direction='in',labelsize=12,right=True)
-    ax.tick_params(which='major',length=7)
-    ax.tick_params(which='minor',length=4)
-    ax.set_ylabel(labelpdf[isf],fontsize=17)
-    ax.set_ylim(yranges[isf][0],yranges[isf][1])
-    if(isf>1):
-        ax.set_xlabel(r'$Q~({\rm GeV})$',fontsize=15)
-
-    if( x > 0.0125 and x < 0.0127):
-        if(isf==0):
-            ax.text(0.05,0.87,r'$x=0.0126$',fontsize=16,transform=ax.transAxes)
-    if( x > 0.24 and x < 0.26):
-        if(isf==0):
-            ax.text(0.65,0.85,r'$x=0.25$',fontsize=17,transform=ax.transAxes)
-    
-    if(isf==1):
-        ax.legend([p1[0],p2[0],p3[0]],\
-                  [r"${\rm YADISM~(LO)+NNPDF4.0}$",\
-                   r"${\rm BGR18 NLO (NNPDF3.1)~{(GENIE)}}$",\
-                   r"${\rm YADISM~(NNLO)+NNPDF4.0}$"],
-                  frameon="True",loc=1,prop={'size':11})
-
-py.tight_layout(pad=1, w_pad=1, h_pad=1.0)
-py.savefig('StructureFunction-Perturbative'+filelabel+'.pdf')
-print('output plot: StructureFunction-Perturbative'+filelabel+'.pdf')
-
-#################################################################################
-#################################################################################
-
-print("\n ****** Plotting absolute Structure Functions (Comparisons pre-fit) ******* \n")
-
-py.clf()
-ncols,nrows=4,1
-py.figure(figsize=(ncols*5,nrows*3.5))
-gs = gridspec.GridSpec(nrows,ncols)
-rescolors = py.rcParams['axes.prop_cycle'].by_key()['color']
-
-if( x > 0.0125 and x < 0.0127):
-    yranges=[[1.2,3.6],[1.2,3.6],[0.2,0.7],[-0.15,0.30]]
-if( x > 0.24 and x < 0.26):
-    yranges=[[0.5,0.8],[1.0,1.4],[0.35,0.55],[0.9,1.12]]
-
-labelpdf=[r"$F_2^{\nu p}(x,Q)$",r"$F_2^{\bar{\nu} p}(x,Q)$",\
-          r"$xF_3^{\nu p}(x,Q)$",r"$xF_3^{\bar{\nu} p}(x,Q)$"]
-
-for isf in range(nsf):
-
-    ax = py.subplot(gs[isf])
-        
-    # GENIE BY
-    if(isf==0):
-        p1=ax.plot(genie_sf_q, genie_sf_f2,ls="solid",color=rescolors[3])
-    if(isf==1):
-        p1=ax.plot(genie_sf_q, genie_sf_f2_nubar,ls="solid",color=rescolors[3])
-    if(isf==2):
-        p1=ax.plot(genie_sf_q, genie_sf_f3,ls="solid",color=rescolors[3])
-    if(isf==3):
-        p1=ax.plot(genie_sf_q, genie_sf_f3_nubar,ls="solid",color=rescolors[3])
-
-     # GENIE BGR18
-    if(isf==0):
-        p2=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f2,ls="dashdot",color=rescolors[5])
-    if(isf==1):
-        p2=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f2_nubar,ls="dashdot",color=rescolors[5])
-    if(isf==2):
-        p2=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f3,ls="dashdot",color=rescolors[5])
-    if(isf==3):
-        p2=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f3_nubar,ls="dashdot",color=rescolors[5])
-
-    # NNLO YADISM
-    if(isf==0):
-        p3=ax.plot(yadism_sf_q, yadism_nnlo_f2,ls="dashed",color=rescolors[4])
-    if(isf==1):
-        p3=ax.plot(yadism_sf_q, yadism_nnlo_f2_nubar,ls="dashed",color=rescolors[4])
-    if(isf==2):
-        p3=ax.plot(yadism_sf_q, yadism_nnlo_f3,ls="dashed",color=rescolors[4])
-    if(isf==3):
-        p3=ax.plot(yadism_sf_q, yadism_nnlo_f3_nubar,ls="dashed",color=rescolors[4])
-
-    ax.set_xscale('linear')
+    ax.set_xscale('log')
     ax.set_xlim(qmin,qmax)
     ax.tick_params(which='both',direction='in',labelsize=12,right=True)
     ax.tick_params(which='major',length=7)
@@ -794,179 +610,43 @@ for isf in range(nsf):
     ax.set_ylabel(labelpdf[isf],fontsize=17)
     ax.set_ylim(yranges[isf][0],yranges[isf][1])
     ax.set_xlabel(r'$Q~({\rm GeV})$',fontsize=15)
-
     if( x > 0.0125 and x < 0.0127):
-        if(isf==0):
-            ax.text(0.05,0.87,r'$x=0.0126$',fontsize=16,transform=ax.transAxes)
+        if(isf==1):
+            ax.text(0.75,0.90,r'$x=0.0126$',fontsize=14,transform=ax.transAxes)
     if( x > 0.24 and x < 0.26):
         if(isf==0):
             ax.text(0.65,0.85,r'$x=0.25$',fontsize=17,transform=ax.transAxes)
+
+    plt.axvline(6,lw=1.5,ls="dashed",color=rescolors[3])
+    if(isf==0):ax.text(0.46,0.90,r'$Q_{\rm I}$',fontsize=15,transform=ax.transAxes,color=rescolors[3])
+    plt.axvline(40,lw=2,ls="dotted",color=rescolors[2])
+    if(isf==0):ax.text(0.74,0.90,r'$Q_{\rm II}$',fontsize=15,transform=ax.transAxes,color=rescolors[2])
+
+    if(isf==0):
+        ax.text(0.55,0.20,r'$\rm pQCD$',fontsize=14,transform=ax.transAxes,color="black")
+        ax.text(0.21,0.20,r'$\rm SF\,data$',fontsize=14,transform=ax.transAxes,color="black")
+        ax.arrow(x=5, y=1, dx=-4.2, dy=0, width=.05)
+        ax.arrow(x=7, y=1, dx=75, dy=0, width=.05,head_length=30)
+
+    if(isf==0):
+        ax.text(0.12,0.56,r'$\rm Region\,I$',fontsize=15,transform=ax.transAxes,color="black")
+        ax.text(0.47,0.56,r'$\rm Region\,II$',fontsize=15,transform=ax.transAxes,color="black")
+        ax.text(0.75,0.56,r'$\rm Region\,II$',fontsize=15,transform=ax.transAxes,color="black")
+
+        
+    
     
     if(isf==1):
-        ax.legend([p1[0],p2[0],p3[0]],\
-                  [r"{\sc Bodek-Yang}",\
-                   r"{\sc BGR18}",\
-                   r"{\sc YADISM-NNLO}"],
+        ax.legend([p1[0]],
+                  [r"${\rm Bodek\,Yang}$"], \
                   frameon="True",loc=3,prop={'size':12})
 
 py.tight_layout(pad=1, w_pad=1, h_pad=1.0)
-py.savefig('StructureFunction-ComparisonsPreFit'+filelabel+'.pdf')
-print('output plot: StructureFunction-ComparisonsPreFit'+filelabel+'.pdf')
+py.savefig('StructureFunction-Scheme'+filelabel+'.pdf')
+print('output plot: StructureFunction-Scheme'+filelabel+'.pdf')
 
-################################################################################
 #################################################################################
-
-print("\n ****** Plotting absolute Structure Functions (Comparisons) ******* \n")
-
-py.clf()
-ncols,nrows=2,2
-py.figure(figsize=(ncols*5,nrows*3.5))
-gs = gridspec.GridSpec(nrows,ncols)
-rescolors = py.rcParams['axes.prop_cycle'].by_key()['color']
-
-if( x > 0.0125 and x < 0.0127):
-    yranges=[[0.3,3.1],[0.3,3.1],[0.0,0.7],[-0.15,0.60]]
-if( x > 0.24 and x < 0.26):
-    yranges=[[0.30,1.2],[0.9,2.0],[0.2,0.9],[0.3,1.5]]
-
-labelpdf=[r"$F_2^{\nu p}(x,Q)$",r"$F_2^{\bar{\nu} p}(x,Q)$",\
-          r"$xF_3^{\nu p}(x,Q)$",r"$xF_3^{\bar{\nu} p}(x,Q)$"]
-
-for isf in range(nsf):
-
-    ax = py.subplot(gs[isf])
-        
-    # GENIE BY
-    if(isf==0):
-        p1=ax.plot(genie_sf_q, genie_sf_f2,ls="solid",color=rescolors[3])
-    if(isf==1):
-        p1=ax.plot(genie_sf_q, genie_sf_f2_nubar,ls="solid",color=rescolors[3])
-    if(isf==2):
-        p1=ax.plot(genie_sf_q, genie_sf_f3,ls="solid",color=rescolors[3])
-    if(isf==3):
-        p1=ax.plot(genie_sf_q, genie_sf_f3_nubar,ls="solid",color=rescolors[3])
-
-     # GENIE BGR18
-    if(isf==0):
-        p2=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f2,ls="dashdot",color=rescolors[5])
-    if(isf==1):
-        p2=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f2_nubar,ls="dashdot",color=rescolors[5])
-    if(isf==2):
-        p2=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f3,ls="dashdot",color=rescolors[5])
-    if(isf==3):
-        p2=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f3_nubar,ls="dashdot",color=rescolors[5])
-
-    # NNLO YADISM
-    if(isf==0):
-        p3=ax.plot(yadism_sf_q, yadism_nnlo_f2,ls="dashed",color=rescolors[4])
-    if(isf==1):
-        p3=ax.plot(yadism_sf_q, yadism_nnlo_f2_nubar,ls="dashed",color=rescolors[4])
-    if(isf==2):
-        p3=ax.plot(yadism_sf_q, yadism_nnlo_f3,ls="dashed",color=rescolors[4])
-    if(isf==3):
-        p3=ax.plot(yadism_sf_q, yadism_nnlo_f3_nubar,ls="dashed",color=rescolors[4])
-
-    ## NNSF machine learning parametrisation
-    if(isf==0):
-        p4=ax.plot(q_nnsf,nnsf_f2nu_mid,ls="dotted")
-        ax.fill_between(q_nnsf,nnsf_f2nu_high,nnsf_f2nu_low,color=rescolors[0],alpha=0.2)
-        p5=ax.fill(np.NaN,np.NaN,color=rescolors[0],alpha=0.2)
-    if(isf==1):
-        p4=ax.plot(q_nnsf,nnsf_f2nubar_mid,ls="dotted")
-        ax.fill_between(q_nnsf,nnsf_f2nubar_high,nnsf_f2nubar_low,color=rescolors[0],alpha=0.2)
-        p5=ax.fill(np.NaN,np.NaN,color=rescolors[0],alpha=0.2)
-    if(isf==2):
-        p4=ax.plot(q_nnsf,nnsf_xf3nu_mid,ls="dotted")
-        ax.fill_between(q_nnsf,nnsf_xf3nu_high,nnsf_xf3nu_low,color=rescolors[0],alpha=0.2)
-        p5=ax.fill(np.NaN,np.NaN,color=rescolors[0],alpha=0.2)
-    if(isf==3):
-        p4=ax.plot(q_nnsf,nnsf_xf3nubar_mid,ls="dotted")
-        ax.fill_between(q_nnsf,nnsf_xf3nubar_high,nnsf_xf3nubar_low,color=rescolors[0],alpha=0.2)
-        p5=ax.fill(np.NaN,np.NaN,color=rescolors[0],alpha=0.2)
-    
-    #ax.set_xscale('linear')
-    ax.set_xscale('log')
-    ax.set_xlim(0.3,qmax)
-    ax.tick_params(which='both',direction='in',labelsize=12,right=True)
-    ax.tick_params(which='major',length=7)
-    ax.tick_params(which='minor',length=4)
-    ax.set_xticks([0.3, 0.7, 1.0, 2.0, 4.0, 10.0])
-    ax.set_ylabel(labelpdf[isf],fontsize=17)
-    ax.set_ylim(yranges[isf][0],yranges[isf][1])
-    if(isf>1):
-        ax.set_xlabel(r'$Q~({\rm GeV})$',fontsize=15)
-
-    if( x > 0.0125 and x < 0.0127):
-        if(isf==0):
-            ax.text(0.05,0.87,r'$x=0.0126$',fontsize=16,transform=ax.transAxes)
-    if( x > 0.24 and x < 0.26):
-        if(isf==0):
-            ax.text(0.65,0.85,r'$x=0.25$',fontsize=17,transform=ax.transAxes)
-    
-    if(isf==1):
-        ax.legend([p1[0],p2[0],p3[0],(p4[0],p5[0])],\
-                  [r"${\rm Bodek\,Yang~(LO, GRV98)}$",\
-                   r"${\rm BGR18~(NLO, NNPDF3.1)}$", \
-                   r"${\rm YADISM~(NNLO, NNPDF4.0)}$",\
-                   r"${\rm NNSF}$",], \
-                  frameon="True",loc=2,prop={'size':10})
-
-
-py.tight_layout(pad=1, w_pad=1, h_pad=1.0)
-py.savefig('StructureFunction-Comparisons'+filelabel+'.pdf')
-print('output plot: StructureFunction-Comparisons'+filelabel+'.pdf')
-
-exit()
-
-#
-# Now evaluate the K-factors with YADISM for fixed PDF
-#
-print("\n Evaluate the K-factors with YADISM \n")
-
-print("\n ****** Plotting absolute Structure Functions ******* \n")
-
-py.clf()
-ncols,nrows=1,1
-py.figure(figsize=(ncols*5,nrows*3.5))
-gs = gridspec.GridSpec(nrows,ncols)
-rescolors = py.rcParams['axes.prop_cycle'].by_key()['color']
-
-
-isf=0
-ax = py.subplot(gs[isf])
-
-# F2nu
-p1=ax.plot(yadism_sf_q,  yadism_nnlo_f2/yadism_f2,ls="solid",lw=2,color=rescolors[0])
-
-# F2nubar
-p2=ax.plot(yadism_sf_q,  yadism_nnlo_f2_nubar/yadism_f2_nubar,ls="dashed",lw=2,color=rescolors[1])
-
-# xF3nu
-p3=ax.plot(yadism_sf_q,  yadism_nnlo_f3/yadism_f3,ls="solid",lw=2,color=rescolors[2])
-
-# xF3nubar
-p4=ax.plot(yadism_sf_q,  yadism_nnlo_f3_nubar/yadism_f3_nubar,ls="dashed",lw=2,color=rescolors[3])
-
-
-ax.set_xscale('linear')
-ax.set_xlim(qmin,qmax)
-ax.tick_params(which='both',direction='in',labelsize=12,right=True)
-ax.tick_params(which='major',length=7)
-ax.tick_params(which='minor',length=4)
-ax.set_ylabel(r"${\rm NNLO/LO~}K\,{\rm factor}$",fontsize=17)
-# x = 0.25
-ax.set_ylim(0.80,1.01)
-ax.set_xlabel(r'$Q~({\rm GeV})$',fontsize=15)
-#ax.text(0.08,0.87,r'$x=0.25$',fontsize=17,transform=ax.transAxes)
-ax.text(0.08,0.87,r'$x=0.0126$',fontsize=17,transform=ax.transAxes)
-
-ax.legend([p1[0],p2[0],p3[0],p4[0]],[r"$F_2^{\nu p}$",r"$F_2^{\bar{\nu} p}$",r"$xF_3^{\nu p}$",r"$xF_3^{\bar{\nu} p}$"], \
-          frameon="True",loc=4,prop={'size':14})
-        
-py.tight_layout(pad=1, w_pad=1, h_pad=1.0)
-py.savefig('StructureFunction-Qdep-Kfact'+filelabel+'.pdf')
-print('output plot: StructureFunction-Qdep-Kfact'+filelabel+'.pdf')
-
+#################################################################################
 
 
 

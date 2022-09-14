@@ -31,15 +31,14 @@ nset =2
 
 # oldPDFs
 pdfset=["NNPDF40_nnlo_as_01180","GRV98lo_patched"]
-pdfsetlab=[r"${\rm LO~SFs+NNPDF4.0}$",r"${\rm LO~SFs+GRV98LO}$"]
+pdfsetlab=[r"{\sc LO-SF-NNPDF4.0}",r"{\sc LO-SF-GRV98}"]
 error_option=["mc_68cl","ct"]
-
 
 #----------------------------------------------
 #----------------------------------------------
 # Value of Q
-q = 2 # gev
-#q = 10 # gev
+#q = 2 # gev
+q = 10 # gev
 #----------------------------------------------
 #----------------------------------------------
 
@@ -620,12 +619,12 @@ for iset in range(nset):
 
 print("\n ****** Plotting absolute Structure Functions (Validation) ******* \n")
 
-ncols,nrows=2,2
+ncols,nrows=4,1
 py.figure(figsize=(ncols*5,nrows*3.5))
 gs = gridspec.GridSpec(nrows,ncols)
 rescolors = py.rcParams['axes.prop_cycle'].by_key()['color']
 if(q > 1.9 and q < 2.1):
-    yranges=[[0,2.3],[0,2.3],[0,0.8],[-0.25,1.30]]
+    yranges=[[0,2.7],[0,2.7],[0,0.8],[-0.5,1.30]]
 if(q > 9.9 and q < 10.1):
     yranges=[[0,4.6],[0,4.6],[0,1.3],[-0.7,1.20]]
     
@@ -671,22 +670,22 @@ for isf in range(nsf):
     ax.tick_params(which='minor',length=4)
     ax.set_ylabel(labelpdf[isf],fontsize=17)
     ax.set_ylim(yranges[isf][0],yranges[isf][1])
-    if(isf>1):
+    if(isf>(-1)):
         ax.set_xlabel(r'$x$',fontsize=15)
     if(isf==0):
         if(q > 9.9 and q < 10.1):
-            ax.text(0.67,0.85,r'$Q=10~{\rm GeV}$',fontsize=14,transform=ax.transAxes)
+            ax.text(0.67,0.85,r'$Q=10~{\rm GeV}$',fontsize=16,transform=ax.transAxes)
         if(q > 1.9 and q < 2.1):
-            ax.text(0.67,0.85,r'$Q=2~{\rm GeV}$',fontsize=15,transform=ax.transAxes)
+            ax.text(0.67,0.90,r'$Q=2~{\rm GeV}$',fontsize=16,transform=ax.transAxes)
  
     if(isf==1):
         ax.legend([(p1[0],p2[0]),p3[0],p4[0],p5[0]],\
-                  [pdfsetlab[0],r"${\rm YADISM~(LO)+NNPDF4.0}$",\
+                  [pdfsetlab[0],r"{\sc YADISM-LO}",\
                    pdfsetlab[1],\
-                   r"${\rm Bodek~Yang~(GENIE)}$"], \
-                  frameon="True",loc=1,prop={'size':10})
+                   r"{\sc Bodek-Yang}"], \
+                  frameon="True",loc=3,prop={'size':12})
         
-py.tight_layout(pad=1, w_pad=1, h_pad=1.0)
+py.tight_layout(pad=1.0, w_pad=1.0, h_pad=1.0)
 py.savefig('StructureFunction-Validation-xdep'+filelabel+'.pdf')
 print('output plot: StructureFunction-Validation-xdep'+filelabel+'.pdf')
 
@@ -769,6 +768,86 @@ for isf in range(nsf):
 py.tight_layout(pad=1, w_pad=1, h_pad=1.0)
 py.savefig('StructureFunction-Perturbative-xdep'+filelabel+'.pdf')
 print('output plot: StructureFunction-Perturbative-xdep'+filelabel+'.pdf')
+
+#*****************************************************************************
+#*****************************************************************************
+
+print("\n ****** Plotting absolute Structure Functions (Comparisons Pre-Fit) ******* \n")
+
+ncols,nrows=4,1
+py.figure(figsize=(ncols*5,nrows*3.5))
+gs = gridspec.GridSpec(nrows,ncols)
+rescolors = py.rcParams['axes.prop_cycle'].by_key()['color']
+
+if(q > 1.9 and q < 2.1):
+    yranges=[[0,2.7],[0,2.7],[0,0.7],[-0.25,1.25]]
+if(q > 9.9 and q < 10.1):
+    yranges=[[0,5.0],[0,5.0],[0,1.3],[-0.7,1.25]]
+
+labelpdf=[r"$F_2^{\nu p}(x,Q)$",r"$F_2^{\bar{\nu} p}(x,Q)$",\
+          r"$xF_3^{\nu p}(x,Q)$",r"$xF_3^{\bar{\nu} p}(x,Q)$"]
+
+for isf in range(nsf):
+
+    ax = py.subplot(gs[isf])
+
+    # GENIE BY
+    if(isf==0):
+        p1=ax.plot(genie_sf_x, genie_sf_f2,ls="solid",color=rescolors[3])
+    if(isf==1):
+        p1=ax.plot(genie_sf_x, genie_sf_f2_nubar,ls="solid",color=rescolors[3])
+    if(isf==2):
+        p1=ax.plot(genie_sf_x, genie_sf_f3,ls="solid",color=rescolors[3])
+    if(isf==3):
+        p1=ax.plot(genie_sf_x, genie_sf_f3_nubar,ls="solid",color=rescolors[3])
+
+    # GENIE BGR18
+    if(isf==0):
+        p2=ax.plot(genie_sf_bgr_x, genie_sf_bgr_f2,ls="dashdot",color=rescolors[5])
+    if(isf==1):
+        p2=ax.plot(genie_sf_bgr_x, genie_sf_bgr_f2_nub,ls="dashdot",color=rescolors[5])
+    if(isf==2):
+        p2=ax.plot(genie_sf_bgr_x, genie_sf_bgr_f3,ls="dashdot",color=rescolors[5])
+    if(isf==3):
+        p2=ax.plot(genie_sf_bgr_x, (-1)*genie_sf_bgr_f3_nub,ls="dashdot",color=rescolors[5])
+
+    # NNLO YADISM
+    if(isf==0):
+        p3=ax.plot(yadism_sf_x, yadism_sf_f2_nnlo,ls="dashed",color=rescolors[4])
+    if(isf==1):
+        p3=ax.plot(yadism_sf_x, yadism_sf_f2_nnlo_nubar,ls="dashed",color=rescolors[4])
+    if(isf==2):
+        p3=ax.plot(yadism_sf_x, yadism_sf_f3_nnlo,ls="dashed",color=rescolors[4])
+    if(isf==3):
+        p3=ax.plot(yadism_sf_x, yadism_sf_f3_nnlo_nubar,ls="dashed",color=rescolors[4])
+    
+    ax.set_xscale('log')
+    ax.set_xlim(xmin,xmax)
+    ax.tick_params(which='both',direction='in',labelsize=12,right=True)
+    ax.tick_params(which='major',length=7)
+    ax.tick_params(which='minor',length=4)
+    ax.set_ylabel(labelpdf[isf],fontsize=17)
+    ax.set_ylim(yranges[isf][0],yranges[isf][1])
+    if(isf>-1):
+        ax.set_xlabel(r'$x$',fontsize=15)
+    if(isf==0):
+        if(q > 9.9 and q < 10.1):
+            ax.text(0.67,0.85,r'$Q=10~{\rm GeV}$',fontsize=14,transform=ax.transAxes)
+        if(q > 1.9 and q < 2.1):
+            ax.text(0.67,0.85,r'$Q=2~{\rm GeV}$',fontsize=15,transform=ax.transAxes)
+             
+    if(isf==1):
+        ax.legend([p1[0],p2[0],p3[0]],\
+                  [r"{\sc Bodek-Yang}",\
+                   r"{\sc BGR18}",\
+                   r"{\sc YADISM-NNLO}"],
+                  frameon="True",loc=3,prop={'size':12})
+                        
+py.tight_layout(pad=1, w_pad=1, h_pad=1.0)
+py.savefig('StructureFunction-ComparisonsPreFit-xdep'+filelabel+'.pdf')
+print('output plot: StructureFunction-ComparisonsPreFit-xdep'+filelabel+'.pdf')
+
+exit()
 
 
 #*****************************************************************************
