@@ -25,7 +25,7 @@ from .utils import (
 )
 
 _logger = logging.getLogger(__name__)
-PARRENT_PATH = pathlib.Path.cwd().absolute() / "commondata"
+PARRENT_PATH = pathlib.Path(__file__).parents[3].joinpath("commondata")
 GRID_SPECS_PATH = PARRENT_PATH.joinpath("matching-grids.yml")
 GRID_SPECS_DICT = yaml.safe_load(GRID_SPECS_PATH.read_text())
 
