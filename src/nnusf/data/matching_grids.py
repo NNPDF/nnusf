@@ -245,7 +245,7 @@ def generate_empty(
 
     for dataset in datapaths:
         data_name = dataset.stem.strip("DATA_")
-        if "MATCHING" in data_name:
+        if "MATCHING" in data_name or "CHARM" in data_name:
             continue
         obs = data_name.split("_")[-1]
         new_name = f"{data_name}_MATCHING"
