@@ -4,7 +4,7 @@
 import numpy as np
 import tensorflow as tf
 
-from .layers import GenMaskLayer, ObservableLayer, TheoryConstraint
+from .layers import ObservableLayer, TheoryConstraint
 from .utils import chi2, mask_coeffs, mask_covmat, mask_expdata
 
 

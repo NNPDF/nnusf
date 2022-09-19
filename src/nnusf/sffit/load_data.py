@@ -8,7 +8,7 @@ from typing import Optional
 import numpy as np
 
 from ..data.loader import Loader
-from .scaling import cumulative_rescaling, rescale_inputs
+from .scaling import rescale_inputs
 
 _logger = logging.getLogger(__name__)
 path_to_commondata = pathlib.Path(__file__).parents[3].joinpath("commondata")
@@ -20,7 +20,7 @@ path_to_coefficients = (
 def load_experimental_data(
     experiment_list,
     input_scaling: Optional[bool] = None,
-    w2min: Optional[float] = None,
+    kincuts: dict = {},
 ):
     "returns a dictionary with dataset names as keys and data as value"
     experimental_data = {}
@@ -29,7 +29,7 @@ def load_experimental_data(
             experiment["dataset"],
             path_to_commondata=path_to_commondata,
             path_to_coefficients=path_to_coefficients,
-            w2min=w2min,
+            kincuts=kincuts,
         )
         data.tr_frac = experiment["frac"]
         experimental_data[experiment["dataset"]] = data

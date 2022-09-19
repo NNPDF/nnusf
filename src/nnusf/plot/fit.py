@@ -193,7 +193,7 @@ def prediction_data_comparison(**kwargs):
     raw_datasets, datasets = load_experimental_data(
         kwargs["experiments"],
         input_scaling=kwargs.get("rescale_inputs", None),
-        w2min=kwargs.get("W2min", None),
+        kincuts=kwargs.get("kinematic_cuts", {}),
     )
     # Copy the dataset kinematics regardless of scaling
     copy_kins = {k: v.kinematics for k, v in raw_datasets.items()}
