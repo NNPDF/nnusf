@@ -104,13 +104,10 @@ class Loader:
             kin_df = pd.read_csv(kin_file).iloc[1:, 1:4].reset_index(drop=True)
         elif "_MATCHING" in self.name:
             file_path = f"{self.commondata_path}/kinematics"
-            fname = (
-                "KIN_PROTONBC" if "PROTONBC" in self.name else "KIN_MATCHING"
-            )
             if "FW" in self.name or "DXDY" in self.name:
-                file = f"{file_path}/{fname}_XSEC.csv"
+                file = f"{file_path}/KIN_{info_name}_MATCHING_DXDY.csv"
             else:
-                file = f"{file_path}/{fname}_FX.csv"
+                file = f"{file_path}/KIN_{info_name}_MATCHING_F2F3.csv"
             kin_df = pd.read_csv(file).iloc[1:, 1:4].reset_index(drop=True)
         elif self.obs in ["F2", "F3"]:
             file = f"{self.commondata_path}/kinematics/KIN_{exp_name}_F2F3.csv"
