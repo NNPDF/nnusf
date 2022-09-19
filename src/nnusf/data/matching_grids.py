@@ -70,7 +70,6 @@ def proton_boundary_conditions(
                 pdf,
                 destination,
                 kin=GRID_SPECS_DICT,
-                match_type="KIN_PROTONBC",
             )
     else:
         datapaths = []
@@ -87,7 +86,6 @@ def proton_boundary_conditions(
             datapaths,
             destination,
             kin=GRID_SPECS_DICT,
-            match_type="KIN_PROTONBC",
         )
 
     dump_info_file(destination, "PROTONBC", obsdic_list, 1, M_PROTON)
@@ -120,7 +118,7 @@ def kinamatics_grids(is_xsec: bool, kin: dict, exp: str) -> Tuple[dict, int]:
 
 
 def dump_kinematics(
-    destination: pathlib.Path, kin_grid: dict, match_type: str, is_xsec: bool
+    destination: pathlib.Path, kin_grid: dict, match_name: str, is_xsec: bool
 ) -> None:
     """Dump the kinematics into CSV"""
     kinematics = {"x": [], "Q2": [], "y": []}
@@ -138,9 +136,9 @@ def dump_kinematics(
     kinematics_folder = destination.joinpath("kinematics")
     kinematics_folder.mkdir(exist_ok=True)
     if is_xsec:
-        write_to_csv(kinematics_folder, f"{match_type}_XSEC", kinematics_pd)
+        write_to_csv(kinematics_folder, f"KIN_{match_name}_DXDY", kinematics_pd)
     else:
-        write_to_csv(kinematics_folder, f"{match_type}_FX", kinematics_pd)
+        write_to_csv(kinematics_folder, f"KIN_{match_name}_F2F3", kinematics_pd)
 
 
 def dump_uncertainties(
@@ -159,7 +157,6 @@ def main(
     pdf: str,
     destination: pathlib.Path,
     kin: dict = GRID_SPECS_DICT,
-    match_type: str = "KIN_MATCHING",
 ) -> None:
     """Generate the Yadism data (kinematics & central values) as
     well as the the predictions for all replicas.
@@ -182,6 +179,7 @@ def main(
         obs = grid_name.split("_")[-1]
         new_name = f"{grid_name}_MATCHING"
         experiment = grid_name.split("_")[0]
+        new_experiment = f"{experiment}_MATCHING"
 
         # if grids.suffix == ".tar.gz":
         if str(grids).endswith(".tar.gz"):
@@ -205,7 +203,7 @@ def main(
         data_pd = pd.DataFrame({"data": pred[:, 0]})
 
         # Dump the kinematics into CSV
-        dump_kinematics(destination, kin_grid, match_type, is_xsec)
+        dump_kinematics(destination, kin_grid, new_experiment, is_xsec)
 
         # Dump the central (replica) data into CSV
         central_val_folder = destination.joinpath("data")
@@ -230,7 +228,6 @@ def generate_empty(
     datapaths: list[pathlib.Path],
     destination: pathlib.Path,
     kin: dict = GRID_SPECS_DICT,
-    match_type: str = "KIN_MATCHING",
 ) -> None:
     """Generate the empty matching datasets, with only kinematics table filled.
 
@@ -250,11 +247,12 @@ def generate_empty(
         obs = data_name.split("_")[-1]
         new_name = f"{data_name}_MATCHING"
         experiment = data_name.split("_")[0]
+        new_experiment = f"{experiment}_MATCHING"
 
         is_xsec = "DXDY" in obs or "FW" in obs
         kin_grid, n_points = kinamatics_grids(is_xsec, kin, experiment)
 
-        dump_kinematics(destination, kin_grid, match_type, is_xsec)
+        dump_kinematics(destination, kin_grid, new_experiment, is_xsec)
 
         # dump empty central values
         data_pd = pd.DataFrame({"data": np.zeros(n_points)})
