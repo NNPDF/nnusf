@@ -87,8 +87,6 @@ class Loader:
         # Extract values of kinematic cuts if any
         w2min = kincuts.get("w2min", None)
         q2max = kincuts.get("q2max", None)
-        _logger.info(f"q2max: {q2max}")
-        _logger.info(f"w2min: {w2min}")
         # Extract the information from the INFO files
         exp_name = self.name.split("_")[0]
         if "_MATCHING" in exp_name:
@@ -145,7 +143,7 @@ class Loader:
         new_df.reset_index(drop=True, inplace=True)
         # Only now we can perform the cuts on W
         new_df = new_df[new_df["W2"] >= w2min] if w2min else new_df
-        if "_MATCHING" not in exp_name:
+        if "_MATCHING" not in self.name:
             new_df = new_df[new_df["Q2"] <= q2max] if q2max else new_df
 
         number_datapoints = new_df.shape[0]
@@ -167,6 +165,9 @@ class Loader:
         new_df["m_nucleon"] = np.full(
             number_datapoints,
             info_df["m_nucleon"][0],
+        )
+        _logger.info(
+            f"Dataset: {self.name}, Q2min={new_df['Q2'].min()}, Q2max={new_df['Q2'].max()}"
         )
 
         return new_df, new_df.index

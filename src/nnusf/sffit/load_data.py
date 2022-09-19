@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import pathlib
 import random
-from typing import Optional
 
 import numpy as np
 
