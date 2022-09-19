@@ -51,12 +51,10 @@ def main(
     set_global_seeds(global_seed=runcard_content["global_seeds"] + replica)
 
     # Instantiate class that loads the datasets
-    scale = runcard_content.get("rescale_inputs", None)
-    kincuts = runcard_content.get("kinematic_cuts", {})
     _, data_info = load_data.load_experimental_data(
         experiment_list=expdicts,
-        input_scaling=scale,
-        kincuts=kincuts,
+        input_scaling=runcard_content.get("rescale_inputs", None),
+        kincuts=runcard_content.get("kinematic_cuts", {}),
     )
     # create pseudodata and add it to the data_info object
     genrep = runcard_content.get("genrep", None)

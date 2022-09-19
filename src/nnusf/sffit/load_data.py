@@ -17,12 +17,7 @@ path_to_coefficients = (
 )
 
 
-def load_experimental_data(
-    experiment_list,
-    input_scaling: Optional[bool] = None,
-    kincuts: dict = {},
-):
-    "returns a dictionary with dataset names as keys and data as value"
+def construct_expdata_instance(experiment_list, kincuts):
     experimental_data = {}
     for experiment in experiment_list:
         data = Loader(
@@ -33,6 +28,16 @@ def load_experimental_data(
         )
         data.tr_frac = experiment["frac"]
         experimental_data[experiment["dataset"]] = data
+    return experimental_data
+
+
+def load_experimental_data(
+    experiment_list,
+    input_scaling: Optional[bool] = None,
+    kincuts: dict = {},
+):
+    "returns a dictionary with dataset names as keys and data as value"
+    experimental_data = construct_expdata_instance(experiment_list, kincuts)
     raw_experimental_data = copy.deepcopy(experimental_data)
 
     # Perform Input Scaling if required

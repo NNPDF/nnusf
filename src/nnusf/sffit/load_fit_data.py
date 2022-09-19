@@ -9,7 +9,8 @@ import numpy as np
 import tensorflow as tf
 import yaml
 
-_logger = logging.getLogger(__name__)
+from .load_data import construct_expdata_instance
+from .scaling import cumulative_rescaling, kinematics_mapping
 
 _logger = logging.getLogger(__name__)
 
@@ -75,7 +76,15 @@ def get_predictions_q(
         raise ValueError("The value of x is of an unrecognised type.")
 
     if fitcard.get("rescale_inputs", None):
-        _logger.error("The Input Scaling have to be Implemented!")
+        unscaled_datainfo = construct_expdata_instance(
+            experiment_list=fitcard["experiments"],
+            kincuts=fitcard["kinematics_cuts"],
+        )
+        map_from, map_to = cumulative_rescaling(unscaled_datainfo)
+        transp_inputs = np.array(input_list).T
+        scaled = kinematics_mapping(transp_inputs, map_from, map_to)
+        input_list = np.array(scaled).T
+        _logger.warning("Input kinematics are being scaled.")
 
     input_kinematics = [input_list]
     inputs = tf.constant(input_kinematics)

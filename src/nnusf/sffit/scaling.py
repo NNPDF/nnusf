@@ -2,6 +2,22 @@
 import numpy as np
 
 
+def kinematics_mapping(dataset, map_from, map_to):
+    scaled_inputs = []
+    for index, kin_var in enumerate(dataset):
+        # Scale only alon (Q2, A) directions
+        if index != 0:
+            input_scaling = np.interp(
+                kin_var,
+                map_from[index],
+                map_to[index],
+            )
+        else:
+            input_scaling = kin_var
+        scaled_inputs.append(input_scaling)
+    return scaled_inputs
+
+
 def cumulative_rescaling(datasets):
     data_kin = [data.kinematics for data in datasets.values()]
 
@@ -10,7 +26,7 @@ def cumulative_rescaling(datasets):
 
     # Define a combined dense target kinematic grids
     target_grids = np.linspace(
-        start=-1.0,
+        start=0,
         stop=1.0,
         endpoint=True,
         num=sorted_kin.shape[0],
@@ -24,6 +40,7 @@ def cumulative_rescaling(datasets):
             target_grids[cumlsum - kin_counts[0]]
             for cumlsum in np.cumsum(kin_counts)
         ]
+        # TODO: Do not forget to remove the transformation below
         kin_linear_spaced = np.linspace(
             kin_var[0],
             kin_var[-1],
@@ -34,18 +51,16 @@ def cumulative_rescaling(datasets):
         )
         kin_linear_reference.append(kin_linear_spaced)
 
+    return kin_linear_reference, equally_spaced_kinematics
+
+
+def apply_mapping_datasets(datasets, map_from, map_to):
     for dataset in datasets.values():
-        scaled_inputs = []
-        for index, kin_var in enumerate(dataset.kinematics.T):
-            input_scaling = np.interp(
-                kin_var,
-                kin_linear_reference[index],
-                equally_spaced_kinematics[index],
-            )
-            scaled_inputs.append(input_scaling)
-        dataset.kinematics = np.array(scaled_inputs).T
+        scaled = kinematics_mapping(dataset.kinematics.T, map_from, map_to)
+        dataset.kinematics = np.array(scaled).T
 
 
 def rescale_inputs(datasets, method="cumulative_rescaling"):
     function_call = globals()[method]
-    function_call(datasets)
+    map_from, map_to = function_call(datasets)
+    apply_mapping_datasets(datasets, map_from, map_to)
