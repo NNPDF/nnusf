@@ -188,7 +188,12 @@ def prediction_data_comparison(**kwargs):
     for experiment in kwargs["experiments"]:
         obs_label = MAP_OBS_LABEL[experiment.split("_")[-1]]
         expt_name = experiment.split("_")[0]
-        data = Loader(experiment, path_to_commondata, path_to_coefficients)
+        data = Loader(
+            experiment,
+            path_to_commondata,
+            kwargs["kinematic_cuts"],
+            path_to_coefficients,
+        )
         kinematics = data.kinematics
         coefficients = data.coefficients
         observable_predictions = []

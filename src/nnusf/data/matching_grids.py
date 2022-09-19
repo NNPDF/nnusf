@@ -12,7 +12,7 @@ from typing import Optional, Tuple
 import numpy as np
 import pandas as pd
 import pineappl
-from eko.interpolation import make_lambert_grid
+import yaml
 
 from .. import utils
 from ..theory.predictions import pdf_error
@@ -25,18 +25,10 @@ from .utils import (
 )
 
 _logger = logging.getLogger(__name__)
+PARRENT_PATH = pathlib.Path(__file__).parents[3].joinpath("commondata")
+GRID_SPECS_PATH = PARRENT_PATH.joinpath("matching-grids.yml")
+GRID_SPECS_DICT = yaml.safe_load(GRID_SPECS_PATH.read_text())
 
-KIN_DESC = {
-    "x_min": 1e-2,
-    "y_min": 0.2,
-    "y_max": 0.8,
-    "q2_min": 300,
-    "q2_max": 1e5,
-}
-
-
-N_KINEMATC_GRID_FX = dict(x=5, Q2=20, y=1.0)
-N_KINEMATC_GRID_XSEC = dict(x=5, Q2=20, y=2)
 M_PROTON = 938.272013 * 0.001
 
 
@@ -63,7 +55,6 @@ def proton_boundary_conditions(
     destination.mkdir(parents=True, exist_ok=True)
 
     # Set Q2min for BC datasets
-    KIN_DESC["q2_min"] = 1.65
     if grids is not None:
         obsdic_list = []
         for grid in grids:
@@ -75,7 +66,10 @@ def proton_boundary_conditions(
             obsdic = build_obs_dict(obstype, [None], obspid)
             obsdic_list.append(obsdic)
             main(
-                grid, pdf, destination, kin=KIN_DESC, match_type="KIN_PROTONBC"
+                grid,
+                pdf,
+                destination,
+                kin=GRID_SPECS_DICT,
             )
     else:
         datapaths = []
@@ -89,34 +83,42 @@ def proton_boundary_conditions(
             fx = obs["type"]
             datapaths.append(pathlib.Path(f"DATA_PROTONBC_{fx}"))
         generate_empty(
-            datapaths, destination, kin=KIN_DESC, match_type="KIN_PROTONBC"
+            datapaths,
+            destination,
+            kin=GRID_SPECS_DICT,
         )
 
     dump_info_file(destination, "PROTONBC", obsdic_list, 1, M_PROTON)
 
 
-def kinamatics_grids(is_xsec: bool, kin: dict) -> Tuple[dict, int]:
+def kinamatics_grids(is_xsec: bool, kin: dict, exp: str) -> Tuple[dict, int]:
     """Generate the kinematic grids"""
-    if is_xsec:
-        n_xgrid = N_KINEMATC_GRID_XSEC["x"]
-        n_q2grid = N_KINEMATC_GRID_XSEC["Q2"]
-        n_ygrid = N_KINEMATC_GRID_XSEC["y"]
-        y_grid = np.linspace(kin["y_min"], kin["y_max"], n_ygrid)
-    else:
-        n_xgrid = N_KINEMATC_GRID_FX["x"]
-        n_q2grid = N_KINEMATC_GRID_FX["Q2"]
-        n_ygrid = N_KINEMATC_GRID_FX["y"]
-        y_grid = [0.0]
+    x_grid = np.array(kin[exp]["xgrids"])
+    q2_grid = np.linspace(
+        kin[exp]["q2spec"]["min"],
+        kin[exp]["q2spec"]["max"],
+        kin[exp]["q2spec"]["nbp"],
+    )
+    y_grid = (
+        np.array([0.0])
+        if not is_xsec
+        else np.linspace(
+            kin[exp]["yspecs"]["min"],
+            kin[exp]["yspecs"]["max"],
+            kin[exp]["yspecs"]["nbp"],
+        )
+    )
+    n_xgrid = x_grid.shape[0]
+    n_ygrid = y_grid.shape[0]
+    n_q2grid = q2_grid.shape[0]
 
-    x_grid = make_lambert_grid(n_xgrid, kin["x_min"])
-    q2_grid = np.linspace(kin["q2_min"], kin["q2_max"], int(n_q2grid))
     n_points = int(n_q2grid * n_ygrid * n_xgrid)
     kin_grid = {"x": x_grid, "q2": q2_grid, "y": y_grid}
     return kin_grid, n_points
 
 
 def dump_kinematics(
-    destination: pathlib.Path, kin_grid: dict, match_type: str, is_xsec: bool
+    destination: pathlib.Path, kin_grid: dict, match_name: str, is_xsec: bool
 ) -> None:
     """Dump the kinematics into CSV"""
     kinematics = {"x": [], "Q2": [], "y": []}
@@ -134,9 +136,9 @@ def dump_kinematics(
     kinematics_folder = destination.joinpath("kinematics")
     kinematics_folder.mkdir(exist_ok=True)
     if is_xsec:
-        write_to_csv(kinematics_folder, f"{match_type}_XSEC", kinematics_pd)
+        write_to_csv(kinematics_folder, f"KIN_{match_name}_DXDY", kinematics_pd)
     else:
-        write_to_csv(kinematics_folder, f"{match_type}_FX", kinematics_pd)
+        write_to_csv(kinematics_folder, f"KIN_{match_name}_F2F3", kinematics_pd)
 
 
 def dump_uncertainties(
@@ -154,8 +156,7 @@ def main(
     grids: pathlib.Path,
     pdf: str,
     destination: pathlib.Path,
-    kin: dict = KIN_DESC,
-    match_type: str = "KIN_MATCHING",
+    kin: dict = GRID_SPECS_DICT,
 ) -> None:
     """Generate the Yadism data (kinematics & central values) as
     well as the the predictions for all replicas.
@@ -177,6 +178,8 @@ def main(
         grid_name = grids.stem[6:-13]
         obs = grid_name.split("_")[-1]
         new_name = f"{grid_name}_MATCHING"
+        experiment = grid_name.split("_")[0]
+        new_experiment = f"{experiment}_MATCHING"
 
         # if grids.suffix == ".tar.gz":
         if str(grids).endswith(".tar.gz"):
@@ -184,7 +187,7 @@ def main(
             grids = tmpdir / "grids"
 
         is_xsec = "DXDY" in obs or "FW" in obs
-        kin_grid, n_points = kinamatics_grids(is_xsec, kin)
+        kin_grid, n_points = kinamatics_grids(is_xsec, kin, experiment)
 
         # get predictions
         full_pred = []
@@ -200,7 +203,7 @@ def main(
         data_pd = pd.DataFrame({"data": pred[:, 0]})
 
         # Dump the kinematics into CSV
-        dump_kinematics(destination, kin_grid, match_type, is_xsec)
+        dump_kinematics(destination, kin_grid, new_experiment, is_xsec)
 
         # Dump the central (replica) data into CSV
         central_val_folder = destination.joinpath("data")
@@ -224,8 +227,7 @@ def main(
 def generate_empty(
     datapaths: list[pathlib.Path],
     destination: pathlib.Path,
-    kin: dict = KIN_DESC,
-    match_type: str = "KIN_MATCHING",
+    kin: dict = GRID_SPECS_DICT,
 ) -> None:
     """Generate the empty matching datasets, with only kinematics table filled.
 
@@ -240,15 +242,17 @@ def generate_empty(
 
     for dataset in datapaths:
         data_name = dataset.stem.strip("DATA_")
-        if "MATCHING" in data_name:
+        if "MATCHING" in data_name or "CHARM" in data_name:
             continue
         obs = data_name.split("_")[-1]
         new_name = f"{data_name}_MATCHING"
+        experiment = data_name.split("_")[0]
+        new_experiment = f"{experiment}_MATCHING"
 
         is_xsec = "DXDY" in obs or "FW" in obs
-        kin_grid, n_points = kinamatics_grids(is_xsec, kin)
+        kin_grid, n_points = kinamatics_grids(is_xsec, kin, experiment)
 
-        dump_kinematics(destination, kin_grid, match_type, is_xsec)
+        dump_kinematics(destination, kin_grid, new_experiment, is_xsec)
 
         # dump empty central values
         data_pd = pd.DataFrame({"data": np.zeros(n_points)})

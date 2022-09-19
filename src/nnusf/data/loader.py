@@ -38,9 +38,9 @@ class Loader:
         self,
         name: str,
         path_to_commondata: pathlib.Path,
+        kincuts: dict = {},
         path_to_coefficients: Optional[pathlib.Path] = None,
         include_syst: Optional[bool] = True,
-        w2min: Optional[float] = None,
     ):
         """Initialize object.
 
@@ -65,7 +65,7 @@ class Loader:
 
         self.commondata_path = path_to_commondata
         self.coefficients_path = path_to_coefficients
-        self.table, self.leftindex = self._load(w2min)
+        self.table, self.leftindex = self._load(kincuts)
         self.tr_frac = None
         self.covariance_matrix = self.build_covariance_matrix(
             self.commondata_path,
@@ -76,7 +76,7 @@ class Loader:
         )
         _logger.info(f"Loaded '{name}' dataset")
 
-    def _load(self, w2min: Union[float, None]) -> tuple[pd.DataFrame, pd.Index]:
+    def _load(self, kincuts: dict) -> tuple[pd.DataFrame, pd.Index]:
         """Load the dataset information.
 
         Returns
@@ -84,6 +84,9 @@ class Loader:
         table with loaded data
 
         """
+        # Extract values of kinematic cuts if any
+        w2min = kincuts.get("w2min", None)
+        q2max = kincuts.get("q2max", None)
         # Extract the information from the INFO files
         exp_name = self.name.split("_")[0]
         if "_MATCHING" in exp_name:
@@ -99,13 +102,10 @@ class Loader:
             kin_df = pd.read_csv(kin_file).iloc[1:, 1:4].reset_index(drop=True)
         elif "_MATCHING" in self.name:
             file_path = f"{self.commondata_path}/kinematics"
-            fname = (
-                "KIN_PROTONBC" if "PROTONBC" in self.name else "KIN_MATCHING"
-            )
             if "FW" in self.name or "DXDY" in self.name:
-                file = f"{file_path}/{fname}_XSEC.csv"
+                file = f"{file_path}/KIN_{info_name}_MATCHING_DXDY.csv"
             else:
-                file = f"{file_path}/{fname}_FX.csv"
+                file = f"{file_path}/KIN_{info_name}_MATCHING_F2F3.csv"
             kin_df = pd.read_csv(file).iloc[1:, 1:4].reset_index(drop=True)
         elif self.obs in ["F2", "F3"]:
             file = f"{self.commondata_path}/kinematics/KIN_{exp_name}_F2F3.csv"
@@ -143,6 +143,8 @@ class Loader:
         new_df.reset_index(drop=True, inplace=True)
         # Only now we can perform the cuts on W
         new_df = new_df[new_df["W2"] >= w2min] if w2min else new_df
+        if "_MATCHING" not in self.name:
+            new_df = new_df[new_df["Q2"] <= q2max] if q2max else new_df
 
         number_datapoints = new_df.shape[0]
 
@@ -163,6 +165,9 @@ class Loader:
         new_df["m_nucleon"] = np.full(
             number_datapoints,
             info_df["m_nucleon"][0],
+        )
+        _logger.info(
+            f"Dataset: {self.name}, Q2min={new_df['Q2'].min()}, Q2max={new_df['Q2'].max()}"
         )
 
         return new_df, new_df.index
