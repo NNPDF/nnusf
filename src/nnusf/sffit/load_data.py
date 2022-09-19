@@ -1,19 +1,23 @@
 # -*- coding: utf-8 -*-
+import copy
+import logging
 import pathlib
 import random
+from typing import Optional
 
 import numpy as np
 
 from ..data.loader import Loader
+from .scaling import rescale_inputs
 
+_logger = logging.getLogger(__name__)
 path_to_commondata = pathlib.Path(__file__).parents[3].joinpath("commondata")
 path_to_coefficients = (
     pathlib.Path(__file__).parents[3].joinpath("coefficients")
 )
 
 
-def load_experimental_data(experiment_list, kincuts: dict = {}):
-    "returns a dictionary with dataset names as keys and data as value"
+def construct_expdata_instance(experiment_list, kincuts):
     experimental_data = {}
     for experiment in experiment_list:
         data = Loader(
@@ -25,6 +29,22 @@ def load_experimental_data(experiment_list, kincuts: dict = {}):
         data.tr_frac = experiment["frac"]
         experimental_data[experiment["dataset"]] = data
     return experimental_data
+
+
+def load_experimental_data(
+    experiment_list,
+    input_scaling: Optional[bool] = None,
+    kincuts: dict = {},
+):
+    "returns a dictionary with dataset names as keys and data as value"
+    experimental_data = construct_expdata_instance(experiment_list, kincuts)
+    raw_experimental_data = copy.deepcopy(experimental_data)
+
+    # Perform Input Scaling if required
+    if input_scaling:
+        _logger.info("Input kinematics are being scaled.")
+        rescale_inputs(experimental_data)
+    return raw_experimental_data, experimental_data
 
 
 def add_pseudodata(experimental_datasets, shift=True):
@@ -39,15 +59,13 @@ def add_pseudodata(experimental_datasets, shift=True):
         dataset.pseudodata = pseudodata
 
 
-def add_tr_filter_mask(experimental_datasets, trvlseed=None):
-    np.random.seed(seed=trvlseed)
+def add_tr_filter_mask(experimental_datasets):
     for dataset in experimental_datasets.values():
-        tr_indices = np.array(
-            random.sample(
-                range(dataset.n_data), int(dataset.tr_frac * dataset.n_data)
-            ),
-            dtype=int,
+        rnd_sample = random.sample(
+            range(dataset.n_data),
+            int(dataset.tr_frac * dataset.n_data),
         )
+        tr_indices = np.array(rnd_sample, dtype=int)
         tr_filter = np.zeros(dataset.n_data, dtype=bool)
         tr_filter[tr_indices] = True
         dataset.tr_filter = tr_filter

@@ -4,23 +4,16 @@
 import numpy as np
 import tensorflow as tf
 
-from .layers import (
-    FeatureScaling,
-    GenMaskLayer,
-    ObservableLayer,
-    TheoryConstraint,
-)
-from .utils import chi2, mask_covmat, mask_expdata
+from .layers import ObservableLayer, TheoryConstraint
+from .utils import chi2, mask_coeffs, mask_covmat, mask_expdata
 
 
 def generate_models(
     data_info,
     units_per_layer,
     activation_per_layer,
-    initializer_seed=0,
     output_units=6,
     output_activation="linear",
-    feature_scaling=True,
     **kwargs
 ):
     """Generate the parametrization of the structure functions.
@@ -53,7 +46,7 @@ def generate_models(
         zip(units_per_layer, activation_per_layer)
     ):
         initializer = tf.keras.initializers.GlorotUniform(
-            seed=initializer_seed + i
+            seed=np.random.randint(0, pow(2, 31)) + i
         )
         dense_layers.append(
             tf.keras.layers.Dense(
@@ -76,59 +69,18 @@ def generate_models(
         dense_nest = sf_output(dense_nest)
         return dense_nest
 
-    # Get kinematics if we need to scale the inputs based on their values
-    if feature_scaling:
-        data_kin = [data.kinematics for data in data_info.values()]
-
-        # Combined and sort each column of the kinematics (x, Q2, A)
-        sorted_kin = np.sort(np.concatenate(data_kin, axis=0), axis=0)
-
-        # Define a combined dense target kinematic grids
-        hires_target_grid = np.linspace(
-            start=-1.0,
-            stop=1.0,
-            endpoint=True,
-            num=sorted_kin.shape[0],
-        )
-
-        equally_spaced_kinematics = []
-        for kin_var in sorted_kin.T:
-            kin_unique, kin_counts = np.unique(kin_var, return_counts=True)
-            scaling_target = [
-                hires_target_grid[cumsum - kin_counts[0]]
-                for cumsum in np.cumsum(kin_counts)
-            ]
-            kin_equal_spaced = np.linspace(
-                kin_var.min(),
-                kin_var.max(),
-                num=int(kin_var.size * 2),
-            )
-            equally_spaced_kinematics.append(
-                np.interp(kin_equal_spaced, kin_unique, scaling_target)
-            )
-        feature_scaling_layer = FeatureScaling(
-            sorted_kin, equally_spaced_kinematics
-        )
-
     model_inputs = []
     tr_data, vl_data = [], []
     tr_obs, vl_obs = [], []
     tr_chi2, vl_chi2 = [], []
     tr_dpts, vl_dpts = {}, {}
     for data in data_info.values():
-        # Extract theory grid coefficients & datasets
-        coefficients = data.coefficients
-        exp_datasets = data.pseudodata
-
         # Construct the input layer as placeholders
         input_layer = tf.keras.layers.Input(shape=(None, 3), batch_size=1)
         model_inputs.append(input_layer)
 
         # The pdf model: kinematics -> structure functions
         def sf_model(input_layer):
-            if feature_scaling:
-                input_layer = feature_scaling_layer(input_layer)
-
             nn_output = sequential(input_layer)
 
             # Ensure F_i(x=1)=0
@@ -139,18 +91,20 @@ def generate_models(
             )
             return sf_basis
 
+        # Extract theory grid coefficients & datasets
+        tr_mask, vl_mask = data.tr_filter, ~data.tr_filter
+        coef_tr, coef_vl = mask_coeffs(data.coefficients, tr_mask, vl_mask)
+        expd_tr, expd_vl = mask_expdata(data.pseudodata, tr_mask, vl_mask)
+
         sf_basis = sf_model(input_layer)
         # Construct the full observable for a given dataset
-        observable = ObservableLayer(coefficients)(sf_basis)
+        tr_observable = ObservableLayer(coef_tr, name=data.name)(sf_basis)
+        vl_observable = ObservableLayer(coef_vl, name=data.name)(sf_basis)
 
         # Split the datasets into training & validation
-        tr_mask, vl_mask = data.tr_filter, ~data.tr_filter
-        obs_tr = GenMaskLayer(tr_mask, name=data.name)(observable)
-        obs_vl = GenMaskLayer(vl_mask, name=data.name)(observable)
-        tr_obs.append(obs_tr)
-        vl_obs.append(obs_vl)
+        tr_obs.append(tr_observable)
+        vl_obs.append(vl_observable)
 
-        expd_tr, expd_vl = mask_expdata(exp_datasets, tr_mask, vl_mask)
         tr_data.append(expd_tr)
         vl_data.append(expd_vl)
 

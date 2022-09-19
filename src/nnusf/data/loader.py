@@ -184,8 +184,13 @@ class Loader:
 
     @property
     def kinematics(self) -> np.ndarray:
-        """Return the kinematics variables."""
+        """Return the kinematic variables."""
         return self.table[["x", "Q2", "A"]].values
+
+    @kinematics.setter
+    def kinematics(self, new_kinematics):
+        """Replace the kinematic variables."""
+        self.table[["x", "Q2", "A"]] = new_kinematics
 
     @property
     def n_data(self):
@@ -245,7 +250,7 @@ class Loader:
                 f"{commondata_path}/matching/{dataset_name}.npy"
             )
             covmat = np.cov(nrep_predictions[mask_predictions])
-            return clip_covmat(covmat)
+            return clip_covmat(covmat, dataset_name)
         else:
             diagonal = np.power(unc_df["stat"], 2)
             if include_syst:
@@ -254,7 +259,7 @@ class Loader:
             return np.diag(diagonal)
 
 
-def clip_covmat(covmat):
+def clip_covmat(covmat, dataset_name):
     """Given a covariance matrix, performs a regularization by cutting
     negative values.
     """
@@ -263,10 +268,8 @@ def clip_covmat(covmat):
     # if eigenvalues are close to zero, can be negative
     if e_val[0] < 0:
         _logger.warning(
-            "Negative eigenvalue encountered in correlation matrix: %s. "
-            "Assuming eigenvalue should be zero and is negative due to numerical "
-            "precision.",
-            e_val[0],
+            f"Negative eigenvalue encountered in '{dataset_name}'."
+            " Clipping values to 1e-5."
         )
     else:
         return covmat

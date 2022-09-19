@@ -82,6 +82,26 @@ def mask_expdata(y, tr_mask, vl_mask):
     return y[tr_mask], y[vl_mask]
 
 
+def mask_coeffs(coeff, tr_mask, vl_mask):
+    """_summary_
+
+    Parameters
+    ----------
+    coeff : _type_
+        _description_
+    tr_mask : _type_
+        _description_
+    vl_mask : _type_
+        _description_
+
+    Returns
+    -------
+    _type_
+        _description_
+    """
+    return coeff[tr_mask], coeff[vl_mask]
+
+
 def mask_covmat(covmat, tr_mask, vl_mask):
     """_summary_
 

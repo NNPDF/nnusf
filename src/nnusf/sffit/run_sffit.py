@@ -2,13 +2,13 @@
 """Executable to perform the structure function fit."""
 import logging
 import pathlib
-import shutil
 from typing import Optional
 
 import tensorflow as tf
 import yaml
 
 from . import load_data
+from .compute_expchi2 import add_expchi2_json, compute_exp_chi2
 from .model_gen import generate_models
 from .train_model import perform_fit
 from .utils import set_global_seeds
@@ -34,7 +34,6 @@ def main(
     destination : Optional[pathlib.Path]
         Path to the output folder
     """
-    # Create a folder for the replica
     if destination is None:
         destination = pathlib.Path.cwd().absolute() / runcard.stem
 
@@ -44,24 +43,28 @@ def main(
     replica_dir = destination / f"replica_{replica}"
     replica_dir.mkdir(parents=True, exist_ok=True)
 
-    # copy runcard to the fit folder
-    shutil.copy(runcard, replica_dir.parent / "runcard.yml")
-
-    # load runcard
+    # Load fit run card
     runcard_content = yaml.safe_load(runcard.read_text())
-    experiments_dict = runcard_content["experiments"]
+    expdicts = runcard_content["experiments"]
 
     # Set global seeds
     set_global_seeds(global_seed=runcard_content["global_seeds"] + replica)
 
     # Instantiate class that loads the datasets
-    kincuts = runcard_content.get("kinematic_cuts", {})
-    data_info = load_data.load_experimental_data(experiments_dict, kincuts)
+    _, data_info = load_data.load_experimental_data(
+        experiment_list=expdicts,
+        input_scaling=runcard_content.get("rescale_inputs", None),
+        kincuts=runcard_content.get("kinematic_cuts", {}),
+    )
     # create pseudodata and add it to the data_info object
     genrep = runcard_content.get("genrep", None)
     load_data.add_pseudodata(data_info, shift=genrep)
     # create a training mask and add it to the data_info object
-    load_data.add_tr_filter_mask(data_info, runcard_content["trvlseed"])
+    load_data.add_tr_filter_mask(data_info)
+
+    # Save a copy of the fit runcard to the fit folder
+    with open(replica_dir.parent / "runcard.yml", "w") as fstream:
+        yaml.dump(runcard_content, fstream, sort_keys=False)
 
     fit_dict = generate_models(data_info, **runcard_content["fit_parameters"])
 
@@ -82,3 +85,11 @@ def main(
         outputs=fit_dict["sf_model"](final_placeholder),
     )
     saved_model.save(replica_dir / "model")
+
+    # Compute the chi2 wrt central real data
+    chi2s = compute_exp_chi2(
+        data_info,
+        fit_dict["sf_model"],
+        **runcard_content["fit_parameters"],
+    )
+    add_expchi2_json(replica_dir, chi2s)
