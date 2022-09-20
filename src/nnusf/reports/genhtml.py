@@ -69,10 +69,13 @@ def data_comparison_html(figures: pathlib.Path) -> str:
     """
     html_entry = dedent(html_entry)
     plots = figures.glob("**/prediction_data_comparison_*.png")
+    number_plots = len([plot for plot in plots])
 
-    for plot in sorted(plots):
-        name = str(plot).split("/")[-1][:-4]
-        path = plot.relative_to(index_path)
+    for i in range(number_plots):
+        fpath = f"figures/prediction_data_comparison_{i}.png"
+        plot_path = index_path.joinpath(fpath)
+        name = str(plot_path).split("/")[-1][:-4]
+        path = plot_path.relative_to(index_path)
         pdf = path.with_suffix(".pdf")
         html_entry += f"""
     <div>

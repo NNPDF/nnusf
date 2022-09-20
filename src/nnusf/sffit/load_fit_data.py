@@ -46,7 +46,6 @@ def load_models(fit, **kwargs):
     ):
         model_folder = replica_folder / "model"
         models.append(tf.keras.models.load_model(model_folder, compile=False))
-        _logger.info(f"Model {idx} loaded.")
     return models
 
 
