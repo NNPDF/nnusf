@@ -14,8 +14,8 @@ PROTONBC:
     - 0.750
   q2spec:
     min: 1.65
-    max: 500
-    nbp: 20
+    max: 300
+    nbp: 8
   yspecs:
     min: 0.2
     max: 0.8
@@ -33,8 +33,8 @@ BEBCWA59:
     - 0.649
   q2spec:
     min: 30
-    max: 500
-    nbp: 20
+    max: 300
+    nbp: 8
   yspecs:
     min: 0.2
     max: 0.8
@@ -55,8 +55,8 @@ CCFR:
     - 0.650
   q2spec:
     min: 30
-    max: 500
-    nbp: 20
+    max: 300
+    nbp: 8
   yspecs:
     min: 0.2
     max: 0.8
@@ -77,8 +77,8 @@ CDHSW:
     - 0.650
   q2spec:
     min: 30
-    max: 500
-    nbp: 20
+    max: 300
+    nbp: 8
   yspecs:
     min: 0.2
     max: 0.8
@@ -99,8 +99,8 @@ CHORUS:
     - 0.650
   q2spec:
     min: 30
-    max: 500
-    nbp: 20
+    max: 300
+    nbp: 8
   yspecs:
     min: 0.2
     max: 0.8
@@ -122,8 +122,8 @@ NUTEV:
     - 0.750
   q2spec:
     min: 30
-    max: 500
-    nbp: 20
+    max: 300
+    nbp: 8
   yspecs:
     min: 0.2
     max: 0.8
