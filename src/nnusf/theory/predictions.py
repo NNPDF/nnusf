@@ -53,7 +53,11 @@ def plot(
     np.save(preds_dest / "xgrid", xgrid)
     np.save(preds_dest / "q2grid", q2grid)
 
-    genie_pred = genie[f"{kind}_free_p"][gmask]
+    try:
+        genie_pred = genie[f"{kind}_free_p"][gmask]
+    except KeyError:
+        # if there are no Genie predictions, plot nothing
+        return
     if kind == "F3":
         genie_pred = xgrid.T.flatten() * genie_pred
 

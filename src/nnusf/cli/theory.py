@@ -61,12 +61,16 @@ def sub_sub_by(theory_update, obs_update, destination):
         obs_update = eval(obs_update)
 
     runcards.by(
-        theory_update=theory_update, obs_update=obs_update, destination=destination
+        theory_update=theory_update,
+        obs_update=obs_update,
+        destination=destination.absolute(),
     )
 
 
 @sub_runcards.command("hiq")
-@click.argument("data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path))
+@click.argument(
+    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
+)
 @option_dest
 def sub_sub_hiq(data, destination):
     """High Q2, from cut values of the dataset."""
@@ -74,7 +78,9 @@ def sub_sub_hiq(data, destination):
 
 
 @sub_runcards.command("all")
-@click.argument("data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path))
+@click.argument(
+    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
+)
 @option_dest
 def sub_sub_all(data, destination):
     """Full datasets runcards"""
@@ -85,7 +91,9 @@ def sub_sub_all(data, destination):
 @click.argument(
     "observables", nargs=-1, type=click.Choice(bodek_yang.load.load().members)
 )
-@click.option("-a", "--action", multiple=True, type=click.Choice(["npy", "txt"]))
+@click.option(
+    "-a", "--action", multiple=True, type=click.Choice(["npy", "txt"])
+)
 @option_dest
 def sub_by(observables, action, destination):
     """Genie's Bodek-Yang output inspection."""
@@ -100,7 +108,9 @@ def sub_by(observables, action, destination):
 
 
 @subcommand.command("grids")
-@click.argument("runcards", type=click.Path(exists=True, path_type=pathlib.Path))
+@click.argument(
+    "runcards", type=click.Path(exists=True, path_type=pathlib.Path)
+)
 @option_dest
 def sub_grids(runcards, destination):
     """Generate grids with yadism.
@@ -115,7 +125,7 @@ def sub_grids(runcards, destination):
     The internal `name` key is used for the generated grids.
 
     """
-    grids.main(runcards.absolute(), destination)
+    grids.main(runcards.absolute(), destination.absolute())
 
 
 @subcommand.command("predictions")
@@ -144,7 +154,7 @@ def sub_predictions(grids, pdf, err, destination, x, interactive):
         err=err,
         xpoint=x,
         interactive=interactive,
-        destination=destination,
+        destination=destination.absolute(),
     )
 
 
