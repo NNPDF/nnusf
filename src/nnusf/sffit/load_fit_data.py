@@ -65,7 +65,7 @@ def get_predictions_q(
     fitting_card = pathlib.Path(fit).joinpath("runcard.yml")
     fitcard = yaml.load(fitting_card.read_text(), Loader=yaml.Loader)
 
-    q_values = np.linspace(start=qmin, stop=qmax)
+    q_values = np.linspace(start=qmin, stop=qmax, num=100)
     # the additional [] are go get the correct input shape
     if isinstance(x_slice, (int, float)):
         input_list = [[x_slice, q, a_slice] for q in q_values]
@@ -77,7 +77,7 @@ def get_predictions_q(
     if fitcard.get("rescale_inputs", None):
         unscaled_datainfo = construct_expdata_instance(
             experiment_list=fitcard["experiments"],
-            kincuts=fitcard["kinematics_cuts"],
+            kincuts=fitcard.get("kinematics_cuts", {}),
         )
         map_from, map_to = cumulative_rescaling(unscaled_datainfo)
         transp_inputs = np.array(input_list).T

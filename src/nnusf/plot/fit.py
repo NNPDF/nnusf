@@ -119,7 +119,7 @@ def sf_q_band(**kwargs):
     std_sfs = np.std(predictions, axis=0)
     for prediction_index in range(predictions.shape[2]):
         fig, ax = plt.subplots()
-        ax.set_xlabel("Q2 (GeV)")
+        ax.set_xlabel(r"$Q^2~[\mathrm{GeV^2}]$")
         ax.set_ylabel(basis[prediction_index])
         ax.set_title(f"x={prediction_info.x}, A={prediction_info.A}")
         ax.plot(
@@ -141,7 +141,7 @@ def sf_q_band(**kwargs):
             color="C0",
             alpha=0.4,
         )
-        # ax.set_xscale("log")
+        ax.set_xscale("log")
         savepath = (
             pathlib.Path(kwargs["output"])
             / f"sf_q_band_{prediction_index}_A{prediction_info.A}"
