@@ -166,7 +166,9 @@ def chi2_logs(train_info, vl_loss, tr_dpts, vl_dpts, epoch, lr):
     )
     vl_loss = vl_loss if isinstance(vl_loss, list) else [vl_loss]
     table.add_column("Dataset", justify="left", width=30)
+    table.add_column("ndat(tr)", justify="right", width=12)
     table.add_column("chi2(tr)/Ntr", justify="right", width=12)
+    table.add_column("ndat(vl)", justify="right", width=12)
     table.add_column("chi2(vl)/Nvl", justify="right", width=12)
     tot_val = vl_loss[0] / tot_vlpts
 
@@ -196,13 +198,17 @@ def chi2_logs(train_info, vl_loss, tr_dpts, vl_dpts, epoch, lr):
                 highlight = "[yellow]"
         table.add_row(
             f"{highlight}{dataset_name}{endhl}",
+            f"{tr_dpts[dataset_name]}",
             f"{chi2_tr:.4f}",
+            f"{vl_dpts[dataset_name]}",
             f"{highlight}{chi2_vl:.4f}{endhl}",
         )
 
     table.add_row(
         "Tot chi2",
+        f"{sum(i for i in tr_dpts.values())}",
         f"{train_info['loss'] / tot_trpts:.4f}",
+        f"{sum(i for i in vl_dpts.values())}",
         f"{tot_val:.4f}",
         style="bold magenta",
     )
