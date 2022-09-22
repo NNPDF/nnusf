@@ -54,7 +54,7 @@ def add_pseudodata(experimental_datasets, shift=True):
     for dataset in experimental_datasets.values():
         cholesky = np.linalg.cholesky(dataset.covmat)
         random_samples = np.random.randn(dataset.n_data)
-        shift_data = random_samples @ cholesky if shift else 0
+        shift_data = cholesky @ random_samples if shift else 0
         pseudodata = dataset.central_values + shift_data
         dataset.pseudodata = pseudodata
 
