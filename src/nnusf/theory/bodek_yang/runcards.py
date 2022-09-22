@@ -22,7 +22,7 @@ def observables() -> dict:
     runcard = (
         runcard
         | yadmark.data.observables.build(
-            ["F2_total", "F3_total"], kinematics=kinematics
+            ["F2_total", "F3_total", "FL_total"], kinematics=kinematics
         )[0]
     )
     runcard["prDIS"] = "CC"

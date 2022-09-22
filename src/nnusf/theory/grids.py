@@ -51,7 +51,7 @@ def main(cards: pathlib.Path, destination: pathlib.Path):
                     output.dump_pineappl_to_file(res_path, obs)
                     _logger.info(f"Dumped {res_path.name}")
 
-        if ("NU" in data_name and "DXDY" not in data_name) or "NB" in data_name:
+        if "_NU" in data_name or "_NB" in data_name:
             data_name = data_name[:-3]
         file_name = (
             f"grids-{data_name}.tar" if data_name != "" else f"grids.tar"

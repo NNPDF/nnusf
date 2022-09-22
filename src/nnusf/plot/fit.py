@@ -9,8 +9,7 @@ import yaml
 from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
 
-from ..data.loader import Loader
-from ..sffit.load_data import path_to_coefficients, path_to_commondata
+from ..sffit.load_data import load_experimental_data
 from ..sffit.load_fit_data import get_predictions_q, load_models
 
 _logger = logging.getLogger(__name__)
@@ -29,10 +28,15 @@ basis = [
 
 MAP_OBS_LABEL = {
     "F2": r"$F_2$",
+    "F2_MATCHING": r"$F_2^{\rm M}$",
     "FW": r"$F_W$",
+    "FW_MATCHING": r"$F_W^{\rm M}$",
     "F3": r"$xF_3$",
+    "F3_MATCHING": r"$xF_3^{\rm M}$",
     "DXDYNUU": r"$d^2\sigma^{\nu}/(dxdQ^2)$",
+    "DXDYNUU_MATCHING": r"$d^2\sigma^{\nu, \rm{M}}/(dxdQ^2)$",
     "DXDYNUB": r"$d^2\sigma^{\bar{\nu}}/(dxdQ^2)$",
+    "DXDYNUB_MATCHING": r"$d^2\sigma^{\bar{\nu}, \rm{M}}/(dxdQ^2)$",
 }
 
 
@@ -115,7 +119,7 @@ def sf_q_band(**kwargs):
     std_sfs = np.std(predictions, axis=0)
     for prediction_index in range(predictions.shape[2]):
         fig, ax = plt.subplots()
-        ax.set_xlabel("Q2 (GeV)")
+        ax.set_xlabel(r"$Q^2~[\mathrm{GeV^2}]$")
         ax.set_ylabel(basis[prediction_index])
         ax.set_title(f"x={prediction_info.x}, A={prediction_info.A}")
         ax.plot(
@@ -137,9 +141,10 @@ def sf_q_band(**kwargs):
             color="C0",
             alpha=0.4,
         )
+        ax.set_xscale("log")
         savepath = (
             pathlib.Path(kwargs["output"])
-            / f"plot_sf_q_band_{prediction_index}"
+            / f"sf_q_band_{prediction_index}_A{prediction_info.A}"
         )
         save_figs(fig, savepath)
 
@@ -184,13 +189,27 @@ def prediction_data_comparison(**kwargs):
         _logger.error("No model available")
         return
 
+    # Load the datasets all at once in order to rescale
+    raw_datasets, datasets = load_experimental_data(
+        kwargs["experiments"],
+        input_scaling=kwargs.get("rescale_inputs", None),
+        kincuts=kwargs.get("kinematic_cuts", {}),
+    )
+    # Copy the dataset kinematics regardless of scaling
+    copy_kins = {k: v.kinematics for k, v in raw_datasets.items()}
+
     count_plots = 0
-    for experiment in kwargs["experiments"]:
-        obs_label = MAP_OBS_LABEL[experiment.split("_")[-1]]
+    for experiment, data in datasets.items():
+        _logger.info(f"Plotting data vs. NN for '{experiment}'")
+        if "_MATCHING" not in experiment:
+            obsname = experiment.split("_")[-1]
+        else:
+            obsname = experiment.split("_")[-2] + "_MATCHING"
+
+        obs_label = MAP_OBS_LABEL[obsname]
         expt_name = experiment.split("_")[0]
-        data = Loader(experiment, path_to_commondata, path_to_coefficients)
-        kinematics = data.kinematics
-        coefficients = data.coefficients
+
+        kinematics = copy_kins[experiment]
         observable_predictions = []
         for model in models:
             kins = np.expand_dims(
@@ -199,7 +218,7 @@ def prediction_data_comparison(**kwargs):
             prediction = model(kins)
             prediction = prediction[0]  # remove batch dimension
             observable_predictions.append(
-                tf.einsum("ij,ij->i", prediction, coefficients)
+                tf.einsum("ij,ij->i", prediction, data.coefficients)
             )
         observable_predictions = np.array(observable_predictions)
         mean_observable_predictions = observable_predictions.mean(axis=0)
@@ -245,10 +264,9 @@ def chi2_history_plot(xmin=None, **kwargs):
     count_plots = 0
     for foldercontent in fit_folder.iterdir():
         if "replica_" in foldercontent.name:
-            chi2_history_file = foldercontent / "chi2_history.json"
+            chi2_history_file = foldercontent / "chi2_history.yaml"
             if chi2_history_file.exists():
-                with open(chi2_history_file, "r") as f:
-                    data = json.load(f)
+                data = yaml.safe_load(chi2_history_file.read_text())
                 epochs = [int(i) for i in data.keys()]
                 vl_chi2 = [i["vl"] for i in data.values()]
                 tr_chi2 = [i["tr"] for i in data.values()]
@@ -264,6 +282,8 @@ def chi2_history_plot(xmin=None, **kwargs):
                     tr_chi2 = tr_chi2[index_cut:]
                 ax.plot(epochs, vl_chi2, label="validation")
                 ax.plot(epochs, tr_chi2, label="training")
+                ax.set_xscale("log")
+                ax.set_yscale("log")
                 ax.legend()
                 savepath = (
                     pathlib.Path(outputpath)
