@@ -122,24 +122,40 @@ for ix in range(nx_genie):
 print("\n Reading the YADISM structure functions \n")
 
 # Neutrino structure functions F2 and F3 on free protons
-yadism_f2_lo_nu_p=np.loadtxt("Yadism_data/LO_NNPDF40_yadism/F2.txt")
-yadism_f3_lo_nu_p=np.loadtxt("Yadism_data/LO_NNPDF40_yadism/F3.txt")
-yadism_f2_nnlo_nu_p=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism/F2.txt")
-yadism_f3_nnlo_nu_p=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism/F3.txt")
+#yadism_f2_lo_nu_p=np.loadtxt("Yadism_data_v1/LO_NNPDF40_yadism/F2.txt")
+#yadism_f3_lo_nu_p=np.loadtxt("Yadism_data_v1/LO_NNPDF40_yadism/F3.txt")
+#yadism_f2_nnlo_nu_p=np.loadtxt("Yadism_data_v1/NNLO_NNPDF40_yadism/F2.txt")
+#yadism_f3_nnlo_nu_p=np.loadtxt("Yadism_data_v1/NNLO_NNPDF40_yadism/F3.txt")
+
+yadism_f2_lo_nu_p=np.loadtxt("Yadism_data_v2/LO/predictions/F2.txt")
+yadism_f3_lo_nu_p=np.loadtxt("Yadism_data_v2/LO/predictions/F3.txt")
+yadism_fl_lo_nu_p=np.loadtxt("Yadism_data_v2/LO/predictions/FL.txt")
+yadism_f2_nlo_nu_p=np.loadtxt("Yadism_data_v2/NLO/predictions/F2.txt")
+yadism_f3_nlo_nu_p=np.loadtxt("Yadism_data_v2/NLO/predictions/F3.txt")
+yadism_fl_nlo_nu_p=np.loadtxt("Yadism_data_v2/NLO/predictions/FL.txt")
+yadism_f2_nnlo_nu_p=np.loadtxt("Yadism_data_v2/NNLO/predictions/F2.txt")
+yadism_f3_nnlo_nu_p=np.loadtxt("Yadism_data_v2/NNLO/predictions/F3.txt")
+yadism_fl_nnlo_nu_p=np.loadtxt("Yadism_data_v2/NNLO/predictions/FL.txt")
+
 
 # Neutrino structure functions F2 and F3 on free protons
-yadism_f2_lo_nubar_p=np.loadtxt("Yadism_data/LO_NNPDF40_yadism_nubar/F2.txt")
-yadism_f3_lo_nubar_p=np.loadtxt("Yadism_data/LO_NNPDF40_yadism_nubar/F3.txt")
-yadism_f2_nnlo_nubar_p=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism_nubar/F2.txt")
-yadism_f3_nnlo_nubar_p=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism_nubar/F3.txt")
+yadism_f2_lo_nubar_p=np.loadtxt("Yadism_data_v1/LO_NNPDF40_yadism_nubar/F2.txt")
+yadism_f3_lo_nubar_p=np.loadtxt("Yadism_data_v1/LO_NNPDF40_yadism_nubar/F3.txt")
+yadism_f2_nnlo_nubar_p=np.loadtxt("Yadism_data_v1/NNLO_NNPDF40_yadism_nubar/F2.txt")
+yadism_f3_nnlo_nubar_p=np.loadtxt("Yadism_data_v1/NNLO_NNPDF40_yadism_nubar/F3.txt")
 
 nq2_yadism=20
 nx_yadism =30
 yadism_sf_x=np.zeros(nx_yadism)
 yadism_sf_f2_lo=np.zeros(nx_yadism)
 yadism_sf_f3_lo=np.zeros(nx_yadism)
+yadism_sf_fl_lo=np.zeros(nx_yadism)
+yadism_sf_f2_nlo=np.zeros(nx_yadism)
+yadism_sf_f3_nlo=np.zeros(nx_yadism)
+yadism_sf_fl_nlo=np.zeros(nx_yadism)
 yadism_sf_f2_nnlo=np.zeros(nx_yadism)
 yadism_sf_f3_nnlo=np.zeros(nx_yadism)
+yadism_sf_fl_nnlo=np.zeros(nx_yadism)
 yadism_sf_f2_lo_nubar=np.zeros(nx_yadism)
 yadism_sf_f3_lo_nubar=np.zeros(nx_yadism)
 yadism_sf_f2_nnlo_nubar=np.zeros(nx_yadism)
@@ -162,11 +178,18 @@ icount=0
 for ix in range(nx_yadism):
     index = icount*nq2_yadism+iq2_yadism
     print(ix," ",index," ",math.pow(yadism_f2_lo_nu_p[index][1],0.5)," ",yadism_f2_lo_nu_p[index][2])
+    # Neutrino SFs
     yadism_sf_x[ix] = yadism_f2_lo_nu_p[index][1]
     yadism_sf_f2_lo[ix] = yadism_f2_lo_nu_p[index][3]
     yadism_sf_f3_lo[ix] = yadism_f3_lo_nu_p[index][3]
+    yadism_sf_fl_lo[ix] = yadism_fl_lo_nu_p[index][3]
+    yadism_sf_f2_nlo[ix] = yadism_f2_nlo_nu_p[index][3]
+    yadism_sf_f3_nlo[ix] = yadism_f3_nlo_nu_p[index][3]
+    yadism_sf_fl_nlo[ix] = yadism_fl_nlo_nu_p[index][3]
     yadism_sf_f2_nnlo[ix] = yadism_f2_nnlo_nu_p[index][3]
     yadism_sf_f3_nnlo[ix] = yadism_f3_nnlo_nu_p[index][3]
+    yadism_sf_fl_nnlo[ix] = yadism_fl_nnlo_nu_p[index][3]
+    # Anti-Neutrino SFs
     yadism_sf_f2_lo_nubar[ix] = yadism_f2_lo_nubar_p[index][3]
     yadism_sf_f3_lo_nubar[ix] = yadism_f3_lo_nubar_p[index][3]
     yadism_sf_f2_nnlo_nubar[ix] = yadism_f2_nnlo_nubar_p[index][3]
@@ -847,13 +870,184 @@ py.tight_layout(pad=1, w_pad=1, h_pad=1.0)
 py.savefig('StructureFunction-ComparisonsPreFit-xdep'+filelabel+'.pdf')
 print('output plot: StructureFunction-ComparisonsPreFit-xdep'+filelabel+'.pdf')
 
+
+#*******************************************************************************
+#*******************************************************************************
+#
+# Study perturbative stability by comparing yadism LO, NLO, NNLO for fixed PDF
+# and evaluate the corresponding K-factors
+# Also for FL, since now it is available
+# Ratio to NLO as reference
+#
+
+print("\n ****** Plotting Perturbative Stability of Structure Functions  ******* \n")
+
+ncols,nrows=3,2
+py.figure(figsize=(ncols*5,nrows*3.5))
+gs = gridspec.GridSpec(nrows,ncols)
+rescolors = py.rcParams['axes.prop_cycle'].by_key()['color']
+
+if(q > 1.9 and q < 2.1):
+    yranges=[[0,2.8],[0,1.0],[0,0.8],[0.7,1.30],[0.5,2.5],[0,1.5]]
+if(q > 9.9 and q < 10.1):
+    yranges=[[0,4.8],[0,0.8],[0,1.0],[0.7,1.20],[0.5,1.3],[0,1.2]]
+
+labelpdf=[r"$F_2^{\nu p}(x,Q)$",r"$xF_3^{\nu p}(x,Q)$",r"$F_L^{\nu p}(x,Q)$",\
+          r"${\rm Ratio~to~NNLO}$",r"${\rm Ratio~to~NNLO}$",r"${\rm Ratio~to~NNLO}$"]
+
+for isf in range(6):
+
+    ax = py.subplot(gs[isf])
+
+    if(isf==0):
+        p1=ax.plot(yadism_sf_x, yadism_sf_f2_lo,ls="dashed",color=rescolors[0])
+        p2=ax.plot(yadism_sf_x, yadism_sf_f2_nlo,ls="dashdot",color=rescolors[1])
+        p3=ax.plot(yadism_sf_x, yadism_sf_f2_nnlo,ls="solid",color=rescolors[2])
+
+    if(isf==1):
+        p1=ax.plot(yadism_sf_x, yadism_sf_f3_lo,ls="dashed",color=rescolors[0])
+        p2=ax.plot(yadism_sf_x, yadism_sf_f3_nlo,ls="dashdot",color=rescolors[1])
+        p3=ax.plot(yadism_sf_x, yadism_sf_f3_nnlo,ls="solid",color=rescolors[2])
+
+    if(isf==2):
+        p1=ax.plot(yadism_sf_x, yadism_sf_fl_lo,ls="dashed",color=rescolors[0])
+        p2=ax.plot(yadism_sf_x, yadism_sf_fl_nlo,ls="dashdot",color=rescolors[1])
+        p3=ax.plot(yadism_sf_x, yadism_sf_fl_nnlo,ls="solid",color=rescolors[2])
+
+    if(isf==3):
+        p1=ax.plot(yadism_sf_x, yadism_sf_f2_lo/yadism_sf_f2_nnlo,ls="dashed",color=rescolors[0])
+        p2=ax.plot(yadism_sf_x, yadism_sf_f2_nlo/yadism_sf_f2_nnlo,ls="dashdot",color=rescolors[1])
+        p3=ax.plot(yadism_sf_x, yadism_sf_f2_nnlo/yadism_sf_f2_nnlo,ls="solid",color=rescolors[2])
+
+    if(isf==4):
+        p1=ax.plot(yadism_sf_x, yadism_sf_f3_lo/yadism_sf_f3_nnlo,ls="dashed",color=rescolors[0])
+        p2=ax.plot(yadism_sf_x, yadism_sf_f3_nlo/yadism_sf_f3_nnlo,ls="dashdot",color=rescolors[1])
+        p3=ax.plot(yadism_sf_x, yadism_sf_f3_nnlo/yadism_sf_f3_nnlo,ls="solid",color=rescolors[2])
+
+    if(isf==5):
+        p1=ax.plot(yadism_sf_x, yadism_sf_fl_lo/yadism_sf_fl_nnlo,ls="dashed",color=rescolors[0])
+        p2=ax.plot(yadism_sf_x, yadism_sf_fl_nlo/yadism_sf_fl_nnlo,ls="dashdot",color=rescolors[1])
+        p3=ax.plot(yadism_sf_x, yadism_sf_fl_nnlo/yadism_sf_fl_nnlo,ls="solid",color=rescolors[2])
+       
+    
+    ax.set_xscale('log')
+    ax.set_xlim(xmin,0.7)
+    ax.tick_params(which='both',direction='in',labelsize=12,right=True)
+    ax.tick_params(which='major',length=7)
+    ax.tick_params(which='minor',length=4)
+    ax.set_ylabel(labelpdf[isf],fontsize=17)
+    ax.set_ylim(yranges[isf][0],yranges[isf][1])
+    if(isf>1):
+        ax.set_xlabel(r'$x$',fontsize=15)
+    if(isf==0):
+        if(q > 9.9 and q < 10.1):
+            ax.text(0.57,0.87,r'$Q=10~{\rm GeV}$',\
+                    fontsize=16,transform=ax.transAxes)
+        if(q > 1.9 and q < 2.1):
+            ax.text(0.62,0.87,r'$Q=2~{\rm GeV}$',\
+                    fontsize=16,transform=ax.transAxes)
+    if(isf==2):
+        if(q > 9.9 and q < 10.1):
+            ax.text(0.57,0.87,r'$Q=10~{\rm GeV}$',\
+                    fontsize=16,transform=ax.transAxes)
+        if(q > 1.9 and q < 2.1):
+            ax.text(0.62,0.87,r'$Q=2~{\rm GeV}$',\
+                    fontsize=16,transform=ax.transAxes)
+
+    if(isf==0):
+        ax.legend([p1[0],p2[0],p3[0]],\
+                  [r"${\rm LO}$",r"${\rm NLO}$",r"${\rm NNLO}$"],
+                  frameon="True",loc=3,prop={'size':14})
+                        
+py.tight_layout(pad=1, w_pad=1, h_pad=1.0)
+py.savefig('StructureFunction-PerturbativeStab-xdep'+filelabel+'.pdf')
+print('output plot: StructureFunction-PerturbativeStab-xdep'+filelabel+'.pdf')
+
 exit()
 
+#*******************************************************************************
+#*******************************************************************************
+#
+# Study relative size of FL and xF3 when compared with
+# the dominant structure function F2 at NNLO
+#
+print("\n ****** Plotting relative size of Structure Functions  ******* \n")
 
-#*****************************************************************************
-#*****************************************************************************
+ncols,nrows=2,2
+py.figure(figsize=(ncols*5,nrows*3.5))
+gs = gridspec.GridSpec(nrows,ncols)
+rescolors = py.rcParams['axes.prop_cycle'].by_key()['color']
 
-print("\n ****** Plotting absolute Structure Functions (Comparisons) ******* \n")
+if(q > 1.9 and q < 2.1):
+    yranges=[[0,1.02],[0,1.02],[0,1.02],[0,1.02]]
+if(q > 9.9 and q < 10.1):
+    yranges=[[0,1.02],[0,1.02],[0,1.02],[0,1.02]]
+
+labelpdf=[r"$F_i^{\nu p} / F_2^{\nu p}$",r"$F_i^{\bar{\nu} p} / F_2^{\bar{\nu} p}$",\
+          r"$F_i^{\nu p} / F_2^{\nu p}$",r"$F_i^{\bar{\nu} p} / F_2^{\bar{\nu} p}$"]
+
+for isf in range(4):
+
+    ax = py.subplot(gs[isf])
+
+    # NLO YADISM
+    if(isf==0):
+        p1=ax.plot(yadism_sf_x, yadism_sf_f2_nlo/yadism_sf_f2_nlo,\
+                   ls="solid",color=rescolors[0])
+        p2=ax.plot(yadism_sf_x, yadism_sf_f3_nlo/yadism_sf_f2_nlo,\
+                   ls="dashed",color=rescolors[1])
+        p3=ax.plot(yadism_sf_x, yadism_sf_fl_nlo/yadism_sf_f2_nlo,\
+                   ls="dashdot",color=rescolors[2])
+
+    # NNLO YADISM
+    if(isf==2):
+        p1=ax.plot(yadism_sf_x, yadism_sf_f2_nnlo/yadism_sf_f2_nnlo,\
+                   ls="solid",color=rescolors[0])
+        p2=ax.plot(yadism_sf_x, yadism_sf_f3_nnlo/yadism_sf_f2_nnlo,\
+                   ls="dashed",color=rescolors[1])
+        p3=ax.plot(yadism_sf_x, yadism_sf_fl_nnlo/yadism_sf_f2_nnlo,\
+                   ls="dashdot",color=rescolors[2])
+    
+    
+    ax.set_xscale('log')
+    ax.set_xlim(xmin,0.7)
+    ax.tick_params(which='both',direction='in',labelsize=12,right=True)
+    ax.tick_params(which='major',length=7)
+    ax.tick_params(which='minor',length=4)
+    ax.set_ylabel(labelpdf[isf],fontsize=17)
+    ax.set_ylim(yranges[isf][0],yranges[isf][1])
+    if(isf>1):
+        ax.set_xlabel(r'$x$',fontsize=15)
+    if(isf==0):
+        if(q > 9.9 and q < 10.1):
+            ax.text(0.57,0.87,r'${\rm NLO,\,} Q=10~{\rm GeV}$',\
+                    fontsize=14,transform=ax.transAxes)
+        if(q > 1.9 and q < 2.1):
+            ax.text(0.57,0.87,r'${\rm NLO,\,} Q=2~{\rm GeV}$',\
+                    fontsize=15,transform=ax.transAxes)
+    if(isf==2):
+        if(q > 9.9 and q < 10.1):
+            ax.text(0.57,0.87,r'${\rm NNLO,\,} Q=10~{\rm GeV}$',\
+                    fontsize=14,transform=ax.transAxes)
+        if(q > 1.9 and q < 2.1):
+            ax.text(0.57,0.87,r'${\rm NNLO,\,} Q=2~{\rm GeV}$',\
+                    fontsize=15,transform=ax.transAxes)
+
+    if(isf==2):
+        ax.legend([p1[0],p2[0],p3[0]],\
+                  [r"$F_2$",r"$xF_3$",r"$F_L$"],
+                  frameon="True",loc=2,prop={'size':12})
+                        
+py.tight_layout(pad=1, w_pad=1, h_pad=1.0)
+py.savefig('StructureFunction-RelSize-xdep'+filelabel+'.pdf')
+print('output plot: StructureFunction-RelSize-xdep'+filelabel+'.pdf')
+
+exit()
+
+#*******************************************************************************
+#*******************************************************************************
+
+print("\n ****** Plotting absolute Structure Functions (Comparisons NNSF results) ******* \n")
 
 ncols,nrows=2,2
 py.figure(figsize=(ncols*5,nrows*3.5))
