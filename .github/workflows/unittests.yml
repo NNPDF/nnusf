@@ -5,7 +5,7 @@ on: push
 
 jobs:
   py39:
-    uses: N3PDF/workflows/.github/workflows/python-poetry-tests.yml@main
+    uses: N3PDF/workflows/.github/workflows/python-poetry-tests.yml@lhapdf-container
     with:
       python-version: "3.9"
       container-image: "docker://ghcr.io/n3pdf/lhapdf:0.1.1"
