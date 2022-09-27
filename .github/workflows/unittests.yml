@@ -8,5 +8,6 @@ jobs:
     uses: N3PDF/workflows/.github/workflows/python-poetry-tests.yml@main
     with:
       python-version: "3.9"
+      container-image: "docker://ghcr.io/n3pdf/lhapdf:0.1.1"
     secrets:
       codecov-token: ${{ secrets.CODECOV_TOKEN }}
