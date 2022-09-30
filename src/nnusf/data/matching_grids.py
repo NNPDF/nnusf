@@ -64,7 +64,8 @@ def proton_boundary_conditions(
             obstype = grid_name.split("_")[1]
             obspid = MAP_OBS_PID[obstype]
             obsdic = build_obs_dict(obstype, [None], obspid)
-            obsdic_list.append(obsdic)
+            if obsdic not in obsdic_list:
+                obsdic_list.append(obsdic)
             main(
                 grid,
                 pdf,
