@@ -84,8 +84,17 @@ def sub_sub_hiq(data, destination):
 @option_dest
 def sub_sub_all(data, destination):
     """Full datasets runcards"""
-    runcards.dvst(data, destination=destination)
+    runcards.dvst(data, destination=destination, activate_scale_var=False)
 
+
+@sub_runcards.command("th_err")
+@click.argument(
+    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
+)
+@option_dest
+def sub_sub_all(data, destination):
+    """Full datasets runcards with 7 points perescription scale variations"""
+    runcards.dvst(data, destination=destination, activate_scale_var=True)
 
 @subcommand.command("by")
 @click.argument(

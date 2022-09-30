@@ -54,7 +54,7 @@ def main(cards: pathlib.Path, destination: pathlib.Path):
         if "_NU" in data_name or "_NB" in data_name:
             data_name = data_name[:-3]
         file_name = (
-            f"grids-{data_name}.tar" if data_name != "" else f"grids.tar"
+            f"grids-{data_name}.tar.gz" if data_name != "" else f"grids.tar.gz"
         )
         with tarfile.open(destination / file_name, "w") as tar:
             for path in grids_dest.iterdir():

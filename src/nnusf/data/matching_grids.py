@@ -220,7 +220,7 @@ def main(
         np.save(mat_dest, pred)
 
         msg = f"The matching/BC grid for {grid_name} are stored in "
-        msg += f"'{destination.absolute().relative_to(pathlib.Path.cwd())}'"
+        msg += f"'{destination.absolute()}'"
         _logger.info(msg)
 
 
