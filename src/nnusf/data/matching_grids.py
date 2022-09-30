@@ -175,13 +175,11 @@ def main(
     with tempfile.TemporaryDirectory() as tmpdir:
         tmpdir = pathlib.Path(tmpdir).absolute()
 
-        grid_name = grids.stem[6:-13]
-        obs = grid_name.split("_")[-1]
-        new_name = f"{grid_name}_MATCHING"
-        experiment = grid_name.split("_")[0]
-        new_experiment = f"{experiment}_MATCHING"
+        full_grid_name = grids.stem[6:-4]
+        experiment, obs, _, xif, xir = full_grid_name.split("_")
+        new_name = f"{experiment}_{obs}_MATCHING"
+        new_experiment = f"{experiment}_{obs}_MATCHING"
 
-        # if grids.suffix == ".tar.gz":
         if str(grids).endswith(".tar.gz"):
             utils.extract_tar(grids, tmpdir)
             grids = tmpdir / "grids"
@@ -199,27 +197,29 @@ def main(
             full_pred.append(prediction[0])
         pred = np.average(full_pred, axis=0)
 
-        # Select only predictions for Replicas_0 in data
-        data_pd = pd.DataFrame({"data": pred[:, 0]})
+        # store data only for unvaried matching grids
+        if xif=="muf1" and xir=="mur1":
+            # Select only predictions for Replicas_0 in data
+            data_pd = pd.DataFrame({"data": pred[:, 0]})
 
-        # Dump the kinematics into CSV
-        dump_kinematics(destination, kin_grid, new_experiment, is_xsec)
+            # Dump the kinematics into CSV
+            dump_kinematics(destination, kin_grid, new_experiment, is_xsec)
 
-        # Dump the central (replica) data into CSV
-        central_val_folder = destination.joinpath("data")
-        central_val_folder.mkdir(exist_ok=True)
-        write_to_csv(central_val_folder, f"DATA_{new_name}", data_pd)
+            # Dump the central (replica) data into CSV
+            central_val_folder = destination.joinpath("data")
+            central_val_folder.mkdir(exist_ok=True)
+            write_to_csv(central_val_folder, f"DATA_{new_name}", data_pd)
 
-        # Dump the dummy uncertainties into CSV
-        dump_uncertainties(destination, new_name, n_points)
+            # Dump the dummy uncertainties into CSV
+            dump_uncertainties(destination, new_name, n_points)
 
         # Dump the predictions for the REST of the replicas as NPY
         pred_folder = destination.joinpath("matching")
         pred_folder.mkdir(exist_ok=True)
-        mat_dest = (pred_folder / f"MATCH_{grid_name}").with_suffix(".npy")
+        mat_dest = (pred_folder / f"{full_grid_name}").with_suffix(".npy")
         np.save(mat_dest, pred)
 
-        msg = f"The matching/BC grid for {grid_name} are stored in "
+        msg = f"The matching/BC grid for {full_grid_name} are stored in "
         msg += f"'{destination.absolute()}'"
         _logger.info(msg)
 
