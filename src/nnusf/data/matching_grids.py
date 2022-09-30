@@ -58,10 +58,10 @@ def proton_boundary_conditions(
     if grids is not None:
         obsdic_list = []
         for grid in grids:
-            grid_name = grid.stem[6:-13]
+            grid_name = grid.stem[6:-4]
             _logger.info(f"Generating BC data for '{grid_name}'.")
 
-            obstype = grid_name.split("_")[-1]
+            obstype = grid_name.split("_")[1]
             obspid = MAP_OBS_PID[obstype]
             obsdic = build_obs_dict(obstype, [None], obspid)
             obsdic_list.append(obsdic)
@@ -178,7 +178,7 @@ def main(
         full_grid_name = grids.stem[6:-4]
         experiment, obs, _, xif, xir = full_grid_name.split("_")
         new_name = f"{experiment}_{obs}_MATCHING"
-        new_experiment = f"{experiment}_{obs}_MATCHING"
+        new_experiment = f"{experiment}_MATCHING"
 
         if str(grids).endswith(".tar.gz"):
             utils.extract_tar(grids, tmpdir)

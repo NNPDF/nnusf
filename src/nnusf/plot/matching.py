@@ -36,13 +36,11 @@ def main(
 
     data_name = "_".join(dataset.stem.split("_")[1:])
     exp_name = data_name.removesuffix("_MATCHING")
-    data = loader.Loader(data_name, dataset.parents[1]).table
+    full_data = loader.Loader(data_name, dataset.parents[1])
+    data = full_data.table
     data_exp = loader.Loader(exp_name, dataset.parents[1]).table
 
-    temp_name = "MATCH_" + data_name.removesuffix("_MATCHING")
-    nrep_predictions = np.load(f"{dataset.parents[1]}/matching/{temp_name}.npy")
-
-    data["std"] = nrep_predictions.std(axis=1)
+    data["std"] = np.sqrt(np.diag(full_data.covariance_matrix))
     # np.testing.assert_allclose(data["data"], nrep_predictions.mean(axis=1), atol=1e-6)
     # np.testing.assert_allclose(nrep_predictions.T[0], nrep_predictions.mean(axis=1), atol=1e-6)
 
