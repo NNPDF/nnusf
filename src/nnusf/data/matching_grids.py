@@ -216,8 +216,7 @@ def main(
         # Dump the predictions for the REST of the replicas as NPY
         pred_folder = destination.joinpath("matching")
         pred_folder.mkdir(exist_ok=True)
-        mat_dest = (pred_folder / f"{full_grid_name}").with_suffix(".npy")
-        np.save(mat_dest, pred)
+        np.save(pred_folder / f"{full_grid_name}.npy", pred)
 
         msg = f"The matching/BC grid for {full_grid_name} are stored in "
         msg += f"'{destination.absolute()}'"
