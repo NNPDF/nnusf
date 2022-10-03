@@ -199,7 +199,7 @@ def main(
         pred = np.average(full_pred, axis=0)
 
         # store data only for unvaried matching grids
-        if xif=="muf1" and xir=="mur1":
+        if xif=="xif1" and xir=="xir1":
             # Select only predictions for Replicas_0 in data
             data_pd = pd.DataFrame({"data": pred[:, 0]})
 

@@ -147,7 +147,7 @@ def dvst(
                 for name, observable_card in ocards.items():
                     utils.write(observable_card, tmpdir / f"obs-{name}.yaml")
 
-                tarpath = destination / f"runcards-{data_name}_muf{theory_card['XIF']}_mur{theory_card['XIR']}.tar"
+                tarpath = destination / f"runcards-{data_name}_xif{theory_card['XIF']}_xir{theory_card['XIR']}.tar"
                 with tarfile.open(tarpath, "w") as tar:
                     for tmppath in tmpdir.iterdir():
                         tar.add(tmppath.absolute(), arcname="runcards/" + tmppath.name)
