@@ -1,24 +1,28 @@
 # -*- coding: utf-8 -*-
 import numpy as np
+from scipy.interpolate import PchipInterpolator
+
+from .utils import select_subset_q2points
 
 
 def kinematics_mapping(dataset, map_from, map_to):
     scaled_inputs = []
     for index, kin_var in enumerate(dataset):
-        # Scale only alon (Q2, A) directions
+        # Scale only along the (Q2, A) directions
         if index != 0:
-            input_scaling = np.interp(
-                kin_var,
+            scaler = PchipInterpolator(
                 map_from[index],
                 map_to[index],
+                extrapolate=True,
             )
+            input_scaling = scaler(kin_var)
         else:
             input_scaling = kin_var
         scaled_inputs.append(input_scaling)
     return scaled_inputs
 
 
-def cumulative_rescaling(datasets):
+def cumulative_rescaling(datasets, q2points=None, kincuts=None):
     data_kin = [data.kinematics for data in datasets.values()]
 
     # Combined and sort each column of the kinematics (x, Q2, A)
@@ -32,26 +36,27 @@ def cumulative_rescaling(datasets):
         num=sorted_kin.shape[0],
     )
 
-    equally_spaced_kinematics = []
-    kin_linear_reference = []
-    for kin_var in sorted_kin.T:
+    mapping_from, mapping_to = [], []
+    for index, kin_var in enumerate(sorted_kin.T):
         kin_unique, kin_counts = np.unique(kin_var, return_counts=True)
         scaling_target = [
             target_grids[cumlsum - kin_counts[0]]
             for cumlsum in np.cumsum(kin_counts)
         ]
-        # TODO: Do not forget to remove the transformation below
-        kin_linear_spaced = np.linspace(
-            kin_var[0],
-            kin_var[-1],
-            num=int(2 * kin_var.size),
-        )
-        equally_spaced_kinematics.append(
-            np.interp(kin_linear_spaced, kin_unique, scaling_target)
-        )
-        kin_linear_reference.append(kin_linear_spaced)
 
-    return kin_linear_reference, equally_spaced_kinematics
+        # If necessary, select smaller points in Q2
+        if q2points is not None and index == 1:
+            kin_unique, scaling_target = select_subset_q2points(
+                kin_unique,
+                scaling_target,
+                q2points,
+                kincuts,
+            )
+
+        mapping_from.append(kin_unique)
+        mapping_to.append(scaling_target)
+
+    return mapping_from, mapping_to
 
 
 def apply_mapping_datasets(datasets, map_from, map_to):
@@ -60,7 +65,9 @@ def apply_mapping_datasets(datasets, map_from, map_to):
         dataset.kinematics = np.array(scaled).T
 
 
-def rescale_inputs(datasets, method="cumulative_rescaling"):
+def rescale_inputs(
+    datasets, q2points=None, kincuts=None, method="cumulative_rescaling"
+):
     function_call = globals()[method]
-    map_from, map_to = function_call(datasets)
+    map_from, map_to = function_call(datasets, q2points, kincuts)
     apply_mapping_datasets(datasets, map_from, map_to)

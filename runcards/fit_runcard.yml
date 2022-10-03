@@ -53,7 +53,7 @@ experiments:
 
 # Define some kinematic cuts (Omit if not needed)
 kinematic_cuts:
-  q2max: 30.0 # Max-Q2 value for real datasets (to be named better)
+  q2max: 25.0 # Max-Q2 value for real datasets (to be named better)
   w2min: 3.50 # Minimum W2 value for all datasets
 
 # chi2 history stored for each `log_freq` epochs
@@ -64,6 +64,12 @@ genrep: True
 
 # True: rescale the input kinematics
 rescale_inputs: True
+
+# Select a subset of Q2 points during Input Scaling
+# Ignore if `rescale_inputs` is set to False
+q2_points:
+  small_q2points: 20
+  large_q2points: 10
 
 # Various seed values
 global_seeds: 1865683875
