@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
-import logging
-
 import numpy as np
 
 from .load_fit_data import get_predictions_q
-
-_logger = logging.getLogger(__name__)
 
 
 def gen_integration_input(nb_points):
@@ -29,43 +25,79 @@ def gen_integration_input(nb_points):
     return xgrid, weights_array
 
 
-def xf3_predictions(model_path, xgrid, q2_value, a_value):
+def xf3_predictions(model_path, xgrid, q2_values, a_value):
     predictions_info = get_predictions_q(
         fit=model_path,
         a_slice=a_value,
-        x_slice=xgrid,
-        qmin=q2_value,
-        qmax=2 * q2_value,
-        n=1,
+        x_slice=xgrid.tolist(),
+        qmin=q2_values.get("q2min", 1),
+        qmax=q2_values.get("q2max", 5),
+        n=q2_values.get("n", 1),
     )
+    q2_grids = predictions_info.q
     n_sfs = predictions_info.n_sfs
     predictions = predictions_info.predictions
+    assert len(predictions) == xgrid.shape[0]
 
-    lower_68 = np.sort(predictions, axis=0)[int(0.16 * n_sfs)]
-    upper_68 = np.sort(predictions, axis=0)[int(0.84 * n_sfs)]
-    mean_sfs = np.mean(predictions, axis=0)
+    xf3nu_dn68, xf3nu_mean, xf3nu_up68 = [], [], []
+    for xpred in predictions:
+        lower_68 = np.sort(xpred, axis=0)[int(0.16 * n_sfs)]
+        upper_68 = np.sort(xpred, axis=0)[int(0.84 * n_sfs)]
+        mean_sfs = np.mean(xpred, axis=0)
+        xf3nu_mean.append(mean_sfs)
+        xf3nu_dn68.append(lower_68)
+        xf3nu_up68.append(upper_68)
 
-    # assert n_sfs == 5
-    return mean_sfs[:, 2], lower_68[:, 2], upper_68[:, 2]
+    xf3nu_results = {
+        "xf3nu_mean": np.array(xf3nu_mean)[:, :, 2],
+        "xf3nu_dn68": np.array(xf3nu_dn68)[:, :, 2],
+        "xf3nu_up68": np.array(xf3nu_up68)[:, :, 2],
+    }
+
+    return q2_grids, xf3nu_results
 
 
-def compute_integral(xgrid, weights_array, xf3_nu):
-    # TODO: Split if there are more values of Q2
-    divide_x = xf3_nu / xgrid
-    return np.sum(divide_x * weights_array)
+def compute_integral(xgrid, weights_array, q2grids, xf3_nu):
+    nb_q2points = q2grids.shape[0]
+    xf3nu_perq2 = np.split(xf3_nu, nb_q2points, axis=1)
+    results = []
+    for xf3pred in xf3nu_perq2:
+        divide_x = xf3pred.squeeze() / xgrid
+        results.append(np.sum(divide_x * weights_array))
+    return np.array(results)
 
 
-def compute_gls_constant(nf_value, q2_value):
-    def a_nf(nf_values):
-        return 1.0
+def compute_gls_constant(nf_value, q2_value, n_loop=2):
+    """The definitions below are taken from the following
+    paper https://arxiv.org/pdf/hep-ph/9405254.pdf
+    """
+    lambda_msbar = 0.340  # in GeV
+
+    def a_nf(nf_value):
+        return 4.583 - 0.333 * nf_value
 
     def b_nf(nf_value):
-        return 1.0
+        return 41.441 - 8.020 * nf_value + 0.177 * pow(nf_value, 2)
 
-    def alphas(nf_value, q2_value):
-        return 1.121
+    def alphas(nf_value, q2_value, n_loop):
+        beta_zero = 11 - (2 * nf_value) / 3
+        ratio_logscale = np.log(q2_value / lambda_msbar**2)
+        prefac = 4 * np.pi / (beta_zero * ratio_logscale)
 
-    norm_alphas = alphas(nf_value, q2_value) / np.pi
+        mode_alphas = 0
+        if n_loop >= 1:
+            mode_alphas += 1
+        if n_loop >= 2:
+            beta_one = 102 - (38 * nf_value) / 3
+            num = beta_one * np.log(ratio_logscale)
+            den = pow(beta_zero, 2) * ratio_logscale
+            mode_alphas += num / den
+        if n_loop >= 3:
+            raise ValueError("Order not accounted yet!")
+
+        return prefac * mode_alphas
+
+    norm_alphas = alphas(nf_value, q2_value, n_loop) / np.pi
     return 3 * (
         1
         - norm_alphas
@@ -74,5 +106,16 @@ def compute_gls_constant(nf_value, q2_value):
     )
 
 
-def main(model_path, nx, q2_values_dic, a_value):
-    pass
+def check_gls_sumrules(fit, nx, q2_values_dic, a_value, *args, **kwargs):
+    del args
+    del kwargs
+
+    xgrid, weights = gen_integration_input(nx)
+    q2grids, xf3nu = xf3_predictions(fit, xgrid, q2_values_dic, a_value)
+
+    xf3nu_int = {}
+    for desc, xf3_nu in xf3nu.items():
+        xf3nu_int[desc] = compute_integral(xgrid, weights, q2grids, xf3_nu)
+    gls_results = compute_gls_constant(3, q2grids, n_loop=2)
+
+    return q2grids, gls_results, xf3nu_int

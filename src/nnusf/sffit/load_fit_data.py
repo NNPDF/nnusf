@@ -101,6 +101,7 @@ def get_predictions_q(
         nbsplit = predictions.shape[1] // q_values.shape[0]
         predictions = np.split(predictions, nbsplit, axis=1)
 
+    # TODO: fix value of n_sfs
     prediction_info = PredictionInfo(
         predictions=predictions,
         x=x_slice,
