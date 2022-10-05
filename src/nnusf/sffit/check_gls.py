@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy as np
+from rich.progress import track
 
 from .load_fit_data import get_predictions_q
 
@@ -35,26 +36,16 @@ def xf3_predictions(model_path, xgrid, q2_values, a_value):
         n=q2_values.get("n", 1),
     )
     q2_grids = predictions_info.q
-    n_sfs = predictions_info.n_sfs
     predictions = predictions_info.predictions
     assert len(predictions) == xgrid.shape[0]
+    assert isinstance(predictions, list)
 
-    xf3nu_dn68, xf3nu_mean, xf3nu_up68 = [], [], []
-    for xpred in predictions:
-        lower_68 = np.sort(xpred, axis=0)[int(0.16 * n_sfs)]
-        upper_68 = np.sort(xpred, axis=0)[int(0.84 * n_sfs)]
-        mean_sfs = np.mean(xpred, axis=0)
-        xf3nu_mean.append(mean_sfs)
-        xf3nu_dn68.append(lower_68)
-        xf3nu_up68.append(upper_68)
+    # Stack the list of x-values into a single np.array
+    # The following returns as shape (nrep, nx, n, nsfs)
+    predictions = [p[:, :, 2] for p in predictions]
+    stacked_pred = np.stack(predictions).swapaxes(0, 1)
 
-    xf3nu_results = {
-        "xf3nu_mean": np.array(xf3nu_mean)[:, :, 2],
-        "xf3nu_dn68": np.array(xf3nu_dn68)[:, :, 2],
-        "xf3nu_up68": np.array(xf3nu_up68)[:, :, 2],
-    }
-
-    return q2_grids, xf3nu_results
+    return q2_grids, stacked_pred
 
 
 def compute_integral(xgrid, weights_array, q2grids, xf3_nu):
@@ -113,9 +104,9 @@ def check_gls_sumrules(fit, nx, q2_values_dic, a_value, *args, **kwargs):
     xgrid, weights = gen_integration_input(nx)
     q2grids, xf3nu = xf3_predictions(fit, xgrid, q2_values_dic, a_value)
 
-    xf3nu_int = {}
-    for desc, xf3_nu in xf3nu.items():
-        xf3nu_int[desc] = compute_integral(xgrid, weights, q2grids, xf3_nu)
+    xf3nu_int = []
+    for r in track(xf3nu, description="Looping over Replicas:"):
+        xf3nu_int.append(compute_integral(xgrid, weights, q2grids, r))
     gls_results = compute_gls_constant(3, q2grids, n_loop=2)
 
-    return q2grids, gls_results, xf3nu_int
+    return q2grids, gls_results, np.stack(xf3nu_int)
