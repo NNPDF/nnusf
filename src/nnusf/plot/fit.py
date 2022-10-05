@@ -89,10 +89,11 @@ def gls_sum_rules(**kwargs):
         label="NN Predictions",
         capsize=5,
     )
-    ax.legend()
+    ax.legend(title=f"Comparison for A={kwargs['a_value']}")
     ax.set_xlabel(r"$Q^2~[\rm{GeV}^2]$")
     ax.set_ylabel(r"$\rm{Value}$")
-    save_path = pathlib.Path(kwargs["output"]) / "gls_sumrule"
+    plotname = f"gls_sumrule_a{kwargs['a_value']}"
+    save_path = pathlib.Path(kwargs["output"]) / plotname
     save_figs(fig, save_path)
 
 
