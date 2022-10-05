@@ -73,17 +73,17 @@ def training_validation_split(**kwargs):
 
 
 def gls_sum_rules(**kwargs):
-    q2grids, gls_results, xf3nu_int = check_gls_sumrules(**kwargs)
+    q2grids, gls_results, xf3avg_int = check_gls_sumrules(**kwargs)
 
-    xf3nu_int_mean = np.mean(xf3nu_int, axis=0)
-    xf3nu_int_stdev = np.std(xf3nu_int, axis=0)
+    xf3avg_int_mean = np.mean(xf3avg_int, axis=0)
+    xf3avg_int_stdev = np.std(xf3avg_int, axis=0)
 
     fig, ax = plt.subplots()
     ax.scatter(q2grids, gls_results, color="C0", s=20, marker="s", label="GLS")
     ax.errorbar(
         q2grids,
-        xf3nu_int_mean,
-        yerr=xf3nu_int_stdev,
+        xf3avg_int_mean,
+        yerr=xf3avg_int_stdev,
         color="C1",
         fmt=".",
         label="NN Predictions",

@@ -40,19 +40,20 @@ def xf3_predictions(model_path, xgrid, q2_values, a_value):
     assert len(predictions) == xgrid.shape[0]
     assert isinstance(predictions, list)
 
+    # Compute the average of the xF3 predictions
+    avg = [(p[:, :, 2] + p[:, :, 5]) / 2 for p in predictions]
     # Stack the list of x-values into a single np.array
     # The following returns as shape (nrep, nx, n, nsfs)
-    predictions = [p[:, :, 2] for p in predictions]
-    stacked_pred = np.stack(predictions).swapaxes(0, 1)
+    stacked_pred = np.stack(avg).swapaxes(0, 1)
 
     return q2_grids, stacked_pred
 
 
-def compute_integral(xgrid, weights_array, q2grids, xf3_nu):
+def compute_integral(xgrid, weights_array, q2grids, xf3_avg):
     nb_q2points = q2grids.shape[0]
-    xf3nu_perq2 = np.split(xf3_nu, nb_q2points, axis=1)
+    xf3avg_perq2 = np.split(xf3_avg, nb_q2points, axis=1)
     results = []
-    for xf3pred in xf3nu_perq2:
+    for xf3pred in xf3avg_perq2:
         divide_x = xf3pred.squeeze() / xgrid
         results.append(np.sum(divide_x * weights_array))
     return np.array(results)
@@ -102,11 +103,11 @@ def check_gls_sumrules(fit, nx, q2_values_dic, a_value, *args, **kwargs):
     del kwargs
 
     xgrid, weights = gen_integration_input(nx)
-    q2grids, xf3nu = xf3_predictions(fit, xgrid, q2_values_dic, a_value)
+    q2grids, xf3avg = xf3_predictions(fit, xgrid, q2_values_dic, a_value)
 
-    xf3nu_int = []
-    for r in track(xf3nu, description="Looping over Replicas:"):
-        xf3nu_int.append(compute_integral(xgrid, weights, q2grids, r))
+    xf3avg_int = []
+    for r in track(xf3avg, description="Looping over Replicas:"):
+        xf3avg_int.append(compute_integral(xgrid, weights, q2grids, r))
     gls_results = compute_gls_constant(3, q2grids, n_loop=2)
 
-    return q2grids, gls_results, np.stack(xf3nu_int)
+    return q2grids, gls_results, np.stack(xf3avg_int)
