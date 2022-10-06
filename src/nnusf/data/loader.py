@@ -247,7 +247,6 @@ class Loader:
         if "_MATCHING" in dataset_name:
             sv_variations = []
             for variation in pathlib.Path(f"{commondata_path}/matching/").iterdir():
-                import pdb; pdb.set_trace()
                 if dataset_name in variation.stem:
                     # central scale 
                     if "xif1_xir1" in variation.stem:
