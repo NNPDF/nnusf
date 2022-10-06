@@ -11,7 +11,7 @@ import yaml
 
 from .. import utils
 from ..data import loader
-from . import bodek_yang, data_vs_theory, highq
+from . import bodek_yang, data_vs_theory, highq, defs
 
 _logger = logging.getLogger(__name__)
 
@@ -112,8 +112,7 @@ def update_theory(
     ths = []
     if activate_scale_var:
         # 7 points prescription (xir, xif)
-        sv_var = [[0.5, 0.5], [1, 0.5], [2, 1], [1, 1], [0.5, 1], [1, 2], [2, 2]]
-        for xif, xir in sv_var:
+        for xif, xir in defs.seven_points:
             ths.append(
                 theory(
                     {

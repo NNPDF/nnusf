@@ -15,7 +15,7 @@ import pineappl
 import yaml
 
 from .. import utils
-from ..theory.predictions import pdf_error
+from ..theory.predictions import pdf_error, theory_error
 from .utils import (
     MAP_OBS_PID,
     build_obs_dict,
@@ -194,7 +194,11 @@ def main(
             if "pineappl" not in gpath.name:
                 continue
             grid = pineappl.grid.Grid.read(gpath)
-            prediction = pdf_error(grid, pdf, kin_grid["x"], reshape=False)
+            if xif=="xif1" and xir=="xir1":
+                prediction = pdf_error(grid, pdf, kin_grid["x"], reshape=False)
+            else:
+                prescription = [(float(xir[3:]), float(xif[3:]))]
+                prediction = theory_error(grid, pdf, prescription, kin_grid["x"], reshape=False)
             full_pred.append(prediction[0])
         pred = np.average(full_pred, axis=0)
 

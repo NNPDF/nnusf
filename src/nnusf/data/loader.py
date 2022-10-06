@@ -252,7 +252,7 @@ class Loader:
                     if "xif1_xir1" in variation.stem:
                         nrep_predictions = np.load(variation)
                     else:
-                        sv_variations.append(np.load(variation)[:,0])
+                        sv_variations.append(np.load(variation))
             # build th shift
             th_shift = (sv_variations - nrep_predictions[:,0]).T
             # build covaraince
