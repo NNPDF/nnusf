@@ -1,5 +1,7 @@
 # Number of x-points to be used for the integration
-nx: 100
+nx_specs:
+  nx: 100
+  xmin_log: -3
 
 # Details about the Q2-grid to be generated
 # The grid will containg `n` points between

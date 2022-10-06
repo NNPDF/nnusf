@@ -5,11 +5,13 @@ from rich.progress import track
 from .load_fit_data import get_predictions_q
 
 
-def gen_integration_input(nb_points):
+def gen_integration_input(nx_specs):
     """Generate the points and weights for the integration."""
+    nb_points = nx_specs.get("nx", 100)
+    xmin_log = nx_specs.get("xmin_log", -2)
     lognx = int(nb_points / 3)
     linnx = int(nb_points - lognx)
-    xgrid_log = np.logspace(-2, -1, lognx + 1)
+    xgrid_log = np.logspace(xmin_log, -1, lognx + 1)
     xgrid_lin = np.linspace(0.1, 1, linnx)
     xgrid = np.concatenate([xgrid_log[:-1], xgrid_lin])
 
@@ -98,11 +100,11 @@ def compute_gls_constant(nf_value, q2_value, n_loop=2):
     )
 
 
-def check_gls_sumrules(fit, nx, q2_values_dic, a_value, *args, **kwargs):
+def check_gls_sumrules(fit, nx_specs, q2_values_dic, a_value, *args, **kwargs):
     del args
     del kwargs
 
-    xgrid, weights = gen_integration_input(nx)
+    xgrid, weights = gen_integration_input(nx_specs)
     q2grids, xf3avg = xf3_predictions(fit, xgrid, q2_values_dic, a_value)
 
     xf3avg_int = []
