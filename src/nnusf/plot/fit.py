@@ -9,6 +9,7 @@ import yaml
 from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
 
+from ..sffit.check_gls import check_gls_sumrules
 from ..sffit.load_data import load_experimental_data
 from ..sffit.load_fit_data import get_predictions_q, load_models
 
@@ -53,20 +54,6 @@ def save_figs(
     plt.close(figure)
 
 
-def main(model: pathlib.Path, runcard: pathlib.Path, output: pathlib.Path):
-    if output.exists():
-        _logger.warning(f"{output} already exists, overwriting content.")
-    output.mkdir(parents=True, exist_ok=True)
-
-    runcard_content = yaml.safe_load(runcard.read_text())
-    runcard_content["fit"] = str(model.absolute())
-    runcard_content["output"] = str(output.absolute())
-
-    for action in runcard_content["actions"]:
-        func = globals()[action]
-        func(**runcard_content)
-
-
 def training_validation_split(**kwargs):
     fitinfo = pathlib.Path(kwargs["fit"]).glob("replica_*/fitinfo.json")
     tr_chi2s, vl_chi2s = [], []
@@ -82,6 +69,31 @@ def training_validation_split(**kwargs):
     ax.set_xlabel(r"$\chi^2_{\rm tr}$")
     ax.set_ylabel(r"$\chi^2_{\rm vl}$")
     save_path = pathlib.Path(kwargs["output"]) / "chi2_split"
+    save_figs(fig, save_path)
+
+
+def gls_sum_rules(**kwargs):
+    q2grids, gls_results, xf3avg_int = check_gls_sumrules(**kwargs)
+
+    xf3avg_int_mean = np.mean(xf3avg_int, axis=0)
+    xf3avg_int_stdev = np.std(xf3avg_int, axis=0)
+
+    fig, ax = plt.subplots()
+    ax.scatter(q2grids, gls_results, color="C0", s=20, marker="s", label="GLS")
+    ax.errorbar(
+        q2grids,
+        xf3avg_int_mean,
+        yerr=xf3avg_int_stdev,
+        color="C1",
+        fmt=".",
+        label="NN Predictions",
+        capsize=5,
+    )
+    ax.legend(title=f"Comparison for A={kwargs['a_value']}")
+    ax.set_xlabel(r"$Q^2~[\rm{GeV}^2]$")
+    ax.set_ylabel(r"$\rm{Value}$")
+    plotname = f"gls_sumrule_a{kwargs['a_value']}"
+    save_path = pathlib.Path(kwargs["output"]) / plotname
     save_figs(fig, save_path)
 
 
@@ -290,3 +302,17 @@ def chi2_history_plot(xmin=None, **kwargs):
                     / f"chi2_history_plot_{count_plots}"
                 )
                 save_figs(fig, savepath)
+
+
+def main(model: pathlib.Path, runcard: pathlib.Path, output: pathlib.Path):
+    if output.exists():
+        _logger.warning(f"{output} already exists, overwriting content.")
+    output.mkdir(parents=True, exist_ok=True)
+
+    runcard_content = yaml.safe_load(runcard.read_text())
+    runcard_content["fit"] = str(model.absolute())
+    runcard_content["output"] = str(output.absolute())
+
+    for action in runcard_content["actions"]:
+        func = globals()[action]
+        func(**runcard_content)
