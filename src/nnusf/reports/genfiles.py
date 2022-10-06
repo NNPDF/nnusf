@@ -33,13 +33,14 @@ def summary_table(fitfolder: pathlib.Path) -> pd.DataFrame:
             Path to the fit folder
     """
     fitinfos = fitfolder.glob("**/replica_*/fitinfo.json")
-    chi2_summary = {"tr": 0.0, "vl": 0.0, "Exp": 0.0}
+    chi2_summary = {"tr": 0.0, "vl": 0.0, "expt": 0.0, "expr": 0.0}
     # Loop over the replica folder & extract chi2 info
     for count, repinfo in enumerate(fitinfos, start=1):
         jsonfile = json_loader(repinfo)
         for chi2type in ["tr", "vl"]:
             chi2_summary[chi2type] += jsonfile[f"best_{chi2type}_chi2"]
-        chi2_summary["Exp"] += jsonfile["exp_chi2s"]["total_chi2"]
+        chi2_summary["expt"] += jsonfile["exp_chi2s"]["total_chi2"]
+        chi2_summary["expr"] += jsonfile["exp_chi2s"]["tot_chi2_real"]
 
     # Average the chi2 over the nb of replicas
     for chi2type in chi2_summary:
