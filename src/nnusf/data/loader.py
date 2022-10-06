@@ -245,11 +245,21 @@ class Loader:
 
         """
         if "_MATCHING" in dataset_name:
-            dataset_name = "MATCH_" + dataset_name.removesuffix("_MATCHING")
-            nrep_predictions = np.load(
-                f"{commondata_path}/matching/{dataset_name}.npy"
-            )
-            covmat = np.cov(nrep_predictions[mask_predictions])
+            sv_variations = []
+            for variation in pathlib.Path(f"{commondata_path}/matching/").iterdir():
+                import pdb; pdb.set_trace()
+                if dataset_name in variation.stem:
+                    # central scale 
+                    if "xif1_xir1" in variation.stem:
+                        nrep_predictions = np.load(variation)
+                    else:
+                        sv_variations.append(np.load(variation)[:,0])
+            # build th shift
+            th_shift = (sv_variations - nrep_predictions[:,0]).T
+            # build covaraince
+            pdf_covmat = np.cov(nrep_predictions[mask_predictions])
+            th_covamt = np.cov(th_shift[mask_predictions])
+            covmat = np.sqrt(th_covamt ** 2 + pdf_covmat ** 2)
             return clip_covmat(covmat, dataset_name)
         else:
             diagonal = np.power(unc_df["stat"], 2)

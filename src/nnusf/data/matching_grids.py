@@ -200,8 +200,8 @@ def main(
 
         # store data only for unvaried matching grids
         if xif=="xif1" and xir=="xir1":
-            # Select only predictions for Replicas_0 in data
-            data_pd = pd.DataFrame({"data": pred[:, 0]})
+            # central data is the median over replicas
+            data_pd = pd.DataFrame({"data": np.median(pred, axis=1)})
 
             # Dump the kinematics into CSV
             dump_kinematics(destination, kin_grid, new_experiment, is_xsec)
