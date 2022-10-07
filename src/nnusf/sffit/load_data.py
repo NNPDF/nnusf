@@ -51,9 +51,14 @@ def add_pseudodata(experimental_datasets, shift=True):
     """If `shift=False` no pseudodata is generated and real data is used
     instead. This is only relevant for debugging purposes.
     """
-    for dataset in experimental_datasets.values():
+    for dataset_name, dataset in experimental_datasets.items():
         cholesky = np.linalg.cholesky(dataset.covmat)
         random_samples = np.random.randn(dataset.n_data)
+        # Matching pseudodata variance is increased to account for the fact
+        # that, unlike experimental data, they don't contain sampling
+        # fluctuations
+        if dataset_name.endswith('_MATCHING'):
+            random_samples *= np.sqrt(2)
         shift_data = cholesky @ random_samples if shift else 0
         pseudodata = dataset.central_values + shift_data
         dataset.pseudodata = pseudodata
