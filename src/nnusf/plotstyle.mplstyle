@@ -48,6 +48,7 @@ text.latex.preamble   : \usepackage{amsmath}
 
 ### AXES
 axes.grid             : True
+axes.axisbelow        : True
 axes.facecolor        : white
 axes.linewidth        : 1.0
 axes.titlesize        : 14

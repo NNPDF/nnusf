@@ -70,6 +70,11 @@ def compute_exp_chi2(datainfo, nn_layers, optimizer_parameters, **kwargs):
     normalized_chi2s["total_chi2"] = chi2_values["loss"] / sum(
         nb_dpts_dataset.values()
     )
+
+    # Compute the experimental Chi2 only for real data
+    expreal_losses = [v for n, v in chi2_values.items() if "_MATCHING" not in n]
+    expreal_pt = [v for n, v in nb_dpts_dataset.items() if "_MATCHING" not in n]
+    normalized_chi2s["tot_chi2_real"] = sum(expreal_losses) / sum(expreal_pt)
     return normalized_chi2s
 
 
