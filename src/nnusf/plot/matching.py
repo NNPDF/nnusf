@@ -40,7 +40,19 @@ def main(
     data = full_data.table
     data_exp = loader.Loader(exp_name, dataset.parents[1]).table
 
-    data["std"] = np.sqrt(np.diag(full_data.covariance_matrix))
+    # bould the sv error
+    sv_variations = []
+    for variation in pathlib.Path(f"{dataset.parents[1]}/matching/").iterdir():
+        if data_name in variation.stem:
+            # central scale
+            if "xif1_xir1" in variation.stem:
+                nrep_predictions = np.load(variation)
+            else:
+                sv_variations.append(np.load(variation))
+    th_shift = (sv_variations - nrep_predictions[:, 0]).T
+    data["sv_err"] = np.sqrt(np.diag(np.cov(th_shift)))
+
+    data["total_err"] = np.sqrt(np.diag(full_data.covariance_matrix))
     # np.testing.assert_allclose(data["data"], nrep_predictions.mean(axis=1), atol=1e-6)
     # np.testing.assert_allclose(nrep_predictions.T[0], nrep_predictions.mean(axis=1), atol=1e-6)
 
@@ -60,20 +72,40 @@ def main(
 
             central = fixed_x_data["data"]
             central_exp = fixed_x_data_exp["data"]
-            std = fixed_x_data["std"]
+            total_err = fixed_x_data["total_err"]
+            sv_err = fixed_x_data["sv_err"]
             std_exp = np.sqrt(
                 fixed_x_data_exp["syst"] ** 2 + fixed_x_data_exp["stat"] ** 2
             )
 
             plt.figure()
-            plt.errorbar(fixed_x_data["Q2"], central, yerr=std, fmt="o")
             plt.errorbar(
-                fixed_x_data_exp["Q2"], central_exp, yerr=std_exp, fmt="x"
+                fixed_x_data["Q2"],
+                central,
+                yerr=total_err,
+                fmt="o",
+                capsize=5,
+                label="yadism (tot err)",
+            )
+            plt.errorbar(
+                fixed_x_data["Q2"],
+                central,
+                yerr=sv_err,
+                fmt="o",
+                label="yadism (sv err)",
+            )
+            plt.errorbar(
+                fixed_x_data_exp["Q2"],
+                central_exp,
+                yerr=std_exp,
+                fmt="x",
+                label="data",
             )
 
             plt.title(f"{data_name}, x={x}. x_exp={x_exp:3f}")
             plt.xlabel("$Q^2$")
             plt.xscale("log")
+            plt.legend()
             plt.tight_layout()
             plt.savefig(preds_dest / f"{data_name}_x_{x}.pdf")
 
