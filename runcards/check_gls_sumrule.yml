@@ -1,0 +1,18 @@
+# Number of x-points to be used for the integration
+nx_specs:
+  nx: 100
+  xmin_log: -3
+
+# Details about the Q2-grid to be generated
+# The grid will containg `n` points between
+# `q2min` and `q2max`
+q2_values_dic:
+  q2min: 1
+  q2max: 5
+  n: 5
+
+# Value of the atomic mass number A
+a_value: 1
+
+actions:
+  - gls_sum_rules
