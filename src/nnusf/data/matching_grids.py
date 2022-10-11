@@ -194,18 +194,21 @@ def main(
             if "pineappl" not in gpath.name:
                 continue
             grid = pineappl.grid.Grid.read(gpath)
-            if xif=="xif1" and xir=="xir1":
+            if xif == "xif1" and xir == "xir1":
                 prediction = pdf_error(grid, pdf, kin_grid["x"], reshape=False)
             else:
                 prescription = [(float(xir[3:]), float(xif[3:]))]
-                prediction = theory_error(grid, pdf, prescription, kin_grid["x"], reshape=False)
+                prediction = theory_error(
+                    grid, pdf, prescription, kin_grid["x"], reshape=False
+                )
             full_pred.append(prediction[0])
         pred = np.average(full_pred, axis=0)
 
         # store data only for unvaried matching grids
-        if xif=="xif1" and xir=="xir1":
-            # central data is the median over replicas
-            data_pd = pd.DataFrame({"data": np.median(pred, axis=1)})
+        if xif == "xif1" and xir == "xir1":
+            # data_pd = pd.DataFrame({"data": np.median(pred, axis=1)})
+            # Select only predictions for Replicas_0 to be the Central Value
+            data_pd = pd.DataFrame({"data": pred[:, 0]})
 
             # Dump the kinematics into CSV
             dump_kinematics(destination, kin_grid, new_experiment, is_xsec)
