@@ -53,7 +53,7 @@ experiments:
 
 # Define some kinematic cuts (Omit if not needed)
 kinematic_cuts:
-  q2max: 30.0 # Max-Q2 value for real datasets (to be named better)
+  q2max: 25.0 # Max-Q2 value for real datasets (to be named better)
   w2min: 3.50 # Minimum W2 value for all datasets
 
 # chi2 history stored for each `log_freq` epochs
@@ -70,7 +70,7 @@ global_seeds: 1865683875
 
 # Define Neural Network Parameters
 fit_parameters:
-  epochs: 100000
+  epochs: 1000
   stopping_patience: 15000
   units_per_layer: [70, 55, 40, 20, 20]
   activation_per_layer: [tanh, tanh, tanh, tanh, selu]
