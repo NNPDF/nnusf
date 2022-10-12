@@ -53,7 +53,7 @@ experiments:
 
 # Define some kinematic cuts (Omit if not needed)
 kinematic_cuts:
-  q2max: 30.0 # Max-Q2 value for real datasets (to be named better)
+  q2max: 25.0 # Max-Q2 value for real datasets (to be named better)
   w2min: 3.50 # Minimum W2 value for all datasets
 
 # chi2 history stored for each `log_freq` epochs

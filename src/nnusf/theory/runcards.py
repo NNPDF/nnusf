@@ -11,7 +11,7 @@ import yaml
 
 from .. import utils
 from ..data import loader
-from . import bodek_yang, data_vs_theory, highq
+from . import bodek_yang, data_vs_theory, highq, defs
 
 _logger = logging.getLogger(__name__)
 
@@ -104,32 +104,53 @@ def hiq(datasets: list[pathlib.Path], destination: pathlib.Path):
     )
 
 
-def update_theory(name: str, path: pathlib.Path) -> dict:
+def update_theory(
+    name: str, path: pathlib.Path, activate_scale_var: bool
+) -> list:
     """Update theory runcard"""
     data = loader.Loader(name, path)
-    th = theory({"MP": float(np.unique(data.table["m_nucleon"]))})
-    return th
+    ths = []
+    if activate_scale_var:
+        # 7 points prescription (xir, xif)
+        for xif, xir in defs.seven_points:
+            ths.append(
+                theory(
+                    {
+                        "MP": float(np.unique(data.table["m_nucleon"])),
+                        "XIF": xif,
+                        "XIR": xir,
+                    }
+                )
+            )
+    else:
+        ths.append(theory({"MP": float(np.unique(data.table["m_nucleon"]))}))
+    return ths
 
 
-def dvst(datasets: list[pathlib.Path], destination: pathlib.Path):
+def dvst(
+    datasets: list[pathlib.Path], destination: pathlib.Path, activate_scale_var: bool
+):
     """Generate yadism runcards for all datapoints."""
     path = datasets_path(datasets)
     utils.mkdest(destination)
+    # Loop on datasets
     for dataset in datasets:
         data_name = "_".join(dataset.stem.split("_")[1:])
         ocards = data_vs_theory.runcards.observables([data_name], path)
-        theory_card = update_theory(data_name, path)
-        with tempfile.TemporaryDirectory() as tmpdir:
-            tmpdir = pathlib.Path(tmpdir)
-            utils.write(theory_card, tmpdir / "theory.yaml")
-            for name, observable_card in ocards.items():
-                utils.write(observable_card, tmpdir / f"obs-{name}.yaml")
+        # loop on theories
+        theory_cards = update_theory(data_name, path, activate_scale_var)
+        for theory_card in theory_cards:
+            with tempfile.TemporaryDirectory() as tmpdir:
+                tmpdir = pathlib.Path(tmpdir)
+                utils.write(theory_card, tmpdir / "theory.yaml")
+                for name, observable_card in ocards.items():
+                    utils.write(observable_card, tmpdir / f"obs-{name}.yaml")
 
-            tarpath = destination / f"runcards-{data_name}.tar"
-            with tarfile.open(tarpath, "w") as tar:
-                for tmppath in tmpdir.iterdir():
-                    tar.add(tmppath.absolute(), arcname="runcards/" + tmppath.name)
+                tarpath = destination / f"runcards-{data_name}_xif{theory_card['XIF']}_xir{theory_card['XIR']}.tar"
+                with tarfile.open(tarpath, "w") as tar:
+                    for tmppath in tmpdir.iterdir():
+                        tar.add(tmppath.absolute(), arcname="runcards/" + tmppath.name)
 
-            _logger.info(
-                f"Runcards have been dumped to '{tarpath.relative_to(pathlib.Path.cwd())}'"
-            )
+                _logger.info(
+                    f"Runcards have been dumped to '{tarpath.relative_to(pathlib.Path.cwd())}'"
+                )
