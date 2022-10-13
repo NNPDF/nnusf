@@ -194,7 +194,7 @@ def main(
             if "pineappl" not in gpath.name:
                 continue
             grid = pineappl.grid.Grid.read(gpath)
-            if xif == "xif1" and xir == "xir1":
+            if xif == "xif1.0" and xir == "xir1.0":
                 prediction = pdf_error(grid, pdf, kin_grid["x"], reshape=False)
             else:
                 prescription = [(float(xir[3:]), float(xif[3:]))]
@@ -205,7 +205,7 @@ def main(
         pred = np.average(full_pred, axis=0)
 
         # store data only for unvaried matching grids
-        if xif == "xif1" and xir == "xir1":
+        if xif == "xif1.0" and xir == "xir1.0":
             # data_pd = pd.DataFrame({"data": np.median(pred, axis=1)})
             # Select only predictions for Replicas_0 to be the Central Value
             data_pd = pd.DataFrame({"data": pred[:, 0]})
