@@ -77,7 +77,7 @@ def sub_coefficients(data, destination):
     The operation is repeated for each DATA path provided (multiple values allowed),
     e.g.:
 
-        nnu data coefficients commondata/data/*
+        nnu data coefficients commondata/data/* -d coefficients
 
     to repeat the operation for all dataset stored in `data`.
 
