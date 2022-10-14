@@ -47,19 +47,29 @@ def load_experimental_data(
     return raw_experimental_data, experimental_data
 
 
-def add_pseudodata(experimental_datasets, shift=True):
-    """If `shift=False` no pseudodata is generated and real data is used
+def add_pseudodata(experimental_datasets, matching_seed=1, shift=True):
+    """`matching_seed` is used to generate the level-1 fluctuation in the 
+    matching pseudodat.
+    If `shift=False` no pseudodata is generated and real data is used
     instead. This is only relevant for debugging purposes.
     """
     for dataset_name, dataset in experimental_datasets.items():
         cholesky = np.linalg.cholesky(dataset.covmat)
+
+        # If needed, generate the level-1 shift
+        shift_data = 0
+        if dataset_name.endswith('_MATCHING') and shift:
+            np_rng_state = np.random.get_state()
+            np.random.seed(matching_seed)
+            random_samples = np.random.randn(dataset.n_data)
+            np.random.set_state(np_rng_state)
+            shift_data = cholesky @ random_samples
+
+        # Generate the usual shift
         random_samples = np.random.randn(dataset.n_data)
-        # Matching pseudodata variance is increased to account for the fact
-        # that, unlike experimental data, they don't contain sampling
-        # fluctuations
-        if dataset_name.endswith('_MATCHING'):
-            random_samples *= np.sqrt(2)
-        shift_data = cholesky @ random_samples if shift else 0
+        shift_data += cholesky @ random_samples if shift else 0
+
+        # Add the shifts to the experimental central values
         pseudodata = dataset.central_values + shift_data
         dataset.pseudodata = pseudodata
 

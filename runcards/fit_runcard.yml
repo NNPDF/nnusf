@@ -67,6 +67,7 @@ rescale_inputs: True
 
 # Various seed values
 global_seeds: 1865683875
+matching_seed: 2
 
 # Define Neural Network Parameters
 fit_parameters:
