@@ -33,9 +33,9 @@ def xf3_predictions(model_path, xgrid, q2_values, a_value):
         fit=model_path,
         a_slice=a_value,
         x_slice=xgrid.tolist(),
-        qmin=q2_values.get("q2min", 1),
-        qmax=q2_values.get("q2max", 5),
-        n=q2_values.get("n", 1),
+        q2min=q2_values.get("q2min", 1),
+        q2max=q2_values.get("q2max", 5),
+        nq2p=q2_values.get("n", 1),
     )
     q2_grids = predictions_info.q
     predictions = predictions_info.predictions

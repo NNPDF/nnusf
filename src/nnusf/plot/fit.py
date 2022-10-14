@@ -8,6 +8,7 @@ import tensorflow as tf
 import yaml
 from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
+from numpy.core.shape_base import stack
 
 from ..sffit.check_gls import check_gls_sumrules
 from ..sffit.load_data import load_experimental_data
@@ -161,11 +162,56 @@ def sf_q_band(**kwargs):
         save_figs(fig, savepath)
 
 
+def sf_x_band(**kwargs):
+    predinfo = get_predictions_q(**kwargs)
+    pred = predinfo.predictions
+    q2_grids = predinfo.q
+    xval = predinfo.x
+
+    # Make sure that everything is a list
+    pred = [pred] if not isinstance(pred, list) else pred
+    xval = [xval] if not isinstance(xval, list) else xval
+
+    # Combine back the splitted predictions
+    stacked_pred = np.stack(pred)
+    assert len(stacked_pred.shape) == 4
+    # Swap axes such that the shape noe becomes
+    # shape=(nq2, nrep, nx, n_sfs)
+    new_pred = np.swapaxes(stacked_pred, 0, 2)
+
+    # Loop over the different Q2 values
+    for q2_idx, q2_pred in enumerate(new_pred):
+        # Loop over the different Structure Functions
+        for sf in range(q2_pred.shape[-1]):
+            sf_pred = q2_pred[:, :, sf]
+            pred_lower = np.nanpercentile(sf_pred, 16, axis=0)
+            pred_upper = np.nanpercentile(sf_pred, 84, axis=0)
+            pred_midle = np.median(sf_pred, axis=0)
+
+            fig, ax = plt.subplots()
+            ax.fill_between(
+                xval,
+                pred_lower,
+                pred_upper,
+                alpha=0.3,
+            )
+            ax.plot(xval, pred_midle)
+            ax.set_ylabel(basis[sf])
+            ax.set_xscale("log")
+            ax.set_xlabel(r"$x$")
+            ax.set_title(f"Q2={int(q2_grids[q2_idx])}, A={predinfo.A}")
+            savepath = (
+                pathlib.Path(kwargs["output"]) / f"plot_sf_x_{q2_idx}_{sf}"
+            )
+            save_figs(fig, savepath)
+
+
 def save_predictions_txt(**kwargs):
     predinfo = get_predictions_q(**kwargs)
     pred = predinfo.predictions
     q2_grids = predinfo.q
     xval = predinfo.x
+
     # Make sure that everything is a list
     pred = [pred] if not isinstance(pred, list) else pred
     xval = [xval] if not isinstance(xval, list) else xval
