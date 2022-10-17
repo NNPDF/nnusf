@@ -57,9 +57,8 @@ def main(
         kincuts=runcard_content.get("kinematic_cuts", {}),
     )
     # create pseudodata and add it to the data_info object
-    matching_seed = runcard_content.get("genrep", runcard_content["global_seeds"])
     genrep = runcard_content.get("genrep", None)
-    load_data.add_pseudodata(data_info, matching_seed=matching_seed, shift=genrep)
+    load_data.add_pseudodata(data_info, shift=genrep)
     # create a training mask and add it to the data_info object
     load_data.add_tr_filter_mask(data_info)
 
