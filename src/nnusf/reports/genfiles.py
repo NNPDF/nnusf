@@ -13,10 +13,10 @@ from ..plot.fit import (
 )
 
 MAP_LABELS = {
-    "expr": "\\( \\langle \\chi^{2, \rm real}_{\rm exp} \rangle \\)",
-    "expt": "\\( \\langle \\chi^{2, \rm tot}_{\rm exp} \rangle \\)",
-    "tr": "\\( \\langle \\chi^{2}_{\rm tr} \rangle \\)",
-    "vl": "\\( \\langle \\chi^{2}_{\rm vl} \rangle \\)",
+    "expr": r"\( \langle \chi^{2, \rm real}_{\rm exp} \rangle \)",
+    "expt": r"\( \langle \chi^{2, \rm tot}_{\rm exp} \rangle \)",
+    "tr": r"\( \langle \chi^{2}_{\rm tr} \rangle \)",
+    "vl": r"\( \langle \chi^{2}_{\rm vl} \rangle \)",
 }
 
 COLUMN_LABELS = {
