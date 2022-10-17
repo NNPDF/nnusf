@@ -48,9 +48,7 @@ def load_experimental_data(
 
 
 def add_pseudodata(experimental_datasets, shift=True):
-    """`matching_seed` is used to generate the level-1 fluctuation in the
-    matching pseudodat.
-    If `shift=False` no pseudodata is generated and real data is used
+    """If `shift=False` no pseudodata is generated and real data is used
     instead. This is only relevant for debugging purposes.
     """
     for dataset in experimental_datasets.values():
