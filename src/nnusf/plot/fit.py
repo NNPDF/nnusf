@@ -97,8 +97,8 @@ def training_epochs_distribution(**kwargs):
     center_bins = (bins[:-1] + bins[1:]) / 2
     ax.bar(center_bins, freq, width=bar_width)
     ax.axvline(x=tr_epochs.mean(), lw=2, color="C1")
-    ax.set_xlabel(r"$\rm{Frequency}$")
-    ax.set_ylabel(r"$\rm{Nb.~Epochs}$")
+    ax.set_xlabel(r"$\rm{Epochs}$")
+    ax.set_ylabel(r"$\rm{Frequency}$")
 
     save_path = pathlib.Path(kwargs["output"]) / "distr_epochs"
     save_figs(fig, save_path)
