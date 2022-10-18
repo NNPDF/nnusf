@@ -200,7 +200,16 @@ class Loader:
     @property
     def central_values(self) -> np.ndarray:
         """Return the dataset central values."""
-        return self.table["data"].values
+        if self.name.endswith("_MATCHING"):
+            cholesky = np.linalg.cholesky(self.covariance_matrix)
+            np_rng_state = np.random.get_state()
+            np.random.seed(pow(self.table.shape[0], 3))
+            random_samples = np.random.randn(self.table.shape[0])
+            np.random.set_state(np_rng_state)
+            shift_data = cholesky @ random_samples
+            return self.table["data"].values + shift_data
+        else:
+            return self.table["data"].values
 
     @property
     def covmat(self) -> np.ndarray:
@@ -246,19 +255,21 @@ class Loader:
         """
         if "_MATCHING" in dataset_name:
             sv_variations = []
-            for variation in pathlib.Path(f"{commondata_path}/matching/").iterdir():
+            for variation in pathlib.Path(
+                f"{commondata_path}/matching/"
+            ).iterdir():
                 if dataset_name in variation.stem:
-                    # central scale 
+                    # central scale
                     if "xif1_xir1" in variation.stem:
                         nrep_predictions = np.load(variation)
                     else:
                         sv_variations.append(np.load(variation))
             # build th shift
-            th_shift = (sv_variations - nrep_predictions[:,0]).T
+            th_shift = (sv_variations - nrep_predictions[:, 0]).T
             # build covaraince
             pdf_covmat = np.cov(nrep_predictions[mask_predictions])
             th_covamt = np.cov(th_shift[mask_predictions])
-            covmat = np.sqrt(th_covamt ** 2 + pdf_covmat ** 2)
+            covmat = np.sqrt(th_covamt**2 + pdf_covmat**2)
             return clip_covmat(covmat, dataset_name)
         else:
             diagonal = np.power(unc_df["stat"], 2)
