@@ -86,8 +86,8 @@ def sub_postfit(model, threshold):
     help="Install the set into the LHAPDF directory",
 )
 def sub_dump_grids(model, a_value, x_grids, q2_grids, output, install):
-    """Perform a postfit on a fit folder by discarding the replica
-    that does satisfy some criteria.
+    """Generate the LHAPDF grids, dump them into files, and install
+    the resulting set into the LHAPDF path.
     """
     if x_grids is not None:
         x_grids = eval(x_grids)

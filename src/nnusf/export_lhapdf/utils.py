@@ -3,7 +3,7 @@
 Module that the Structure Function predictions from the NN and
 dump them as a LHAPDF-like grid.
 
-The functions below are taken and adapted from the eko library:
+Some of the functions below are taken and adapted from the eko library:
 
     https://github.com/NNPDF/eko
 """

@@ -19,7 +19,7 @@ _logger = logging.getLogger(__name__)
 LHAPDF_ID = [1001, 1002, 1003, 2001, 2002, 2003, 3001, 3002, 3003]
 A_VALUE = 1
 X_GRIDS = dict(min=1e-2, max=1.0, num=100)
-Q2_GRIDS = dict(min=1, max=500, num=1000)
+Q2_GRIDS = dict(min=1, max=500, num=400)
 
 
 def parse_nn_predictions(
