@@ -9,6 +9,7 @@ import yaml
 from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
 
+from ..sffit.check_gls import check_gls_sumrules
 from ..sffit.load_data import load_experimental_data
 from ..sffit.load_fit_data import get_predictions_q, load_models
 
@@ -53,20 +54,6 @@ def save_figs(
     plt.close(figure)
 
 
-def main(model: pathlib.Path, runcard: pathlib.Path, output: pathlib.Path):
-    if output.exists():
-        _logger.warning(f"{output} already exists, overwriting content.")
-    output.mkdir(parents=True, exist_ok=True)
-
-    runcard_content = yaml.safe_load(runcard.read_text())
-    runcard_content["fit"] = str(model.absolute())
-    runcard_content["output"] = str(output.absolute())
-
-    for action in runcard_content["actions"]:
-        func = globals()[action]
-        func(**runcard_content)
-
-
 def training_validation_split(**kwargs):
     fitinfo = pathlib.Path(kwargs["fit"]).glob("replica_*/fitinfo.json")
     tr_chi2s, vl_chi2s = [], []
@@ -76,12 +63,69 @@ def training_validation_split(**kwargs):
             jsonfile = json.load(file_stream)
         tr_chi2s.append(jsonfile["best_tr_chi2"])
         vl_chi2s.append(jsonfile["best_vl_chi2"])
+    tr_chi2s, vl_chi2s = np.asarray(tr_chi2s), np.asarray(vl_chi2s)
+    min_boundary = np.min([tr_chi2s, vl_chi2s]) - 0.05
+    max_boundary = np.max([tr_chi2s, vl_chi2s]) + 0.05
 
     fig, ax = plt.subplots(figsize=(6, 6))
-    ax.scatter(tr_chi2s, vl_chi2s, s=20, marker="s")
+    ax.scatter(tr_chi2s, vl_chi2s, s=30, marker="s")
+    ax.scatter(tr_chi2s.mean(), vl_chi2s.mean(), s=30, marker="s", color="C1")
     ax.set_xlabel(r"$\chi^2_{\rm tr}$")
     ax.set_ylabel(r"$\chi^2_{\rm vl}$")
+    ax.set_xlim([min_boundary, max_boundary])
+    ax.set_ylim([min_boundary, max_boundary])
+    ax.plot([0, 1], [0, 1], transform=ax.transAxes)
+
     save_path = pathlib.Path(kwargs["output"]) / "chi2_split"
+    save_figs(fig, save_path)
+
+
+def training_epochs_distribution(**kwargs):
+    fitinfo = pathlib.Path(kwargs["fit"]).glob("replica_*/fitinfo.json")
+
+    tr_epochs = []
+    for repinfo in fitinfo:
+        with open(repinfo, "r") as file_stream:
+            jsonfile = json.load(file_stream)
+        tr_epochs.append(jsonfile["best_epochs"])
+    tr_epochs = np.asarray(tr_epochs)
+    binning = np.linspace(tr_epochs.min(), tr_epochs.max(), 10, endpoint=True)
+    bar_width = binning[1] - binning[0]
+    freq, bins = np.histogram(tr_epochs, bins=binning, density=False)
+
+    fig, ax = plt.subplots(figsize=(6, 6))
+    center_bins = (bins[:-1] + bins[1:]) / 2
+    ax.bar(center_bins, freq, width=bar_width)
+    ax.axvline(x=tr_epochs.mean(), lw=2, color="C1")
+    ax.set_xlabel(r"$\rm{Epochs}$")
+    ax.set_ylabel(r"$\rm{Frequency}$")
+
+    save_path = pathlib.Path(kwargs["output"]) / "distr_epochs"
+    save_figs(fig, save_path)
+
+
+def gls_sum_rules(**kwargs):
+    q2grids, gls_results, xf3avg_int = check_gls_sumrules(**kwargs)
+
+    xf3avg_int_mean = np.mean(xf3avg_int, axis=0)
+    xf3avg_int_stdev = np.std(xf3avg_int, axis=0)
+
+    fig, ax = plt.subplots()
+    ax.scatter(q2grids, gls_results, color="C0", s=20, marker="s", label="GLS")
+    ax.errorbar(
+        q2grids,
+        xf3avg_int_mean,
+        yerr=xf3avg_int_stdev,
+        color="C1",
+        fmt=".",
+        label="NN Predictions",
+        capsize=5,
+    )
+    ax.legend(title=f"Comparison for A={kwargs['a_value']}")
+    ax.set_xlabel(r"$Q^2~[\rm{GeV}^2]$")
+    ax.set_ylabel(r"$\rm{Value}$")
+    plotname = f"gls_sumrule_a{kwargs['a_value']}"
+    save_path = pathlib.Path(kwargs["output"]) / plotname
     save_figs(fig, save_path)
 
 
@@ -290,3 +334,17 @@ def chi2_history_plot(xmin=None, **kwargs):
                     / f"chi2_history_plot_{count_plots}"
                 )
                 save_figs(fig, savepath)
+
+
+def main(model: pathlib.Path, runcard: pathlib.Path, output: pathlib.Path):
+    if output.exists():
+        _logger.warning(f"{output} already exists, overwriting content.")
+    output.mkdir(parents=True, exist_ok=True)
+
+    runcard_content = yaml.safe_load(runcard.read_text())
+    runcard_content["fit"] = str(model.absolute())
+    runcard_content["output"] = str(output.absolute())
+
+    for action in runcard_content["actions"]:
+        func = globals()[action]
+        func(**runcard_content)

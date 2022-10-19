@@ -137,7 +137,7 @@ sfkinds = list(defs.sfmap.keys())
 
 
 @subcommand.command("sf")
-@click.argument("source", type=click.Path(path_type=pathlib.Path, exists=True))
+@click.argument("dataset", type=click.Path(path_type=pathlib.Path, exists=True))
 @click.option(
     "-k",
     "--kind",
@@ -153,14 +153,14 @@ sfkinds = list(defs.sfmap.keys())
     default=pathlib.Path.cwd().absolute() / "plots",
     help="Alternative destination path to store the resulting plots (default: $PWD/plots).",
 )
-def sub_sf(source, kind, destination):
+def sub_sf(dataset, kind, destination):
     """Plots structure functions."""
 
-    sf.main(source, kind, destination)
+    sf.main(dataset, kind, destination)
 
 
 @subcommand.command("matching_dataset")
-@click.argument("source", type=click.Path(path_type=pathlib.Path, exists=True))
+@click.argument("dataset", type=click.Path(path_type=pathlib.Path, exists=True))
 @click.option(
     "-d",
     "--destination",
@@ -168,7 +168,9 @@ def sub_sf(source, kind, destination):
     default=pathlib.Path.cwd().absolute() / "plots",
     help="Alternative destination path to store the resulting plots (default: $PWD/plots).",
 )
-def sub_matching_dataset(source, destination):
-    """Plots the matching datasets along with the actual data"""
+def sub_matching_dataset(dataset, destination):
+    """Plots the matching datasets along with the actual data.
 
-    matching.main(source, destination)
+    eg: nnu plot matching_dataset commondata/data/DATA_NUTEV_F2_MATCHING.csv
+    """
+    matching.main(dataset, destination)

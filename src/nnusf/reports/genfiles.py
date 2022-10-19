@@ -2,10 +2,36 @@
 import json
 import pathlib
 
+import numpy as np
 import pandas as pd
 import yaml
 
-from ..plot.fit import prediction_data_comparison, training_validation_split
+from ..plot.fit import (
+    prediction_data_comparison,
+    training_epochs_distribution,
+    training_validation_split,
+)
+
+MAP_LABELS = {
+    "expr": r"\( \langle \chi^{2, \rm real}_{\rm exp} \rangle \)",
+    "expt": r"\( \langle \chi^{2, \rm tot}_{\rm exp} \rangle \)",
+    "tr": r"\( \langle \chi^{2}_{\rm tr} \rangle \)",
+    "vl": r"\( \langle \chi^{2}_{\rm vl} \rangle \)",
+}
+
+COLUMN_LABELS = {
+    "Ndat": r"\( \mathrm{N}_\mathrm{dat} \)",
+    "frac": r"\( \mathrm{frac} \)",
+    "tr_chi2": r"\( < \chi^{2, \star}_\mathrm{tr} > \)",
+    "exp_chi2": r"\( < \chi^{2, \star}_{\mathrm{exp}} > \)",
+}
+
+
+def rename_dic_keys(curr_dic, new_keys):
+    """Rename the keys of a dictionary."""
+
+    for old_key, new_key in new_keys.items():
+        curr_dic[new_key] = curr_dic.pop(old_key)
 
 
 def dump_to_csv(
@@ -33,18 +59,25 @@ def summary_table(fitfolder: pathlib.Path) -> pd.DataFrame:
             Path to the fit folder
     """
     fitinfos = fitfolder.glob("**/replica_*/fitinfo.json")
-    chi2_summary = {"tr": 0.0, "vl": 0.0, "Exp": 0.0}
+    summary = {}
+    chi_tr, chi_vl, chi_real, chi_tot = [], [], [], []
     # Loop over the replica folder & extract chi2 info
-    for count, repinfo in enumerate(fitinfos, start=1):
+    for repinfo in fitinfos:
         jsonfile = json_loader(repinfo)
-        for chi2type in ["tr", "vl"]:
-            chi2_summary[chi2type] += jsonfile[f"best_{chi2type}_chi2"]
-        chi2_summary["Exp"] += jsonfile["exp_chi2s"]["total_chi2"]
+        chi_tot.append(jsonfile["exp_chi2s"]["total_chi2"])
+        chi_tr.append(jsonfile[f"best_tr_chi2"])
+        chi_vl.append(jsonfile[f"best_vl_chi2"])
+        chi_real.append(jsonfile["exp_chi2s"]["tot_chi2_real"])
 
-    # Average the chi2 over the nb of replicas
-    for chi2type in chi2_summary:
-        chi2_summary[chi2type] /= count
-    summtable = pd.DataFrame.from_dict({"chi2": chi2_summary})
+    chi_real, chi_tot = np.asarray(chi_real), np.asarray(chi_tot)
+    chi_tr, chi_vl = np.asarray(chi_tr), np.asarray(chi_vl)
+    summary["tr"] = rf"{chi_tr.mean():.4f} \( \pm \) {chi_tr.std():.4f}"
+    summary["vl"] = rf"{chi_vl.mean():.4f} \( \pm \) {chi_vl.std():.4f}"
+    summary["expr"] = rf"{chi_real.mean():.4f} \( \pm \) {chi_real.std():.4f}"
+    summary["expt"] = rf"{chi_tot.mean():.4f} \( \pm \) {chi_tot.std():.4f}"
+
+    rename_dic_keys(summary, MAP_LABELS)
+    summtable = pd.DataFrame.from_dict({"Values (STD)": summary})
     dump_to_csv(fitfolder, summtable, "summary")
     return summtable
 
@@ -84,6 +117,7 @@ def chi2_tables(fitfolder: pathlib.Path) -> pd.DataFrame:
         chi2_dic[dataset_name]["exp_chi2"] /= count
 
     chi2table = pd.DataFrame.from_dict(chi2_dic, orient="index")
+    chi2table.rename(columns=COLUMN_LABELS, inplace=True)
     dump_to_csv(fitfolder, chi2table, "chi2datasets")
     return chi2table
 
@@ -104,7 +138,7 @@ def data_vs_predictions(fitfolder: pathlib.Path) -> None:
     prediction_data_comparison(**runcard_content)
 
 
-def training_validation_plot(fitfolder: pathlib.Path) -> None:
+def additional_plots(fitfolder: pathlib.Path) -> None:
     # Prepare the output path to store the figures
     output_path = fitfolder.absolute()
     output_path = output_path.parents[0].joinpath("output/others")
@@ -114,3 +148,4 @@ def training_validation_plot(fitfolder: pathlib.Path) -> None:
     input_dic = {"fit": str(fitfolder.absolute()), "output": str(output_path)}
 
     training_validation_split(**input_dic)
+    training_epochs_distribution(**input_dic)
