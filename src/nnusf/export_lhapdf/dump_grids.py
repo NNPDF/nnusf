@@ -41,8 +41,9 @@ def parse_nn_predictions(
     predictions = np.moveaxis(predictions, [0, 1, 2], [2, 0, 1])
 
     # Append the average to the array block
-    for i in range(0, predictions.shape[-1], 2):
-        avg = (predictions[:, :, :, i] + predictions[:, :, :, i + 1]) / 2
+    copied_pred = np.copy(predictions)
+    for i in range(copied_pred.shape[-1] // 2):
+        avg = (copied_pred[:, :, :, i] + copied_pred[:, :, :, i + 3]) / 2
         average = np.expand_dims(avg, axis=-1)
         predictions = np.concatenate([predictions, average], axis=-1)
 
@@ -69,10 +70,13 @@ def parse_nn_predictions(
     return grids_info_specs, combined_replica
 
 
-def dump_pred_lhapdf(name: str, all_replicas: list, grids_info_specs: dict):
+def dump_pred_lhapdf(
+    name: str, am: int, all_replicas: list, grids_info_specs: dict
+):
     # Generate the dictionary containing the info file
     info_file = create_info_file(
         sf_flavors=LHAPDF_ID,
+        a_value=int(am),
         x_grids=grids_info_specs["x_grids"],
         q2_grids=grids_info_specs["q2_grids"],
         nrep=grids_info_specs["nrep"],
@@ -115,7 +119,7 @@ def main(
         q2_dic_specs=q2_grids,
     )
     _logger.info("Dumping the blocks into files.")
-    dump_pred_lhapdf(output, prediction_allreplicas, grid_info)
+    dump_pred_lhapdf(output, a_value, prediction_allreplicas, grid_info)
     if install_lhapdf:
         install_pdf(output)
         _logger.info("✓ The set has been successfully copied into LHAPDF.")
