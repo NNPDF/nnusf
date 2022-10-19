@@ -46,7 +46,7 @@ def generate_block(xfxQ2, xgrid, Q2grid, pids):
     return block
 
 
-def create_info_file(sf_flavors, x_grids, q2_grids, nrep):
+def create_info_file(sf_flavors, a_value, x_grids, q2_grids, nrep):
     """
     Generate a lhapdf info file from theory and operators card
 
@@ -61,7 +61,7 @@ def create_info_file(sf_flavors, x_grids, q2_grids, nrep):
         info file in lhapdf format
     """
     template_info = {}
-    template_info["SetDesc"] = "Structure Function PDFs"
+    template_info["SetDesc"] = f"Structure Function PDFs for A={a_value}"
     template_info["Authors"] = "NvSF"
     template_info["FlavorScheme"] = ""
     template_info["NumFlavors"] = len(sf_flavors) + 1
