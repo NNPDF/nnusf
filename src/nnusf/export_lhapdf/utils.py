@@ -70,8 +70,8 @@ def create_info_file(sf_flavors, a_value, x_grids, q2_grids, nrep):
     template_info["XMax"] = x_grids[-1]
     template_info["NumMembers"] = nrep
     template_info["OrderQCD"] = ""
-    template_info["QMin"] = round(q2_grids[0])
-    template_info["QMax"] = round(q2_grids[-1])
+    template_info["QMin"] = np.sqrt(round(q2_grids[0], 3))
+    template_info["QMax"] = np.sqrt(round(q2_grids[-1], 3))
     template_info["MZ"] = ""
     template_info["MUp"] = 0.0
     template_info["MDown"] = 0.0
