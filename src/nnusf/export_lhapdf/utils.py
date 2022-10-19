@@ -9,6 +9,7 @@ Some of the functions below are taken and adapted from the eko library:
 """
 
 import io
+import math
 import pathlib
 import re
 import shutil
@@ -70,8 +71,8 @@ def create_info_file(sf_flavors, a_value, x_grids, q2_grids, nrep):
     template_info["XMax"] = x_grids[-1]
     template_info["NumMembers"] = nrep
     template_info["OrderQCD"] = ""
-    template_info["QMin"] = np.sqrt(round(q2_grids[0], 3))
-    template_info["QMax"] = np.sqrt(round(q2_grids[-1], 3))
+    template_info["QMin"] = round(math.sqrt(q2_grids[0]), 4)
+    template_info["QMax"] = round(math.sqrt(q2_grids[-1]), 4)
     template_info["MZ"] = ""
     template_info["MUp"] = 0.0
     template_info["MDown"] = 0.0
