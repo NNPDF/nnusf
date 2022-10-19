@@ -63,12 +63,44 @@ def training_validation_split(**kwargs):
             jsonfile = json.load(file_stream)
         tr_chi2s.append(jsonfile["best_tr_chi2"])
         vl_chi2s.append(jsonfile["best_vl_chi2"])
+    tr_chi2s, vl_chi2s = np.asarray(tr_chi2s), np.asarray(vl_chi2s)
+    min_boundary = np.min([tr_chi2s, vl_chi2s]) - 0.05
+    max_boundary = np.max([tr_chi2s, vl_chi2s]) + 0.05
 
     fig, ax = plt.subplots(figsize=(6, 6))
-    ax.scatter(tr_chi2s, vl_chi2s, s=20, marker="s")
+    ax.scatter(tr_chi2s, vl_chi2s, s=30, marker="s")
+    ax.scatter(tr_chi2s.mean(), vl_chi2s.mean(), s=30, marker="s", color="C1")
     ax.set_xlabel(r"$\chi^2_{\rm tr}$")
     ax.set_ylabel(r"$\chi^2_{\rm vl}$")
+    ax.set_xlim([min_boundary, max_boundary])
+    ax.set_ylim([min_boundary, max_boundary])
+    ax.plot([0, 1], [0, 1], transform=ax.transAxes)
+
     save_path = pathlib.Path(kwargs["output"]) / "chi2_split"
+    save_figs(fig, save_path)
+
+
+def training_epochs_distribution(**kwargs):
+    fitinfo = pathlib.Path(kwargs["fit"]).glob("replica_*/fitinfo.json")
+
+    tr_epochs = []
+    for repinfo in fitinfo:
+        with open(repinfo, "r") as file_stream:
+            jsonfile = json.load(file_stream)
+        tr_epochs.append(jsonfile["best_epochs"])
+    tr_epochs = np.asarray(tr_epochs)
+    binning = np.linspace(tr_epochs.min(), tr_epochs.max(), 10, endpoint=True)
+    bar_width = binning[1] - binning[0]
+    freq, bins = np.histogram(tr_epochs, bins=binning, density=False)
+
+    fig, ax = plt.subplots(figsize=(6, 6))
+    center_bins = (bins[:-1] + bins[1:]) / 2
+    ax.bar(center_bins, freq, width=bar_width)
+    ax.axvline(x=tr_epochs.mean(), lw=2, color="C1")
+    ax.set_xlabel(r"$\rm{Epochs}$")
+    ax.set_ylabel(r"$\rm{Frequency}$")
+
+    save_path = pathlib.Path(kwargs["output"]) / "distr_epochs"
     save_figs(fig, save_path)
 
 

@@ -24,6 +24,7 @@ def main(cards: pathlib.Path, destination: pathlib.Path):
     """
     with tempfile.TemporaryDirectory() as tmpdir:
         tmpdir = pathlib.Path(tmpdir).absolute()
+        full_data_name = str(cards).split("-")[1][:-4]
 
         # extract tar content
         if cards.suffix == ".tar":
@@ -51,10 +52,8 @@ def main(cards: pathlib.Path, destination: pathlib.Path):
                     output.dump_pineappl_to_file(res_path, obs)
                     _logger.info(f"Dumped {res_path.name}")
 
-        if "_NU" in data_name or "_NB" in data_name:
-            data_name = data_name[:-3]
         file_name = (
-            f"grids-{data_name}.tar" if data_name != "" else f"grids.tar"
+            f"grids-{full_data_name}.tar.gz" if full_data_name != "" else f"grids.tar.gz"
         )
         with tarfile.open(destination / file_name, "w") as tar:
             for path in grids_dest.iterdir():
