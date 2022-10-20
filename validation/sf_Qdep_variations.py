@@ -170,15 +170,21 @@ nfl=9
 qgrid = np.logspace(log(qmin),log(qmax),nq)
 
 # number of pdf sets
-nset=3
+nset=6
 
 nrep=np.zeros(nset, dtype='int')
 nrep_max = 100
 
-pdfset=["NNUSF10_A1_Q2MIN001","NNUSF10_A56_Q2MIN001","NNUSF10_A208_Q2MIN001"]
+pdfset=["NNUSF10_A1_Q2MIN001","NNUSF10_A1_Q2MIN001_NOMATCHING",\
+        "NNUSF10_A56_Q2MIN001","NNUSF10_A56_Q2MIN001_NOMATCHING",\
+        "NNUSF10_A208_Q2MIN001","NNUSF10_A208_Q2MIN001_NOMATCHING"]
+
 fit1 = np.zeros((nrep_max,nfl,nq))
 fit2 = np.zeros((nrep_max,nfl,nq))
 fit3 = np.zeros((nrep_max,nfl,nq))
+fit4 = np.zeros((nrep_max,nfl,nq))
+fit5 = np.zeros((nrep_max,nfl,nq))
+fit6 = np.zeros((nrep_max,nfl,nq))
 
 ids = np.array([1001,1002,1003,2001,2002,2003,3001,3002,3003])
 
@@ -187,8 +193,11 @@ for iset in range(nset):
     p=lhapdf.getPDFSet(pdfset[iset])
     nrep[iset]=int(p.get_entry("NumMembers"))-1
     print("nrep = ",nrep[iset])
+    if(nrep[iset] > 97):
+        nrep[iset] = 97
     if(nrep[iset] > nrep_max):
         print("Problem, too many replicas \n")
+        print(nrep[iset]," ",nrep_max)
         exit()
     print(p.description)
 
@@ -212,7 +221,13 @@ for iset in range(nset):
                     fit2[i-1][ifl][k] = p.xfxQ(ids[ifl],x,q)
                 if(iset==2):
                     fit3[i-1][ifl][k] = p.xfxQ(ids[ifl],x,q)
-                #print(i," ",ifl," ",fit1[i-1][ifl][k])
+                if(iset==3):
+                    fit4[i-1][ifl][k] = p.xfxQ(ids[ifl],x,q)
+                if(iset==4):
+                    fit5[i-1][ifl][k] = p.xfxQ(ids[ifl],x,q)
+                if(iset==5):
+                    fit6[i-1][ifl][k] = p.xfxQ(ids[ifl],x,q)
+                
                 
                 # end run over sets 
 print("PDF arrays succesfully filled")
@@ -236,12 +251,28 @@ p3_low = np.nanpercentile(fit3,16,axis=0)
 p3_mid = ( p3_high + p3_low )/2.
 p3_error = ( p3_high - p3_low )/2.
 
+p4_high = np.nanpercentile(fit4,84,axis=0)
+p4_low = np.nanpercentile(fit4,16,axis=0)
+p4_mid = ( p4_high + p4_low )/2.
+p4_error = ( p4_high - p4_low )/2.
+
+p5_high = np.nanpercentile(fit5,84,axis=0)
+p5_low = np.nanpercentile(fit5,16,axis=0)
+p5_mid = ( p5_high + p5_low )/2.
+p5_error = ( p5_high - p5_low )/2.
+
+p6_high = np.nanpercentile(fit6,84,axis=0)
+p6_low = np.nanpercentile(fit6,16,axis=0)
+p6_mid = ( p6_high + p6_low )/2.
+p6_error = ( p6_high - p6_low )/2.
+
+
 #---------------------------------------------------------------------
 # Plot absolute SFs
 #---------------------------------------------------------------------
 
 py.clf()
-ncols,nrows=3,3
+ncols,nrows=3,6
 py.figure(figsize=(ncols*5,nrows*3.5))
 gs = gridspec.GridSpec(nrows,ncols)
 rescolors = py.rcParams['axes.prop_cycle'].by_key()['color']
@@ -258,25 +289,21 @@ labelpdf=[r"$F_2^{\nu p}(x,Q,A)$",
           r"$xF_3^{(\nu +\bar{\nu}) p}(x,Q,A)$",]
 
 icount=0
-for ifl in range(nfl):
+for ifl in range(6):
 
-    ## NNUSF proton
     ax = py.subplot(gs[icount])
+    
+    ## NNUSF proton
     p1=ax.plot(qgrid,p1_mid[ifl],ls="solid")
     ax.fill_between(qgrid,p1_high[ifl],p1_low[ifl],color=rescolors[0],alpha=0.2)
     p2=ax.fill(np.NaN,np.NaN,color=rescolors[0],alpha=0.2)
 
-    ## NNUSF iron
+    ## NNUSF proton (variation)
     p3=ax.plot(qgrid,p2_mid[ifl],ls="dashed")
     ax.fill_between(qgrid,p2_high[ifl],p2_low[ifl],color=rescolors[1],alpha=0.2)
     p4=ax.fill(np.NaN,np.NaN,color=rescolors[1],alpha=0.2)
 
-    ## NNUSF lead
-    p5=ax.plot(qgrid,p3_mid[ifl],ls="dotted")
-    ax.fill_between(qgrid,p3_high[ifl],p3_low[ifl],color=rescolors[2],alpha=0.2)
-    p6=ax.fill(np.NaN,np.NaN,color=rescolors[2],alpha=0.2)
-
-     ## YADISM NNPDF4.0 NNLO proton baseline
+    ## YADISM NNPDF4.0 NNLO proton baseline
     if(ifl==0):
         p7 = ax.plot(yadism_sf_q,yadism_nnlo_f2_nu_mid,ls="dashdot",color=rescolors[3],lw=2)
         ax.fill_between(yadism_sf_q,yadism_nnlo_f2_nu_high,yadism_nnlo_f2_nu_low,color=rescolors[3],alpha=0.2)
@@ -327,37 +354,27 @@ for ifl in range(nfl):
     if(filelabel=="x0p1"):
         if(ifl==0): ax.set_ylim(-0.1,1.8)
         if(ifl==3): ax.set_ylim(-0.1,1.8)
-        if(ifl==6): ax.set_ylim(-0.1,1.8) 
         if(ifl==1): ax.set_ylim(-0.2,0.85)
         if(ifl==4): ax.set_ylim(-0.2,0.85)
-        if(ifl==7): ax.set_ylim(-0.2,0.85)
         if(ifl==2): ax.set_ylim(-0.1,1.3)
         if(ifl==5): ax.set_ylim(-0.1,1.3)
-        if(ifl==8): ax.set_ylim(-0.1,1.3)
-
+        
     if(filelabel=="x0p01"):
         if(ifl==0): ax.set_ylim(-0.1,4.0)
         if(ifl==3): ax.set_ylim(-0.1,4.0)
-        if(ifl==6): ax.set_ylim(-0.1,4.0) 
         if(ifl==1): ax.set_ylim(-0.2,1.4)
         if(ifl==4): ax.set_ylim(-0.2,1.4)
-        if(ifl==7): ax.set_ylim(-0.2,1.4)
         if(ifl==2): ax.set_ylim(-0.2,1.5)
         if(ifl==5): ax.set_ylim(-0.2,1.5)
-        if(ifl==8): ax.set_ylim(-0.2,1.5)
-
+        
     if(filelabel=="x0p00126"):
         if(ifl==0): ax.set_ylim(-0.1,7.0)
         if(ifl==3): ax.set_ylim(-0.1,7.0)
-        if(ifl==6): ax.set_ylim(-0.1,7.0) 
         if(ifl==1): ax.set_ylim(-0.2,1.8)
         if(ifl==4): ax.set_ylim(-0.2,1.8)
-        if(ifl==7): ax.set_ylim(-0.2,1.8)
         if(ifl==2): ax.set_ylim(-0.2,1.7)
         if(ifl==5): ax.set_ylim(-0.7,1.7)
-        if(ifl==8): ax.set_ylim(-0.2,1.7)
-    
-
+        
     ax.tick_params(which='both',direction='in',labelsize=12,right=True)
     ax.tick_params(which='major',length=7)
     ax.tick_params(which='minor',length=4)
@@ -370,186 +387,133 @@ for ifl in range(nfl):
         ax.text(0.10,0.85,stringx,fontsize=17,transform=ax.transAxes)
 
     # Add the legend
-    if(ifl==3):
-        ax.legend([(p1[0],p2[0]),(p7[0],p8[0]),(p3[0],p4[0]),(p5[0],p6[0])],\
-                  [ r"$A=1$", r"$A=1~{\rm (pQCD)}$",r"$A=56$", r"$A=208$" ], \
+    if(ifl==0):
+        ax.legend([(p1[0],p2[0]),(p7[0],p8[0]),(p3[0],p4[0])],\
+                  [ r"$A=1$", r"$A=1~{\rm (pQCD)}$",r"$A=1~(\rm wo~match)$" ], \
                   frameon=True,loc=4,prop={'size':13})
 
     icount = icount + 1
 
-py.tight_layout(pad=1, w_pad=1, h_pad=1.0)
-py.savefig('NNUSF-'+filelabel+'.pdf')
-print('output plot: NNUSF-'+filelabel+'.pdf')
+for ifl in range(6):
 
-#---------------------------------------------------------------------
-# Plot ratios to the proton baseline
-#---------------------------------------------------------------------
-
-py.clf()
-ncols,nrows=3,3
-py.figure(figsize=(ncols*5,nrows*3.5))
-gs = gridspec.GridSpec(nrows,ncols)
-rescolors = py.rcParams['axes.prop_cycle'].by_key()['color']
-
-# pdflabels
-labelpdf=[r"$F_2^{\nu p}~({\rm ratio~to~}A=1)$",
-          r"$F_L^{\nu p}~({\rm ratio~to~}A=1)$",
-          r"$xF_3^{\nu p}~({\rm ratio~to~}A=1)$",\
-          r"$F_2^{\bar{\nu} p}~({\rm ratio~to~}A=1)$",
-          r"$F_L^{\bar{\nu} p}~({\rm ratio~to~}A=1)$",
-          r"$xF_3^{\bar{\nu} p}~({\rm ratio~to~}A=1)$",\
-          r"$F_2^{(\nu +\bar{\nu}) p}~({\rm ratio~to~}A=1)$",\
-          r"$F_L^{(\nu +\bar{\nu}) p}~({\rm ratio~to~}A=1)$",\
-          r"$xF_3^{(\nu +\bar{\nu}) p}~({\rm ratio~to~}A=1)$",]
-
-icount=0
-for ifl in range(nfl):
-
-    norm = p1_mid[ifl]
-
-    ## NNUSF proton
     ax = py.subplot(gs[icount])
-    p1=ax.plot(qgrid,p1_mid[ifl]/norm,ls="solid")
-    ax.fill_between(qgrid,p1_high[ifl]/norm,p1_low[ifl]/norm,color=rescolors[0],alpha=0.2)
+    
+    ## NNUSF iron
+    p1=ax.plot(qgrid,p3_mid[ifl],ls="solid")
+    ax.fill_between(qgrid,p3_high[ifl],p3_low[ifl],color=rescolors[0],alpha=0.2)
     p2=ax.fill(np.NaN,np.NaN,color=rescolors[0],alpha=0.2)
 
     ## NNUSF iron
-    p3=ax.plot(qgrid,p2_mid[ifl]/norm,ls="dashed")
-    ax.fill_between(qgrid,p2_high[ifl]/norm,p2_low[ifl]/norm,color=rescolors[1],alpha=0.2)
+    p3=ax.plot(qgrid,p4_mid[ifl],ls="dashed")
+    ax.fill_between(qgrid,p4_high[ifl],p4_low[ifl],color=rescolors[1],alpha=0.2)
     p4=ax.fill(np.NaN,np.NaN,color=rescolors[1],alpha=0.2)
 
-    ## NNUSF lead
-    p5=ax.plot(qgrid,p3_mid[ifl]/norm,ls="dashdot")
-    ax.fill_between(qgrid,p3_high[ifl]/norm,p3_low[ifl]/norm,color=rescolors[2],alpha=0.2)
-    p6=ax.fill(np.NaN,np.NaN,color=rescolors[2],alpha=0.2)
-   
     ax.set_xscale('log')
     ax.set_xlim(qmin,qmax)
 
     if(filelabel=="x0p1"):
-        if(ifl==0): ax.set_ylim(0.6,1.4)
-        if(ifl==3): ax.set_ylim(0.6,1.4)
-        if(ifl==6): ax.set_ylim(0.6,1.4) 
-        if(ifl==1): ax.set_ylim(-1,4)
-        if(ifl==4): ax.set_ylim(-1,4)
-        if(ifl==7): ax.set_ylim(-1,4)
-        if(ifl==2): ax.set_ylim(0,2.5)
-        if(ifl==5): ax.set_ylim(0,2.5)
-        if(ifl==8): ax.set_ylim(0,2.5)
-
+        if(ifl==0): ax.set_ylim(-0.1,1.8)
+        if(ifl==3): ax.set_ylim(-0.1,1.8)
+        if(ifl==1): ax.set_ylim(-0.2,0.85)
+        if(ifl==4): ax.set_ylim(-0.2,0.85)
+        if(ifl==2): ax.set_ylim(-0.1,1.3)
+        if(ifl==5): ax.set_ylim(-0.1,1.3)
+        
     if(filelabel=="x0p01"):
-        if(ifl==0): ax.set_ylim(0.6,1.4)
-        if(ifl==3): ax.set_ylim(0.6,1.4)
-        if(ifl==6): ax.set_ylim(0.6,1.4) 
-        if(ifl==1): ax.set_ylim(-1,4)
-        if(ifl==4): ax.set_ylim(-1,4)
-        if(ifl==7): ax.set_ylim(-1,4)
-        if(ifl==2): ax.set_ylim(0,2.5)
-        if(ifl==5): ax.set_ylim(0,2.5)
-        if(ifl==8): ax.set_ylim(0,2.5)
-
+        if(ifl==0): ax.set_ylim(-0.1,4.0)
+        if(ifl==3): ax.set_ylim(-0.1,4.0)
+        if(ifl==1): ax.set_ylim(-0.2,1.4)
+        if(ifl==4): ax.set_ylim(-0.2,1.4)
+        if(ifl==2): ax.set_ylim(-0.2,1.5)
+        if(ifl==5): ax.set_ylim(-0.2,1.5)
+        
+    if(filelabel=="x0p00126"):
+        if(ifl==0): ax.set_ylim(-0.1,7.0)
+        if(ifl==3): ax.set_ylim(-0.1,7.0)
+        if(ifl==1): ax.set_ylim(-0.2,1.8)
+        if(ifl==4): ax.set_ylim(-0.2,1.8)
+        if(ifl==2): ax.set_ylim(-0.2,1.7)
+        if(ifl==5): ax.set_ylim(-0.7,1.7)
+        
     ax.tick_params(which='both',direction='in',labelsize=12,right=True)
     ax.tick_params(which='major',length=7)
     ax.tick_params(which='minor',length=4)
     ax.set_ylabel(labelpdf[ifl],fontsize=16)
     if(ifl>5):
-        ax.set_xlabel(r'$Q~({\rm GeV})$',fontsize=16)      
+        ax.set_xlabel(r'$Q~({\rm GeV})$',fontsize=16)
     
     if(ifl==0):
         ax.text(0.10,0.85,stringx,fontsize=17,transform=ax.transAxes)
 
     # Add the legend
-    if(ifl==3):
-        ax.legend([(p1[0],p2[0]),(p3[0],p4[0]),(p5[0],p6[0])],\
-                  [ r"$A=1$", r"$A=56$", r"$A=208$" ], \
-                  frameon=True,loc=1,prop={'size':16})
+    if(ifl==0):
+        ax.legend([(p1[0],p2[0]),(p3[0],p4[0])],\
+                  [ r"$A=56$", r"$A=56~(\rm wo~match)$" ], \
+                  frameon=True,loc=4,prop={'size':13})
 
     icount = icount + 1
 
-py.tight_layout(pad=1, w_pad=1, h_pad=1.0)
-py.savefig('NNUSF-ratio-'+filelabel+'.pdf')
-print('output plot: NNUSF-ratio-'+filelabel+'.pdf')
+for ifl in range(6):
 
-
-
-#---------------------------------------------------------------------
-# Plot Relative Uncertainties
-#---------------------------------------------------------------------
-
-py.clf()
-ncols,nrows=3,3
-py.figure(figsize=(ncols*5,nrows*3.5))
-gs = gridspec.GridSpec(nrows,ncols)
-rescolors = py.rcParams['axes.prop_cycle'].by_key()['color']
-
-# pdflabels
-labelpdf=[r"$\delta F_2^{\nu p}~({\rm rel.~unc.})$",
-          r"$ \delta  F_L^{\nu p}~({\rm rel.~unc.})$",
-          r"$\delta  xF_3^{\nu p}~({\rm rel.~unc.})$",\
-          r"$\delta  F_2^{\bar{\nu} p}~({\rm rel.~unc.})$",
-          r"$\delta  F_L^{\bar{\nu} p}~({\rm rel.~unc.})$",
-          r"$\delta  xF_3^{\bar{\nu} p}~({\rm rel.~unc.})$",\
-          r"$\delta F_2^{(\nu +\bar{\nu}) p}~({\rm rel.~unc.})$",\
-          r"$\delta F_L^{(\nu +\bar{\nu}) p}~({\rm rel.~unc.})$",\
-          r"$\delta xF_3^{(\nu +\bar{\nu}) p}~({\rm rel.~unc.})$",]
-
-icount=0
-for ifl in range(nfl):
-    
     ax = py.subplot(gs[icount])
-    p1=ax.plot(qgrid,abs(p1_error[ifl]/p1_mid[ifl]),ls="solid")
-    p2=ax.plot(qgrid,abs(p2_error[ifl]/p2_mid[ifl]),ls="dashed")
-    p3=ax.plot(qgrid,abs(p3_error[ifl]/p3_mid[ifl]),ls="dashdot")
+    
+    ## NNUSF lead
+    p1=ax.plot(qgrid,p5_mid[ifl],ls="solid")
+    ax.fill_between(qgrid,p5_high[ifl],p5_low[ifl],color=rescolors[0],alpha=0.2)
+    p2=ax.fill(np.NaN,np.NaN,color=rescolors[0],alpha=0.2)
+
+    ## NNUSF lead (variation)
+    p3=ax.plot(qgrid,p6_mid[ifl],ls="dashed")
+    ax.fill_between(qgrid,p6_high[ifl],p6_low[ifl],color=rescolors[1],alpha=0.2)
+    p4=ax.fill(np.NaN,np.NaN,color=rescolors[1],alpha=0.2)
 
     ax.set_xscale('log')
     ax.set_xlim(qmin,qmax)
 
     if(filelabel=="x0p1"):
-        if(ifl==0): ax.set_ylim(0.0,0.2)
-        if(ifl==3): ax.set_ylim(0.0,0.2)
-        if(ifl==6): ax.set_ylim(0.0,0.2) 
-        if(ifl==1): ax.set_ylim(0,2)
-        if(ifl==4): ax.set_ylim(0,2)
-        if(ifl==7): ax.set_ylim(0,2)
-        if(ifl==2): ax.set_ylim(0,0.8)
-        if(ifl==5): ax.set_ylim(0,0.8)
-        if(ifl==8): ax.set_ylim(0,0.8)
-
+        if(ifl==0): ax.set_ylim(-0.1,1.8)
+        if(ifl==3): ax.set_ylim(-0.1,1.8)
+        if(ifl==1): ax.set_ylim(-0.2,0.85)
+        if(ifl==4): ax.set_ylim(-0.2,0.85)
+        if(ifl==2): ax.set_ylim(-0.1,1.3)
+        if(ifl==5): ax.set_ylim(-0.1,1.3)
+        
     if(filelabel=="x0p01"):
-        if(ifl==0): ax.set_ylim(0.0,0.3)
-        if(ifl==3): ax.set_ylim(0.0,0.3)
-        if(ifl==6): ax.set_ylim(0.0,0.3) 
-        if(ifl==1): ax.set_ylim(0,2)
-        if(ifl==4): ax.set_ylim(0,2)
-        if(ifl==7): ax.set_ylim(0,2)
-        if(ifl==2): ax.set_ylim(0,1.4)
-        if(ifl==5): ax.set_ylim(0,1.4)
-        if(ifl==8): ax.set_ylim(0,1.4)  
-
+        if(ifl==0): ax.set_ylim(-0.1,4.0)
+        if(ifl==3): ax.set_ylim(-0.1,4.0)
+        if(ifl==1): ax.set_ylim(-0.2,1.4)
+        if(ifl==4): ax.set_ylim(-0.2,1.4)
+        if(ifl==2): ax.set_ylim(-0.2,1.5)
+        if(ifl==5): ax.set_ylim(-0.2,1.5)
+        
+    if(filelabel=="x0p00126"):
+        if(ifl==0): ax.set_ylim(-0.1,7.0)
+        if(ifl==3): ax.set_ylim(-0.1,7.0)
+        if(ifl==1): ax.set_ylim(-0.2,1.8)
+        if(ifl==4): ax.set_ylim(-0.2,1.8)
+        if(ifl==2): ax.set_ylim(-0.2,1.7)
+        if(ifl==5): ax.set_ylim(-0.7,1.7)
+        
     ax.tick_params(which='both',direction='in',labelsize=12,right=True)
     ax.tick_params(which='major',length=7)
     ax.tick_params(which='minor',length=4)
     ax.set_ylabel(labelpdf[ifl],fontsize=16)
     if(ifl>5):
-         ax.set_xlabel(r'$Q~({\rm GeV})$',fontsize=16)
-      
+        ax.set_xlabel(r'$Q~({\rm GeV})$',fontsize=16)
+    
     if(ifl==0):
-        ax.text(0.60,0.85,stringx,fontsize=17,transform=ax.transAxes)
+        ax.text(0.10,0.85,stringx,fontsize=17,transform=ax.transAxes)
 
     # Add the legend
-    if(ifl==3):
-        ax.legend([(p1[0]),(p2[0]),(p3[0])],\
-                  [ r"$A=1$", r"$A=56$", r"$A=208$" ], \
-                  frameon=True,loc=1,prop={'size':16})
+    if(ifl==0):
+        ax.legend([(p1[0],p2[0]),(p3[0],p4[0])],\
+                  [ r"$A=208$", r"$A=208~(\rm wo~match)$" ], \
+                  frameon=True,loc=4,prop={'size':13})
 
     icount = icount + 1
 
 py.tight_layout(pad=1, w_pad=1, h_pad=1.0)
-py.savefig('NNUSF-relerr-'+filelabel+'.pdf')
-print('output plot: NNUSF-relerr-'+filelabel+'.pdf')
+py.savefig('NNUSF-variation-'+filelabel+'.pdf')
+print('output plot: NNUSF-variation'+filelabel+'.pdf')
 
 exit()
-
-
-
-

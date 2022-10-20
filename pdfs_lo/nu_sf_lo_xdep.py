@@ -138,10 +138,10 @@ yadism_f3_nnlo_nu_p=np.loadtxt("Yadism_data_v2/neutrino/NNLO/predictions/F3.txt"
 yadism_fl_nnlo_nu_p=np.loadtxt("Yadism_data_v2/neutrino/NNLO/predictions/FL.txt")
 
 # Neutrino structure functions F2 and F3 on free protons
-yadism_f2_lo_nubar_p=np.loadtxt("Yadism_data_v1/LO_NNPDF40_yadism_nubar/F2.txt")
-yadism_f3_lo_nubar_p=np.loadtxt("Yadism_data_v1/LO_NNPDF40_yadism_nubar/F3.txt")
-yadism_f2_nnlo_nubar_p=np.loadtxt("Yadism_data_v1/NNLO_NNPDF40_yadism_nubar/F2.txt")
-yadism_f3_nnlo_nubar_p=np.loadtxt("Yadism_data_v1/NNLO_NNPDF40_yadism_nubar/F3.txt")
+#yadism_f2_lo_nubar_p=np.loadtxt("Yadism_data_v1/LO_NNPDF40_yadism_nubar/F2.txt")
+#yadism_f3_lo_nubar_p=np.loadtxt("Yadism_data_v1/LO_NNPDF40_yadism_nubar/F3.txt")
+#yadism_f2_nnlo_nubar_p=np.loadtxt("Yadism_data_v1/NNLO_NNPDF40_yadism_nubar/F2.txt")
+#yadism_f3_nnlo_nubar_p=np.loadtxt("Yadism_data_v1/NNLO_NNPDF40_yadism_nubar/F3.txt")
 
 yadism_f2_lo_nubar_p=np.loadtxt("Yadism_data_v2/antineutrino/LO/predictions/F2.txt")
 yadism_f3_lo_nubar_p=np.loadtxt("Yadism_data_v2/antineutrino/LO/predictions/F3.txt")
