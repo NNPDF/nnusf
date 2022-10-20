@@ -18,8 +18,8 @@ _logger = logging.getLogger(__name__)
 @dataclass
 class PredictionInfo:
     q: np.ndarray
-    x: Union[int, float, list]
-    A: int
+    x: Union[int, float, list, np.ndarray]
+    A: Union[int, list, np.ndarray]
     n_sfs: int
     predictions: Union[np.ndarray, list]
 
@@ -41,9 +41,7 @@ def load_models(fit, **kwargs):
     del kwargs
     path_to_fit_folder = pathlib.Path(fit)
     models = []
-    for idx, replica_folder in enumerate(
-        path_to_fit_folder.rglob("replica_*/")
-    ):
+    for replica_folder in path_to_fit_folder.rglob("replica_*/"):
         model_folder = replica_folder / "model"
         models.append(tf.keras.models.load_model(model_folder, compile=False))
     return models
@@ -52,7 +50,7 @@ def load_models(fit, **kwargs):
 def get_predictions_q(
     fit, a_slice=26, x_slice=[0.01], qmin=1e-1, qmax=5, n=100, *args, **kwargs
 ):
-    """ouputs a PredicitonInfo object for fixed A and x.
+    """Outputs a PredicitonInfo object for fixed A and/or for different values of x.
 
     Parameters:
     -----------
