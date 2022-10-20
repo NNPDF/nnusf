@@ -57,28 +57,28 @@ def sub_postfit(model, threshold):
     "--a_value",
     type=int,
     default=1,
-    help="""Atomic mass number value""",
+    help="""Atomic mass number value. Default: 1""",
 )
 @click.option(
     "-x",
     "--x_grids",
     default=None,
     help="""Stringified dictionary containing specs for x-grid"""
-    """" e.g. '{"min": 0.001, "max": 1.0, "num": 100}'.""",
+    """" e.g. '{"min": 0.01, "max": 1.0, "num": 100}'.""",
 )
 @click.option(
     "-q",
     "--q2_grids",
     default=None,
     help="""Stringified dictionary containing specs for Q2-grid"""
-    """" e.g. '{"min": 1, "max": 500, "num": 1000}'.""",
+    """" e.g. '{"min": 0.001, "max": 500, "num": 1000}'.""",
 )
 @click.option(
     "-o",
     "--output",
     type=str,
-    default="nnusf10_set",
-    help="Alternative LHAPDF folder name (default: $PWD/nnusf10_set)",
+    default="NNUSF10_Q2MIN001",
+    help="Alternative LHAPDF folder name (default: $PWD/NNUSF10_Q2MIN001)",
 )
 @click.option(
     "--install/--no-install",

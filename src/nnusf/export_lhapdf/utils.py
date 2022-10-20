@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Module that the Structure Function predictions from the NN and
+Module that computes the Structure Function predictions from the NN and
 dump them as a LHAPDF-like grid.
 
 Some of the functions below are taken and adapted from the eko library:
@@ -9,6 +9,7 @@ Some of the functions below are taken and adapted from the eko library:
 """
 
 import io
+import logging
 import math
 import pathlib
 import re
@@ -16,6 +17,8 @@ import shutil
 
 import numpy as np
 import yaml
+
+_logger = logging.getLogger(__name__)
 
 
 def generate_block(xfxQ2, xgrid, Q2grid, pids):
@@ -81,6 +84,7 @@ def create_info_file(sf_flavors, a_value, x_grids, q2_grids, nrep):
     template_info["MBottom"] = ""
     template_info["MTop"] = ""
     template_info["AlphaS_MZ"] = 0.118000
+    # The following Alphas entries are required by LHAPDF at loading
     template_info["AlphaS_OrderQCD"] = 0
     template_info["AlphaS_Type"] = "ipol"
     template_info["AlphaS_Qs"] = [
@@ -312,4 +316,7 @@ def install_pdf(name):
     src = pathlib.Path(name)
     if not src.exists():
         raise FileExistsError(src)
+    if target.exists():
+        _logger.warning("Set already exists in LHAPDF and will be overwritten.")
+        shutil.rmtree(target, ignore_errors=False)
     shutil.copytree(str(src), str(target))

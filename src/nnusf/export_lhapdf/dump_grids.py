@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Module that the Structure Function predictions from the NN and
-dump them as a LHAPDF-like grid.
+Module that computes the Structure Function predictions from the NN saved
+model and dump them as a LHAPDF-like grid.
 """
 
 import logging
@@ -19,7 +19,7 @@ _logger = logging.getLogger(__name__)
 LHAPDF_ID = [1001, 1002, 1003, 2001, 2002, 2003, 3001, 3002, 3003]
 A_VALUE = 1
 X_GRIDS = dict(min=1e-2, max=1.0, num=100)
-Q2_GRIDS = dict(min=1, max=500, num=400)
+Q2_GRIDS = dict(min=1e-3, max=500, num=500)
 
 
 def parse_nn_predictions(
