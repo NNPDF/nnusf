@@ -21,7 +21,7 @@ _logger = logging.getLogger(__name__)
 def main(
     runcard: pathlib.Path,
     replica: int,
-    destination: Optional[pathlib.Path],
+    destination: pathlib.Path,
 ):
     """Run the structure function fit.
 
@@ -31,12 +31,9 @@ def main(
         Path to the fit runcard
     replica : int
         replica number
-    destination : Optional[pathlib.Path]
+    destination : pathlib.Path
         Path to the output folder
     """
-    if destination is None:
-        destination = pathlib.Path.cwd().absolute() / runcard.stem
-
     if destination.exists():
         _logger.warning(f"{destination} already exists, overwriting content.")
 
