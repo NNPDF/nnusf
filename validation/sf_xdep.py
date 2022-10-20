@@ -13,22 +13,152 @@ from pylab import *
 import scipy
 from scipy.integrate import dblquad
 
+print("\n *********************************************************")
+print("      Compute x dependence of NNUSF                         ")
+print(" ***********************************************************\n")
+
 #---------------------------------------------------------
 #---------------------------------------------------------
-# General plot settings
-#filelabel = "q5p0gev"
+filelabel = "q14p0gev"
 #filelabel = "q1gev"
-filelabel = "q0p5gev"
+#filelabel = "q0p5gev"
+filelabel = "q1p58gev"
 
 if(filelabel=="q0p5gev"):
     q = 0.5 # GeV
-    stringQ=r'$Q=0.5~{\rm GeV}$'
 if(filelabel=="q1gev"):
     q = 1 # GeV
-    stringQ=r'$Q=1~{\rm GeV}$'
+if(filelabel=="q1p58gev"):
+    q = 1.58 # GeV
 if(filelabel=="q5p0gev"):
     q = 5 # GeV
+if(filelabel=="q14p0gev"):
+    q = 14 # GeV
+
+#---------------------------------------------------------
+#---------------------------------------------------------
+# Read the YADISM NNLO proton predictions
+
+# Neutrino
+yadism_f2_nnlo_nu_p=np.loadtxt("../pdfs_lo/Yadism_data_v2/neutrino/NNLO/predictions/F2.txt")
+yadism_xf3_nnlo_nu_p=np.loadtxt("../pdfs_lo/Yadism_data_v2/neutrino/NNLO/predictions/F3.txt")
+yadism_fl_nnlo_nu_p=np.loadtxt("../pdfs_lo/Yadism_data_v2/neutrino/NNLO/predictions/FL.txt")
+
+# Anti-neutrino
+yadism_f2_nnlo_nubar_p=np.loadtxt("../pdfs_lo/Yadism_data_v2/antineutrino/NNLO/predictions/F2.txt")
+yadism_xf3_nnlo_nubar_p=np.loadtxt("../pdfs_lo/Yadism_data_v2/antineutrino/NNLO/predictions/F3.txt")
+yadism_fl_nnlo_nubar_p=np.loadtxt("../pdfs_lo/Yadism_data_v2/antineutrino/NNLO/predictions/FL.txt")
+
+nq_yadism=20
+nx_yadism =30
+nrep_yadism=100
+
+yadism_sf_x=np.zeros(nx_yadism)
+yadism_nnlo_f2_nu=np.zeros((nrep_yadism,nx_yadism))
+yadism_nnlo_xf3_nu=np.zeros((nrep_yadism,nx_yadism))
+yadism_nnlo_fl_nu=np.zeros((nrep_yadism,nx_yadism))
+yadism_nnlo_f2_nubar=np.zeros((nrep_yadism,nx_yadism))
+yadism_nnlo_xf3_nubar=np.zeros((nrep_yadism,nx_yadism))
+yadism_nnlo_fl_nubar=np.zeros((nrep_yadism,nx_yadism))
+
+iq_yadism = 1e3
+if(q > 4.9 and q < 5.1):
+    iq_yadism=10  # q = 5
+if(q > 13.9 and q < 14.2):
+    iq_yadism=19  # q = 14.12
+if(q > 1.55 and q < 1.6):
+    iq_yadism=0  # q = 1.58
+
+icount=0
+for irep in range(0,nrep_yadism+1):
+    for ix in range(nx_yadism):
+        for iq in range(nq_yadism):
+            x_tmp = yadism_f2_nnlo_nu_p[icount][1]
+            q_tmp = math.sqrt(yadism_f2_nnlo_nu_p[icount][2])
+            print(irep," ",ix," ",iq," ",x_tmp," ",q_tmp, " ",icount)
+            if(iq==0):
+                yadism_sf_x[ix] = x_tmp
+            if(iq==iq_yadism):
+                # First check
+                reldiff=abs( (q_tmp-q) /q )
+                if(reldiff > 1e-2):
+                    print("Q mismatch")
+                    print(q_tmp," ",q," ",reldiff)
+                    exit()
+                # Now fill
+                if(irep > 0):
+                    yadism_nnlo_f2_nu[irep-1][ix] = yadism_f2_nnlo_nu_p[icount][3]
+                    yadism_nnlo_xf3_nu[irep-1][ix] = yadism_xf3_nnlo_nu_p[icount][3]
+                    yadism_nnlo_fl_nu[irep-1][ix] = yadism_fl_nnlo_nu_p[icount][3]
+                    yadism_nnlo_f2_nubar[irep-1][ix] = yadism_f2_nnlo_nubar_p[icount][3]
+                    yadism_nnlo_xf3_nubar[irep-1][ix] = yadism_xf3_nnlo_nubar_p[icount][3]
+                    yadism_nnlo_fl_nubar[irep-1][ix] = yadism_fl_nnlo_nubar_p[icount][3]
+            
+            icount = icount+1
+
+print("yadism_sf_x = ")
+print(yadism_sf_x)
+#print(yadism_nnlo_f2_nu)
+#print(yadism_nnlo_f2_nu)
+
+yadism_nnlo_f2_nu_high = np.nanpercentile(yadism_nnlo_f2_nu,84,axis=0)
+yadism_nnlo_f2_nu_low = np.nanpercentile(yadism_nnlo_f2_nu,16,axis=0)
+yadism_nnlo_f2_nu_mid = ( yadism_nnlo_f2_nu_high + yadism_nnlo_f2_nu_low )/2.
+yadism_nnlo_f2_nu_error = ( yadism_nnlo_f2_nu_high - yadism_nnlo_f2_nu_low )/2.
+
+print(yadism_nnlo_f2_nu_high)
+print(yadism_nnlo_f2_nu_mid)
+print(yadism_nnlo_f2_nu_low)
+
+yadism_nnlo_f2_nubar_high = np.nanpercentile(yadism_nnlo_f2_nubar,84,axis=0)
+yadism_nnlo_f2_nubar_low = np.nanpercentile(yadism_nnlo_f2_nubar,16,axis=0)
+yadism_nnlo_f2_nubar_mid = ( yadism_nnlo_f2_nubar_high + yadism_nnlo_f2_nubar_low )/2.
+yadism_nnlo_f2_nubar_error = ( yadism_nnlo_f2_nubar_high - yadism_nnlo_f2_nubar_low )/2.
+
+yadism_nnlo_fl_nu_high = np.nanpercentile(yadism_nnlo_fl_nu,84,axis=0)
+yadism_nnlo_fl_nu_low = np.nanpercentile(yadism_nnlo_fl_nu,16,axis=0)
+yadism_nnlo_fl_nu_mid = ( yadism_nnlo_fl_nu_high + yadism_nnlo_fl_nu_low )/2.
+yadism_nnlo_fl_nu_error = ( yadism_nnlo_fl_nu_high - yadism_nnlo_fl_nu_low )/2.
+
+yadism_nnlo_fl_nubar_high = np.nanpercentile(yadism_nnlo_fl_nubar,84,axis=0)
+yadism_nnlo_fl_nubar_low = np.nanpercentile(yadism_nnlo_fl_nubar,16,axis=0)
+yadism_nnlo_fl_nubar_mid = ( yadism_nnlo_fl_nubar_high + yadism_nnlo_fl_nubar_low )/2.
+yadism_nnlo_fl_nubar_error = ( yadism_nnlo_fl_nubar_high - yadism_nnlo_fl_nubar_low )/2.
+
+yadism_nnlo_xf3_nu_high = np.nanpercentile(yadism_nnlo_xf3_nu,84,axis=0)
+yadism_nnlo_xf3_nu_low = np.nanpercentile(yadism_nnlo_xf3_nu,16,axis=0)
+yadism_nnlo_xf3_nu_mid = ( yadism_nnlo_xf3_nu_high + yadism_nnlo_xf3_nu_low )/2.
+yadism_nnlo_xf3_nu_error = ( yadism_nnlo_xf3_nu_high - yadism_nnlo_xf3_nu_low )/2.
+
+yadism_nnlo_xf3_nubar_high = np.nanpercentile(yadism_nnlo_xf3_nubar,84,axis=0)
+yadism_nnlo_xf3_nubar_low = np.nanpercentile(yadism_nnlo_xf3_nubar,16,axis=0)
+yadism_nnlo_xf3_nubar_mid = ( yadism_nnlo_xf3_nubar_high + yadism_nnlo_xf3_nubar_low )/2.
+yadism_nnlo_xf3_nubar_error = ( yadism_nnlo_xf3_nubar_high - yadism_nnlo_xf3_nubar_low )/2.
+
+
+
+print("\n *********************************************************")
+print("      YADISM calculations read and processed                         ")
+print(" ***********************************************************\n")
+    
+#-------------------------------------------------------
+#---------------------------------------------------------
+# Plot settings
+#---------------------------------------------------------
+#---------------------------------------------------------
+
+
+
+if(filelabel=="q0p5gev"):
+    stringQ=r'$Q=0.5~{\rm GeV}$'
+if(filelabel=="q1gev"):
+    stringQ=r'$Q=1~{\rm GeV}$'
+if(filelabel=="q1p58gev"):
+    stringQ=r'$Q=1.6~{\rm GeV}$'
+if(filelabel=="q5p0gev"):
     stringQ=r'$Q=5~{\rm GeV}$'
+if(filelabel=="q14p0gev"):
+    stringQ=r'$Q=14~{\rm GeV}$'
 
 
 nx = 200
@@ -49,7 +179,7 @@ nset=3
 nrep=np.zeros(nset, dtype='int')
 nrep_max = 100
 
-pdfset=["NNUSF10_A1","NNUSF10_A56","NNUSF10_A208"]
+pdfset=["NNUSF10_A1_Q2MIN001","NNUSF10_A56_Q2MIN001","NNUSF10_A208_Q2MIN001"]
 fit1 = np.zeros((nrep_max,nfl,nx))
 fit2 = np.zeros((nrep_max,nfl,nx))
 fit3 = np.zeros((nrep_max,nfl,nx))
@@ -148,6 +278,51 @@ for ifl in range(nfl):
     ax.fill_between(X,p3_high[ifl],p3_low[ifl],color=rescolors[2],alpha=0.2)
     p6=ax.fill(np.NaN,np.NaN,color=rescolors[2],alpha=0.2)
 
+
+     ## YADISM NNPDF4.0 NNLO proton baseline
+    if(ifl==0):
+        p7 = ax.plot(yadism_sf_x,yadism_nnlo_f2_nu_mid,ls="dashdot",color=rescolors[3],lw=2)
+        ax.fill_between(yadism_sf_x,yadism_nnlo_f2_nu_high,yadism_nnlo_f2_nu_low,color=rescolors[3],alpha=0.2)
+        p8=ax.fill(np.NaN,np.NaN,color=rescolors[3],alpha=0.2)
+    if(ifl==1):
+        p7 = ax.plot(yadism_sf_x,yadism_nnlo_fl_nu_mid,ls="dashdot",color=rescolors[3],lw=2)
+        ax.fill_between(yadism_sf_x,yadism_nnlo_fl_nu_high,yadism_nnlo_fl_nu_low,color=rescolors[3],alpha=0.2)
+        p8=ax.fill(np.NaN,np.NaN,color=rescolors[3],alpha=0.2)
+    if(ifl==2):
+        p7 = ax.plot(yadism_sf_x,yadism_nnlo_xf3_nu_mid,ls="dashdot",color=rescolors[3],lw=2)
+        ax.fill_between(yadism_sf_x,yadism_nnlo_xf3_nu_high,yadism_nnlo_xf3_nu_low,color=rescolors[3],alpha=0.2)
+        p8=ax.fill(np.NaN,np.NaN,color=rescolors[3],alpha=0.2)
+
+    if(ifl==3):
+        p7 = ax.plot(yadism_sf_x,yadism_nnlo_f2_nubar_mid,ls="dashdot",color=rescolors[3],lw=2)
+        ax.fill_between(yadism_sf_x,yadism_nnlo_f2_nubar_high,yadism_nnlo_f2_nubar_low,color=rescolors[3],alpha=0.2)
+        p8=ax.fill(np.NaN,np.NaN,color=rescolors[3],alpha=0.2)
+    if(ifl==4):
+        p7 = ax.plot(yadism_sf_x,yadism_nnlo_fl_nubar_mid,ls="dashdot",color=rescolors[3],lw=2)
+        ax.fill_between(yadism_sf_x,yadism_nnlo_fl_nubar_high,yadism_nnlo_fl_nubar_low,color=rescolors[3],alpha=0.2)
+        p8=ax.fill(np.NaN,np.NaN,color=rescolors[3],alpha=0.2)
+    if(ifl==5):
+        p7 = ax.plot(yadism_sf_x,yadism_nnlo_xf3_nubar_mid,ls="dashdot",color=rescolors[3],lw=2)
+        ax.fill_between(yadism_sf_x,yadism_nnlo_xf3_nubar_high,yadism_nnlo_xf3_nubar_low,color=rescolors[3],alpha=0.2)
+        p8=ax.fill(np.NaN,np.NaN,color=rescolors[3],alpha=0.2)
+
+    if(ifl==6):
+        p7 = ax.plot(yadism_sf_x,(yadism_nnlo_f2_nu_mid+yadism_nnlo_f2_nubar_mid)/2,ls="dashdot",color=rescolors[3],lw=2)
+        ax.fill_between(yadism_sf_x,(yadism_nnlo_f2_nu_high+yadism_nnlo_f2_nubar_high)/2,(yadism_nnlo_f2_nu_low+yadism_nnlo_f2_nubar_low)/2,color=rescolors[3],alpha=0.2)
+        p8=ax.fill(np.NaN,np.NaN,color=rescolors[3],alpha=0.2)
+
+    if(ifl==7):
+        p7 = ax.plot(yadism_sf_x,(yadism_nnlo_fl_nu_mid+yadism_nnlo_fl_nubar_mid)/2,ls="dashdot",color=rescolors[3],lw=2)
+        ax.fill_between(yadism_sf_x,(yadism_nnlo_fl_nu_high+yadism_nnlo_fl_nubar_high)/2,\
+                        (yadism_nnlo_fl_nu_low+yadism_nnlo_fl_nubar_low)/2,color=rescolors[3],alpha=0.2)
+        p8=ax.fill(np.NaN,np.NaN,color=rescolors[3],alpha=0.2)
+
+    if(ifl==8):
+        p7 = ax.plot(yadism_sf_x,(yadism_nnlo_xf3_nu_mid+yadism_nnlo_xf3_nubar_mid)/2,ls="dashdot",color=rescolors[3],lw=2)
+        ax.fill_between(yadism_sf_x,(yadism_nnlo_xf3_nu_high+yadism_nnlo_xf3_nubar_high)/2,\
+                        (yadism_nnlo_xf3_nu_low+yadism_nnlo_xf3_nubar_low)/2,color=rescolors[3],alpha=0.2)
+        p8=ax.fill(np.NaN,np.NaN,color=rescolors[3],alpha=0.2)
+
     ax.set_xscale('log')
     ax.set_xlim(xmin,xmax)
 
@@ -183,6 +358,28 @@ for ifl in range(nfl):
         if(ifl==2): ax.set_ylim(-0.6,1.4)
         if(ifl==5): ax.set_ylim(-0.6,1.4)
         if(ifl==8): ax.set_ylim(-0.6,1.4)
+
+    if(filelabel=="q14p0gev"):
+        if(ifl==0): ax.set_ylim(0,5)
+        if(ifl==3): ax.set_ylim(0,5)
+        if(ifl==6): ax.set_ylim(0,5) 
+        if(ifl==1): ax.set_ylim(-0.5,3.0)
+        if(ifl==4): ax.set_ylim(-0.5,3.0)
+        if(ifl==7): ax.set_ylim(-0.5,3.0)
+        if(ifl==2): ax.set_ylim(-0.6,1.4)
+        if(ifl==5): ax.set_ylim(-0.6,1.4)
+        if(ifl==8): ax.set_ylim(-0.6,1.4)
+
+    if(filelabel=="q1p58gev"):
+        if(ifl==0): ax.set_ylim(0,5)
+        if(ifl==3): ax.set_ylim(0,5)
+        if(ifl==6): ax.set_ylim(0,5) 
+        if(ifl==1): ax.set_ylim(-0.5,3.0)
+        if(ifl==4): ax.set_ylim(-0.5,3.0)
+        if(ifl==7): ax.set_ylim(-0.5,3.0)
+        if(ifl==2): ax.set_ylim(-0.6,1.4)
+        if(ifl==5): ax.set_ylim(-0.6,1.4)
+        if(ifl==8): ax.set_ylim(-0.6,1.4)
     
 
     ax.tick_params(which='both',direction='in',labelsize=12,right=True)
@@ -198,10 +395,10 @@ for ifl in range(nfl):
 
     # Add the legend
     if(ifl==3):
-        ax.legend([(p1[0],p2[0]),(p3[0],p4[0]),(p5[0],p6[0])],\
-                  [ r"$A=1$", r"$A=56$", r"$A=208$" ], \
-                  frameon=True,loc=1,prop={'size':16})
-
+        ax.legend([(p1[0],p2[0]),(p7[0],p8[0]),(p3[0],p4[0]),(p5[0],p6[0])],\
+                  [ r"$A=1$", r"$A=1~{\rm (pQCD)}$",r"$A=56$", r"$A=208$" ], \
+                  frameon=True,loc=1,prop={'size':13})
+        
     icount = icount + 1
 
 py.tight_layout(pad=1, w_pad=1, h_pad=1.0)
