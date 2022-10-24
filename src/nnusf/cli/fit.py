@@ -71,7 +71,7 @@ def sub_postfit(model, threshold):
     "--q2_grids",
     default=None,
     help="""Stringified dictionary containing specs for Q2-grid"""
-    """" e.g. '{"min": 0.001, "max": 500, "num": 1000}'.""",
+    """" e.g. '{"min": 0.001, "max": 100000, "num": 200}'.""",
 )
 @click.option(
     "-o",

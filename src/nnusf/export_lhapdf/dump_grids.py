@@ -12,7 +12,13 @@ import numpy as np
 from rich.progress import track
 
 from ..sffit.load_fit_data import get_predictions_q
-from .utils import create_info_file, dump_set, generate_block, install_pdf
+from .utils import (
+    create_info_file,
+    dump_set,
+    generate_block,
+    install_pdf,
+    make_lambert_grid,
+)
 
 _logger = logging.getLogger(__name__)
 
@@ -25,7 +31,11 @@ Q2_GRIDS = dict(min=1e-3, max=500, num=500)
 def parse_nn_predictions(
     model: pathlib.Path, a_value_spec: int, x_specs: dict, q2_dic_specs: dict
 ):
-    x_grids = np.linspace(x_specs["min"], x_specs["max"], x_specs["num"])
+    x_grids = make_lambert_grid(
+        x_min=x_specs["min"],
+        x_max=x_specs["max"],
+        n_pts=x_specs["num"],
+    )
     prediction_info = get_predictions_q(
         fit=model,
         a_slice=a_value_spec,
@@ -33,6 +43,7 @@ def parse_nn_predictions(
         qmin=q2_dic_specs["min"],
         qmax=q2_dic_specs["max"],
         n=q2_dic_specs["num"],
+        q_spacing="geomspace",
     )
     prediction_infoq2 = [round(q, 3) for q in prediction_info.q]
     predictions = np.asarray(prediction_info.predictions)
