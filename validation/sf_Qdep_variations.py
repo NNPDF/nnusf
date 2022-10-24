@@ -20,6 +20,21 @@ print("\n *********************************************************")
 print("      Compute Q dependence of NNUSF                         ")
 print(" ***********************************************************\n")
 
+nset=6
+
+# Comparison between baseline and fits without matching
+#pdfset=["NNUSF10_A1_Q2MIN001_FIXQ2","NNUSF10_A1_Q2MIN001_NOMATCHING",\
+#        "NNUSF10_A56_Q2MIN001_FIXQ2","NNUSF10_A56_Q2MIN001_NOMATCHING",\
+#        "NNUSF10_A208_Q2MIN001_FIXQ2","NNUSF10_A208_Q2MIN001_NOMATCHING"]
+#desc="nomatching"
+
+# Comparison between baseline and fits neglecting nuclear variations
+pdfset=["NNUSF10_A1_Q2MIN001_FIXQ2","NNUSF10_A1_Q2MIN001_TREATALL_ASPROTON",\
+        "NNUSF10_A56_Q2MIN001_FIXQ2","NNUSF10_A1_Q2MIN001_TREATALL_ASPROTON",\
+        "NNUSF10_A208_Q2MIN001_FIXQ2","NNUSF10_A1_Q2MIN001_TREATALL_ASPROTON"]
+desc="nonuclear"
+
+
 #---------------------------------------------------------
 #---------------------------------------------------------
 # Choice of x value
@@ -77,7 +92,7 @@ for irep in range(0,nrep_yadism+1):
         for iq in range(nq_yadism):
             x_tmp = yadism_f2_nnlo_nu_p[icount][1]
             q_tmp = math.sqrt(yadism_f2_nnlo_nu_p[icount][2])
-            print(irep," ",ix," ",iq," ",x_tmp," ",q_tmp, " ",icount)
+            #print(irep," ",ix," ",iq," ",x_tmp," ",q_tmp, " ",icount)
             if(ix==0):
                 yadism_sf_q[iq] = q_tmp
             if(ix==ix_yadism):
@@ -169,15 +184,8 @@ nfl=9
 # Set x grid
 qgrid = np.logspace(log(qmin),log(qmax),nq)
 
-# number of pdf sets
-nset=6
-
 nrep=np.zeros(nset, dtype='int')
-nrep_max = 100
-
-pdfset=["NNUSF10_A1_Q2MIN001","NNUSF10_A1_Q2MIN001_NOMATCHING",\
-        "NNUSF10_A56_Q2MIN001","NNUSF10_A56_Q2MIN001_NOMATCHING",\
-        "NNUSF10_A208_Q2MIN001","NNUSF10_A208_Q2MIN001_NOMATCHING"]
+nrep_max = 140
 
 fit1 = np.zeros((nrep_max,nfl,nq))
 fit2 = np.zeros((nrep_max,nfl,nq))
@@ -193,14 +201,15 @@ for iset in range(nset):
     p=lhapdf.getPDFSet(pdfset[iset])
     nrep[iset]=int(p.get_entry("NumMembers"))-1
     print("nrep = ",nrep[iset])
-    if(nrep[iset] > 97):
-        nrep[iset] = 97
+    if(nrep[iset] > nrep_max):
+        nrep[iset] = nrep_max
     if(nrep[iset] > nrep_max):
         print("Problem, too many replicas \n")
         print(nrep[iset]," ",nrep_max)
         exit()
-    print(p.description)
-
+    #print(p.description)
+    print("nrep (updated) = ",nrep[iset])
+    
     # Run over replicas
     for i in range(1,nrep[iset]+1):
         p=lhapdf.mkPDF(pdfset[iset],i)
@@ -352,13 +361,13 @@ for ifl in range(6):
     ax.set_xlim(qmin,qmax)
 
     if(filelabel=="x0p1"):
-        if(ifl==0): ax.set_ylim(-0.1,1.8)
-        if(ifl==3): ax.set_ylim(-0.1,1.8)
-        if(ifl==1): ax.set_ylim(-0.2,0.85)
-        if(ifl==4): ax.set_ylim(-0.2,0.85)
-        if(ifl==2): ax.set_ylim(-0.1,1.3)
-        if(ifl==5): ax.set_ylim(-0.1,1.3)
-        
+        if(ifl==0): ax.set_ylim(0.3,2.2)
+        if(ifl==3): ax.set_ylim(0.3,2.2)
+        if(ifl==1): ax.set_ylim(-0.5,0.6)
+        if(ifl==4): ax.set_ylim(-0.5,0.6)
+        if(ifl==2): ax.set_ylim(-0.1,1.4)
+        if(ifl==5): ax.set_ylim(-0.1,1.4)
+                
     if(filelabel=="x0p01"):
         if(ifl==0): ax.set_ylim(-0.1,4.0)
         if(ifl==3): ax.set_ylim(-0.1,4.0)
@@ -389,8 +398,15 @@ for ifl in range(6):
     # Add the legend
     if(ifl==0):
         ax.legend([(p1[0],p2[0]),(p7[0],p8[0]),(p3[0],p4[0])],\
-                  [ r"$A=1$", r"$A=1~{\rm (pQCD)}$",r"$A=1~(\rm wo~match)$" ], \
+                  #[ r"$A=1$", r"$A=1~{\rm (pQCD)}$",r"$A=1~(\rm wo~match)$" ], \
+                  [ r"$A=1$", r"$A=1~{\rm (pQCD)}$",r"${\rm no~A~dep~in~NN}$" ], \
                   frameon=True,loc=4,prop={'size':13})
+
+    # Add line indicating yadism region
+    plt.axvline(5,lw=2,ls="dotted",color="black")
+    if(ifl==2):
+        ax.text(0.55,0.10,r'$\rm pQCD~constraints$',fontsize=14,transform=ax.transAxes,color="black")
+        ax.arrow(x=0.55, y=0.05, dx=0.30, dy=0, width=.02,head_length=0.05,transform=ax.transAxes)
 
     icount = icount + 1
 
@@ -412,20 +428,20 @@ for ifl in range(6):
     ax.set_xlim(qmin,qmax)
 
     if(filelabel=="x0p1"):
-        if(ifl==0): ax.set_ylim(-0.1,1.8)
-        if(ifl==3): ax.set_ylim(-0.1,1.8)
-        if(ifl==1): ax.set_ylim(-0.2,0.85)
-        if(ifl==4): ax.set_ylim(-0.2,0.85)
-        if(ifl==2): ax.set_ylim(-0.1,1.3)
-        if(ifl==5): ax.set_ylim(-0.1,1.3)
-        
+        if(ifl==0): ax.set_ylim(0.5,2.2)
+        if(ifl==3): ax.set_ylim(0.5,2.2)
+        if(ifl==1): ax.set_ylim(-0.5,0.6)
+        if(ifl==4): ax.set_ylim(-0.5,0.6)
+        if(ifl==2): ax.set_ylim(-0.1,1.4)
+        if(ifl==5): ax.set_ylim(-0.1,1.4)
+
     if(filelabel=="x0p01"):
-        if(ifl==0): ax.set_ylim(-0.1,4.0)
-        if(ifl==3): ax.set_ylim(-0.1,4.0)
-        if(ifl==1): ax.set_ylim(-0.2,1.4)
-        if(ifl==4): ax.set_ylim(-0.2,1.4)
-        if(ifl==2): ax.set_ylim(-0.2,1.5)
-        if(ifl==5): ax.set_ylim(-0.2,1.5)
+        if(ifl==0): ax.set_ylim(-0.1,4.5)
+        if(ifl==3): ax.set_ylim(-0.1,4.5)
+        if(ifl==1): ax.set_ylim(-0.7,1.4)
+        if(ifl==4): ax.set_ylim(-0.7,1.4)
+        if(ifl==2): ax.set_ylim(-0.4,1.6)
+        if(ifl==5): ax.set_ylim(-0.4,1.6)
         
     if(filelabel=="x0p00126"):
         if(ifl==0): ax.set_ylim(-0.1,7.0)
@@ -448,10 +464,18 @@ for ifl in range(6):
     # Add the legend
     if(ifl==0):
         ax.legend([(p1[0],p2[0]),(p3[0],p4[0])],\
-                  [ r"$A=56$", r"$A=56~(\rm wo~match)$" ], \
+                  # [ r"$A=56$", r"$A=56~(\rm wo~match)$" ], \
+                  [ r"$A=56$", r"${\rm no~A~dep~in~NN}$" ], \
                   frameon=True,loc=4,prop={'size':13})
 
     icount = icount + 1
+
+    # Add line indicating yadism region
+    plt.axvline(5,lw=2,ls="dotted",color="black")
+    if(ifl==2):
+        ax.text(0.55,0.10,r'$\rm pQCD~constraints$',fontsize=14,transform=ax.transAxes,color="black")
+        ax.arrow(x=0.55, y=0.05, dx=0.30, dy=0, width=.02,head_length=0.05,transform=ax.transAxes)
+        
 
 for ifl in range(6):
 
@@ -471,21 +495,21 @@ for ifl in range(6):
     ax.set_xlim(qmin,qmax)
 
     if(filelabel=="x0p1"):
-        if(ifl==0): ax.set_ylim(-0.1,1.8)
-        if(ifl==3): ax.set_ylim(-0.1,1.8)
-        if(ifl==1): ax.set_ylim(-0.2,0.85)
-        if(ifl==4): ax.set_ylim(-0.2,0.85)
-        if(ifl==2): ax.set_ylim(-0.1,1.3)
-        if(ifl==5): ax.set_ylim(-0.1,1.3)
+        if(ifl==0): ax.set_ylim(0.5,2.2)
+        if(ifl==3): ax.set_ylim(0.5,2.2)
+        if(ifl==1): ax.set_ylim(-0.5,0.6)
+        if(ifl==4): ax.set_ylim(-0.5,0.6)
+        if(ifl==2): ax.set_ylim(-0.1,1.4)
+        if(ifl==5): ax.set_ylim(-0.1,1.4)
         
     if(filelabel=="x0p01"):
-        if(ifl==0): ax.set_ylim(-0.1,4.0)
-        if(ifl==3): ax.set_ylim(-0.1,4.0)
-        if(ifl==1): ax.set_ylim(-0.2,1.4)
-        if(ifl==4): ax.set_ylim(-0.2,1.4)
-        if(ifl==2): ax.set_ylim(-0.2,1.5)
-        if(ifl==5): ax.set_ylim(-0.2,1.5)
-        
+        if(ifl==0): ax.set_ylim(-0.1,4.5)
+        if(ifl==3): ax.set_ylim(-0.1,4.5)
+        if(ifl==1): ax.set_ylim(-0.7,1.4)
+        if(ifl==4): ax.set_ylim(-0.7,1.4)
+        if(ifl==2): ax.set_ylim(-0.4,1.6)
+        if(ifl==5): ax.set_ylim(-0.4,1.6)
+                
     if(filelabel=="x0p00126"):
         if(ifl==0): ax.set_ylim(-0.1,7.0)
         if(ifl==3): ax.set_ylim(-0.1,7.0)
@@ -507,13 +531,21 @@ for ifl in range(6):
     # Add the legend
     if(ifl==0):
         ax.legend([(p1[0],p2[0]),(p3[0],p4[0])],\
-                  [ r"$A=208$", r"$A=208~(\rm wo~match)$" ], \
+                  #[ r"$A=208$", r"$A=208~(\rm wo~match)$" ], \
+                  [ r"$A=208$",r"${\rm no~A~dep~in~NN}$" ], \
                   frameon=True,loc=4,prop={'size':13})
 
     icount = icount + 1
 
+    # Add line indicating yadism region
+    plt.axvline(5,lw=2,ls="dotted",color="black")
+    if(ifl==2):
+        ax.text(0.55,0.10,r'$\rm pQCD~constraints$',fontsize=14,transform=ax.transAxes,color="black")
+        ax.arrow(x=0.55, y=0.05, dx=0.30, dy=0, width=.02,head_length=0.05,transform=ax.transAxes)
+        
+
 py.tight_layout(pad=1, w_pad=1, h_pad=1.0)
-py.savefig('NNUSF-variation-'+filelabel+'.pdf')
-print('output plot: NNUSF-variation'+filelabel+'.pdf')
+py.savefig('NNUSF-'+desc+'-'+filelabel+'.pdf')
+print('output plot: NNUSF-'+desc+'-'+filelabel+'.pdf')
 
 exit()
