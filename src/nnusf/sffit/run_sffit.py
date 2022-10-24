@@ -37,7 +37,8 @@ def main(
     if destination.exists():
         _logger.warning(f"{destination} already exists, overwriting content.")
 
-    replica_dir = destination / f"replica_{replica}"
+    cardname = str(runcard).split("/")[-1].removesuffix(".yml")
+    replica_dir = destination.joinpath(cardname) / f"replica_{replica}"
     replica_dir.mkdir(parents=True, exist_ok=True)
 
     # Load fit run card

@@ -24,8 +24,8 @@ def subcommand():
     "-d",
     "--destination",
     type=click.Path(path_type=pathlib.Path),
-    default=pathlib.Path.cwd().absolute().joinpath("nnusf_fit"),
-    help="Alternative destination path to store the resulting model (default: $PWD/nnusf_fit)",
+    default=pathlib.Path.cwd().absolute(),
+    help="Alternative destination path to store the resulting model (default: $PWD)",
 )
 def sub_run(runcard, replica, destination):
     """Call the sffit run function."""
