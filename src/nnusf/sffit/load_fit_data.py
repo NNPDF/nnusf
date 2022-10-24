@@ -10,7 +10,7 @@ import tensorflow as tf
 import yaml
 
 from .load_data import construct_expdata_instance
-from .scaling import cumulative_rescaling, kinematics_mapping
+from .scaling import kinematics_mapping, linear_rescaling
 
 _logger = logging.getLogger(__name__)
 
@@ -77,7 +77,7 @@ def get_predictions_q(
             experiment_list=fitcard["experiments"],
             kincuts=fitcard.get("kinematics_cuts", {}),
         )
-        map_from, map_to = cumulative_rescaling(unscaled_datainfo)
+        map_from, map_to = linear_rescaling(unscaled_datainfo)
         transp_inputs = np.array(input_list).T
         scaled = kinematics_mapping(transp_inputs, map_from, map_to)
         input_list = np.array(scaled).T

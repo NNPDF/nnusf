@@ -65,12 +65,6 @@ genrep: True
 # True: rescale the input kinematics
 rescale_inputs: True
 
-# Select a subset of Q2 points during Input Scaling
-# Ignore if `rescale_inputs` is set to False
-q2_points:
-  small_q2points: 20
-  large_q2points: 10
-
 # Various seed values
 global_seeds: 1865683875
 

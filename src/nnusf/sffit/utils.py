@@ -64,7 +64,7 @@ def modify_lr(tr_loss_val, lr):
     return lr
 
 
-def select_subset_q2points(kin_unique, scaling_target, q2points, kincuts):
+def subset_q2points(kin_unique, scaling_target, q2points, kincuts):
     """
     In order to smoothen the interpolation when mapping Q2 into [0, 1]
     we remove some of the Q2 points in the grid. This is done herein by
@@ -91,9 +91,11 @@ def select_subset_q2points(kin_unique, scaling_target, q2points, kincuts):
             ],
             axis=0,
         )
-        scaling_target = (
-            scaling_target[0:nb_q2real:stepm]
-            + scaling_target[nb_q2real:nt_q2points:stepn]
+        scaling_target = np.concatenate(
+            [
+                scaling_target[0:nb_q2real:stepm],
+                scaling_target[nb_q2real:nt_q2points:stepn],
+            ]
         )
     else:
         _logger.error("Inconsistent values for number of sub-Q2 points")
