@@ -35,7 +35,6 @@ def load_experimental_data(
     experiment_list,
     input_scaling: Optional[bool] = None,
     kincuts: dict = {},
-    q2interpolation_points=None,
 ):
     "returns a dictionary with dataset names as keys and data as value"
     experimental_data = construct_expdata_instance(experiment_list, kincuts)
@@ -44,11 +43,7 @@ def load_experimental_data(
     # Perform Input Scaling if required
     if input_scaling:
         _logger.info("Input kinematics are being scaled.")
-        rescale_inputs(
-            experimental_data,
-            q2points=q2interpolation_points,
-            kincuts=kincuts,
-        )
+        rescale_inputs(experimental_data)
     return raw_experimental_data, experimental_data
 
 

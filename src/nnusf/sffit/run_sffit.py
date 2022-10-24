@@ -52,7 +52,6 @@ def main(
         experiment_list=expdicts,
         input_scaling=runcard_content.get("rescale_inputs", None),
         kincuts=runcard_content.get("kinematic_cuts", {}),
-        q2interpolation_points=runcard_content.get("q2_points", None),
     )
     # create pseudodata and add it to the data_info object
     genrep = runcard_content.get("genrep", None)
