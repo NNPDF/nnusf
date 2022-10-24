@@ -2,7 +2,6 @@
 """Executable to perform the structure function fit."""
 import logging
 import pathlib
-from typing import Optional
 
 import tensorflow as tf
 import yaml
@@ -11,7 +10,7 @@ from . import load_data
 from .compute_expchi2 import add_expchi2_json, compute_exp_chi2
 from .model_gen import generate_models
 from .train_model import perform_fit
-from .utils import set_global_seeds
+from .utils import add_git_info, set_global_seeds
 
 tf.get_logger().setLevel("ERROR")
 
@@ -61,6 +60,7 @@ def main(
     load_data.add_tr_filter_mask(data_info)
 
     # Save a copy of the fit runcard to the fit folder
+    add_git_info(runcard_content)
     with open(replica_dir.parent / "runcard.yml", "w") as fstream:
         yaml.dump(runcard_content, fstream, sort_keys=False)
 
