@@ -4,8 +4,6 @@ import numpy as np
 
 def kinematics_mapping(dataset, map_from, map_to):
     scaled_inputs = []
-    print(dataset.shape)
-    exit()
     for index, kin_var in enumerate(dataset):
         # Scale only alon (Q2, A) directions
         if index != 0:
