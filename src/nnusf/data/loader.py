@@ -185,6 +185,7 @@ class Loader:
     @property
     def kinematics(self) -> np.ndarray:
         """Return the kinematic variables."""
+        print(self.table[["x", "Q2", "A"]].values)
         return self.table[["x", "Q2", "A"]].values
 
     @kinematics.setter

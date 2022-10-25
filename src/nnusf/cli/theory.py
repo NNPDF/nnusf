@@ -96,6 +96,7 @@ def sub_sub_all(data, destination):
     """Full datasets runcards with 7 points perescription scale variations"""
     runcards.dvst(data, destination=destination, activate_scale_var=True)
 
+
 @subcommand.command("by")
 @click.argument(
     "observables", nargs=-1, type=click.Choice(bodek_yang.load.load().members)
@@ -147,8 +148,13 @@ def sub_grids(runcards, destination):
 )
 @click.option("-x", type=int, default=None)
 @click.option("--interactive", is_flag=True)
+@click.option(
+    "--reshape/--no-reshape",
+    default=True,
+    help="Reshape the predictions. Only needed to be TRUE when comparing to BY.",
+)
 @option_dest
-def sub_predictions(grids, pdf, err, destination, x, interactive):
+def sub_predictions(grids, pdf, err, destination, x, reshape, interactive):
     """Generate predictions from yadism grids.
 
     GRIDS is a path to folder (or tar folder) containing the grids, one per
@@ -164,6 +170,7 @@ def sub_predictions(grids, pdf, err, destination, x, interactive):
         xpoint=x,
         interactive=interactive,
         destination=destination.absolute(),
+        reshape=reshape,
     )
 
 

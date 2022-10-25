@@ -126,13 +126,56 @@ def pdf_error(
     return pred, 0, slice(1, -1), "PDF replicas"
 
 
+def generate_txt(predictions: list[dict]) -> None:
+    pred_label = []
+    pred_results = []
+    nuc_types = []
+    for pred in predictions:
+        pred_label.append(pred["obsname"])
+        pred_results.append(pred["predictions"])
+        nuc_types.append(pred["nucleus"])
+    nuc_info = [i for i in list(set(nuc_types))]
+    assert len(nuc_info) == 1
+
+    combined_pred = np.concatenate(pred_results)
+    combined_pred = np.moveaxis(combined_pred, [0, 1, 2], [2, 1, 0])
+
+    xval = [0.1]
+    q2_grids = np.geomspace(5, 1e3, num=400)
+
+    stacked_results = []
+    for idx, pr in enumerate([combined_pred]):
+        predshape = pr[:, :, 0].shape
+        broad_xvalues = np.broadcast_to(xval[idx], predshape)
+        broad_qvalues = np.broadcast_to(q2_grids, predshape)
+        # Construct the replica index array
+        repindex = np.arange(pr.shape[0])[:, np.newaxis]
+        repindex = np.broadcast_to(repindex, predshape)
+        # Stack all the arrays together
+        stacked_list = [repindex, broad_xvalues, broad_qvalues]
+        stacked_list += [pr[:, :, i] for i in range(pr.shape[-1])]
+        stacked = np.stack(stacked_list).reshape((9, -1)).T
+        stacked_results.append(stacked)
+    final_predictions = np.concatenate(stacked_results, axis=0)
+    header = " "
+    for sflabel in pred_label:
+        header = header + sflabel + " "
+    np.savetxt(
+        f"yadism_sfs_{nuc_info[0]}.txt",
+        final_predictions,
+        header=f"replica x Q2" + header,
+        fmt="%d %e %e %e %e %e %e %e %e",
+    )
+
+
 def main(
     grids: pathlib.Path,
     pdf: str,
     destination: pathlib.Path,
-    err: str = "theory",
+    err: str = "pdf",
     xpoint: Optional[int] = None,
     interactive: bool = False,
+    reshape: bool = True,
 ):
     """Run predictions computation.
 
@@ -168,6 +211,7 @@ def main(
         xgrid, q2grid = np.meshgrid(*load.kin_grids())
         gmask = load.mask()
 
+        combined_predictions = []
         for gpath in grids.iterdir():
             if "pineappl" not in gpath.name:
                 continue
@@ -180,32 +224,53 @@ def main(
 
             if err == "theory":
                 pred, central, bulk, err_source = theory_error(
-                    grid, pdf, defs.nine_points, xgrid
+                    grid, pdf, defs.nine_points, xgrid, reshape
                 )
             elif err == "pdf":
-                pred, central, bulk, err_source = pdf_error(grid, pdf, xgrid)
+                pred, central, bulk, err_source = pdf_error(
+                    grid, pdf, xgrid, reshape
+                )
             else:
                 raise ValueError(f"Invalid error type '{err}'")
 
-            plot(
-                pred,
-                genie,
-                gmask,
-                obs,
-                kind,
-                xgrid,
-                q2grid,
-                xpoint,
-                central,
-                bulk,
-                err_source,
-                interactive,
-                preds_dest,
-            )
+            if reshape:
+                plot(
+                    pred,
+                    genie,
+                    gmask,
+                    obs,
+                    kind,
+                    xgrid,
+                    q2grid,
+                    xpoint,
+                    central,
+                    bulk,
+                    err_source,
+                    interactive,
+                    preds_dest,
+                )
+            else:
+                gridname = gpath.stem.split(".")[0]
+                nuc = gridname.split("-")[0].split("_")[-1]
+                sf_type = gridname.split("-")[-1]
+                neutrino_type = gridname.split("_")[0]
+                if sf_type == "F3":
+                    obsname = "x" + sf_type + neutrino_type
+                else:
+                    obsname = sf_type + neutrino_type
+                dict_pred = {
+                    "nucleus": nuc,
+                    "predictions": np.expand_dims(np.asarray(pred), axis=0),
+                    "obsname": obsname,
+                }
+                combined_predictions.append(dict_pred)
 
-        tardest = destination / "predictions.tar"
-        with tarfile.open(tardest, "w") as tar:
-            for path in preds_dest.iterdir():
-                tar.add(path.absolute(), path.relative_to(tmpdir))
+        if reshape:
+            tardest = destination / "predictions.tar"
+            with tarfile.open(tardest, "w") as tar:
+                for path in preds_dest.iterdir():
+                    tar.add(path.absolute(), path.relative_to(tmpdir))
 
-        _logger.info(f"Preedictions saved in '{tardest}'.")
+            _logger.info(f"Preedictions saved in '{tardest}'.")
+        else:
+            generate_txt(combined_predictions)
