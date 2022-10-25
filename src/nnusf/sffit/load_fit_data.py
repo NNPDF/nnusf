@@ -10,7 +10,7 @@ import tensorflow as tf
 import yaml
 
 from .load_data import construct_expdata_instance
-from .scaling import kinematics_mapping, linear_rescaling
+from .scaling import extract_max_value, kinematics_mapping
 
 _logger = logging.getLogger(__name__)
 
@@ -92,9 +92,9 @@ def get_predictions_q(
             experiment_list=fitcard["experiments"],
             kincuts=fitcard.get("kinematics_cuts", {}),
         )
-        map_from, map_to = linear_rescaling(unscaled_datainfo)
+        max_kinvalue = extract_max_value(unscaled_datainfo)
         transp_inputs = np.array(input_list).T
-        scaled = kinematics_mapping(transp_inputs, map_from, map_to)
+        scaled = kinematics_mapping(transp_inputs, max_kinvalue)
         input_list = np.array(scaled).T
         _logger.warning("Input kinematics are being scaled.")
 
