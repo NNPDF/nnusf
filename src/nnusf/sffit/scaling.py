@@ -20,7 +20,7 @@ def extract_extreme_values(datasets):
     """
     data_kin = [data.kinematics for data in datasets.values()]
     data_kin = np.concatenate(data_kin, axis=0)
-    extreme_values = np.stack([data_kin.min(axis=0),data_kin.max(axis=0)])
+    extreme_values = np.stack([data_kin.min(axis=0),data_kin.max(axis=0)]).T
     return extreme_values
 
 
@@ -30,7 +30,7 @@ def apply_mapping_datasets(datasets, max_kin_value):
         dataset.kinematics = np.array(scaled).T
 
 
-def rescale_inputs(datasets, method="extract_max_value"):
+def rescale_inputs(datasets, method="extract_extreme_values"):
     function_call = globals()[method]
     max_kin_value = function_call(datasets)
     apply_mapping_datasets(datasets, max_kin_value)
