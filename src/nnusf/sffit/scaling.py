@@ -4,16 +4,13 @@ import numpy as np
 
 def kinematics_mapping(dataset, max_kin_value):
     """Rescale the input kinematic values (expect `x`) to be
-    between 0 and 1.
+    between -1 and 1.
     """
     scaled_inputs = []
     for index, kin_var in enumerate(dataset):
-        # Scale only along the (Q2, A) directions
-        if index != 0:
-            input_scaling = kin_var / max_kin_value[index]
-        else:
-            input_scaling = kin_var
-        scaled_inputs.append(input_scaling)
+        num = kin_var - max_kin_value[index][0]
+        den = max_kin_value[index][1] - max_kin_value[index][0]
+        scaled_inputs.append(2 * (num / den) - 1)
     return scaled_inputs
 
 
@@ -29,7 +26,7 @@ def extract_max_value(datasets):
     maximum_kinematic_values = []
     for kin_var in sorted_kin.T:
         kin_unique, _ = np.unique(kin_var, return_counts=True)
-        maximum_kinematic_values.append(kin_unique.max())
+        maximum_kinematic_values.append([kin_unique.min(), kin_unique.max()])
     return maximum_kinematic_values
 
 
