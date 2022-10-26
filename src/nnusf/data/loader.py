@@ -41,6 +41,7 @@ class Loader:
         kincuts: dict = {},
         path_to_coefficients: Optional[pathlib.Path] = None,
         include_syst: Optional[bool] = True,
+        verbose: bool = True,
     ):
         """Initialize object.
 
@@ -57,6 +58,12 @@ class Loader:
         w2min;
             if True cut all datapoints below `w2min`
         """
+        # In case of post-fit related operations, we do not need to
+        # print out the noisy log outputs
+        if not verbose:
+            _logger.info("Loading the datasets...")
+            _logger.setLevel(logging.ERROR)
+
         self.name = name
         if self.obs not in OBS_TYPE:
             raise ObsTypeError(

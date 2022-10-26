@@ -91,6 +91,7 @@ def get_predictions_q(
         unscaled_datainfo = construct_expdata_instance(
             experiment_list=fitcard["experiments"],
             kincuts=fitcard.get("kinematics_cuts", {}),
+            verbose=False,
         )
         max_kinvalue = extract_max_value(unscaled_datainfo)
         transp_inputs = np.array(input_list).T
