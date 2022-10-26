@@ -202,3 +202,15 @@ def sub_compare_to_data(grids, data, pdf, err, destination, interactive):
         interactive=interactive,
         destination=destination,
     )
+
+
+@sub_runcards.command("fixed_x")
+@click.argument(
+    "x",
+    type=float,
+)
+@click.argument("a", type=int)
+@option_dest
+def sub_sub_fixed_x(x, a, destination):
+    """Generate runcard at fixed x and A"""
+    runcards.x_fix(x, a, destination)

@@ -11,7 +11,7 @@ import yaml
 
 from .. import utils
 from ..data import loader
-from . import bodek_yang, data_vs_theory, highq, defs
+from . import bodek_yang, data_vs_theory, highq, defs, fixed_x
 
 _logger = logging.getLogger(__name__)
 
@@ -154,3 +154,24 @@ def dvst(
                 _logger.info(
                     f"Runcards have been dumped to '{tarpath.relative_to(pathlib.Path.cwd())}'"
                 )
+
+
+def x_fix(x: float, A: int, destination: pathlib.Path):
+    """Generate runcards at fixed x"""
+    utils.mkdest(destination)
+    ocards = fixed_x.runcards.observables(x, A)
+    theory_card = theory()
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmpdir = pathlib.Path(tmpdir)
+        utils.write(theory_card, tmpdir / "theory.yaml")
+        for name, observable_card in ocards.items():
+            utils.write(observable_card, tmpdir / f"obs-{name}.yaml")
+
+            tarpath = destination / f"runcards-fixed_x_{x}_A_{A}.tar"
+            with tarfile.open(tarpath, "w") as tar:
+                for tmppath in tmpdir.iterdir():
+                    tar.add(tmppath.absolute(), arcname="runcards/" + tmppath.name)
+
+            _logger.info(
+                f"Runcards have been dumped to '{tarpath.relative_to(pathlib.Path.cwd())}'"
+            )
