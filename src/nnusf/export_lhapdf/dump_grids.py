@@ -22,6 +22,7 @@ from .utils import (
 
 _logger = logging.getLogger(__name__)
 
+ROUNDING = 6
 LHAPDF_ID = [1001, 1002, 1003, 2001, 2002, 2003, 3001, 3002, 3003]
 A_VALUE = 1
 X_GRIDS = dict(min=1e-2, max=1.0, num=100)
@@ -45,7 +46,7 @@ def parse_nn_predictions(
         n=q2_dic_specs["num"],
         q_spacing="geomspace",
     )
-    prediction_infoq2 = [round(q, 3) for q in prediction_info.q]
+    prediction_infoq2 = [round(q, ROUNDING) for q in prediction_info.q]
     predictions = np.asarray(prediction_info.predictions)
     # The predictions above is of shape (nx, nrep, n_q2, n_sfs)
     # and the moveaxis transforms it into (nrep, n_q2, n_x, n_sfs)
@@ -69,7 +70,7 @@ def parse_nn_predictions(
             # loop over the Structure Functions
             for idx in range(q2rep.shape[-1]):
                 sfs_q2rep[LHAPDF_ID[idx]] = q2rep[:, idx]
-            q2rep_dic[round(q2rep_idx, 3)] = sfs_q2rep
+            q2rep_dic[round(q2rep_idx, ROUNDING)] = sfs_q2rep
         combined_replica.append(q2rep_dic)
 
     grids_info_specs = {
