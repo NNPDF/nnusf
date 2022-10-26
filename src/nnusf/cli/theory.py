@@ -92,7 +92,7 @@ def sub_sub_all(data, destination):
     "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
 )
 @option_dest
-def sub_sub_all(data, destination):
+def sub_sub_th_err(data, destination):
     """Full datasets runcards with 7 points perescription scale variations"""
     runcards.dvst(data, destination=destination, activate_scale_var=True)
 
