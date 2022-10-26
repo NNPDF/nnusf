@@ -14,20 +14,14 @@ def kinematics_mapping(dataset, max_kin_value):
     return scaled_inputs
 
 
-def extract_max_value(datasets):
+def extract_extreme_values(datasets):
     """Store the maximum values of the given kinematics (x, Q2, A)
     into a list and use them to rescale the input kinematics.
     """
     data_kin = [data.kinematics for data in datasets.values()]
-
-    # Combined and sort each column of the kinematics (x, Q2, A)
-    sorted_kin = np.sort(np.concatenate(data_kin, axis=0), axis=0)
-
-    maximum_kinematic_values = []
-    for kin_var in sorted_kin.T:
-        kin_unique, _ = np.unique(kin_var, return_counts=True)
-        maximum_kinematic_values.append([kin_unique.min(), kin_unique.max()])
-    return maximum_kinematic_values
+    data_kin = np.concatenate(data_kin, axis=0)
+    extreme_values = np.stack([data_kin.min(axis=0),data_kin.max(axis=0)]).T
+    return extreme_values
 
 
 def apply_mapping_datasets(datasets, max_kin_value):
@@ -36,7 +30,7 @@ def apply_mapping_datasets(datasets, max_kin_value):
         dataset.kinematics = np.array(scaled).T
 
 
-def rescale_inputs(datasets, method="extract_max_value"):
+def rescale_inputs(datasets, method="extract_extreme_values"):
     function_call = globals()[method]
     max_kin_value = function_call(datasets)
     apply_mapping_datasets(datasets, max_kin_value)
