@@ -149,12 +149,14 @@ def sub_grids(runcards, destination):
 @click.option("-x", type=int, default=None)
 @click.option("--interactive", is_flag=True)
 @click.option(
-    "--reshape/--no-reshape",
+    "--compare_to_by/--no-compare_to_by",
     default=True,
-    help="Reshape the predictions. Only needed to be TRUE when comparing to BY.",
+    help="Compare or not to the Bodek-Yang results.",
 )
 @option_dest
-def sub_predictions(grids, pdf, err, destination, x, reshape, interactive):
+def sub_predictions(
+    grids, pdf, err, destination, x, compare_to_by, interactive
+):
     """Generate predictions from yadism grids.
 
     GRIDS is a path to folder (or tar folder) containing the grids, one per
@@ -170,7 +172,7 @@ def sub_predictions(grids, pdf, err, destination, x, reshape, interactive):
         xpoint=x,
         interactive=interactive,
         destination=destination.absolute(),
-        reshape=reshape,
+        compare_to_by=compare_to_by,
     )
 
 
@@ -204,13 +206,39 @@ def sub_compare_to_data(grids, data, pdf, err, destination, interactive):
     )
 
 
-@sub_runcards.command("fixed_x")
-@click.argument(
-    "x",
-    type=float,
+@sub_runcards.command("yadknots")
+@click.option(
+    "-x",
+    "--x_grids",
+    default=None,
+    help="""Stringified dictionary containing specs for x-grid"""
+    """" e.g. '{"min": 0.01, "max": 1.0, "num": 100}'.""",
 )
-@click.argument("a", type=int)
+@click.option(
+    "-q",
+    "--q2_grids",
+    default=None,
+    help="""Stringified dictionary containing specs for Q2-grid"""
+    """" e.g. '{"min": 0.001, "max": 100000, "num": 200}'.""",
+)
+@click.option(
+    "-a",
+    "--a_value",
+    type=int,
+    default=1,
+    help="""Atomic mass number value. Default: 1""",
+)
 @option_dest
-def sub_sub_fixed_x(x, a, destination):
-    """Generate runcard at fixed x and A"""
-    runcards.x_fix(x, a, destination)
+def sub_sub_yadknots(x_grids, q2_grids, a_value, destination):
+    """Generate runcard at fixed A"""
+    if x_grids is not None:
+        x_grids = eval(x_grids)
+    else:
+        x_grids = dict(min=1e-5, max=1.0, num=25)
+
+    if q2_grids is not None:
+        q2_grids = eval(q2_grids)
+    else:
+        q2_grids = dict(min=5, max=1e5, num=30)
+
+    runcards.yknots(x_grids, q2_grids, a_value, destination)

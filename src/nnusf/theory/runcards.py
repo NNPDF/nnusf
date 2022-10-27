@@ -11,7 +11,7 @@ import yaml
 
 from .. import utils
 from ..data import loader
-from . import bodek_yang, data_vs_theory, highq, defs, fixed_x
+from . import bodek_yang, data_vs_theory, defs, highq, yadknots
 
 _logger = logging.getLogger(__name__)
 
@@ -64,7 +64,9 @@ def dump(
 
 
 def by(
-    theory_update: Optional[dict], obs_update: Optional[dict], destination: pathlib.Path
+    theory_update: Optional[dict],
+    obs_update: Optional[dict],
+    destination: pathlib.Path,
 ):
     """Generate Bodek-Yang yadism runcards."""
     obs = bodek_yang.runcards.observables()
@@ -87,7 +89,9 @@ def datasets_path(datasets) -> pathlib.Path:
         for ds in datasets:
             assert ds.parents[1].absolute() == path
     else:
-        raise ValueError("No datasets passed, impossible to infer datasets location.")
+        raise ValueError(
+            "No datasets passed, impossible to infer datasets location."
+        )
 
     return path
 
@@ -128,7 +132,9 @@ def update_theory(
 
 
 def dvst(
-    datasets: list[pathlib.Path], destination: pathlib.Path, activate_scale_var: bool
+    datasets: list[pathlib.Path],
+    destination: pathlib.Path,
+    activate_scale_var: bool,
 ):
     """Generate yadism runcards for all datapoints."""
     path = datasets_path(datasets)
@@ -146,20 +152,26 @@ def dvst(
                 for name, observable_card in ocards.items():
                     utils.write(observable_card, tmpdir / f"obs-{name}.yaml")
 
-                tarpath = destination / f"runcards-{data_name}_xif{theory_card['XIF']}_xir{theory_card['XIR']}.tar"
+                tarpath = (
+                    destination
+                    / f"runcards-{data_name}_xif{theory_card['XIF']}_xir{theory_card['XIR']}.tar"
+                )
                 with tarfile.open(tarpath, "w") as tar:
                     for tmppath in tmpdir.iterdir():
-                        tar.add(tmppath.absolute(), arcname="runcards/" + tmppath.name)
+                        tar.add(
+                            tmppath.absolute(),
+                            arcname="runcards/" + tmppath.name,
+                        )
 
                 _logger.info(
                     f"Runcards have been dumped to '{tarpath.relative_to(pathlib.Path.cwd())}'"
                 )
 
 
-def x_fix(x: float, A: int, destination: pathlib.Path):
+def yknots(x: dict, q2: dict, A: int, destination: pathlib.Path):
     """Generate runcards at fixed x"""
     utils.mkdest(destination)
-    ocards = fixed_x.runcards.observables(x, A)
+    ocards = yadknots.runcards.observables(x, q2, A)
     theory_card = theory()
     with tempfile.TemporaryDirectory() as tmpdir:
         tmpdir = pathlib.Path(tmpdir)
@@ -167,10 +179,12 @@ def x_fix(x: float, A: int, destination: pathlib.Path):
         for name, observable_card in ocards.items():
             utils.write(observable_card, tmpdir / f"obs-{name}.yaml")
 
-            tarpath = destination / f"runcards-fixed_x_{x}_A_{A}.tar"
+            tarpath = destination / f"runcards-yadknots_A{A}.tar"
             with tarfile.open(tarpath, "w") as tar:
                 for tmppath in tmpdir.iterdir():
-                    tar.add(tmppath.absolute(), arcname="runcards/" + tmppath.name)
+                    tar.add(
+                        tmppath.absolute(), arcname="runcards/" + tmppath.name
+                    )
 
             _logger.info(
                 f"Runcards have been dumped to '{tarpath.relative_to(pathlib.Path.cwd())}'"
