@@ -169,7 +169,7 @@ def dvst(
 
 
 def yknots(x: dict, q2: dict, A: int, destination: pathlib.Path):
-    """Generate runcards at fixed x"""
+    """Generate yadism runcards with the given kinametics"""
     utils.mkdest(destination)
     ocards = yadknots.runcards.observables(x, q2, A)
     theory_card = theory()
