@@ -4,13 +4,13 @@ import numpy as np
 
 def kinematics_mapping(dataset, max_kin_value):
     """Rescale the input kinematic values (expect `x`) to be
-    between -1 and 1.
+    between 0 and 1.
     """
     scaled_inputs = []
     for index, kin_var in enumerate(dataset):
         num = kin_var - max_kin_value[index][0]
         den = max_kin_value[index][1] - max_kin_value[index][0]
-        scaled_inputs.append(2 * (num / den) - 1)
+        scaled_inputs.append(num / den)
     return scaled_inputs
 
 
