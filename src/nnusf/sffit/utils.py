@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import logging
 import os
 import pathlib
 import random
@@ -13,6 +14,7 @@ from rich.style import Style
 from rich.table import Table
 
 console = Console()
+_logger = logging.getLogger(__name__)
 
 
 ADAPTIVE_LR = [
@@ -69,6 +71,45 @@ def modify_lr(tr_loss_val, lr):
         if check and (lr > lrval):
             return lrval
     return lr
+
+
+def subset_q2points(kin_unique, scaling_target, q2points, kincuts):
+    """
+    In order to smoothen the interpolation when mapping Q2 into [0, 1]
+    we remove some of the Q2 points in the grid. This is done herein by
+    removing
+    """
+    assert kin_unique.shape[0] == len(scaling_target)
+
+    q2data_max = kincuts.get("q2max", 1e5)
+    sub_smallq2 = q2points.get("small_q2points", 500)
+    sub_largeq2 = q2points.get("large_q2points", 1e5)
+    nt_q2points = kin_unique.shape[0]
+
+    # Separate the Q2 from the real data to the matching
+    nb_q2real = (kin_unique <= q2data_max).sum()
+    nb_q2math = nt_q2points - nb_q2real
+
+    if sub_largeq2 < nb_q2math:
+        stepm = (nb_q2real // sub_smallq2) + 1
+        stepn = (nb_q2math // sub_largeq2) + 1
+        kin_unique = np.concatenate(
+            [
+                kin_unique[0:nb_q2real:stepm],
+                kin_unique[nb_q2real:nt_q2points:stepn],
+            ],
+            axis=0,
+        )
+        scaling_target = np.concatenate(
+            [
+                scaling_target[0:nb_q2real:stepm],
+                scaling_target[nb_q2real:nt_q2points:stepn],
+            ]
+        )
+    else:
+        _logger.error("Inconsistent values for number of sub-Q2 points")
+    assert kin_unique.shape[0] == len(scaling_target)
+    return kin_unique, scaling_target
 
 
 def mask_expdata(y, tr_mask, vl_mask):
