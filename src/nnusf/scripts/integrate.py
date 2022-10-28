@@ -1,8 +1,13 @@
+# -*- coding: utf-8 -*-
+import logging
 from typing import Optional
 
+import lhapdf
 import numpy as np
 import numpy.typing as npt
-from scipy import interpolate, integrate
+from scipy import integrate, interpolate
+
+_logger = logging.getLogger(__name__)
 
 
 def xs(diffxs: npt.NDArray, xgrid: npt.NDArray, ygrid: npt.NDArray):
@@ -19,12 +24,13 @@ def xs(diffxs: npt.NDArray, xgrid: npt.NDArray, ygrid: npt.NDArray):
     return integral
 
 
-def lhapdf(
-    pdf,
+def integrate_lhapdf(
+    pdfset: str,
     pid: int,
     xgrid: Optional[npt.NDArray] = None,
     q2grid: Optional[npt.NDArray] = None,
 ):
+    pdf = lhapdf.mkPDF(pdfset, 0)  # Account only for the Central Value
     if xgrid is None:
         xgrid = np.geomspace(pdf.xMin, pdf.xMax, 50)
     if q2grid is None:
@@ -36,3 +42,13 @@ def lhapdf(
     )
 
     return xs(values, xgrid=xgrid, ygrid=q2grid)
+
+
+def main(
+    pdfset: str,
+    pid: int,
+    xgrid: Optional[npt.NDArray] = None,
+    q2grid: Optional[npt.NDArray] = None,
+):
+    integrated = integrate_lhapdf(pdfset, pid, xgrid, q2grid)
+    _logger.info(f"Value of the intergration: {integrated}")
