@@ -81,7 +81,7 @@ class Loader:
             include_syst,
             self.leftindex,
         )
-        _logger.info(f"Loaded '{name}' dataset")
+        _logger.info(f"'[{name:<25}]' loaded successfully")
 
     def _load(self, kincuts: dict) -> tuple[pd.DataFrame, pd.Index]:
         """Load the dataset information.
@@ -174,7 +174,8 @@ class Loader:
             info_df["m_nucleon"][0],
         )
         _logger.info(
-            f"Dataset: {self.name}, Q2min={new_df['Q2'].min()}, Q2max={new_df['Q2'].max()}"
+            f"'[{self.name:<25}]' Q2min={new_df['Q2'].min():.3f}"
+            f", Q2max={new_df['Q2'].max():.3f}"
         )
 
         return new_df, new_df.index
@@ -295,7 +296,7 @@ def clip_covmat(covmat, dataset_name):
     # if eigenvalues are close to zero, can be negative
     if e_val[0] < 0:
         _logger.warning(
-            f"Negative eigenvalue encountered in '{dataset_name}'."
+            f"'[{dataset_name:<25}]' Negative eigenvalue encountered."
             " Clipping values to 1e-5."
         )
     else:

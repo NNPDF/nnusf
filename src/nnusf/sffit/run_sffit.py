@@ -33,11 +33,11 @@ def main(
     destination : pathlib.Path
         Path to the output folder
     """
-    if destination.exists():
-        _logger.warning(f"{destination} already exists, overwriting content.")
-
-    cardname = str(runcard).split("/")[-1].removesuffix(".yml")
-    replica_dir = destination.joinpath(cardname) / f"replica_{replica}"
+    fit_folder = destination.joinpath(runcard.stem)
+    if fit_folder.exists():
+        relative = fit_folder.absolute().relative_to(pathlib.Path.cwd())
+        _logger.warning(f"'{relative}' already exists, overwriting content.")
+    replica_dir = fit_folder / f"replica_{replica}"
     replica_dir.mkdir(parents=True, exist_ok=True)
 
     # Load fit run card

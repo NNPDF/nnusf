@@ -11,10 +11,10 @@ from ..data.loader import Loader
 from .scaling import rescale_inputs
 
 _logger = logging.getLogger(__name__)
-path_to_commondata = pathlib.Path(__file__).parents[3].joinpath("commondata")
-path_to_coefficients = (
-    pathlib.Path(__file__).parents[3].joinpath("coefficients")
-)
+
+curr_path = pathlib.Path(__file__)
+path_to_commondata = curr_path.parents[3].joinpath("commondata")
+path_to_coefficients = curr_path.parents[3].joinpath("coefficients")
 
 
 def construct_expdata_instance(experiment_list, kincuts, verbose=True):
