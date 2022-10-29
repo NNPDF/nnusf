@@ -17,6 +17,8 @@ _logger = logging.getLogger(__name__)
 
 @dataclass
 class PredictionInfo:
+    """Class holding the information on the resulting predictions"""
+
     q: np.ndarray
     x: Union[int, float, list, np.ndarray]
     A: Union[int, list, np.ndarray]
@@ -58,12 +60,25 @@ def get_predictions_q(
     *args,
     **kwargs
 ):
-    """Outputs a PredicitonInfo object for fixed A and/or for different values of x.
+    """Constructs a `sffit.load_fit_data.PredictionInfo` object that
+    stores the results of a NN predictions for a fixed nucleus A.
 
     Parameters:
     -----------
     fit: pathlib.Path
         Path to the fit folder
+    a_slice: int
+        atomic mass number of the nucleus
+    x_slice: list
+        list of x values
+    qmin: float
+        minimum value of Q2
+    qmax: float
+        maximum value of Q2
+    n: int
+        number of Q2 points in the grid
+    q_spacing: str
+        Q2 spacing
     """
     del args
     del kwargs

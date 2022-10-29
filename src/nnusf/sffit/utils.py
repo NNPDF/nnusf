@@ -30,9 +30,8 @@ ADAPTIVE_LR = [
 
 @dataclass
 class TrainingStatusInfo:
-    """Class for storing info to be shared among callbacks
-    (in particular prevents evaluating multiple times for each individual
-    callback).
+    """Class for storing info to be shared among callbacks. In particular
+    it prevents evaluating multiple times for each individual callback.
     """
 
     tr_dpts: dict
@@ -203,6 +202,24 @@ def chi2(invcovmat):
 
 
 def chi2_logs(train_info, vl_loss, tr_dpts, vl_dpts, epoch, lr):
+    """Instance of rich table that updates live the summary of
+    the training.
+
+    Parameters:
+    -----------
+    train_info: dict
+        dictionary containing information on the training
+    vl_loss: dict
+        dictionary containing information on the validatio losses
+    tr_dpts: dict
+        contains the number of datapoints for all the training set
+    vl_dpts:
+        contains the number of datapoints for the validation set
+    epoch: float
+        the number of epochs
+    lr: float
+        value of the current learning rate
+    """
     tot_trpts = sum(tr_dpts.values())
     tot_vlpts = sum(vl_dpts.values())
     style = Style(color="white")

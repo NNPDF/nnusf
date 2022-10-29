@@ -18,6 +18,24 @@ path_to_coefficients = curr_path.parents[3].joinpath("coefficients")
 
 
 def construct_expdata_instance(experiment_list, kincuts, verbose=True):
+    """Collect all the dataset instances into a dictionary.
+
+    Parameters:
+    -----------
+    experiment_list: dict
+        contains the information on a given dataset including name
+        and training fraction
+    kincuts: dict
+        contains the information on the cuts to be applied
+    verbose: bool=True
+        print out log outputs from data.loader
+
+    Returns:
+    --------
+    dict:
+        dictionary containing the dataset instances with dataset
+        name as key
+    """
     experimental_data = {}
     for experiment in experiment_list:
         data = Loader(
@@ -38,7 +56,26 @@ def load_experimental_data(
     kincuts: dict = {},
     verbose: bool = True,
 ):
-    "returns a dictionary with dataset names as keys and data as value"
+    """Calls to `construct_expdata_instance` to construct the dataset
+    instances and apply input scaling if needed.
+
+    Parameters:
+    -----------
+    experiment_list: dict
+        contains the infomration on a given dataset including name
+        and training fraction
+    input_scaling: bool
+        choose to scale or not the kinematic inputs
+    kincuts: dict
+        contains the information on the cuts to be applied
+    verbose:
+        print out log outputs from data.loader
+
+    Returns:
+    --------
+    tuple(dict, dict):
+        original and scaled dataset specs
+    """
     experimental_data = construct_expdata_instance(
         experiment_list,
         kincuts,
@@ -54,8 +91,15 @@ def load_experimental_data(
 
 
 def add_pseudodata(experimental_datasets, shift=True):
-    """If `shift=False` no pseudodata is generated and real data is used
-    instead. This is only relevant for debugging purposes.
+    """Add fluctuations to the experimental datasets.
+
+    Parameters:
+    -----------
+    experimental_datasets: dict
+        contains the information on alll the datasets
+    shift: bool
+        If `shift=False` no pseudodata is generated and real data is
+        used instead. This is only relevant for debugging purposes.
     """
     for dataset in experimental_datasets.values():
         cholesky = np.linalg.cholesky(dataset.covmat)
@@ -66,6 +110,13 @@ def add_pseudodata(experimental_datasets, shift=True):
 
 
 def add_tr_filter_mask(experimental_datasets):
+    """Add filter masks to the dataset instances.
+
+    Parameters:
+    -----------
+    experimental_datasets: dict
+        contains the information on all the datasets
+    """
     for dataset in experimental_datasets.values():
         rnd_sample = random.sample(
             range(dataset.n_data),
