@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 import logging
 import os
-import pathlib
 import random
 from dataclasses import dataclass
 from typing import Union
 
 import numpy as np
-import pygit2
 import tensorflow as tf
 from rich.console import Console
 from rich.style import Style
@@ -47,13 +45,6 @@ class TrainingStatusInfo:
     def __post_init__(self):
         self.tot_vl = sum(self.vl_dpts.values())
         self.nbdpts = sum(self.tr_dpts.values())
-
-
-def add_git_info(runcard_dict: dict):
-    """Add git info to the runcard."""
-    repo = pygit2.Repository(pathlib.Path().cwd())
-    commit = repo[repo.head.target]
-    runcard_dict["git_info"] = str(commit.id)
 
 
 def set_global_seeds(global_seed: int = 1234):

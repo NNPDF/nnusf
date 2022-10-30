@@ -6,11 +6,12 @@ import pathlib
 import tensorflow as tf
 import yaml
 
+from ..utils import add_git_info
 from . import load_data
 from .compute_expchi2 import add_expchi2_json, compute_exp_chi2
 from .model_gen import generate_models
 from .train_model import perform_fit
-from .utils import add_git_info, set_global_seeds
+from .utils import set_global_seeds
 
 tf.get_logger().setLevel("ERROR")
 

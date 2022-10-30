@@ -9,6 +9,7 @@ import numpy as np
 import tensorflow as tf
 import yaml
 
+from ..utils import compare_git_versions
 from .load_data import construct_expdata_instance
 from .scaling import extract_extreme_values, kinematics_mapping
 
@@ -85,6 +86,9 @@ def get_predictions_q(
 
     fitting_card = pathlib.Path(fit).joinpath("runcard.yml")
     fitcard = yaml.load(fitting_card.read_text(), Loader=yaml.Loader)
+
+    # Compare the Git versions before generating predictions
+    compare_git_versions(fitcard)
 
     # The following spacing is defined in terms of Q^2
     if q_spacing == "linear":
