@@ -59,7 +59,7 @@ def compare_git_versions(runcard_dict: dict) -> None:
         repo = pygit2.Repository(nnusf.__path__[0])
 
         # Check if there are unstaged files in repository
-        if repo.diff().stats.files_changed >= 0:
+        if repo.diff().stats.files_changed > 0:
             _logger.warning("There are unstaged files in the repository.")
         # repo = pygit2.Repository(pathlib.Path().cwd())
         commit = str(repo[repo.head.target].id)
