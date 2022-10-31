@@ -153,6 +153,9 @@ class Loader:
         if "_MATCHING" not in self.name:
             new_df = new_df[new_df["Q2"] <= q2max] if q2max else new_df
 
+        if "_MATCHING" in self.name:
+            new_df = new_df[new_df["x"] >= 0.0015]
+
         number_datapoints = new_df.shape[0]
 
         # Extract the information on the cross section (FW is a special case)
