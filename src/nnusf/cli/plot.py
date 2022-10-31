@@ -4,6 +4,8 @@ import pathlib
 
 import click
 
+from nnusf.theory.bodek_yang.cuts import q2cut
+
 from ..plot import covmat, fit, kinematics, matching, sf
 from ..theory import defs
 from . import base
@@ -31,6 +33,11 @@ def subcommand():
     help="Plot line corresponding to W2=3.5 GeV2.",
 )
 @click.option(
+    "--q2max/--no-q2max",
+    default=True,
+    help="Plot line corresponding to Q2=25 GeV2.",
+)
+@click.option(
     "--xlog/--no-xlog", default=True, help="Set logarithmic scale on x axis."
 )
 @click.option(
@@ -42,7 +49,7 @@ def subcommand():
     default=None,
     help="""Stringified dictionary of cuts, e.g. '{"Q2": {"min": 1.65}, "W2": {"min": 3.5}}'.""",
 )
-def sub_kinematic(data, destination, wcut, xlog, ylog, cuts):
+def sub_kinematic(data, destination, wcut, q2max, xlog, ylog, cuts):
     """Generate kinematics plot.
 
     The plot will include data from each DATA path provided (multiple values allowed),
@@ -55,7 +62,13 @@ def sub_kinematic(data, destination, wcut, xlog, ylog, cuts):
         cuts = eval(cuts)
 
     kinematics.main(
-        data, destination, wcut=wcut, xlog=xlog, ylog=ylog, cuts=cuts
+        data,
+        destination,
+        wcut=wcut,
+        q2cut=q2max,
+        xlog=xlog,
+        ylog=ylog,
+        cuts=cuts,
     )
 
 

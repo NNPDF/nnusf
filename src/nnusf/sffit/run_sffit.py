@@ -2,11 +2,11 @@
 """Executable to perform the structure function fit."""
 import logging
 import pathlib
-from typing import Optional
 
 import tensorflow as tf
 import yaml
 
+from ..utils import add_git_info
 from . import load_data
 from .compute_expchi2 import add_expchi2_json, compute_exp_chi2
 from .model_gen import generate_models
@@ -21,7 +21,7 @@ _logger = logging.getLogger(__name__)
 def main(
     runcard: pathlib.Path,
     replica: int,
-    destination: Optional[pathlib.Path],
+    destination: pathlib.Path,
 ):
     """Run the structure function fit.
 
@@ -31,16 +31,14 @@ def main(
         Path to the fit runcard
     replica : int
         replica number
-    destination : Optional[pathlib.Path]
+    destination : pathlib.Path
         Path to the output folder
     """
-    if destination is None:
-        destination = pathlib.Path.cwd().absolute() / runcard.stem
-
-    if destination.exists():
-        _logger.warning(f"{destination} already exists, overwriting content.")
-
-    replica_dir = destination / f"replica_{replica}"
+    fit_folder = destination.joinpath(runcard.stem)
+    if fit_folder.exists():
+        relative = fit_folder.absolute().relative_to(pathlib.Path.cwd())
+        _logger.warning(f"'{relative}' already exists, overwriting content.")
+    replica_dir = fit_folder / f"replica_{replica}"
     replica_dir.mkdir(parents=True, exist_ok=True)
 
     # Load fit run card
@@ -63,6 +61,7 @@ def main(
     load_data.add_tr_filter_mask(data_info)
 
     # Save a copy of the fit runcard to the fit folder
+    add_git_info(runcard_content)
     with open(replica_dir.parent / "runcard.yml", "w") as fstream:
         yaml.dump(runcard_content, fstream, sort_keys=False)
 

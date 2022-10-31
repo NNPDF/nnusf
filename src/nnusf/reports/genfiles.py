@@ -11,6 +11,7 @@ from ..plot.fit import (
     training_epochs_distribution,
     training_validation_split,
 )
+from ..utils import compare_git_versions
 
 MAP_LABELS = {
     "expr": r"\( \langle \chi^{2, \rm real}_{\rm exp} \rangle \)",
@@ -125,6 +126,7 @@ def chi2_tables(fitfolder: pathlib.Path) -> pd.DataFrame:
 def data_vs_predictions(fitfolder: pathlib.Path) -> None:
     runcard = fitfolder.joinpath("runcard.yml")
     runcard_content = yaml.load(runcard.read_text(), Loader=yaml.Loader)
+    compare_git_versions(runcard_content)
 
     # Prepare the output path to store the figures
     output_path = fitfolder.absolute()

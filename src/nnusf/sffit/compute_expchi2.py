@@ -11,6 +11,25 @@ from .utils import chi2
 
 
 def compute_exp_chi2(datainfo, nn_layers, optimizer_parameters, **kwargs):
+    """Compute the experimental chi^2 at the end of the fit using the
+    trained NN model. In order to evaluate the model on the central values,
+    the model needs to be compiled agian. This is way the details about
+    the optimizers is passed again.
+
+    Parameters:
+    -----------
+    datainfo: data.loader.Loader
+        contains the specs info of all the datasets
+    nn_layers:
+        concatenation of dense layers
+    optimizer_parameters: dict
+        dictionary containing the specs of the optimizers
+
+    Returns:
+    --------
+    dict:
+        normalized experimental chi^2 values of all the datasets
+    """
     del kwargs
 
     opt_name = optimizer_parameters.pop("optimizer", "Adam")
@@ -83,6 +102,15 @@ def compute_exp_chi2(datainfo, nn_layers, optimizer_parameters, **kwargs):
 
 
 def add_expchi2_json(replica_dir, normalized_chi2s):
+    """Dump the normalized experimental chi^2 values into the `fitinfo.json`.
+
+    Parameters:
+    -----------
+    replica_dir: pathlib.Path
+        path to the directory in which the results of a given replica is stored
+    normalized_chi2s: dict
+        normalized experimental chi^2 values
+    """
     with open(f"{replica_dir}/fitinfo.json", "r+") as fstream:
         json_file = json.load(fstream)
         json_file.update({"exp_chi2s": normalized_chi2s})

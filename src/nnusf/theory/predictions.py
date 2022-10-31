@@ -13,11 +13,19 @@ import numpy as np
 import numpy.typing as npt
 import pineappl
 
+from nnusf.export_lhapdf.dump_grids import ROUNDING
+
 from .. import utils
+from ..export_lhapdf.dump_grids import dump_pred_lhapdf
 from . import defs
 from .bodek_yang import load
 
 _logger = logging.getLogger(__name__)
+
+ROUNDING = 6
+# The labels and IDs elow have to match exactly
+SFS_LABEL = ["F2nu", "FLnu", "xF3nu", "F2nub", "FLnub", "xF3nub"]
+LHAPDF_ID = [1001, 1002, 1003, 2001, 2002, 2003, 3001, 3002, 3003]
 
 
 def plot(
@@ -126,13 +134,102 @@ def pdf_error(
     return pred, 0, slice(1, -1), "PDF replicas"
 
 
+def construct_stacked_predictions(predictions_dict: dict):
+    """Stack the predictions in the same order as the LHAPDF IDs."""
+    stacked_list = [predictions_dict[k] for k in SFS_LABEL]
+    # Stack the predictions such that the shape now becomes
+    # (n_x, n_q2, n_rep, n_sfs)
+    stacked_predictions = np.stack(stacked_list, axis=-1)
+    # Move axis to get shape (n_rep, n_q2, n_x, n_sfs)
+    return np.moveaxis(stacked_predictions, [0, 2], [2, 0])
+
+
+def parse_yadism_predictions(
+    predictions: np.ndarray,
+    x_specs: np.ndarray,
+    q2_dic_specs: np.ndarray,
+):
+    prediction_infoq2 = [round(q, ROUNDING) for q in q2_dic_specs]
+
+    # Append the average to the array block
+    copied_pred = np.copy(predictions)
+    for i in range(copied_pred.shape[-1] // 2):
+        avg = (copied_pred[:, :, :, i] + copied_pred[:, :, :, i + 3]) / 2
+        average = np.expand_dims(avg, axis=-1)
+        predictions = np.concatenate([predictions, average], axis=-1)
+
+    # Parse the array blocks as a Dictionary
+    combined_replica = []
+    for replica in predictions:  # loop over the replica
+        q2rep_dic = {}
+        # Loop over the results for all Q2 values
+        for idq, q2rep in enumerate(replica):
+            sfs_q2rep = {}
+            q2rep_idx = prediction_infoq2[idq]
+            # loop over the Structure Functions
+            for idx in range(q2rep.shape[-1]):
+                sfs_q2rep[LHAPDF_ID[idx]] = q2rep[:, idx]
+            q2rep_dic[round(q2rep_idx, ROUNDING)] = sfs_q2rep
+        combined_replica.append(q2rep_dic)
+
+    grids_info_specs = {
+        "x_grids": x_specs.tolist(),
+        "q2_grids": prediction_infoq2,
+        "nrep": len(combined_replica),
+    }
+    return grids_info_specs, combined_replica
+
+
+def generate_txt(predictions: list[dict]) -> None:
+    pred_label = []
+    pred_results = []
+    nuc_types = []
+    for pred in predictions:
+        pred_label.append(pred["obsname"])
+        pred_results.append(pred["predictions"])
+        nuc_types.append(pred["nucleus"])
+    nuc_info = [i for i in list(set(nuc_types))]
+    assert len(nuc_info) == 1
+
+    combined_pred = np.concatenate(pred_results)
+    combined_pred = np.moveaxis(combined_pred, [0, 1, 2], [2, 1, 0])
+
+    xval = [0.1]
+    q2_grids = np.geomspace(5, 1e3, num=400)
+
+    stacked_results = []
+    for idx, pr in enumerate([combined_pred]):
+        predshape = pr[:, :, 0].shape
+        broad_xvalues = np.broadcast_to(xval[idx], predshape)
+        broad_qvalues = np.broadcast_to(q2_grids, predshape)
+        # Construct the replica index array
+        repindex = np.arange(pr.shape[0])[:, np.newaxis]
+        repindex = np.broadcast_to(repindex, predshape)
+        # Stack all the arrays together
+        stacked_list = [repindex, broad_xvalues, broad_qvalues]
+        stacked_list += [pr[:, :, i] for i in range(pr.shape[-1])]
+        stacked = np.stack(stacked_list).reshape((9, -1)).T
+        stacked_results.append(stacked)
+    final_predictions = np.concatenate(stacked_results, axis=0)
+    header = " "
+    for sflabel in pred_label:
+        header = header + sflabel + " "
+    np.savetxt(
+        f"yadism_sfs_{nuc_info[0]}.txt",
+        final_predictions,
+        header=f"replica x Q2" + header,
+        fmt="%d %e %e %e %e %e %e %e %e",
+    )
+
+
 def main(
     grids: pathlib.Path,
     pdf: str,
     destination: pathlib.Path,
-    err: str = "theory",
+    err: str = "pdf",
     xpoint: Optional[int] = None,
     interactive: bool = False,
+    compare_to_by: bool = True,
 ):
     """Run predictions computation.
 
@@ -165,9 +262,23 @@ def main(
         preds_dest.mkdir()
 
         genie = load.load()
-        xgrid, q2grid = np.meshgrid(*load.kin_grids())
+        if compare_to_by:
+            xgrid, q2grid = np.meshgrid(*load.kin_grids())
+        else:
+            # This has to be exactly the same as in the runcard generation
+            x = dict(min=1e-5, max=1.0, num=25)
+            q2 = dict(min=5, max=1e5, num=30)
+            q2_grid = np.geomspace(q2["min"], q2["max"], num=int(q2["num"]))
+            lognx = int(x["num"] / 3)
+            linnx = int(x["num"] - lognx)
+            xgrid_log = np.logspace(np.log10(x["min"]), -1, lognx + 1)
+            xgrid_lin = np.linspace(0.1, 1, linnx)
+            x_grid = np.concatenate([xgrid_log[:-1], xgrid_lin])
+            xgrid, q2grid = np.meshgrid(*tuple((q2_grid, x_grid)))
         gmask = load.mask()
 
+        predictions_dictionary = {}
+        nucleus_predictions = []
         for gpath in grids.iterdir():
             if "pineappl" not in gpath.name:
                 continue
@@ -180,32 +291,62 @@ def main(
 
             if err == "theory":
                 pred, central, bulk, err_source = theory_error(
-                    grid, pdf, defs.nine_points, xgrid
+                    grid,
+                    pdf,
+                    defs.nine_points,
+                    xgrid,
                 )
             elif err == "pdf":
-                pred, central, bulk, err_source = pdf_error(grid, pdf, xgrid)
+                pred, central, bulk, err_source = pdf_error(
+                    grid,
+                    pdf,
+                    xgrid,
+                )
             else:
                 raise ValueError(f"Invalid error type '{err}'")
 
-            plot(
-                pred,
-                genie,
-                gmask,
-                obs,
-                kind,
-                xgrid,
-                q2grid,
-                xpoint,
-                central,
-                bulk,
-                err_source,
-                interactive,
-                preds_dest,
+            if compare_to_by:  # Compare Yadism with BY
+                plot(
+                    pred,
+                    genie,
+                    gmask,
+                    obs,
+                    kind,
+                    xgrid,
+                    q2grid,
+                    xpoint,
+                    central,
+                    bulk,
+                    err_source,
+                    interactive,
+                    preds_dest,
+                )
+            else:  # Dump the Yadism results as LHAPDF
+                gridname = gpath.stem.split(".")[0]
+                nuc = gridname.split("-")[0].split("_")[-1]
+                sf_type = gridname.split("-")[-1]
+                neutrino_type = gridname.split("_")[0]
+                if sf_type == "F3":
+                    obsname = "x" + sf_type + neutrino_type
+                else:
+                    obsname = sf_type + neutrino_type
+                nucleus_predictions.append(nuc)
+                predictions_dictionary[obsname] = pred
+
+        if compare_to_by:
+            tardest = destination / "predictions.tar"
+            with tarfile.open(tardest, "w") as tar:
+                for path in preds_dest.iterdir():
+                    tar.add(path.absolute(), path.relative_to(tmpdir))
+
+            _logger.info(f"Preedictions saved in '{tardest}'.")
+        else:
+            nuc_info = [i for i in list(set(nucleus_predictions))]
+            assert len(nuc_info) == 1
+            stacked_pred = construct_stacked_predictions(predictions_dictionary)
+            grid_info, cpred = parse_yadism_predictions(
+                stacked_pred, x_grid, q2_grid
             )
-
-        tardest = destination / "predictions.tar"
-        with tarfile.open(tardest, "w") as tar:
-            for path in preds_dest.iterdir():
-                tar.add(path.absolute(), path.relative_to(tmpdir))
-
-        _logger.info(f"Preedictions saved in '{tardest}'.")
+            dump_pred_lhapdf(
+                f"YADISM_{nuc_info[0]}", nuc_info[0], cpred, grid_info
+            )
