@@ -99,6 +99,6 @@ class SmallXPreprocessing(tf.keras.layers.Layer):
         x = tf.unstack(inputs, axis=2)[0]
         sfs_list = []
         for i in range(self.output_dim):
-            sfs_list.append(x ** self.kernel[i][0])
+            sfs_list.append(x ** (1 - self.kernel[i][0]))
         sfs_exdims = [tf.expand_dims(i, axis=-1) for i in sfs_list]
         return tf.concat(sfs_exdims, axis=-1)
