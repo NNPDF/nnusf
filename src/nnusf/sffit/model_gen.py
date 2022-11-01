@@ -4,7 +4,7 @@
 import numpy as np
 import tensorflow as tf
 
-from .layers import ObservableLayer, TheoryConstraint
+from .layers import ObservableLayer, SmallXPreprocessing, TheoryConstraint
 from .utils import chi2, mask_coeffs, mask_covmat, mask_expdata
 
 
@@ -12,6 +12,7 @@ def generate_models(
     data_info,
     units_per_layer,
     activation_per_layer,
+    small_x_exponent,
     output_units=6,
     output_activation="linear",
     **kwargs
@@ -67,7 +68,14 @@ def generate_models(
         for dense_layer in dense_layers[1:]:
             dense_nest = dense_layer(dense_nest)
         dense_nest = sf_output(dense_nest)
-        return dense_nest
+
+        # Multiply the outputs with the small-x exp.
+        preprocess = SmallXPreprocessing(
+            seed=np.random.randint(0, pow(2, 24)),
+            dic_specs=small_x_exponent,
+        )(layer_input)
+        final_layer = tf.keras.layers.multiply([dense_nest, preprocess])
+        return final_layer
 
     model_inputs = []
     tr_data, vl_data = [], []

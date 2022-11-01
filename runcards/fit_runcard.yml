@@ -79,3 +79,10 @@ fit_parameters:
     clipnorm: 0.00001
     learning_rate: 0.05
   val_chi2_threshold: 4
+  small_x_exponent:
+      f2nu  : [0.5, 2.0]
+      flnu  : [0.5, 2.0]
+      xf3nu : [0.5, 2.0]
+      f2nub : [0.5, 2.0]
+      flnub : [0.5, 2.0]
+      xf3nub: [0.5, 2.0]
