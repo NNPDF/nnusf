@@ -69,13 +69,7 @@ def generate_models(
             dense_nest = dense_layer(dense_nest)
         dense_nest = sf_output(dense_nest)
 
-        # Multiply the outputs with the small-x exp.
-        preprocess = SmallXPreprocessing(
-            seed=np.random.randint(0, pow(2, 24)),
-            dic_specs=small_x_exponent,
-        )(layer_input)
-        final_layer = tf.keras.layers.multiply([dense_nest, preprocess])
-        return final_layer
+        return dense_nest
 
     model_inputs = []
     tr_data, vl_data = [], []
@@ -97,7 +91,13 @@ def generate_models(
             sf_basis = tf.keras.layers.subtract(
                 [nn_output, nn_output_x_equal_one]
             )
-            return sf_basis
+            # Multiply the outputs with the small-x exp.
+            preprocess = SmallXPreprocessing(
+                seed=np.random.randint(0, pow(2, 24)),
+                dic_specs=small_x_exponent,
+            )(input_layer)
+            final_layer = tf.keras.layers.multiply([sf_basis, preprocess])
+            return final_layer
 
         # Extract theory grid coefficients & datasets
         tr_mask, vl_mask = data.tr_filter, ~data.tr_filter
