@@ -113,7 +113,8 @@ def get_predictions_q(
             verbose=False,
         )
         extreme_kinvalue = extract_extreme_values(unscaled_datainfo)
-        scaled = kinematics_mapping(extreme_kinvalue, extreme_kinvalue)
+        transp_inputs = np.array(input_list).T
+        scaled = kinematics_mapping(transp_inputs, extreme_kinvalue)
         input_list = np.array(scaled).T
         _logger.warning("Input kinematics are being scaled.")
 
