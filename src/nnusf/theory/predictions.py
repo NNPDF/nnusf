@@ -280,19 +280,6 @@ def main(
         preds_dest.mkdir()
 
         genie = load.load()
-        # if compare_to_by:
-        #     xgrid, q2grid = np.meshgrid(*load.kin_grids())
-        # else:
-        #     # This has to be exactly the same as in the runcard generation
-        #     x = dict(min=1e-5, max=1.0, num=25)
-        #     q2 = dict(min=5, max=1e5, num=30)
-        #     q2_grid = np.geomspace(q2["min"], q2["max"], num=int(q2["num"]))
-        #     lognx = int(x["num"] / 3)
-        #     linnx = int(x["num"] - lognx)
-        #     xgrid_log = np.logspace(np.log10(x["min"]), -1, lognx + 1)
-        #     xgrid_lin = np.linspace(0.1, 1, linnx)
-        #     x_grid = np.concatenate([xgrid_log[:-1], xgrid_lin])
-        #     xgrid, q2grid = np.meshgrid(*tuple((q2_grid, x_grid)))
         gmask = load.mask()
 
         predictions_dictionary = {}
