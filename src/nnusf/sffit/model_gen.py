@@ -81,6 +81,11 @@ def generate_models(
         input_layer = tf.keras.layers.Input(shape=(None, 3), batch_size=1)
         model_inputs.append(input_layer)
 
+        preprocessing_layer = SmallXPreprocessing(
+            seed=np.random.randint(0, pow(2, 24)),
+            dic_specs=small_x_exponent,
+        )
+
         # The pdf model: kinematics -> structure functions
         def sf_model(input_layer):
             nn_output = sequential(input_layer)
@@ -92,11 +97,9 @@ def generate_models(
                 [nn_output, nn_output_x_equal_one]
             )
             # Multiply the outputs with the small-x exp.
-            preprocess = SmallXPreprocessing(
-                seed=np.random.randint(0, pow(2, 24)),
-                dic_specs=small_x_exponent,
-            )(input_layer)
-            final_layer = tf.keras.layers.multiply([sf_basis, preprocess])
+            final_layer = tf.keras.layers.multiply(
+                [sf_basis, preprocessing_layer(input_layer)]
+            )
             return final_layer
 
         # Extract theory grid coefficients & datasets
