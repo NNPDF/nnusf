@@ -71,6 +71,11 @@ def generate_models(
 
         return dense_nest
 
+    preprocessing_layer = SmallXPreprocessing(
+        seed=np.random.randint(0, pow(2, 24)),
+        dic_specs=small_x_exponent,
+    )
+
     model_inputs = []
     tr_data, vl_data = [], []
     tr_obs, vl_obs = [], []
@@ -80,11 +85,6 @@ def generate_models(
         # Construct the input layer as placeholders
         input_layer = tf.keras.layers.Input(shape=(None, 3), batch_size=1)
         model_inputs.append(input_layer)
-
-        preprocessing_layer = SmallXPreprocessing(
-            seed=np.random.randint(0, pow(2, 24)),
-            dic_specs=small_x_exponent,
-        )
 
         # The pdf model: kinematics -> structure functions
         def sf_model(input_layer):
