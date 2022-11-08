@@ -24,10 +24,11 @@ from .utils import (
 _logger = logging.getLogger(__name__)
 
 ROUNDING = 6
-LHAPDF_ID = [1001, 1002, 1003, 2001, 2002, 2003, 3001, 3002, 3003]
 A_VALUE = 1
 X_GRIDS = dict(min=1e-2, max=1.0, num=100)
 Q2_GRIDS = dict(min=1e-3, max=500, num=500)
+
+LHAPDF_ID = [1001, 1002, 1003, 2001, 2002, 2003, 3001, 3002, 3003]
 
 
 def compute_high_q2(pdfname: str, xgrid: list, q2grid: list):
@@ -52,12 +53,9 @@ def compute_high_q2(pdfname: str, xgrid: list, q2grid: list):
 
 
 def combine_medium_high_q2(low_q2pred: np.ndarray, high_q2pred: np.ndarray):
+    # TODO: Find a clean way to sort predictions per x per replica
     _logger.info("Combining the medium and high-Q2 predictions...")
-    # First we need to sort the predictions
-    low_q2pred = np.sort(low_q2pred, axis=0)
-    high_q2pred = np.sort(high_q2pred, axis=0)
-
-    # Then we need to make sure that the number of replica is the same
+    # We need to make sure that the number of replica are the same
     if low_q2pred.shape[0] < high_q2pred.shape[0]:
         high_q2pred = high_q2pred[: low_q2pred.shape[0]]
     else:
