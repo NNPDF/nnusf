@@ -93,7 +93,7 @@ class SmallXPreprocessing(tf.keras.layers.Layer):
     def build(self, input_shape):
         for sf_type in self.dic_specs.keys():
             self.generate_weights(sf_type)
-        super(SmallXPreprocessing, self).build(input_shape)
+        super().build(input_shape)
 
     def call(self, inputs, **kwargs):
         x = tf.unstack(inputs, axis=2)[0]
