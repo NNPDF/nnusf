@@ -80,13 +80,16 @@ def generate_models(
     def sf_model(input_layer):
         nn_output = sequential(input_layer)
 
+        # Multiply the outputs with the small-x exp.
+        apply_preprocessing = tf.keras.layers.multiply(
+            [nn_output, preprocessing_layer(input_layer)]
+        )
+
         # Ensure F_i(x=1)=0
         x_equal_one_layer = TheoryConstraint()(input_layer)
         nn_output_x_equal_one = sequential(x_equal_one_layer)
-        sf_basis = tf.keras.layers.subtract([nn_output, nn_output_x_equal_one])
-        # Multiply the outputs with the small-x exp.
-        final_layer = tf.keras.layers.multiply(
-            [sf_basis, preprocessing_layer(input_layer)]
+        final_layer = tf.keras.layers.subtract(
+            [apply_preprocessing, nn_output_x_equal_one]
         )
         return final_layer
 

@@ -80,9 +80,9 @@ fit_parameters:
     learning_rate: 0.05
   val_chi2_threshold: 4
   small_x_exponent:
-      f2nu  : [0.5, 1.5]
-      flnu  : [0.5, 1.5]
-      xf3nu : [0.5, 1.5]
-      f2nub : [0.5, 1.5]
-      flnub : [0.5, 1.5]
-      xf3nub: [0.5, 1.5]
+      f2nu  : [0.25, 2.0]
+      flnu  : [0.25, 2.0]
+      xf3nu : [0.25, 2.0]
+      f2nub : [0.25, 2.0]
+      flnub : [0.25, 2.0]
+      xf3nub: [0.25, 2.0]
