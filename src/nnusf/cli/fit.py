@@ -52,7 +52,13 @@ def sub_postfit(model, threshold):
 
 @subcommand.command("dump_grids")
 @click.argument("model", type=click.Path(exists=True, path_type=pathlib.Path))
-@click.argument("sfset_name", type=str)
+@click.option(
+    "-s",
+    "--sfset_name",
+    default=None,
+    help="""Name of the SF LHAPDF set with with the high-Q2 matching will """
+    """computed. If not specified, the NNUSF predictions will not be matched.""",
+)
 @click.option(
     "-a",
     "--a_value",

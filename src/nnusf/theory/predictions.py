@@ -108,6 +108,7 @@ def theory_error(
     pred = grid.convolute_with_one(
         2212, pdfset.xfxQ2, pdfset.alphasQ2, xi=prescription
     )
+
     if reshape:
         pred = np.array(pred).T.reshape((*xgrid.shape, len(pred)))
     else:
@@ -134,6 +135,23 @@ def pdf_error(
     else:
         pred = np.array(pred).T
     return pred, 0, slice(1, -1), "PDF replicas"
+
+
+def combined_error(
+    grid: pineappl.grid.Grid,
+    pdf: str,
+    prescription: list[tuple[float, float]],
+    xgrid: npt.NDArray[np.float_],
+    reshape: Optional[bool] = True,
+) -> npt.NDArray[np.float_]:
+    # TODO: To implement the combination
+    pred_theory, _, _, _ = pdf_error(
+        grid,
+        pdf,
+        xgrid,
+        reshape,
+    )
+    return pred_theory
 
 
 def construct_stacked_predictions(predictions_dict: dict):
@@ -311,6 +329,13 @@ def main(
                 pred, central, bulk, err_source = pdf_error(
                     grid,
                     pdf,
+                    xgrid,
+                )
+            elif err == "combined":
+                pred, central, bulk, err_source = combined_error(
+                    grid,
+                    pdf,
+                    defs.nine_points,
                     xgrid,
                 )
             else:
