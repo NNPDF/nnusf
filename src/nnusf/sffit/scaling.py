@@ -8,7 +8,10 @@ def kinematics_mapping(dataset, max_kin_value):
     """
     scaled_inputs = []
     for index, kin_var in enumerate(dataset):
-        input_scaling = kin_var / max_kin_value[index]
+        if index != 0:  # Scale only along (Q2, A) direction
+            input_scaling = kin_var / max_kin_value[index]
+        else:
+            input_scaling = kin_var
         scaled_inputs.append(input_scaling)
     return scaled_inputs
 
