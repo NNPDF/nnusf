@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """Compute the experimental chi2 on the central real data"""
 
-import json
-
 import numpy as np
 import tensorflow as tf
 
@@ -99,21 +97,3 @@ def compute_exp_chi2(datainfo, nn_layers, optimizer_parameters, **kwargs):
     )
     normalized_chi2s["tot_chi2_real"] = sum(expreal_losses) / sum(expreal_pt)
     return normalized_chi2s
-
-
-def add_expchi2_json(replica_dir, normalized_chi2s):
-    """Dump the normalized experimental chi^2 values into the `fitinfo.json`.
-
-    Parameters:
-    -----------
-    replica_dir: pathlib.Path
-        path to the directory in which the results of a given replica is stored
-    normalized_chi2s: dict
-        normalized experimental chi^2 values
-    """
-    with open(f"{replica_dir}/fitinfo.json", "r+") as fstream:
-        json_file = json.load(fstream)
-        json_file.update({"exp_chi2s": normalized_chi2s})
-        # Sets file's current position at offset.
-        fstream.seek(0)
-        json.dump(json_file, fstream, sort_keys=True, indent=4)

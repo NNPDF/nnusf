@@ -143,8 +143,8 @@ def sub_grids(runcards, destination):
 @click.argument("pdf")
 @click.option(
     "--err",
-    type=click.Choice(["pdf", "theory"], case_sensitive=False),
-    default="theory",
+    type=click.Choice(["pdf", "theory", "combined"], case_sensitive=False),
+    default="pdf",
 )
 @click.option("-x", type=int, default=None)
 @click.option("--interactive", is_flag=True)

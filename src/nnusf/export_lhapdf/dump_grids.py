@@ -25,7 +25,7 @@ _logger = logging.getLogger(__name__)
 
 ROUNDING = 6
 A_VALUE = 1
-X_GRIDS = dict(min=1e-2, max=1.0, num=100)
+X_GRIDS = dict(min=1e-9, max=1.0, num=100)
 Q2_GRIDS = dict(min=1e-3, max=500, num=500)
 
 LHAPDF_ID = [1001, 1002, 1003, 2001, 2002, 2003, 3001, 3002, 3003]
@@ -71,7 +71,7 @@ def parse_nn_predictions(
     a_value_spec: int,
     x_specs: dict,
     q2_dic_specs: dict,
-    pdfname: str,
+    pdfname: Union[str, None],
     min_highq2: Optional[float] = None,
 ):
     x_grids = make_lambert_grid(
@@ -106,16 +106,18 @@ def parse_nn_predictions(
         average = np.expand_dims(avg, axis=-1)
         predictions = np.concatenate([predictions, average], axis=-1)
 
-    # Construct the Yadism predictions at high-Q2
-    highq2_pred = compute_high_q2(pdfname, prediction_info.x, q2grid)
-    combined_predictions = combine_medium_high_q2(predictions, highq2_pred)
+    prediction_infoq2 = prediction_info.q.tolist()
+    if pdfname is not None:
+        prediction_infoq2 += q2grid
+        # Construct the Yadism predictions at high-Q2
+        highq2_pred = compute_high_q2(pdfname, prediction_info.x, q2grid)
+        predictions = combine_medium_high_q2(predictions, highq2_pred)
 
     # Concatenate the Q2 values to dump into the LHAPDF grid
-    prediction_infoq2 = prediction_info.q.tolist() + q2grid
     prediction_infoq2 = [round(q, ROUNDING) for q in prediction_infoq2]
     # Parse the array blocks as a Dictionary
     combined_replica = []
-    for replica in combined_predictions:  # loop over the replica
+    for replica in predictions:  # loop over the replica
         q2rep_dic = {}
         # Loop over the results for all Q2 values
         for idq, q2rep in enumerate(replica):

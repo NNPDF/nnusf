@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 import logging
 import os
 import random
@@ -61,6 +62,49 @@ def modify_lr(tr_loss_val, lr):
         if check and (lr > lrval):
             return lrval
     return lr
+
+
+def add_dict_json(replica_dir, extra_dict):
+    """Dump the normalized experimental chi^2 values into the `fitinfo.json`.
+
+    Parameters:
+    -----------
+    replica_dir: pathlib.Path
+        path to the directory in which the results of a given replica is stored
+    extra_dict: dict
+        extra-dictionary to add to the existing .json file
+    """
+    with open(f"{replica_dir}/fitinfo.json", "r+") as fstream:
+        json_file = json.load(fstream)
+        json_file.update(extra_dict)
+        # Sets file's current position at offset.
+        fstream.seek(0)
+        json.dump(json_file, fstream, sort_keys=True, indent=4)
+
+
+def small_x_exp(model, w_name="small_x_preprocessing"):
+    """Extract the weights of a the Small-x Preprocessing layer.
+
+    Parameters:
+    -----------
+    model: tf.model
+        tensorflow model
+    w_name: str
+        name of the layer
+
+    Returns:
+    --------
+    list:
+        list containing the values of the weights
+    """
+    corresp_layers = []
+    _logger.info("Extracting small-x exponents from the weights.")
+    for layer in model.layers:
+        if w_name in layer.name and len(layer.weights) != 0:
+            corresp_layers.append(layer.weights)
+    # Select the first one as the second one correspond to
+    # the one presend in the TheoryConstraint
+    return [float(i) for i in corresp_layers[0]]
 
 
 def subset_q2points(kin_unique, scaling_target, q2points, kincuts):
