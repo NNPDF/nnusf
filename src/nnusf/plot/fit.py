@@ -80,6 +80,35 @@ def training_validation_split(**kwargs):
     save_figs(fig, save_path)
 
 
+def smallx_exponent_distribution(**kwargs):
+    """Plot the distribution of small-x exponents."""
+    fitinfo = pathlib.Path(kwargs["fit"]).glob("replica_*/fitinfo.json")
+
+    distr_epochs = []
+    for repinfo in fitinfo:
+        with open(repinfo, "r") as file_stream:
+            jsonfile = json.load(file_stream)
+        distr_epochs.append(np.asarray(jsonfile["small_x"]))
+    distr_epochs = np.asarray(distr_epochs)
+
+    # Loop over the exponent of the structure function
+    for index, sf_dist in enumerate(distr_epochs.T):
+        binning = np.linspace(sf_dist.min(), sf_dist.max(), 10, endpoint=True)
+        bar_width = binning[1] - binning[0]
+        freq, bins = np.histogram(sf_dist, bins=binning, density=False)
+
+        fig, ax = plt.subplots(figsize=(6, 6))
+        center_bins = (bins[:-1] + bins[1:]) / 2
+        ax.bar(center_bins, freq, width=bar_width, linewidth=2)
+        ax.set_title(basis[index])
+        ax.axvline(x=sf_dist.mean(), lw=2, color="C1")
+        ax.set_xlabel(r"$\alpha$")
+        ax.set_ylabel(r"$\rm{Frequency}$")
+
+        save_path = pathlib.Path(kwargs["output"]) / f"smallx_exp_{index}"
+        save_figs(fig, save_path)
+
+
 def training_epochs_distribution(**kwargs):
     fitinfo = pathlib.Path(kwargs["fit"]).glob("replica_*/fitinfo.json")
 
