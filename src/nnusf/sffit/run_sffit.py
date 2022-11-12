@@ -2,13 +2,13 @@
 """Executable to perform the structure function fit."""
 import logging
 import pathlib
-from typing import Optional
 
 import tensorflow as tf
 import yaml
 
+from ..utils import add_git_info
 from . import load_data
-from .compute_expchi2 import add_expchi2_json, compute_exp_chi2
+from .compute_expchi2 import compute_exp_chi2
 from .hyperscan import (
     construct_hyperfunc,
     construct_hyperspace,
@@ -16,7 +16,7 @@ from .hyperscan import (
 )
 from .model_gen import generate_models
 from .train_model import perform_fit
-from .utils import set_global_seeds
+from .utils import add_dict_json, set_global_seeds, small_x_exp
 
 tf.get_logger().setLevel("ERROR")
 
@@ -26,8 +26,8 @@ _logger = logging.getLogger(__name__)
 def main(
     runcard: pathlib.Path,
     replica: int,
-    nbtrials: Optional[int] = None,
-    destination: Optional[pathlib.Path] = None,
+    nbtrials: int,
+    destination: pathlib.Path,
 ):
     """Run the structure function fit.
 
@@ -37,16 +37,14 @@ def main(
         Path to the fit runcard
     replica : int
         replica number
-    destination : Optional[pathlib.Path]
+    destination : pathlib.Path
         Path to the output folder
     """
-    if destination is None:
-        destination = pathlib.Path.cwd().absolute() / runcard.stem
-
-    if destination.exists():
-        _logger.warning(f"{destination} already exists, overwriting content.")
-
-    replica_dir = destination / f"replica_{replica}"
+    fit_folder = destination.joinpath(runcard.stem)
+    if fit_folder.exists():
+        relative = fit_folder.absolute().relative_to(pathlib.Path.cwd())
+        _logger.warning(f"'{relative}' already exists, overwriting content.")
+    replica_dir = fit_folder / f"replica_{replica}"
     replica_dir.mkdir(parents=True, exist_ok=True)
 
     # Load fit run card
@@ -58,9 +56,11 @@ def main(
     set_global_seeds(global_seed=global_seed)
 
     # Instantiate class that loads the datasets
-    w2min = runcard_content.get("W2min", None)
-    scale = runcard_content.get("rescale_inputs", None)
-    _, data_info = load_data.load_experimental_data(expdicts, scale, w2min)
+    _, data_info = load_data.load_experimental_data(
+        experiment_list=expdicts,
+        input_scaling=runcard_content.get("rescale_inputs", None),
+        kincuts=runcard_content.get("kinematic_cuts", {}),
+    )
     # create pseudodata and add it to the data_info object
     genrep = runcard_content.get("genrep", None)
     load_data.add_pseudodata(data_info, shift=genrep)
@@ -68,6 +68,7 @@ def main(
     load_data.add_tr_filter_mask(data_info)
 
     # Save a copy of the fit runcard to the fit folder
+    add_git_info(runcard_content)
     with open(replica_dir.parent / "runcard.yml", "w") as fstream:
         yaml.dump(runcard_content, fstream, sort_keys=False)
 
@@ -104,10 +105,14 @@ def main(
     )
     saved_model.save(replica_dir / "model")
 
+    # Extrac the values of the small-x exponents
+    small_x = small_x_exp(saved_model)
+
     # Compute the chi2 wrt central real data
     chi2s = compute_exp_chi2(
         data_info,
         fit_dict["sf_model"],
         **runcard_content["fit_parameters"],
     )
-    add_expchi2_json(replica_dir, chi2s)
+    extra_info = {"exp_chi2s": chi2s, "small_x": small_x}
+    add_dict_json(replica_dir, extra_info)

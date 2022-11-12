@@ -11,10 +11,10 @@ lines.linewidth: 1.5
 ### ERRORBARS
 errorbar.capsize      : 2
 
-### GRIDS
-grid.color            : cccccc
-grid.linestyle        : -
-grid.linewidth        : 0.05
+# ### GRIDS
+# grid.color            : cccccc
+# grid.linestyle        : -
+# grid.linewidth        : 0.05
 
 ### PATCHES
 patch.facecolor       : 0072B2
@@ -47,7 +47,8 @@ text.usetex           : True
 text.latex.preamble   : \usepackage{amsmath}
 
 ### AXES
-axes.grid             : True
+axes.grid             : False
+axes.axisbelow        : True
 axes.facecolor        : white
 axes.linewidth        : 1.0
 axes.titlesize        : 14

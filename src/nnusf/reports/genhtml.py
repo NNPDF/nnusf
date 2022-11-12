@@ -8,10 +8,10 @@ import pandas as pd
 import yaml
 
 from .genfiles import (
+    additional_plots,
     chi2_tables,
     data_vs_predictions,
     summary_table,
-    training_validation_plot,
 )
 
 CURRENT_PATH = pathlib.Path(__file__)
@@ -69,10 +69,13 @@ def data_comparison_html(figures: pathlib.Path) -> str:
     """
     html_entry = dedent(html_entry)
     plots = figures.glob("**/prediction_data_comparison_*.png")
+    number_plots = len([plot for plot in plots])
 
-    for plot in sorted(plots):
-        name = str(plot).split("/")[-1][:-4]
-        path = plot.relative_to(index_path)
+    for i in range(number_plots):
+        fpath = f"figures/prediction_data_comparison_{i}.png"
+        plot_path = index_path.joinpath(fpath)
+        name = str(plot_path).split("/")[-1][:-4]
+        path = plot_path.relative_to(index_path)
         pdf = path.with_suffix(".pdf")
         html_entry += f"""
     <div>
@@ -92,16 +95,20 @@ def data_comparison_html(figures: pathlib.Path) -> str:
 def split_trvl_html(figures: pathlib.Path) -> str:
     index_path = figures.absolute().parent
     html_entry = f"""
-    <h1 id="trvl-split">Traing vs Validation</h1>
+    <h1 id="trvl-split">Training details</h1>
     <div class="figiterwrapper">
     """
     html_entry = dedent(html_entry)
-    plots = figures.joinpath("chi2_split.png")
+    plots = [
+        figures.joinpath("chi2_split.png"),
+        figures.joinpath("distr_epochs.png"),
+    ]
 
-    name = str(plots).split("/")[-1][:-4]
-    path = plots.relative_to(index_path)
-    pdf = path.with_suffix(".pdf")
-    html_entry += f"""
+    for plot in plots:
+        name = str(plot).split("/")[-1][:-4]
+        path = plot.relative_to(index_path)
+        pdf = path.with_suffix(".pdf")
+        html_entry += f"""
     <div>
     <figure>
     <img src="{path}" id="{name}"
@@ -118,7 +125,7 @@ def split_trvl_html(figures: pathlib.Path) -> str:
 def main(fitfolder: pathlib.Path, **metadata) -> None:
     # Generate the various tables and predictions
     data_vs_predictions(fitfolder=fitfolder)
-    training_validation_plot(fitfolder=fitfolder)
+    additional_plots(fitfolder=fitfolder)
     summtable = summary_table(fitfolder=fitfolder)
     chi2table = chi2_tables(fitfolder=fitfolder)
     generate_metadata(fitfolder, **metadata)

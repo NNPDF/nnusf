@@ -2,50 +2,61 @@
 import numpy as np
 
 
-def cumulative_rescaling(datasets):
+def kinematics_mapping(dataset, max_kin_value):
+    """Rescale the input kinematic values (expect `x`) to be
+    between 0 and 1.
+    """
+    scaled_inputs = []
+    for index, kin_var in enumerate(dataset):
+        if index != 0:  # Scale only along (Q2, A) direction
+            input_scaling = kin_var / max_kin_value[index]
+        else:
+            input_scaling = kin_var
+        scaled_inputs.append(input_scaling)
+    return scaled_inputs
+
+
+def extract_extreme_values(datasets):
+    """Store the maximum values of the given kinematics (x, Q2, A)
+    into a list and use them to rescale the input kinematics.
+
+    Parameters:
+    -----------
+    datasets: dict
+        contains the dataset specs
+
+    Returns:
+    --------
+    np.ndarray:
+        maximum and minimum values of each of the input kinematics
+    """
     data_kin = [data.kinematics for data in datasets.values()]
+    data_kin = np.concatenate(data_kin, axis=0)
+    return data_kin.max(axis=0)
 
-    # Combined and sort each column of the kinematics (x, Q2, A)
-    sorted_kin = np.sort(np.concatenate(data_kin, axis=0), axis=0)
 
-    # Define a combined dense target kinematic grids
-    target_grids = np.linspace(
-        start=-1.0,
-        stop=1.0,
-        endpoint=True,
-        num=sorted_kin.shape[0],
-    )
+def apply_mapping_datasets(datasets, max_kin_value):
+    """Apply the rescaling to all the datasets.
 
-    equally_spaced_kinematics = []
-    kin_linear_reference = []
-    for kin_var in sorted_kin.T:
-        kin_unique, kin_counts = np.unique(kin_var, return_counts=True)
-        scaling_target = [
-            target_grids[cumlsum - kin_counts[0]]
-            for cumlsum in np.cumsum(kin_counts)
-        ]
-        kin_linear_spaced = np.linspace(
-            kin_var[0],
-            kin_var[-1],
-            num=int(2 * kin_var.size),
-        )
-        equally_spaced_kinematics.append(
-            np.interp(kin_linear_spaced, kin_unique, scaling_target)
-        )
-        kin_linear_reference.append(kin_linear_spaced)
-
+    Parameters:
+    -----------
+    datasets: dict
+        contains the dataset specs
+    max_kin_value: np.ndarray
+        maximum and minimum values of each of the input kinematics
+    """
     for dataset in datasets.values():
-        scaled_inputs = []
-        for index, kin_var in enumerate(dataset.kinematics.T):
-            input_scaling = np.interp(
-                kin_var,
-                kin_linear_reference[index],
-                equally_spaced_kinematics[index],
-            )
-            scaled_inputs.append(input_scaling)
-        dataset.kinematics = np.array(scaled_inputs).T
+        scaled = kinematics_mapping(dataset.kinematics.T, max_kin_value)
+        dataset.kinematics = np.array(scaled).T
 
 
-def rescale_inputs(datasets, method="cumulative_rescaling"):
-    function_call = globals()[method]
-    function_call(datasets)
+def rescale_inputs(datasets):
+    """Apply the rescaling to all the datasets.
+
+    Parameters:
+    -----------
+    datasets: dict
+        contains the dataset specs
+    """
+    max_kin_value = extract_extreme_values(datasets)
+    apply_mapping_datasets(datasets, max_kin_value)

@@ -38,9 +38,10 @@ class Loader:
         self,
         name: str,
         path_to_commondata: pathlib.Path,
+        kincuts: dict = {},
         path_to_coefficients: Optional[pathlib.Path] = None,
         include_syst: Optional[bool] = True,
-        w2min: Optional[float] = None,
+        verbose: bool = True,
     ):
         """Initialize object.
 
@@ -57,6 +58,12 @@ class Loader:
         w2min;
             if True cut all datapoints below `w2min`
         """
+        # In case of post-fit related operations, we do not need to
+        # print out the noisy log outputs
+        if not verbose:
+            _logger.info("Loading the datasets...")
+            _logger.setLevel(logging.ERROR)
+
         self.name = name
         if self.obs not in OBS_TYPE:
             raise ObsTypeError(
@@ -65,7 +72,7 @@ class Loader:
 
         self.commondata_path = path_to_commondata
         self.coefficients_path = path_to_coefficients
-        self.table, self.leftindex = self._load(w2min)
+        self.table, self.leftindex = self._load(kincuts)
         self.tr_frac = None
         self.covariance_matrix = self.build_covariance_matrix(
             self.commondata_path,
@@ -74,9 +81,9 @@ class Loader:
             include_syst,
             self.leftindex,
         )
-        _logger.info(f"Loaded '{name}' dataset")
+        _logger.info(f"'[{name:<25}]' loaded successfully")
 
-    def _load(self, w2min: Union[float, None]) -> tuple[pd.DataFrame, pd.Index]:
+    def _load(self, kincuts: dict) -> tuple[pd.DataFrame, pd.Index]:
         """Load the dataset information.
 
         Returns
@@ -84,6 +91,9 @@ class Loader:
         table with loaded data
 
         """
+        # Extract values of kinematic cuts if any
+        w2min = kincuts.get("w2min", None)
+        q2max = kincuts.get("q2max", None)
         # Extract the information from the INFO files
         exp_name = self.name.split("_")[0]
         if "_MATCHING" in exp_name:
@@ -99,13 +109,10 @@ class Loader:
             kin_df = pd.read_csv(kin_file).iloc[1:, 1:4].reset_index(drop=True)
         elif "_MATCHING" in self.name:
             file_path = f"{self.commondata_path}/kinematics"
-            fname = (
-                "KIN_PROTONBC" if "PROTONBC" in self.name else "KIN_MATCHING"
-            )
             if "FW" in self.name or "DXDY" in self.name:
-                file = f"{file_path}/{fname}_XSEC.csv"
+                file = f"{file_path}/KIN_{info_name}_MATCHING_DXDY.csv"
             else:
-                file = f"{file_path}/{fname}_FX.csv"
+                file = f"{file_path}/KIN_{info_name}_MATCHING_F2F3.csv"
             kin_df = pd.read_csv(file).iloc[1:, 1:4].reset_index(drop=True)
         elif self.obs in ["F2", "F3"]:
             file = f"{self.commondata_path}/kinematics/KIN_{exp_name}_F2F3.csv"
@@ -143,6 +150,8 @@ class Loader:
         new_df.reset_index(drop=True, inplace=True)
         # Only now we can perform the cuts on W
         new_df = new_df[new_df["W2"] >= w2min] if w2min else new_df
+        if "_MATCHING" not in self.name:
+            new_df = new_df[new_df["Q2"] <= q2max] if q2max else new_df
 
         number_datapoints = new_df.shape[0]
 
@@ -163,6 +172,10 @@ class Loader:
         new_df["m_nucleon"] = np.full(
             number_datapoints,
             info_df["m_nucleon"][0],
+        )
+        _logger.info(
+            f"'[{self.name:<25}]' Q2min={new_df['Q2'].min():.3f}"
+            f", Q2max={new_df['Q2'].max():.3f}"
         )
 
         return new_df, new_df.index
@@ -195,7 +208,16 @@ class Loader:
     @property
     def central_values(self) -> np.ndarray:
         """Return the dataset central values."""
-        return self.table["data"].values
+        if self.name.endswith("_MATCHING"):
+            cholesky = np.linalg.cholesky(self.covariance_matrix)
+            np_rng_state = np.random.get_state()
+            np.random.seed(pow(self.table.shape[0], 3))
+            random_samples = np.random.randn(self.table.shape[0])
+            np.random.set_state(np_rng_state)
+            shift_data = cholesky @ random_samples
+            return self.table["data"].values + shift_data
+        else:
+            return self.table["data"].values
 
     @property
     def covmat(self) -> np.ndarray:
@@ -240,11 +262,22 @@ class Loader:
 
         """
         if "_MATCHING" in dataset_name:
-            dataset_name = "MATCH_" + dataset_name.removesuffix("_MATCHING")
-            nrep_predictions = np.load(
-                f"{commondata_path}/matching/{dataset_name}.npy"
-            )
-            covmat = np.cov(nrep_predictions[mask_predictions])
+            sv_variations = []
+            for variation in pathlib.Path(
+                f"{commondata_path}/matching/"
+            ).iterdir():
+                if dataset_name in variation.stem:
+                    # central scale
+                    if "xif1_xir1" in variation.stem:
+                        nrep_predictions = np.load(variation)
+                    else:
+                        sv_variations.append(np.load(variation))
+            # build th shift
+            th_shift = (sv_variations - nrep_predictions[:, 0]).T
+            # build covaraince
+            pdf_covmat = np.cov(nrep_predictions[mask_predictions])
+            th_covamt = np.cov(th_shift[mask_predictions])
+            covmat = np.sqrt(th_covamt**2 + pdf_covmat**2)
             return clip_covmat(covmat, dataset_name)
         else:
             diagonal = np.power(unc_df["stat"], 2)
@@ -263,7 +296,7 @@ def clip_covmat(covmat, dataset_name):
     # if eigenvalues are close to zero, can be negative
     if e_val[0] < 0:
         _logger.warning(
-            f"Negative eigenvalue encountered in '{dataset_name}'."
+            f"'[{dataset_name:<25}]' Negative eigenvalue encountered."
             " Clipping values to 1e-5."
         )
     else:

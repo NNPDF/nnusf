@@ -61,12 +61,16 @@ def sub_sub_by(theory_update, obs_update, destination):
         obs_update = eval(obs_update)
 
     runcards.by(
-        theory_update=theory_update, obs_update=obs_update, destination=destination
+        theory_update=theory_update,
+        obs_update=obs_update,
+        destination=destination.absolute(),
     )
 
 
 @sub_runcards.command("hiq")
-@click.argument("data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path))
+@click.argument(
+    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
+)
 @option_dest
 def sub_sub_hiq(data, destination):
     """High Q2, from cut values of the dataset."""
@@ -74,18 +78,32 @@ def sub_sub_hiq(data, destination):
 
 
 @sub_runcards.command("all")
-@click.argument("data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path))
+@click.argument(
+    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
+)
 @option_dest
 def sub_sub_all(data, destination):
     """Full datasets runcards"""
-    runcards.dvst(data, destination=destination)
+    runcards.dvst(data, destination=destination, activate_scale_var=False)
+
+
+@sub_runcards.command("th_err")
+@click.argument(
+    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
+)
+@option_dest
+def sub_sub_th_err(data, destination):
+    """Full datasets runcards with 7 points perescription scale variations"""
+    runcards.dvst(data, destination=destination, activate_scale_var=True)
 
 
 @subcommand.command("by")
 @click.argument(
     "observables", nargs=-1, type=click.Choice(bodek_yang.load.load().members)
 )
-@click.option("-a", "--action", multiple=True, type=click.Choice(["npy", "txt"]))
+@click.option(
+    "-a", "--action", multiple=True, type=click.Choice(["npy", "txt"])
+)
 @option_dest
 def sub_by(observables, action, destination):
     """Genie's Bodek-Yang output inspection."""
@@ -100,7 +118,9 @@ def sub_by(observables, action, destination):
 
 
 @subcommand.command("grids")
-@click.argument("runcards", type=click.Path(exists=True, path_type=pathlib.Path))
+@click.argument(
+    "runcards", type=click.Path(exists=True, path_type=pathlib.Path)
+)
 @option_dest
 def sub_grids(runcards, destination):
     """Generate grids with yadism.
@@ -115,7 +135,7 @@ def sub_grids(runcards, destination):
     The internal `name` key is used for the generated grids.
 
     """
-    grids.main(runcards.absolute(), destination)
+    grids.main(runcards.absolute(), destination.absolute())
 
 
 @subcommand.command("predictions")
@@ -123,13 +143,20 @@ def sub_grids(runcards, destination):
 @click.argument("pdf")
 @click.option(
     "--err",
-    type=click.Choice(["pdf", "theory"], case_sensitive=False),
-    default="theory",
+    type=click.Choice(["pdf", "theory", "combined"], case_sensitive=False),
+    default="pdf",
 )
 @click.option("-x", type=int, default=None)
 @click.option("--interactive", is_flag=True)
+@click.option(
+    "--compare_to_by/--no-compare_to_by",
+    default=True,
+    help="Compare or not to the Bodek-Yang results.",
+)
 @option_dest
-def sub_predictions(grids, pdf, err, destination, x, interactive):
+def sub_predictions(
+    grids, pdf, err, destination, x, compare_to_by, interactive
+):
     """Generate predictions from yadism grids.
 
     GRIDS is a path to folder (or tar folder) containing the grids, one per
@@ -144,7 +171,8 @@ def sub_predictions(grids, pdf, err, destination, x, interactive):
         err=err,
         xpoint=x,
         interactive=interactive,
-        destination=destination,
+        destination=destination.absolute(),
+        compare_to_by=compare_to_by,
     )
 
 
@@ -176,3 +204,41 @@ def sub_compare_to_data(grids, data, pdf, err, destination, interactive):
         interactive=interactive,
         destination=destination,
     )
+
+
+@sub_runcards.command("yadknots")
+@click.option(
+    "-x",
+    "--x_grids",
+    default=None,
+    help="""Stringified dictionary containing specs for x-grid"""
+    """" e.g. '{"min": 0.01, "max": 1.0, "num": 100}'.""",
+)
+@click.option(
+    "-q",
+    "--q2_grids",
+    default=None,
+    help="""Stringified dictionary containing specs for Q2-grid"""
+    """" e.g. '{"min": 0.001, "max": 100000, "num": 200}'.""",
+)
+@click.option(
+    "-a",
+    "--a_value",
+    type=int,
+    default=1,
+    help="""Atomic mass number value. Default: 1""",
+)
+@option_dest
+def sub_sub_yadknots(x_grids, q2_grids, a_value, destination):
+    """Generate runcard at fixed A"""
+    if x_grids is not None:
+        x_grids = eval(x_grids)
+    else:
+        x_grids = dict(min=1e-5, max=1.0, num=25)
+
+    if q2_grids is not None:
+        q2_grids = eval(q2_grids)
+    else:
+        q2_grids = dict(min=5, max=1e5, num=30)
+
+    runcards.yknots(x_grids, q2_grids, a_value, destination)
