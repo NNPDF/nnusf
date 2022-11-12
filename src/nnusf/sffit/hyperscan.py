@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import time
+
 import numpy as np
 import yaml
 from hyperopt import STATUS_OK, fmin, hp, space_eval, tpe
@@ -18,10 +20,13 @@ def construct_hyperspace(hyperscan={}, fit_parameters={}, **kwargs):
     act_out = hp.choice("act_out", hyperscan["activations_output"])
 
     # Select randomly the number of hidden layers
+    np_rng_state = np.random.get_state()
+    np.random.seed(seed=int(time.time()))
     nb_hidden = np.random.randint(
         hyperscan["number_layers"]["min"],
         hyperscan["number_layers"]["max"] + 1,
     )
+    np.random.set_state(np_rng_state)
     print(f"Number of hidden layers: {nb_hidden}")
 
     # Add the information ot `hp` for plotting later
