@@ -1,4 +1,4 @@
-## User installation
+## User installation :id=installation
 
 The easiest way to install `NνSF` is via the [Python Package Index](https://pypi.org/)
 via the following command:
