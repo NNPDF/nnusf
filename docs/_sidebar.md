@@ -8,4 +8,5 @@
 * :rocket: Tutorials
 
   * [Preparing the input datasets](prefit.md)
-  * [Performing a fit with a report](runfit.md)
+  * [Dump Yadism pred. as LHAPDF](yadism.md)
+  * [Run a fit & generate a report](runfit.md)

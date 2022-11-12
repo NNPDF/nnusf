@@ -38,9 +38,9 @@ nnu data coefficients ./commondata/data/*
 
 To generate the Yadism pseudo-data, we first need to generate the Yadism theory
 card, and in order to generate the run card we need to generate define the
-kinematic grid (x, Q2, y) on which the predictions will be computed. Ideally,
-the kinematic grids should match a specific dataset for (x, y) and only the
-Q2 values are different since they have to be generate at medium-Q2. In order
+kinematic grid $\left(x, Q^2, y \right)$ on which the predictions will be computed. Ideally,
+the kinematic grids should match a specific dataset for $\left(x, y \right)$ and only the
+$Q^2$ values are different since they have to be generate at medium-$Q^2$. In order
 to generate the input kinematics, just run the following command:
 ```bash
 nnu data matching_grids_empty ./commondata/data/DATA_${EXPERIMENT}_${OBSERVABLE}.csv
