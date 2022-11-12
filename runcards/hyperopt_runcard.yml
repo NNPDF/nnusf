@@ -96,8 +96,8 @@ hyperscan:
 
 # Define Neural Network Parameters
 fit_parameters:
-  epochs: 75000
-  print_rate: 5000
+  epochs: 500
+  print_rate: 100
   stopping_patience: 5000
   units_per_layer: None
   activation_per_layer: None
@@ -106,4 +106,10 @@ fit_parameters:
     clipnorm: None
     learning_rate: None
   val_chi2_threshold: 10
-  initializer_seed: 1
+  small_x_exponent:
+      f2nu  : [0.25, 2.0]
+      flnu  : [0.25, 2.0]
+      xf3nu : [0.25, 2.0]
+      f2nub : [0.25, 2.0]
+      flnub : [0.25, 2.0]
+      xf3nub: [0.25, 2.0]

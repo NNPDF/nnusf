@@ -2,6 +2,7 @@
 """Executable to perform the structure function fit."""
 import logging
 import pathlib
+from typing import Union
 
 import tensorflow as tf
 import yaml
@@ -26,7 +27,7 @@ _logger = logging.getLogger(__name__)
 def main(
     runcard: pathlib.Path,
     replica: int,
-    nbtrials: int,
+    nbtrials: Union[int, None],
     destination: pathlib.Path,
 ):
     """Run the structure function fit.

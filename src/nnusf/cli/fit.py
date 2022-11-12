@@ -24,7 +24,7 @@ def subcommand():
     "-s",
     "--scan_hyperopt",
     type=int,
-    default=5,
+    default=None,
     help="Perform a scan of the hyperparameter space using the TPE algorithm."
     "The argument requires the total number of trials for a given replica."
     "eg: nnut fit <runcard.yml> <replica_id> -s 100",
