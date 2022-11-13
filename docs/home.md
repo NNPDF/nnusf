@@ -5,9 +5,12 @@ functions at all energies. It relies on [Yadism](https://github.com/N3PDF/yadism
 for the description of the medium- and large-$Q^2$ regions while the low-$Q^2$
 regime is modelled in terms of a Neural Network (NN).
 
-The low- and
-intermediate-$Q^2$ regions we construct a parametrisation of the neural network
-structure functions with its associated uncertainties by training a machine
+ <p align="center">
+ <img src="assets/matching.jpg" width="60%" height="60%" alt="Matching">
+ </p>
+
+The low- and intermediate-$Q^2$ regions we construct a parametrisation of the neural
+network structure functions with its associated uncertainties by training a machine
 learning model to available experimental data. Given an observable $\mathcal{O}$
 that is defined as a linear combination of structure functions:
 $$
