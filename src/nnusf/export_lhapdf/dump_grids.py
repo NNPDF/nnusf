@@ -25,9 +25,6 @@ _logger = logging.getLogger(__name__)
 
 ROUNDING = 6
 A_VALUE = 1
-X_GRIDS = dict(min=1e-9, max=1.0, num=100)
-Q2_GRIDS = dict(min=1e-3, max=500, num=500)
-
 LHAPDF_ID = [1001, 1002, 1003, 2001, 2002, 2003, 3001, 3002, 3003]
 
 
@@ -170,23 +167,20 @@ def main(
     model: pathlib.Path,
     pdfname: str,
     a_value_spec: Union[None, int],
-    x_dic_specs: Union[None, dict],
-    q2_dic_specs: Union[None, dict],
+    x_dic_specs: dict,
+    q2_dic_specs: dict,
     output: str,
     min_highq2: Optional[float] = None,
     install_lhapdf: bool = True,
 ):
 
     a_value = a_value_spec if a_value_spec is not None else A_VALUE
-    x_grids = x_dic_specs if x_dic_specs is not None else X_GRIDS
-    q2_grids = q2_dic_specs if q2_dic_specs is not None else Q2_GRIDS
-
     _logger.info("Computing the blocks of the interpolation grids.")
     grid_info, prediction_allreplicas = parse_nn_predictions(
         model=model,
         a_value_spec=a_value,
-        x_specs=x_grids,
-        q2_dic_specs=q2_grids,
+        x_specs=x_dic_specs,
+        q2_dic_specs=q2_dic_specs,
         pdfname=pdfname,
         min_highq2=min_highq2,
     )
