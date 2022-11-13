@@ -1,11 +1,12 @@
 ## User installation :id=installation
 
-The easiest way to install `NνSF` is via the [Python Package Index](https://pypi.org/)
-via the following command:
+The easiest way to install the latest stable version of `NνSF` is via the
+[Python Package Index](https://pypi.org/) using the following command:
 ```bash
 pip install nnusf
 ```
-To check that the package has been installed correctly, just type the following:
+To check that the package has been installed correctly, just run the following
+which will print out the version `NvSF`:
 ```bash
 nnu --version
 ```

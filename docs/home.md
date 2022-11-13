@@ -21,5 +21,8 @@ C_3 F_L^{\nu} + C_4 F_L^{\bar{\nu}} +
 C_5 x F_3^{\nu} + C_6 x F_3^{\bar{\nu}}
 \right),
 $$
-we fit the structure functions $F_i^{\nu / \bar{\nu}} \equiv F_i^{\nu / \bar{\nu}} \left( x, Q^2, A \right)$
-for $i=2, 3, L$. Note that for $i = 3$ we actually fit $xF_3$ instead of $F_3$.
+we fit the structure functions $F_i^{k} \equiv F_i^{k} \left( x, Q^2, A \right)$
+for $i=2, 3, L$ and $k =\nu, \bar{\nu} $. Note that for $i = 3$ we actually fit
+$xF_3$ instead of $F_3$. The coefficients $C_j$ which depend on $(x, Q^2, y)$ are
+computed using Yadism and they have to match data point per data point to the
+experimental data sets.
