@@ -23,8 +23,8 @@ print(" ***********************************************************\n")
 #---------------------------------------------------------
 #---------------------------------------------------------
 # Choice of x value
-#filelabel = "x0p01"
-filelabel = "x0p1"
+filelabel = "x0p01"
+#filelabel = "x0p1"
 #filelabel = "x0p00126"
 
 # Plot labels
@@ -175,10 +175,20 @@ nset=3
 nrep=np.zeros(nset, dtype='int')
 nrep_max = 100
 
-pdfset=["NNUSF10_A1_Q2MIN001","NNUSF10_A56_Q2MIN001","NNUSF10_A208_Q2MIN001"]
+pdfset=["221110-A1-004","221110-A56-004","221110-A208-004"]
 fit1 = np.zeros((nrep_max,nfl,nq))
 fit2 = np.zeros((nrep_max,nfl,nq))
 fit3 = np.zeros((nrep_max,nfl,nq))
+
+# labelpdf=[r"$F_2^{\nu p}(x,Q,A)$",
+#          r"$F_L^{\nu p}(x,Q,A)$",
+#          r"$xF_3^{\nu p}(x,Q,A)$",\
+#          r"$F_2^{\bar{\nu} p}(x,Q,A)$",
+#          r"$F_L^{\bar{\nu} p}(x,Q,A)$",
+#          r"$xF_3^{\bar{\nu} p}(x,Q,A)$",\
+#          r"$F_2^{(\nu +\bar{\nu}) p}(x,Q,A)$",\
+#          r"$F_L^{(\nu +\bar{\nu}) p}(x,Q,A)$",\
+#          r"$xF_3^{(\nu +\bar{\nu}) p}(x,Q,A)$",]
 
 ids = np.array([1001,1002,1003,2001,2002,2003,3001,3002,3003])
 
@@ -188,9 +198,12 @@ for iset in range(nset):
     nrep[iset]=int(p.get_entry("NumMembers"))-1
     print("nrep = ",nrep[iset])
     if(nrep[iset] > nrep_max):
+        nrep[iset] = nrep_max
+    if(nrep[iset] > nrep_max):
         print("Problem, too many replicas \n")
         exit()
-    print(p.description)
+    #print(p.description)
+    print("nrep (updated) = ",nrep[iset])
 
     # Run over replicas
     for i in range(1,nrep[iset]+1):

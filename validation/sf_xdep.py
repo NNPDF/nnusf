@@ -22,7 +22,7 @@ print(" ***********************************************************\n")
 filelabel = "q14p0gev"
 #filelabel = "q1gev"
 #filelabel = "q0p5gev"
-filelabel = "q1p58gev"
+#filelabel = "q1p58gev"
 
 if(filelabel=="q0p5gev"):
     q = 0.5 # GeV
@@ -179,7 +179,7 @@ nset=3
 nrep=np.zeros(nset, dtype='int')
 nrep_max = 100
 
-pdfset=["NNUSF10_A1_Q2MIN001","NNUSF10_A56_Q2MIN001","NNUSF10_A208_Q2MIN001"]
+pdfset=["221110-A1-004","221110-A56-004","221110-A208-004"]
 fit1 = np.zeros((nrep_max,nfl,nx))
 fit2 = np.zeros((nrep_max,nfl,nx))
 fit3 = np.zeros((nrep_max,nfl,nx))
@@ -192,9 +192,12 @@ for iset in range(nset):
     nrep[iset]=int(p.get_entry("NumMembers"))-1
     print("nrep = ",nrep[iset])
     if(nrep[iset] > nrep_max):
+        nrep[iset] = nrep_max
+    if(nrep[iset] > nrep_max):
         print("Problem, too many replicas \n")
         exit()
-    print(p.description)
+    #print(p.description)
+    print("nrep (fixed) = ",nrep[iset])
 
     # Run over replicas
     for i in range(1,nrep[iset]+1):
@@ -470,6 +473,17 @@ for ifl in range(nfl):
         if(ifl==8): ax.set_ylim(0,2)      
 
     if(filelabel=="q5p0gev"):
+        if(ifl==0): ax.set_ylim(0,2)
+        if(ifl==3): ax.set_ylim(0,2)
+        if(ifl==6): ax.set_ylim(0,2) 
+        if(ifl==1): ax.set_ylim(0,3)
+        if(ifl==4): ax.set_ylim(0,3)
+        if(ifl==7): ax.set_ylim(0,3)
+        if(ifl==2): ax.set_ylim(0,2)
+        if(ifl==5): ax.set_ylim(0,2)
+        if(ifl==8): ax.set_ylim(0,2)
+
+    if(filelabel=="q14p0gev"):
         if(ifl==0): ax.set_ylim(0,2)
         if(ifl==3): ax.set_ylim(0,2)
         if(ifl==6): ax.set_ylim(0,2) 
