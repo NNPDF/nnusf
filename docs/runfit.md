@@ -42,33 +42,57 @@ fit_parameters:
 To run a fit, one can simplify type the following commands:
 
 ```bash
-nnu fit run <runcard> <replica> -d <output_path>
+nnu fit run ${PATH_RUNCARD} ${REPLICA_ID} [-d ${OUTPUT_PATH}]
 ```
-An example of a runcard to perform a fit is [./runcards/fit_runcard.yml](./runcards/fit_runcard.yml).
+An example of a runcard to perform a fit is [runcards/fit_runcard.yml](../runcards/fit_runcard.yml).
 
-This will generate inside the folder `<output_path>` a folder named `replica_<replica>` which in turn contains a tensorflow model that can be used to generate predictions. In general, one needs to run the above command for `replica={1, ..., n}`.
+This will generate inside a folder `RUNCARD_NAME` folders called `replica_${REPLICA_ID}` which in turn
+contain tensorflow models that can be used to generate predictions. In general, one needs to run the
+above command for `REPLICA_ID={1, ..., n}`.
 
-#### Perform a Postfit
+!> A pre-trained model is available in the following [link](https://data.nnpdf.science/NNUSF/) if the
+user wants to skip the training part and directly wants to generate predictions.
 
-If needed, one can perform a post-selection on the replicas generated from the fit. For instance, one can only select the replicas whose $\chi^2$ values are below some thresholds. Below is an example in which we only select replicas with $\chi^2_{\rm tr}$ and $\chi^2_{\rm vl}$ below `10`:
+
+#### Post-fit selection
+
+If needed, one can perform a post-selection on the replicas generated from the fit. For instance, one
+can only select replicas whose $\chi^2$ values are below some thresholds. Below is an example in which
+we only select replicas with $\chi^2_{\rm tr}$ and $\chi^2_{\rm vl}$ below `2.8`:
 ```bash
-nnu fit postfit <output_path> -t '{"tr_max": 10, "vl_max": 10}'
+nnu fit postfit ${RUNCARD_NAME} -t '{"tr_max": 2.8, "vl_max": 2.8}'
 ```
-This will generate inside `<output_path>` a folder named `postfit` which contains the replicas that satisfy the selection criteria.
+This will generate inside `RUNCARD_NAME` a folder called `postfit` which contains the replicas that satisfy
+the selection criteria.
 
-#### Generate a report & Predictions
 
-To generate a report from a fit, one can simply run:
+#### Generate a fit report
+
+Using the trained model, we can generate a report containing the summary of the $\chi^2$ values and
+the comparisons between the experimental data sets and the N$\nu$SF predictions. To generate the report
+just run the following command:
 ```bash
-nnu report generate <output_path>/postfit -t "<Title>" -a "<author>" -k "<keyword>"
+nnu report generate ${RUNCARD_NAME}/postfit -t "<Title>" -a "<author>" -k "<keyword>"
 ```
-This will generate a folder called `output` inside `<output_path>` which contains an `index.html` summarizing the results. If `postfit` was not run in the previous step, simply remove `/postfit` in the command above.
+This will generate a folder called `output` inside `RUNCARD_NAME` which contains an `index.html` summarizing
+the results. The `.html` file can then be opened on a browser. If `postfit` was not run in the previous step,
+simply remove `/postfit` in the command above.
 
-Finally, to generate predictions using the trained models, just run the following commands:
 
+#### Store N$\nu$SF predictions as LHAPDF
+
+For future convenience, the N$\nu$SF predictions can be stored as LHAPDF grids. The structure functions
+have the following LHAPDF IDs:
+
+| Structure Functions  | $F_2^{\nu}$   | $F_L^{\nu}$  | $x F_3^{\nu}$  |  $F_2^{\bar{\nu}}$ |  $F_L^{\bar{\nu}}$ |  $x F_3^{\bar{\nu}}$ | $\langle F_2 \rangle$  |  $\langle F_L \rangle$ |  $\langle x F_3 \rangle$ |
+|---|---|---|---|---|---|---|---|---|---|
+| LHAPDF ID | 1001  | 1002  | 1003  | 2001  | 2002  | 2003 |  3001  | 3002  | 3003  |
+
+The LHAPDF set can be generated using the following command:
 ```bash
-nnu plot fit <output_path> <runcard>
+nnu fit dump_grids ${RUNCARD_NAME}/postfit -a ${A_VALUE} -o ${SET_NAME} [-q '{"min": 1e-3, "max": 400, "num": 100}]'
 ```
-An example of such a runcard is [./runcards/generate_predictions.yml](./runcards/generate_predictions.yml).
-
-This will generate a `.txt` file containing the NN predictions for the different structure functions.
+!> As before, the user can choose the ranges of $x$ and $Q^2$ from which the predictions will be
+generated. By default, the $Q^2$ range is defined to be between $[10^{-3}, 4 \cdot 10^2]$. This
+range is chosen based on the $Q^2$ values included in the fit through both the experimental and
+Yadism pseudo data.

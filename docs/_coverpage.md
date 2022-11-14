@@ -17,4 +17,4 @@ Package that computes neutrino structure functions at all energies
 [Follow the tutorials](prefit.md)
 
 <!-- Set the background color or image. -->
-![color](#FFFFFF)
+![color](#3F3F3F)
