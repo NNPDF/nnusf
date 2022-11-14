@@ -8,9 +8,11 @@ def kinematics_mapping(dataset, max_kin_value):
     """
     scaled_inputs = []
     for index, kin_var in enumerate(dataset):
-        num = kin_var - max_kin_value[index][0]
-        den = max_kin_value[index][1] - max_kin_value[index][0]
-        scaled_inputs.append(num / den)
+        if index != 0:  # Scale only along (Q2, A) direction
+            input_scaling = kin_var / max_kin_value[index]
+        else:
+            input_scaling = kin_var
+        scaled_inputs.append(input_scaling)
     return scaled_inputs
 
 
@@ -30,8 +32,7 @@ def extract_extreme_values(datasets):
     """
     data_kin = [data.kinematics for data in datasets.values()]
     data_kin = np.concatenate(data_kin, axis=0)
-    extreme_values = np.stack([data_kin.min(axis=0), data_kin.max(axis=0)]).T
-    return extreme_values
+    return data_kin.max(axis=0)
 
 
 def apply_mapping_datasets(datasets, max_kin_value):

@@ -8,10 +8,10 @@ import yaml
 
 from ..utils import add_git_info
 from . import load_data
-from .compute_expchi2 import add_expchi2_json, compute_exp_chi2
+from .compute_expchi2 import compute_exp_chi2
 from .model_gen import generate_models
 from .train_model import perform_fit
-from .utils import set_global_seeds
+from .utils import add_dict_json, set_global_seeds, small_x_exp
 
 tf.get_logger().setLevel("ERROR")
 
@@ -85,10 +85,14 @@ def main(
     )
     saved_model.save(replica_dir / "model")
 
+    # Extrac the values of the small-x exponents
+    small_x = small_x_exp(saved_model)
+
     # Compute the chi2 wrt central real data
     chi2s = compute_exp_chi2(
         data_info,
         fit_dict["sf_model"],
         **runcard_content["fit_parameters"],
     )
-    add_expchi2_json(replica_dir, chi2s)
+    extra_info = {"exp_chi2s": chi2s, "small_x": small_x}
+    add_dict_json(replica_dir, extra_info)

@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import numpy.typing as npt
 import pineappl
+import yaml
 
 from nnusf.export_lhapdf.dump_grids import ROUNDING
 
@@ -44,6 +45,7 @@ def plot(
     preds_dest: pathlib.Path,
 ):
     """"""
+    plt.figure()
     plt.plot(
         q2grid[:, xpoint],
         pred[:, xpoint, central],
@@ -106,6 +108,7 @@ def theory_error(
     pred = grid.convolute_with_one(
         2212, pdfset.xfxQ2, pdfset.alphasQ2, xi=prescription
     )
+
     if reshape:
         pred = np.array(pred).T.reshape((*xgrid.shape, len(pred)))
     else:
@@ -134,6 +137,23 @@ def pdf_error(
     return pred, 0, slice(1, -1), "PDF replicas"
 
 
+def combined_error(
+    grid: pineappl.grid.Grid,
+    pdf: str,
+    prescription: list[tuple[float, float]],
+    xgrid: npt.NDArray[np.float_],
+    reshape: Optional[bool] = True,
+) -> npt.NDArray[np.float_]:
+    # TODO: To implement the combination
+    pred_theory, _, _, _ = pdf_error(
+        grid,
+        pdf,
+        xgrid,
+        reshape,
+    )
+    return pred_theory
+
+
 def construct_stacked_predictions(predictions_dict: dict):
     """Stack the predictions in the same order as the LHAPDF IDs."""
     stacked_list = [predictions_dict[k] for k in SFS_LABEL]
@@ -142,6 +162,22 @@ def construct_stacked_predictions(predictions_dict: dict):
     stacked_predictions = np.stack(stacked_list, axis=-1)
     # Move axis to get shape (n_rep, n_q2, n_x, n_sfs)
     return np.moveaxis(stacked_predictions, [0, 2], [2, 0])
+
+
+def extract_xq2_from_pineappl(grid: pineappl.grid.Grid, obsname: str):
+    """Extract the unique x and Q2 values from the grid."""
+    cards = yaml.safe_load(grid.raw.key_values()["runcard"])
+    observables = cards["observables"][obsname]
+
+    x_grids = np.asarray([float(v["x"]) for v in observables])
+    q2grid = np.asarray([float(v["Q2"]) for v in observables])
+
+    # Extract only the unique kinematic values
+    unique_xv, unique_q2 = np.unique(x_grids), np.unique(q2grid)
+    # Make sure that the unique values indeed is consistent
+    assert (unique_xv.size * unique_q2.size) == len(observables)
+
+    return unique_xv, unique_q2
 
 
 def parse_yadism_predictions(
@@ -262,19 +298,6 @@ def main(
         preds_dest.mkdir()
 
         genie = load.load()
-        if compare_to_by:
-            xgrid, q2grid = np.meshgrid(*load.kin_grids())
-        else:
-            # This has to be exactly the same as in the runcard generation
-            x = dict(min=1e-5, max=1.0, num=25)
-            q2 = dict(min=5, max=1e5, num=30)
-            q2_grid = np.geomspace(q2["min"], q2["max"], num=int(q2["num"]))
-            lognx = int(x["num"] / 3)
-            linnx = int(x["num"] - lognx)
-            xgrid_log = np.logspace(np.log10(x["min"]), -1, lognx + 1)
-            xgrid_lin = np.linspace(0.1, 1, linnx)
-            x_grid = np.concatenate([xgrid_log[:-1], xgrid_lin])
-            xgrid, q2grid = np.meshgrid(*tuple((q2_grid, x_grid)))
         gmask = load.mask()
 
         predictions_dictionary = {}
@@ -282,12 +305,18 @@ def main(
         for gpath in grids.iterdir():
             if "pineappl" not in gpath.name:
                 continue
-            obs = gpath.stem.split(".")[0]
-            kind = obs.split("_")[0]
+            gridname = gpath.stem.split(".")[0]
+            kind = gridname.split("_")[0]
 
             grid = pineappl.grid.Grid.read(gpath)
 
-            plt.figure()
+            # Extract the information on the input kinematics
+            if compare_to_by:
+                xgrid, q2grid = np.meshgrid(*load.kin_grids())
+            else:
+                sf_type = gridname.split("-")[-1]
+                x_grid, q2_grid = extract_xq2_from_pineappl(grid, sf_type)
+                xgrid, q2grid = np.meshgrid(*tuple((q2_grid, x_grid)))
 
             if err == "theory":
                 pred, central, bulk, err_source = theory_error(
@@ -302,15 +331,24 @@ def main(
                     pdf,
                     xgrid,
                 )
+            elif err == "combined":
+                pred, central, bulk, err_source = combined_error(
+                    grid,
+                    pdf,
+                    defs.nine_points,
+                    xgrid,
+                )
             else:
                 raise ValueError(f"Invalid error type '{err}'")
 
+            # TODO: Remove the below as the comparisons are done
+            # usually done outside of this module.
             if compare_to_by:  # Compare Yadism with BY
                 plot(
                     pred,
                     genie,
                     gmask,
-                    obs,
+                    gridname,
                     kind,
                     xgrid,
                     q2grid,
@@ -322,9 +360,7 @@ def main(
                     preds_dest,
                 )
             else:  # Dump the Yadism results as LHAPDF
-                gridname = gpath.stem.split(".")[0]
                 nuc = gridname.split("-")[0].split("_")[-1]
-                sf_type = gridname.split("-")[-1]
                 neutrino_type = gridname.split("_")[0]
                 if sf_type == "F3":
                     obsname = "x" + sf_type + neutrino_type

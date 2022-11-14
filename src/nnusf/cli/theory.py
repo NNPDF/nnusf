@@ -143,8 +143,8 @@ def sub_grids(runcards, destination):
 @click.argument("pdf")
 @click.option(
     "--err",
-    type=click.Choice(["pdf", "theory"], case_sensitive=False),
-    default="theory",
+    type=click.Choice(["pdf", "theory", "combined"], case_sensitive=False),
+    default="pdf",
 )
 @click.option("-x", type=int, default=None)
 @click.option("--interactive", is_flag=True)
@@ -212,21 +212,21 @@ def sub_compare_to_data(grids, data, pdf, err, destination, interactive):
     "--x_grids",
     default=None,
     help="""Stringified dictionary containing specs for x-grid"""
-    """" e.g. '{"min": 0.01, "max": 1.0, "num": 100}'.""",
+    """" e.g. '{"min": 1e-5, "max": 1.0, "num": 25}'.""",
 )
 @click.option(
     "-q",
     "--q2_grids",
     default=None,
     help="""Stringified dictionary containing specs for Q2-grid"""
-    """" e.g. '{"min": 0.001, "max": 100000, "num": 200}'.""",
+    """" e.g. '{"min": 9e2, "max": 1.96e8, "num": 30}'.""",
 )
 @click.option(
     "-a",
     "--a_value",
     type=int,
     default=1,
-    help="""Atomic mass number value. Default: 1""",
+    help="""Value of the Atomic mass number. Default: 1""",
 )
 @option_dest
 def sub_sub_yadknots(x_grids, q2_grids, a_value, destination):
@@ -239,6 +239,6 @@ def sub_sub_yadknots(x_grids, q2_grids, a_value, destination):
     if q2_grids is not None:
         q2_grids = eval(q2_grids)
     else:
-        q2_grids = dict(min=5, max=1e5, num=30)
+        q2_grids = dict(min=9e2, max=1.96e8, num=30)
 
     runcards.yknots(x_grids, q2_grids, a_value, destination)

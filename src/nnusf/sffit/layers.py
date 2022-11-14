@@ -55,3 +55,50 @@ class TheoryConstraint(tf.keras.layers.Layer):
             [ones, unstacked_inputs[1], unstacked_inputs[2]], axis=2
         )
         return input_x_equal_one
+
+
+class SmallXPreprocessing(tf.keras.layers.Layer):
+    """Add small-x preprocessing to the output of the NN"""
+
+    def __init__(self, seed, dic_specs, **kwargs):
+        self.output_dim = len(dic_specs.keys())
+        self.seed = seed
+        self.kernel = []
+        self.dic_specs = dic_specs
+        super().__init__(**kwargs)
+
+    def generate_weights(self, sf_type):
+        lower = self.dic_specs[sf_type][0]
+        upper = self.dic_specs[sf_type][1]
+
+        init = tf.keras.initializers.RandomUniform(
+            minval=lower,
+            maxval=upper,
+            seed=self.seed + 1,
+        )
+        wconstr = tf.keras.constraints.MinMaxNorm(
+            min_value=lower,
+            max_value=upper,
+        )
+
+        kernel = self.add_weight(
+            name=f"alpha_{sf_type}",
+            shape=(1,),
+            initializer=init,
+            trainable=True,
+            constraint=wconstr,
+        )
+        self.kernel.append(kernel)
+
+    def build(self, input_shape):
+        for sf_type in self.dic_specs.keys():
+            self.generate_weights(sf_type)
+        super().build(input_shape)
+
+    def call(self, inputs, **kwargs):
+        x = tf.unstack(inputs, axis=2)[0]
+        sfs_list = []
+        for i in range(self.output_dim):
+            sfs_list.append(x ** (1 - self.kernel[i][0]))
+        sfs_exdims = [tf.expand_dims(i, axis=-1) for i in sfs_list]
+        return tf.concat(sfs_exdims, axis=-1)

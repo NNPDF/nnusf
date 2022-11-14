@@ -1,4 +1,4 @@
-# coding: utf-8
+# -*- coding: utf-8 -*-
 import pathlib
 import shutil
 import sys
@@ -13,7 +13,9 @@ def broadgrid(ar, shape):
 
 
 def replica(shape):
-    return np.broadcast_to(np.arange(shape[2])[np.newaxis, np.newaxis, :], shape)
+    return np.broadcast_to(
+        np.arange(shape[2])[np.newaxis, np.newaxis, :], shape
+    )
 
 
 tarpath = pathlib.Path(sys.argv[1])

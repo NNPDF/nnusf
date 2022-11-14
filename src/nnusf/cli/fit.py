@@ -53,6 +53,13 @@ def sub_postfit(model, threshold):
 @subcommand.command("dump_grids")
 @click.argument("model", type=click.Path(exists=True, path_type=pathlib.Path))
 @click.option(
+    "-s",
+    "--sfset_name",
+    default=None,
+    help="""Name of the SF LHAPDF set with with the high-Q2 matching will """
+    """computed. If not specified, the NNUSF predictions will not be matched.""",
+)
+@click.option(
     "-a",
     "--a_value",
     type=int,
@@ -64,14 +71,14 @@ def sub_postfit(model, threshold):
     "--x_grids",
     default=None,
     help="""Stringified dictionary containing specs for x-grid"""
-    """" e.g. '{"min": 0.01, "max": 1.0, "num": 100}'.""",
+    """" e.g. '{"min": 1e-5, "max": 1.0, "num": 100}'.""",
 )
 @click.option(
     "-q",
     "--q2_grids",
     default=None,
     help="""Stringified dictionary containing specs for Q2-grid"""
-    """" e.g. '{"min": 0.001, "max": 100000, "num": 200}'.""",
+    """" e.g. '{"min": 1e-3, "max": 400, "num": 100}'.""",
 )
 @click.option(
     "-o",
@@ -81,17 +88,39 @@ def sub_postfit(model, threshold):
     help="Alternative LHAPDF folder name (default: $PWD/NNUSF10_Q2MIN001)",
 )
 @click.option(
+    "-m",
+    "--min_highq2",
+    default=None,
+    help="Minimal value of Q2 for the high-Q2 Yadism predictions.",
+)
+@click.option(
     "--install/--no-install",
     default=True,
     help="Install the set into the LHAPDF directory",
 )
-def sub_dump_grids(model, a_value, x_grids, q2_grids, output, install):
+def sub_dump_grids(
+    model, sfset_name, a_value, x_grids, q2_grids, output, min_highq2, install
+):
     """Generate the LHAPDF grids, dump them into files, and install
     the resulting set into the LHAPDF path.
     """
     if x_grids is not None:
         x_grids = eval(x_grids)
+    else:
+        x_grids = dict(min=1e-5, max=1.0, num=100)
+
     if q2_grids is not None:
         q2_grids = eval(q2_grids)
+    else:
+        q2_grids = dict(min=1e-3, max=400, num=100)
 
-    dump_grids.main(model, a_value, x_grids, q2_grids, output, install)
+    dump_grids.main(
+        model,
+        sfset_name,
+        a_value,
+        x_grids,
+        q2_grids,
+        output,
+        min_highq2,
+        install,
+    )
