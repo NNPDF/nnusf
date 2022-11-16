@@ -23,6 +23,7 @@ def observables(x: dict, q2: dict, A: int) -> dict:
     xgrid_log = np.logspace(np.log10(x["min"]), -1, lognx + 1)
     xgrid_lin = np.linspace(0.1, 1, linnx)
     x_grid = np.concatenate([xgrid_log[:-1], xgrid_lin])
+    run_nu["interpolation_xgrid"] = x_grid.tolist()
 
     kins = []
     for xv in x_grid:
