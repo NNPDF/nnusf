@@ -24,7 +24,7 @@ def main(cards: pathlib.Path, destination: pathlib.Path):
     """
     with tempfile.TemporaryDirectory() as tmpdir:
         tmpdir = pathlib.Path(tmpdir).absolute()
-        full_data_name = cards.stem.split("-")[0]
+        full_data_name = cards.stem.split("-")[1]
 
         # extract tar content
         if cards.suffix == ".tar":
