@@ -268,7 +268,7 @@ class Loader:
             ).iterdir():
                 if dataset_name in variation.stem:
                     # central scale
-                    if "xif1_xir1" in variation.stem:
+                    if "xif1.0_xir1.0" in variation.stem:
                         nrep_predictions = np.load(variation)
                     else:
                         sv_variations.append(np.load(variation))

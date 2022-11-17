@@ -46,7 +46,7 @@ def proton_boundary_conditions(
     Parameters
     ----------
     grids : list[pathlib.Path]
-        list of paths to the pineappl.tar.gz grids
+        list of paths to the pineappl.tar grids
     pdf : str
         name of the PDF set to convolute with
     destination : pathlib.Path
@@ -58,7 +58,7 @@ def proton_boundary_conditions(
     if grids is not None:
         obsdic_list = []
         for grid in grids:
-            grid_name = grid.stem[6:-4]
+            grid_name = grid.stem[6:]
             _logger.info(f"Generating BC data for '{grid_name}'.")
 
             obstype = grid_name.split("_")[1]
@@ -165,7 +165,7 @@ def main(
     Parameters
     ----------
     grids : pathlib.Path
-        path to the pineappl.tar.gz grid
+        path to the pineappl.tar grid
     pdf : str
         name of the PDF set to convolute with
     destination : pathlib.Path
@@ -176,12 +176,12 @@ def main(
     with tempfile.TemporaryDirectory() as tmpdir:
         tmpdir = pathlib.Path(tmpdir).absolute()
 
-        full_grid_name = grids.stem[6:-4]
+        full_grid_name = grids.stem[6:]
         experiment, obs, _, xif, xir = full_grid_name.split("_")
         new_name = f"{experiment}_{obs}_MATCHING"
         new_experiment = f"{experiment}_MATCHING"
 
-        if str(grids).endswith(".tar.gz"):
+        if str(grids).endswith(".tar"):
             utils.extract_tar(grids, tmpdir)
             grids = tmpdir / "grids"
 
@@ -194,7 +194,7 @@ def main(
             if "pineappl" not in gpath.name:
                 continue
             grid = pineappl.grid.Grid.read(gpath)
-            if xif == "xif1" and xir == "xir1":
+            if xif == "xif1.0" and xir == "xir1.0":
                 prediction = pdf_error(grid, pdf, kin_grid["x"], reshape=False)
             else:
                 prescription = [(float(xir[3:]), float(xif[3:]))]
@@ -205,7 +205,7 @@ def main(
         pred = np.average(full_pred, axis=0)
 
         # store data only for unvaried matching grids
-        if xif == "xif1" and xir == "xir1":
+        if xif == "xif1.0" and xir == "xir1.0":
             # data_pd = pd.DataFrame({"data": np.median(pred, axis=1)})
             # Select only predictions for Replicas_0 to be the Central Value
             data_pd = pd.DataFrame({"data": pred[:, 0]})
