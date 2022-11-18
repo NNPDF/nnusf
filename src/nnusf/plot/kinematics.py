@@ -28,6 +28,7 @@ def plot(
     q2cut: bool = True,
     xlog: bool = True,
     ylog: bool = True,
+    alpha: bool = True,
 ) -> matplotlib.figure.Figure:
     """Plot (x, Q2) kinematics.
 
@@ -45,13 +46,14 @@ def plot(
 
     for (name, kins), marker in zip(groups.items(), putils.MARKERS):
         size = len(kins[0])
+        shading = (1 - np.tanh(3 * size / total)) if alpha else 1
         if size != 0:
             ax.scatter(
                 *kins,
                 label=name,
                 s=100 / np.power(size, 1 / 4),
                 marker=marker,
-                alpha=1 - np.tanh(3 * size / total),
+                alpha=shading,
             )
         else:
             _logger.warn(f"No point received in {name}")
@@ -116,6 +118,7 @@ def main(
     ylog: bool = True,
     wcut: bool = True,
     q2cut: bool = True,
+    alpha: bool = True,
     cuts: Optional[dict[str, dict[str, float]]] = None,
 ):
     """Run kinematic plot generation."""
@@ -141,7 +144,9 @@ def main(
 
             kingroups[name].append(kins)
 
-    fig = plot(kingroups, wcut=wcut, q2cut=q2cut, xlog=xlog, ylog=ylog)
+    fig = plot(
+        kingroups, wcut=wcut, q2cut=q2cut, xlog=xlog, ylog=ylog, alpha=alpha
+    )
     figname = destination / "kinematics.pdf"
     fig.savefig(figname)
 
