@@ -199,30 +199,18 @@ def compute_lhapdf(
 
     if xgrid is None:
         xgrid = np.geomspace(pdfinfo.xMin, pdfinfo.xMax, 100)
-        n_xgd = xgrid.size
-    else:
-        n_xgd = len(xgrid)
 
     if q2grid is None:
-        q2grid = np.geomspace(pdfinfo.q2Min, pdfinfo.q2Max, 100)
-        n_q2g = q2grid.size
-    else:
-        n_q2g = len(q2grid)
+        q2grid = np.geomspace(pdfinfo.q2Min, pdfinfo.q2Max, 200)
 
     pid = pdfinfo.flavors() if pid is None else pid
-    n_pid = len(pid)
 
-    # TODO: Simplify the following computation using np.meshgrid
-    sfs_pred = np.zeros((n_rep, n_q2g, n_xgd, n_pid))
-    for set in range(n_rep):  # Loop over the replica
-        for q2 in range(n_q2g):  # Loop over Q2
-            for x in range(n_xgd):  # Loop over x
-                for id in range(n_pid):  # Loop over SFs
-                    sfs_pred[set][q2][x][id] = input_pdfset[set].xfxQ2(
-                        pid[id],
-                        xgrid[x],
-                        q2grid[q2],
-                    )
+    xmesh, q2mesh = np.meshgrid(xgrid, q2grid)
+    store_replicas = []
+    for replica in input_pdfset:
+        pred = replica.xfxQ2(pid, xmesh.flatten(), q2mesh.flatten())
+        pred = np.asarray(pred).reshape((*xmesh.shape, len(pid)))
+        store_replicas.append(pred)
 
     if not isinstance(xgrid, list):
         xgrid = xgrid.tolist()
@@ -233,4 +221,4 @@ def compute_lhapdf(
     q2grid = [round(q, ROUNDING) for q in q2grid]
 
     metadata = dict(x_grids=xgrid, q2_grids=q2grid, pid=pid, nrep=n_rep)
-    return sfs_pred, metadata
+    return store_replicas, metadata
