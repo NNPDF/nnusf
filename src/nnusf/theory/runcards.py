@@ -120,6 +120,9 @@ def update_theory(
             ths.append(
                 theory(
                     {
+                        "PTO": 1,
+                        "NfFF": 5, 
+                        "FNS": 'FFNS',
                         "MP": float(np.unique(data.table["m_nucleon"])),
                         "XIF": xif,
                         "XIR": xir,
@@ -172,7 +175,9 @@ def yknots(x: dict, q2: dict, A: int, destination: pathlib.Path):
     """Generate yadism runcards with the given kinametics"""
     utils.mkdest(destination)
     ocards = yadknots.runcards.observables(x, q2, A)
-    theory_card = theory()
+    theory_card = theory(
+        {"PTO": 1, "NfFF": 5, "FNS": 'FFNS',}
+    )
     with tempfile.TemporaryDirectory() as tmpdir:
         tmpdir = pathlib.Path(tmpdir)
         utils.write(theory_card, tmpdir / "theory.yaml")
