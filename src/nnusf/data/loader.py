@@ -9,13 +9,10 @@ import pandas as pd
 
 from .utils import (
     ObsTypeError,
-    add_w2_table,
     append_target_info,
-    apply_cuts,
-    combine_tables,
-    parse_central_values,
-    parse_input_kinematics,
-    parse_uncertainties,
+    apply_kinematic_cuts,
+    build_matching_covmat,
+    construct_input_table,
 )
 
 _logger = logging.getLogger(__name__)
@@ -58,8 +55,7 @@ class Loader:
         w2min;
             if True cut all datapoints below `w2min`
         """
-        # In case of post-fit related operations, we do not need to
-        # print out the noisy log outputs
+        # Silence log outputs for post-fit related operations
         if not verbose:
             _logger.info("Loading the datasets...")
             _logger.setLevel(logging.ERROR)
@@ -98,39 +94,27 @@ class Loader:
         info_name = exp_name if "PROTONBC" not in self.name else "PROTONBC"
         info_df = pd.read_csv(f"{self.commondata_path}/info/{info_name}.csv")
 
-        # Extrac the values from the kinematics
-        kin_df = parse_input_kinematics(
+        # Construct with input tables that contain the full information
+        # on the dataset (kinematics, central values, uncertainties, etc.)
+        input_df = construct_input_table(
             mainpath=self.commondata_path,
             name=self.name,
             info_name=info_name,
             exp_name=exp_name,
             obs=self.obs,
+            m_nucleus=info_df["m_nucleon"][0],
         )
 
-        # Extract values from the central data
-        data_df = parse_central_values(self.commondata_path, self.name)
-
-        # Extract values from the uncertainties
-        unc_df = parse_uncertainties(self.commondata_path, self.name)
-
-        # Add a column to `kin_df` that stores the W2 values
-        kin_df = add_w2_table(kin_df, m_nucleus=info_df["m_nucleon"][0])
-
-        # Combine the tables and restore the indices
-        new_df = combine_tables(kin_df, data_df, unc_df, self.name)
-
-        # Apply kinematic cuts on the (pseudo-)datasets
-        new_df = apply_cuts(new_df, self.name, kincuts=kincuts)
-
+        # Apply kinematic cuts to the (pseudo-)datasets through the table
+        input_df = apply_kinematic_cuts(input_df, self.name, kincuts=kincuts)
         # Append the info regarding the nucleon/nucleus to the table
-        new_df = append_target_info(new_df, info_df, exp_name, self.obs)
+        input_df = append_target_info(input_df, info_df, exp_name, self.obs)
 
-        _logger.info(
-            f"'[{self.name:<25}]' Q2min={new_df['Q2'].min():.3f}"
-            f", Q2max={new_df['Q2'].max():.3f}"
-        )
+        outlogs = f"'[{self.name:<25}]' Q2Min={input_df['Q2'].min():.3f}"
+        outlogs += f", Q2Max={input_df['Q2'].max():.3f}"
+        _logger.info(outlogs)
 
-        return new_df, new_df.index
+        return input_df, input_df.index
 
     @property
     def exp(self) -> str:
@@ -148,12 +132,12 @@ class Loader:
         return self.table[["x", "Q2", "A"]].values
 
     @kinematics.setter
-    def kinematics(self, new_kinematics):
+    def kinematics(self, new_kinematics) -> None:
         """Replace the kinematic variables."""
         self.table[["x", "Q2", "A"]] = new_kinematics
 
     @property
-    def n_data(self):
+    def n_data(self) -> int:
         """Return the number of datapoints."""
         return self.table.shape[0]
 
@@ -180,9 +164,7 @@ class Loader:
     def coefficients(self) -> np.ndarray:
         """Return the coefficients prediction."""
         if self.coefficients_path is None:
-            raise ValueError(
-                f"No path available to load coefficients for '{self.name}'"
-            )
+            raise ValueError(f"Coefficients unavailable for '{self.name}'")
 
         coeffs = np.load(
             (self.coefficients_path / self.name).with_suffix(".npy")
@@ -197,16 +179,15 @@ class Loader:
         include_syst: Union[bool, None],
         mask_predictions: Union[pd.Index, None],
     ) -> np.ndarray:
-        """Build the covariance matrix.
-
-        It consumes as input the statistical and systematics uncertainties.
+        """Build the covariance matrix. It consumes as input the statistical
+        and systematics uncertainties.
 
         Parameters
         ----------
         unc_df:
-            uncertainties table
+            table containing the value of the uncertainties
         include_syst:
-            if True include syst
+            a boolean flag that switches one and off systematic uncertainties
 
         Returns
         -------
@@ -214,45 +195,14 @@ class Loader:
 
         """
         if "_MATCHING" in dataset_name:
-            sv_variations = []
-            for variation in pathlib.Path(
-                f"{commondata_path}/matching/"
-            ).iterdir():
-                if dataset_name in variation.stem:
-                    # central scale
-                    if "xif1_xir1" in variation.stem:
-                        nrep_predictions = np.load(variation)
-                    else:
-                        sv_variations.append(np.load(variation))
-            # build th shift
-            th_shift = (sv_variations - nrep_predictions[:, 0]).T
-            # build covaraince
-            pdf_covmat = np.cov(nrep_predictions[mask_predictions])
-            th_covamt = np.cov(th_shift[mask_predictions])
-            covmat = np.sqrt(th_covamt**2 + pdf_covmat**2)
-            return clip_covmat(covmat, dataset_name)
+            return build_matching_covmat(
+                commondata_path, dataset_name, mask_predictions
+            )
         else:
             diagonal = np.power(unc_df["stat"], 2)
+
             if include_syst:
                 corr_sys = unc_df["syst"]
                 return np.diag(diagonal) + np.outer(corr_sys, corr_sys)
+
             return np.diag(diagonal)
-
-
-def clip_covmat(covmat, dataset_name):
-    """Given a covariance matrix, performs a regularization by cutting
-    negative values.
-    """
-    # eigh gives eigenvals in ascending order
-    e_val, e_vec = np.linalg.eigh(covmat)
-    # if eigenvalues are close to zero, can be negative
-    if e_val[0] < 0:
-        _logger.warning(
-            f"'[{dataset_name:<25}]' Negative eigenvalue encountered."
-            " Clipping values to 1e-5."
-        )
-    else:
-        return covmat
-    # set negative eigenvalues to 1e-5
-    new_e_val = np.clip(e_val, a_min=1e-5, a_max=None)
-    return (e_vec * new_e_val) @ e_vec.T

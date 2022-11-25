@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 """Utilities to write raw data filters."""
+import logging
 import pathlib
 from pathlib import Path
 from typing import Optional, Union
 
 import numpy as np
 import pandas as pd
+
+_logger = logging.getLogger(__name__)
 
 ERR_DESC = {
     "stat": {
@@ -275,27 +278,27 @@ def combine_tables(
         combined table with index reset
     """
     # Concatenate enverything into one single big table
-    new_df = pd.concat([kin_df, data_df, unc_df], axis=1)
-    new_df = new_df.dropna().astype(float)
+    table = pd.concat([kin_df, data_df, unc_df], axis=1)
+    table = table.dropna().astype(float)
 
     # drop data with 0 total uncertainty:
     if "_MATCHING" not in name:
-        new_df = new_df[new_df["stat"] + new_df["syst"] != 0.0]
+        table = table[table["stat"] + table["syst"] != 0.0]
 
     # Make sure that the indices are restored for the cuts
-    new_df.reset_index(drop=True, inplace=True)
+    table.reset_index(drop=True, inplace=True)
 
-    return new_df
+    return table
 
 
-def apply_cuts(new_df: pd.DataFrame, name: str, kincuts: dict):
+def apply_kinematic_cuts(table: pd.DataFrame, name: str, kincuts: dict):
     """Given a dictionary containing information on the cuts, apply
     them to the entire table. There are at most three main cuts that
     can be applied:
 
     Parameters
     ----------
-    new_df: pd.DataFrame
+    table: pd.DataFrame
         combined table contaiing all the dataset specifications
     name: str
         name of the dataset
@@ -313,23 +316,23 @@ def apply_cuts(new_df: pd.DataFrame, name: str, kincuts: dict):
     q2max = kincuts.get("q2max", None)
 
     # Perform cuts along the W2 direction
-    new_df = new_df[new_df["W2"] >= w2min] if w2min else new_df
+    table = table[table["W2"] >= w2min] if w2min else table
 
     # For real datasets we also need to impose a maximum Q2 cut
     if "_MATCHING" not in name:
-        new_df = new_df[new_df["Q2"] <= q2max] if q2max else new_df
+        table = table[table["Q2"] <= q2max] if q2max else table
 
-    return new_df
+    return table
 
 
 def append_target_info(
-    new_df: pd.DataFrame, info_df: pd.DataFrame, exp_name: str, obs: str
+    table: pd.DataFrame, info_df: pd.DataFrame, exp_name: str, obs: str
 ):
     """Append the information regarding the nuclon/nucleus to the table.
 
     Parameters
     ----------
-    new_df: pd.DataFrame
+    table: pd.DataFrame
         combined table containing the dataset specifications
     info_df: pd.DataFrame
         table containing the info regarding the target
@@ -345,19 +348,138 @@ def append_target_info(
     """
 
     # Extract the number of data points after the cuts for this dataset
-    number_datapoints = new_df.shape[0]
+    number_datapoints = table.shape[0]
 
     # Extract the information on the cross section (FW is a special case)
     data_spec = "FW" if obs == "FW" else MAP_EXP_YADISM.get(exp_name, None)
 
     # Append all the info columns to the `kin_df` table
-    new_df["A"] = np.full(number_datapoints, info_df["target"][0])
-    new_df["xsec"] = np.full(number_datapoints, data_spec)
-    new_df["Obs"] = np.full(number_datapoints, obs)
-    new_df["projectile"] = np.full(
+    table["A"] = np.full(number_datapoints, info_df["target"][0])
+    table["xsec"] = np.full(number_datapoints, data_spec)
+    table["Obs"] = np.full(number_datapoints, obs)
+    table["projectile"] = np.full(
         number_datapoints,
         info_df.loc[info_df["type"] == obs, "projectile"],
     )
-    new_df["m_nucleon"] = np.full(number_datapoints, info_df["m_nucleon"][0])
+    table["m_nucleon"] = np.full(number_datapoints, info_df["m_nucleon"][0])
+
+    return table
+
+
+def construct_input_table(
+    mainpath: pathlib.Path,
+    name: str,
+    info_name: str,
+    exp_name: str,
+    obs: str,
+    m_nucleus: int,
+):
+    """Construct the full table by concatenating all the tables from the
+    kinematic inputs, central data values, and uncertainties. The following
+    also include the computation of ``W2``.
+
+    Parameters:
+    -----------
+    mainpath: pathlib.Path
+        path to the (pseudo)dataset
+    name: str
+        name of the dataset
+    info_df: pd.DataFrame
+        table containing the info regarding the target
+    exp_name: str
+        name of the experiment
+    obs: str
+        type of the observable
+    m_nucleus:
+        mass of the nucleon/nuclear target
+    """
+
+    # Extrac the values from the kinematics
+    kin_df = parse_input_kinematics(mainpath, name, info_name, exp_name, obs)
+    # Extract values from the central data
+    data_df = parse_central_values(mainpath, name)
+    # Extract values from the uncertainties
+    unc_df = parse_uncertainties(mainpath, name)
+
+    # Add a column to `kin_df` that stores the W2 values
+    kin_df = add_w2_table(kin_df, m_nucleus=m_nucleus)
+
+    # Combine the tables and restore the indices
+    new_df = combine_tables(kin_df, data_df, unc_df, name)
 
     return new_df
+
+
+def clip_covmat(covmat: np.ndarray, dataset_name: str):
+    """Given a covariance matrix, performs a regularization by clipping
+    negative values.
+
+    Parameters
+    ----------
+    covmat: np.ndarray
+        covariance matrix
+    dataset_name: str
+        name of the dataset
+
+    Returns
+    -------
+    np.ndarray
+        covariance with negative values clipped
+    """
+
+    # eigh gives eigenvals in ascending order
+    e_val, e_vec = np.linalg.eigh(covmat)
+    # if eigenvalues are close to zero, can be negative
+    if e_val[0] < 0:
+        _logger.warning(
+            f"'[{dataset_name:<25}]' Negative eigenvalue encountered."
+            " Clipping values to 1e-5."
+        )
+    else:
+        return covmat
+    # set negative eigenvalues to 1e-5
+    new_e_val = np.clip(e_val, a_min=1e-5, a_max=None)
+
+    return (e_vec * new_e_val) @ e_vec.T
+
+
+def build_matching_covmat(
+    cpath: pathlib.Path,
+    dataset_name: str,
+    mask_predictions: Union[pd.Index, None],
+):
+    """Build the covariance matrix in the case of matching pseudo-data.
+
+    Parameters
+    ----------
+    cpath: pathlib.Path
+        path to the commondata file
+    dataset_name: str
+        name of the dataset
+    mask_predictions: Union[pd.Index, None]
+        Index that corresponds to the left-over the kinematic cuts
+
+    Returns
+    -------
+    np.ndarray
+        matching covariance matrix
+    """
+
+    sv_variations = []
+    for variation in pathlib.Path(f"{cpath}/matching/").iterdir():
+        if dataset_name in variation.stem:
+            # Extrac the central scale
+            if "xif1_xir1" in variation.stem:
+                nrep_predictions = np.load(variation)
+            else:
+                sv_variations.append(np.load(variation))
+
+    # Build the shift in the theory predictions
+    th_shift = (sv_variations - nrep_predictions[:, 0]).T
+
+    # Build the actual covariance matrix
+    pdf_covmat = np.cov(nrep_predictions[mask_predictions])
+    th_covamt = np.cov(th_shift[mask_predictions])
+    covmat = np.sqrt(th_covamt**2 + pdf_covmat**2)
+
+    return clip_covmat(covmat, dataset_name)
