@@ -18,18 +18,25 @@ _logger = logging.getLogger(__name__)
 ISOSPIN_CONJUGATION = {-2: -1, -1: -2, 1: 2, 2: 1}
 
 
-def impose_isoscalarity(proton: np.ndarray, pid: list):
+def impose_isoscalarity(proton: np.ndarray, pid: list) -> np.ndarray:
     """Compute the neutron bound predictions from the proton
     using isospin symmetry and construct the free isoscalar
     nucleon/nucleus.
 
-    Parameters:
-    -----------
-        proton: np.ndarray
-            array of shape (nrep, n_q2, n_x, n_pid)
-        pid: list
-            lis of LHAPDF IDs
+    Parameters
+    ----------
+    proton: np.ndarray
+        array of shape (nrep, n_q2, n_x, n_pid) containing the
+        proton PDF
+    pid: list
+        lis of LHAPDF IDs
+
+    Returns
+    -------
+    np.ndarray
+        array of values for free isoscalar nucleon/nucleus
     """
+
     mapid = []
     for id in pid:
         if id in ISOSPIN_CONJUGATION.keys():
@@ -49,7 +56,22 @@ def impose_isoscalarity(proton: np.ndarray, pid: list):
     return (proton + neutron_bound) / 2
 
 
-def construct_block(predictions: np.ndarray, metadata: dict):
+def construct_block(predictions: np.ndarray, metadata: dict) -> list:
+    """Construct the block of predictions to be dumped into LHAPDF
+    grids. Each replica is represented in terms of stacked dictionary.
+
+    Parameters
+    ----------
+    predictions: np.ndarray
+        predictions of shape (nrep, n_q2, n_x, n_pids)
+    metadata: dict
+        dictionary containing the metadata for the grids
+
+    Returns
+    -------
+    list
+        list whose elements are stacked dictionaries
+    """
 
     prediction_infoq2 = [round(q, ROUNDING) for q in metadata["q2_grids"]]
 
@@ -69,7 +91,8 @@ def construct_block(predictions: np.ndarray, metadata: dict):
     return combined_replica
 
 
-def main(pdfname: str, a_value: int, install: bool):
+def main(pdfname: str, a_value: int, install: bool) -> None:
+    """Main function that dumps the isoscalarified LHAPDF set."""
 
     predictions, metadata = compute_lhapdf(pdfname)
 
