@@ -19,7 +19,7 @@ _logger = logging.getLogger(__name__)
 def theory(update: Optional[dict] = None) -> dict:
     """Load and return internal theory runcard."""
     runcard = yaml.safe_load(
-        (utils.pkg / "theory" / "assets" / "theory_200.yaml").read_text(
+        (utils.pkg / "theory" / "assets" / "theory_nnusf.yaml").read_text(
             encoding="utf-8"
         )
     )
@@ -120,9 +120,6 @@ def update_theory(
             ths.append(
                 theory(
                     {
-                        "PTO": 1,
-                        "NfFF": 5, 
-                        "FNS": 'FFNS',
                         "MP": float(np.unique(data.table["m_nucleon"])),
                         "XIF": xif,
                         "XIR": xir,
@@ -175,9 +172,7 @@ def yknots(x: dict, q2: dict, A: int, destination: pathlib.Path):
     """Generate yadism runcards with the given kinametics"""
     utils.mkdest(destination)
     ocards = yadknots.runcards.observables(x, q2, A)
-    theory_card = theory(
-        {"PTO": 1, "NfFF": 5, "FNS": 'FFNS',}
-    )
+    theory_card = theory()
     with tempfile.TemporaryDirectory() as tmpdir:
         tmpdir = pathlib.Path(tmpdir)
         utils.write(theory_card, tmpdir / "theory.yaml")
