@@ -7,20 +7,20 @@ from typing import Optional, Union
 import numpy as np
 import pandas as pd
 
+from .utils import (
+    ObsTypeError,
+    add_w2_table,
+    append_target_info,
+    apply_cuts,
+    combine_tables,
+    parse_central_values,
+    parse_input_kinematics,
+    parse_uncertainties,
+)
+
 _logger = logging.getLogger(__name__)
 
 OBS_TYPE = ["F2", "F3", "FW", "DXDYNUU", "DXDYNUB", "QBAR"]
-
-MAP_EXP_YADISM = {
-    "NUTEV": "XSNUTEVNU",
-    "CHORUS": "XSCHORUSCC",
-    "CDHSW": "XSCHORUSCC",
-    "PROTONBC": "XSCHORUSCC",
-}
-
-
-class ObsTypeError(Exception):
-    """Raised when observable is not recognized."""
 
 
 class Loader:
@@ -66,9 +66,8 @@ class Loader:
 
         self.name = name
         if self.obs not in OBS_TYPE:
-            raise ObsTypeError(
-                f"Observable '{self.obs}' not implemented or Wrong!"
-            )
+            msg = f"Observable '{self.obs}' not implemented or Wrong!"
+            raise ObsTypeError(msg)
 
         self.commondata_path = path_to_commondata
         self.coefficients_path = path_to_coefficients
@@ -91,88 +90,41 @@ class Loader:
         table with loaded data
 
         """
-        # Extract values of kinematic cuts if any
-        w2min = kincuts.get("w2min", None)
-        q2max = kincuts.get("q2max", None)
         # Extract the information from the INFO files
         exp_name = self.name.split("_")[0]
         if "_MATCHING" in exp_name:
             exp_name = exp_name.strip("_MATCHING")
+
         info_name = exp_name if "PROTONBC" not in self.name else "PROTONBC"
         info_df = pd.read_csv(f"{self.commondata_path}/info/{info_name}.csv")
 
-        # Extract values from the kinematic tables
-        kin_file = self.commondata_path.joinpath(
-            f"kinematics/KIN_{self.name}.csv"
+        # Extrac the values from the kinematics
+        kin_df = parse_input_kinematics(
+            mainpath=self.commondata_path,
+            name=self.name,
+            info_name=info_name,
+            exp_name=exp_name,
+            obs=self.obs,
         )
-        if kin_file.exists():
-            kin_df = pd.read_csv(kin_file).iloc[1:, 1:4].reset_index(drop=True)
-        elif "_MATCHING" in self.name:
-            file_path = f"{self.commondata_path}/kinematics"
-            if "FW" in self.name or "DXDY" in self.name:
-                file = f"{file_path}/KIN_{info_name}_MATCHING_DXDY.csv"
-            else:
-                file = f"{file_path}/KIN_{info_name}_MATCHING_F2F3.csv"
-            kin_df = pd.read_csv(file).iloc[1:, 1:4].reset_index(drop=True)
-        elif self.obs in ["F2", "F3"]:
-            file = f"{self.commondata_path}/kinematics/KIN_{exp_name}_F2F3.csv"
-            kin_df = pd.read_csv(file).iloc[1:, 1:4].reset_index(drop=True)
-        elif self.obs in ["DXDYNUU", "DXDYNUB"]:
-            file = f"{self.commondata_path}/kinematics/KIN_{exp_name}_DXDY.csv"
-            kin_df = pd.read_csv(file).iloc[1:, 1:4].reset_index(drop=True)
-        else:
-            raise ObsTypeError("{self.obs} is not recognised as an Observable.")
 
         # Extract values from the central data
-        dat_name = f"{self.commondata_path}/data/DATA_{self.name}.csv"
-        data_df = pd.read_csv(dat_name, header=0, na_values=["-", " "])
-        data_df = data_df.iloc[:, 1:].reset_index(drop=True)
+        data_df = parse_central_values(self.commondata_path, self.name)
 
         # Extract values from the uncertainties
-        unc_name = f"{self.commondata_path}/uncertainties/UNC_{self.name}.csv"
-        unc_df = pd.read_csv(unc_name, na_values=["-", " "])
-        unc_df = unc_df.iloc[2:, 1:].reset_index(drop=True)
+        unc_df = parse_uncertainties(self.commondata_path, self.name)
 
-        # Add a column to `kin_df` that stores the W
-        q2 = kin_df["Q2"].astype(float, errors="raise")  # Object -> float
-        xx = kin_df["x"].astype(float, errors="raise")  # Object -> float
-        kin_df["W2"] = q2 * (1 - xx) / xx + info_df["m_nucleon"][0]
+        # Add a column to `kin_df` that stores the W2 values
+        kin_df = add_w2_table(kin_df, m_nucleus=info_df["m_nucleon"][0])
 
-        # Concatenate enverything into one single big table
-        new_df = pd.concat([kin_df, data_df, unc_df], axis=1)
-        new_df = new_df.dropna().astype(float)
+        # Combine the tables and restore the indices
+        new_df = combine_tables(kin_df, data_df, unc_df, self.name)
 
-        # drop data with 0 total uncertainty:
-        if "_MATCHING" not in self.name:
-            new_df = new_df[new_df["stat"] + new_df["syst"] != 0.0]
+        # Apply kinematic cuts on the (pseudo-)datasets
+        new_df = apply_cuts(new_df, self.name, kincuts=kincuts)
 
-        # Restore index before implementing the W cut
-        new_df.reset_index(drop=True, inplace=True)
-        # Only now we can perform the cuts on W
-        new_df = new_df[new_df["W2"] >= w2min] if w2min else new_df
-        if "_MATCHING" not in self.name:
-            new_df = new_df[new_df["Q2"] <= q2max] if q2max else new_df
+        # Append the info regarding the nucleon/nucleus to the table
+        new_df = append_target_info(new_df, info_df, exp_name, self.obs)
 
-        number_datapoints = new_df.shape[0]
-
-        # Extract the information on the cross section (FW is a special case)
-        if self.obs == "FW":
-            data_spec = "FW"
-        else:
-            data_spec = MAP_EXP_YADISM.get(exp_name, None)
-
-        # Append all the columns to the `kin_df` table
-        new_df["A"] = np.full(number_datapoints, info_df["target"][0])
-        new_df["xsec"] = np.full(number_datapoints, data_spec)
-        new_df["Obs"] = np.full(number_datapoints, self.obs)
-        new_df["projectile"] = np.full(
-            number_datapoints,
-            info_df.loc[info_df["type"] == self.obs, "projectile"],
-        )
-        new_df["m_nucleon"] = np.full(
-            number_datapoints,
-            info_df["m_nucleon"][0],
-        )
         _logger.info(
             f"'[{self.name:<25}]' Q2min={new_df['Q2'].min():.3f}"
             f", Q2max={new_df['Q2'].max():.3f}"
