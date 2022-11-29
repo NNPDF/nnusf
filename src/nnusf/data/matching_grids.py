@@ -99,13 +99,17 @@ def kinamatics_grids(is_xsec: bool, kin: dict, exp: str) -> Tuple[dict, int]:
     # Shift the Q2-points in case the observable in question is a cross-section
     # in order to avoid the double counting.
     if is_xsec:  # Shift by 10 GeV2?
-        kin[exp]["q2spec"]["min"] += 10
-        kin[exp]["q2spec"]["max"] += 10
-    q2_grid = np.linspace(
-        kin[exp]["q2spec"]["min"],
-        kin[exp]["q2spec"]["max"],
-        kin[exp]["q2spec"]["nbp"],
-    )
+        q2_grid = np.linspace(
+            kin[exp]["q2spec"]["min"] + 10,
+            kin[exp]["q2spec"]["max"] + 10,
+            kin[exp]["q2spec"]["nbp"],
+        )
+    else:
+        q2_grid = np.linspace(
+            kin[exp]["q2spec"]["min"],
+            kin[exp]["q2spec"]["max"],
+            kin[exp]["q2spec"]["nbp"],
+        )
 
     y_grid = (
         np.array([0.0])
