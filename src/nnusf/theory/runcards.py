@@ -19,7 +19,7 @@ _logger = logging.getLogger(__name__)
 def theory(update: Optional[dict] = None) -> dict:
     """Load and return internal theory runcard."""
     runcard = yaml.safe_load(
-        (utils.pkg / "theory" / "assets" / "theory_200.yaml").read_text(
+        (utils.pkg / "theory" / "assets" / "theory_nnusf.yaml").read_text(
             encoding="utf-8"
         )
     )
