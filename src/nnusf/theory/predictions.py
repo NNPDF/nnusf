@@ -17,7 +17,7 @@ import yaml
 from nnusf.export_lhapdf.dump_grids import ROUNDING
 
 from .. import utils
-from ..export_lhapdf.dump_grids import dump_pred_lhapdf
+from ..export_lhapdf.dump_grids import LHAPDF_ID, dump_pred_lhapdf
 from . import defs
 from .bodek_yang import load
 
@@ -384,5 +384,9 @@ def main(
                 stacked_pred, x_grid, q2_grid
             )
             dump_pred_lhapdf(
-                f"YADISM_{nuc_info[0]}", nuc_info[0], cpred, grid_info
+                f"YADISM_{nuc_info[0]}",
+                nuc_info[0],
+                cpred,
+                grid_info,
+                LHAPDF_ID,
             )

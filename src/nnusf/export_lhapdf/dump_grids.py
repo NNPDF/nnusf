@@ -8,11 +8,11 @@ import logging
 import pathlib
 from typing import Optional, Union
 
-import lhapdf
 import numpy as np
 from rich.progress import track
 
 from ..sffit.load_fit_data import get_predictions_q
+from ..utils import ROUNDING, compute_lhapdf
 from .utils import (
     create_info_file,
     dump_set,
@@ -23,30 +23,8 @@ from .utils import (
 
 _logger = logging.getLogger(__name__)
 
-ROUNDING = 6
 A_VALUE = 1
 LHAPDF_ID = [1001, 1002, 1003, 2001, 2002, 2003, 3001, 3002, 3003]
-
-
-def compute_high_q2(pdfname: str, xgrid: list, q2grid: list):
-    """Compute the high-Q2 Yadism predictions from a LHAPDF set."""
-    _logger.info("Computing the high-Q2 predictions...")
-    sfset = lhapdf.mkPDFs(pdfname)
-
-    n_rep, n_pid = len(sfset), len(LHAPDF_ID)
-    n_xgd, n_q2g = len(xgrid), len(q2grid)
-
-    sfs_pred = np.zeros((n_rep, n_q2g, n_xgd, n_pid))
-    for set in range(n_rep):  # Loop over the replica
-        for q2 in range(n_q2g):  # Loop over Q2
-            for x in range(n_xgd):  # Loop over x
-                for id in range(n_pid):  # Loop over SFs
-                    sfs_pred[set][q2][x][id] = sfset[set].xfxQ2(
-                        LHAPDF_ID[id],
-                        xgrid[x],
-                        q2grid[q2],
-                    )
-    return sfs_pred
 
 
 def combine_medium_high_q2(low_q2pred: np.ndarray, high_q2pred: np.ndarray):
@@ -107,7 +85,12 @@ def parse_nn_predictions(
     if pdfname is not None:
         prediction_infoq2 += q2grid
         # Construct the Yadism predictions at high-Q2
-        highq2_pred = compute_high_q2(pdfname, prediction_info.x, q2grid)
+        highq2_pred, _ = compute_lhapdf(
+            pdfname,
+            prediction_info.x,
+            q2grid,
+            LHAPDF_ID,
+        )
         predictions = combine_medium_high_q2(predictions, highq2_pred)
 
     # Concatenate the Q2 values to dump into the LHAPDF grid
@@ -136,11 +119,15 @@ def parse_nn_predictions(
 
 
 def dump_pred_lhapdf(
-    name: str, am: int, all_replicas: list, grids_info_specs: dict
+    name: str,
+    am: int,
+    all_replicas: list,
+    grids_info_specs: dict,
+    lhapids: list,
 ):
     # Generate the dictionary containing the info file
     info_file = create_info_file(
-        sf_flavors=LHAPDF_ID,
+        sf_flavors=lhapids,
         a_value=int(am),
         x_grids=grids_info_specs["x_grids"],
         q2_grids=grids_info_specs["q2_grids"],
@@ -155,7 +142,7 @@ def dump_pred_lhapdf(
             lambda pid, x, q2, pred=pred: pred[q2][pid][xgrid.index(x)],
             xgrid=grids_info_specs["x_grids"],
             Q2grid=grids_info_specs["q2_grids"],
-            pids=LHAPDF_ID,
+            pids=lhapids,
         )
         all_singular_blocks.append(block)
         all_blocks.append(all_singular_blocks)
@@ -185,7 +172,9 @@ def main(
         min_highq2=min_highq2,
     )
     _logger.info("Dumping the blocks into files.")
-    dump_pred_lhapdf(output, a_value, prediction_allreplicas, grid_info)
+    dump_pred_lhapdf(
+        output, a_value, prediction_allreplicas, grid_info, LHAPDF_ID
+    )
     if install_lhapdf:
         install_pdf(output)
         _logger.info("✓ The set has been successfully copied into LHAPDF.")
