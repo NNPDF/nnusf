@@ -80,6 +80,7 @@ def plot(
             alpha=0.15,
             zorder=0,
         )
+        ax.text(0.2, 0.1, r"$W^2 \leq 3.5~\mathrm{GeV}^2$", fontsize=15)
     if q2cut:
         xvalue = np.arange(min_xvalue, max_xvalue, 5e-2)
         yvalue = np.repeat(Q2MAX, xvalue.size)
@@ -90,9 +91,10 @@ def plot(
             yvalue,
             ytopvl,
             color="#E4B4C2",
-            alpha=0.15,
+            alpha=0.2,
             zorder=0,
         )
+        ax.text(0.02, 100, r"$Q^2 \geq 30~\mathrm{GeV}^2$", fontsize=15)
 
     ax.margins(0.0)
     plt.xlabel(r"$x$")
@@ -104,6 +106,8 @@ def plot(
         borderaxespad=0.0,
         ncol=3,
         fontsize=10,
+        fancybox=False,
+        edgecolor="inherit",
     )
     plt.tight_layout()
 
