@@ -152,7 +152,7 @@ def main(
         kingroups, wcut=wcut, q2cut=q2cut, xlog=xlog, ylog=ylog, alpha=alpha
     )
     figname = destination / "kinematics.pdf"
-    fig.savefig(figname)
+    fig.savefig(figname, dpi=350)
 
     _logger.info(
         "Plotted [b magenta]kinematics[/] of requested datasets,"
