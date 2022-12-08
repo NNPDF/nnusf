@@ -4,6 +4,7 @@ import logging
 import pathlib
 from typing import Optional
 
+import matplotlib
 import matplotlib.figure
 import matplotlib.pyplot as plt
 import numpy as np
@@ -14,10 +15,9 @@ from .. import utils
 from ..data import loader
 from . import utils as putils
 
+matplotlib.use("Agg")
+
 _logger = logging.getLogger(__file__)
-PARRENT_PATH = pathlib.Path(__file__).parents[1]
-MPLSTYLE = PARRENT_PATH.joinpath("plotstyle.mplstyle")
-plt.style.use(MPLSTYLE)
 
 
 def compute(
@@ -98,12 +98,29 @@ def heatmap(
     return fig
 
 
+def save_heatmap(
+    covmat: np.ndarray,
+    symlog: bool,
+    individual_data: bool,
+    figname: pathlib.Path,
+):
+    fig = heatmap(covmat, symlog=symlog)
+    fig.savefig(figname, dpi=350)
+
+    if not individual_data:
+        _logger.info(
+            "Plotted covariance/correlation matrix of requested datasets,"
+            f" in '{figname.absolute().relative_to(pathlib.Path.cwd())}'"
+        )
+
+
 def main(
     data: list[pathlib.Path],
     destination: pathlib.Path,
     inverse: bool = False,
     norm: bool = True,
     symlog: bool = False,
+    individual_data: bool = False,
     cuts: Optional[dict[str, dict[str, float]]] = None,
 ):
     """Run covmat plot generation."""
@@ -119,26 +136,25 @@ def main(
         covmat = compute(name, datapath, inverse=inverse, norm=norm, cuts=cuts)
         covmats[name] = covmat
 
-        fig = heatmap(covmat, symlog=symlog)
-        figname = destination / f"{name}{normsuf}{invsuf}.pdf"
-        fig.savefig(figname)
+        if individual_data:
+            figname = destination / f"{name}{normsuf}{invsuf}.pdf"
+            save_heatmap(covmat, symlog, individual_data, figname)
 
-        normtag = "normalized " if norm else ""
-        invtag = "inverse " if inverse else ""
-        _logger.info(
-            f"Plotted [b magenta]{normtag}{invtag}[/]covariance matrix"
-            f" {covmat.shape} of '{name}',"
-            f" in '{figname.absolute().relative_to(pathlib.Path.cwd())}'",
-            extra={"markup": True},
-        )
+            normtag = "normalized " if norm else ""
+            invtag = "inverse " if inverse else ""
+            _logger.info(
+                f"Plotted [b magenta]{normtag}{invtag}[/]covariance matrix"
+                f" {covmat.shape} of '{name}',"
+                f" in '{figname.absolute().relative_to(pathlib.Path.cwd())}'",
+                extra={"markup": True},
+            )
 
+    # Plot the total covariance matrix
     totcovmat = scipy.linalg.block_diag(*covmats.values())
+    totcovmat_figname = destination / f"total{normsuf}{invsuf}.pdf"
+    save_heatmap(totcovmat, symlog, individual_data, totcovmat_figname)
 
-    fig = heatmap(totcovmat, symlog=symlog)
-    figname = destination / f"total{normsuf}{invsuf}.pdf"
-    fig.savefig(figname)
-
-    _logger.info(
-        "Plotted covariance matrix of requested datasets,"
-        f" in '{figname.absolute().relative_to(pathlib.Path.cwd())}'"
-    )
+    # Plot the total correlation coefficient matrix
+    totcorrmat = np.corrcoef(totcovmat)
+    totcorrmat_figname = destination / f"total_corrmat_{normsuf}{invsuf}.pdf"
+    save_heatmap(totcorrmat, symlog, individual_data, totcorrmat_figname)

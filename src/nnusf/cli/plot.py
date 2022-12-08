@@ -114,9 +114,15 @@ def sub_kinematic(
     help="""Stringified dictionary of cuts, e.g. '{"Q2": {"min": 1.65}, "W2": {"min": 3.5}}'.""",
 )
 @click.option(
+    "-z",
+    "--individual_data",
+    is_flag=True,
+    help="Plot the individual datasets.",
+)
+@click.option(
     "-l", "--symlog", is_flag=True, help="Plot in symmetric logarithmic scale."
 )
-def sub_covmat(data, destination, inverse, norm, cuts, symlog):
+def sub_covmat(data, destination, inverse, norm, cuts, individual_data, symlog):
     """Generate covariance matrix heatmap.
 
     The operation is repeated for each DATA path provided (multiple values allowed),
@@ -134,7 +140,13 @@ def sub_covmat(data, destination, inverse, norm, cuts, symlog):
         cuts = eval(cuts)
 
     covmat.main(
-        data, destination, inverse=inverse, norm=norm, cuts=cuts, symlog=symlog
+        data,
+        destination,
+        inverse=inverse,
+        norm=norm,
+        cuts=cuts,
+        individual_data=individual_data,
+        symlog=symlog,
     )
 
 
