@@ -19,21 +19,21 @@ logxmin=-4.5
 xmax=0.6
 
 ############################################################
-nset =2 # Number of PDF sets to compare
+nset =3 # Number of PDF sets to compare
 
 # PDFs in Lead
-pdfsetA=["nNNPDF30_nlo_as_0118_A208_Z82","EPPS21nlo_CT18Anlo_Pb208"]
+pdfsetA=["nNNPDF30_nlo_as_0118_A208_Z82","EPPS21nlo_CT18Anlo_Pb208","nNNPDF30_nlo_as_0118_p_Pb208"]
 #pdfsetA=["nNNPDF30_nlo_as_0118_A208_Z82","EPPS16nlo_CT14nlo_Pb208"]
 
 # Baseline PDFs in proton
 # Only in NNPDF there is correlation  between protons and heavy nuclei
-pdfsetP=["nNNPDF30_nlo_as_0118_p","CT18ANLO"]
+pdfsetP=["nNNPDF30_nlo_as_0118_p","CT18ANLO","nNNPDF30_nlo_as_0118_p"]
 #pdfsetP=["nNNPDF30_nlo_as_0118_p","CT14nlo"]
 
 # The PDF set labels
-pdfsetlab=[r"${\rm nNNPDF3.0}$", r"${\rm EPPS21}$"]
+pdfsetlab=[r"${\rm nNNPDF3.0}$", r"${\rm EPPS21}$",r"${\rm nNNPDF3.0}~(R_F^{\rm (Pb)})$"]
 #pdfsetlab=[r"${\rm nNNPDF3.0}$", r"${\rm EPPS16}$"]
-error_option=["mc_90cl","ct"]
+error_option=["mc_90cl","ct","mc_90cl"]
 
 q = 10 # GeV
 filelabel="-neutrinoSFs_q10gev"
@@ -85,14 +85,17 @@ for iset in range(nset):
     if(iset==1):
         fit2 = np.zeros((nrep[iset],nfl,2*nx))
         fit2_cv = np.zeros((nfl,2*nx))
+    if(iset==2):
+        fit3 = np.zeros((nrep[iset],nfl,2*nx))
+        fit3_cv = np.zeros((nfl,2*nx))
     
     # Run over replicas
     for i in range(1,nrep[iset]+1):
         # The correct replica/eigenvector
         pA=lhapdf.mkPDF(pdfsetA[iset],i)
-        if(iset==0):
+        if(iset==0 or iset==2):
             pP=lhapdf.mkPDF(pdfsetP[iset],i) # The corresponding proton replica for nNNPDF
-        if(iset>0):
+        if(iset == 1):
             pP=lhapdf.mkPDF(pdfsetP[iset],0) # Central value for EPPS21 
                 
         # Run over x arrat
@@ -111,6 +114,9 @@ for iset in range(nset):
                     if(iset==1):
                         fit2[i-1][ifl][k] = ( pA.xfxQ(-2,x,q) +  pA.xfxQ(+1,x,q) + pA.xfxQ(+3,x,q) + pA.xfxQ(-4,x,q) )/\
                             ( pP.xfxQ(-2,x,q) + pP.xfxQ(+1,x,q) + pP.xfxQ(+3,x,q) + pP.xfxQ(-4,x,q) )
+                    if(iset==2):
+                        fit3[i-1][ifl][k] = ( pA.xfxQ(-2,x,q) +  pA.xfxQ(+1,x,q) + pA.xfxQ(+3,x,q) + pA.xfxQ(-4,x,q) )/\
+                            ( pP.xfxQ(-2,x,q) + pP.xfxQ(+1,x,q) + pP.xfxQ(+3,x,q) + pP.xfxQ(-4,x,q) )
                 #----------------------------------------------------------------
                 if(ifl==1): # F2^nubar
                     if(iset==0):
@@ -118,6 +124,9 @@ for iset in range(nset):
                             ( pP.xfxQ(+2,x,q) + pP.xfxQ(-1,x,q) + pP.xfxQ(-3,x,q) + pP.xfxQ(+4,x,q) )
                     if(iset==1):
                         fit2[i-1][ifl][k] = ( pA.xfxQ(+2,x,q) +  pA.xfxQ(-1,x,q) + pA.xfxQ(-3,x,q) + pA.xfxQ(+4,x,q) )/\
+                            ( pP.xfxQ(+2,x,q) + pP.xfxQ(-1,x,q) + pP.xfxQ(-3,x,q) + pP.xfxQ(+4,x,q) )
+                    if(iset==2):
+                        fit3[i-1][ifl][k] = ( pA.xfxQ(+2,x,q) +  pA.xfxQ(-1,x,q) + pA.xfxQ(-3,x,q) + pA.xfxQ(+4,x,q) )/\
                             ( pP.xfxQ(+2,x,q) + pP.xfxQ(-1,x,q) + pP.xfxQ(-3,x,q) + pP.xfxQ(+4,x,q) )
                 #----------------------------------------------------------------
                 if(ifl==2): # F2^nu+
@@ -139,6 +148,15 @@ for iset in range(nset):
                                                 pP.xfxQ(+2,x,q)+pP.xfxQ(-2,x,q)+\
                                                 pP.xfxQ(+3,x,q)+pP.xfxQ(-3,x,q)+\
                                                 pP.xfxQ(+4,x,q)+pP.xfxQ(-4,x,q) )
+                    if(iset==2):
+                        fit3[i-1][ifl][k] = ( pA.xfxQ(+1,x,q)+pA.xfxQ(-1,x,q)+\
+                                              pA.xfxQ(+2,x,q)+pA.xfxQ(-2,x,q)+\
+                                              pA.xfxQ(+3,x,q)+pA.xfxQ(-3,x,q)+\
+                                              pA.xfxQ(+4,x,q)+pA.xfxQ(-4,x,q) ) / \
+                                              ( pP.xfxQ(+1,x,q)+pP.xfxQ(-1,x,q)+\
+                                                pP.xfxQ(+2,x,q)+pP.xfxQ(-2,x,q)+\
+                                                pP.xfxQ(+3,x,q)+pP.xfxQ(-3,x,q)+\
+                                                pP.xfxQ(+4,x,q)+pP.xfxQ(-4,x,q) )
 
                 #----------------------------------------------------------------
                 if(ifl==3): # F3^nu
@@ -148,6 +166,9 @@ for iset in range(nset):
                     if(iset==1):
                         fit2[i-1][ifl][k] = ( -pA.xfxQ(-2,x,q) +  pA.xfxQ(+1,x,q) + pA.xfxQ(+3,x,q) - pA.xfxQ(-4,x,q) )/\
                             ( -pP.xfxQ(-2,x,q) + pP.xfxQ(+1,x,q) + pP.xfxQ(+3,x,q) - pP.xfxQ(-4,x,q) )
+                    if(iset==2):
+                        fit3[i-1][ifl][k] = ( -pA.xfxQ(-2,x,q) +  pA.xfxQ(+1,x,q) + pA.xfxQ(+3,x,q) - pA.xfxQ(-4,x,q) )/\
+                            ( -pP.xfxQ(-2,x,q) + pP.xfxQ(+1,x,q) + pP.xfxQ(+3,x,q) - pP.xfxQ(-4,x,q) )
                 #----------------------------------------------------------------
                 if(ifl==4): # F3^nubar
                     if(iset==0):
@@ -155,6 +176,9 @@ for iset in range(nset):
                             ( pP.xfxQ(+2,x,q) - pP.xfxQ(-1,x,q) - pP.xfxQ(-3,x,q) + pP.xfxQ(+4,x,q) )
                     if(iset==1):
                         fit2[i-1][ifl][k] = ( pA.xfxQ(+2,x,q) -  pA.xfxQ(-1,x,q) - pA.xfxQ(-3,x,q) + pA.xfxQ(+4,x,q) )/\
+                            ( pP.xfxQ(+2,x,q) - pP.xfxQ(-1,x,q) - pP.xfxQ(-3,x,q) + pP.xfxQ(+4,x,q) )
+                    if(iset==2):
+                        fit3[i-1][ifl][k] = ( pA.xfxQ(+2,x,q) -  pA.xfxQ(-1,x,q) - pA.xfxQ(-3,x,q) + pA.xfxQ(+4,x,q) )/\
                             ( pP.xfxQ(+2,x,q) - pP.xfxQ(-1,x,q) - pP.xfxQ(-3,x,q) + pP.xfxQ(+4,x,q) )
                         
                 #----------------------------------------------------------------
@@ -169,6 +193,13 @@ for iset in range(nset):
                                              
                     if(iset==1):
                         fit2[i-1][ifl][k] = ( (pA.xfxQ(+1,x,q)-pA.xfxQ(-1,x,q))+\
+                                              (pA.xfxQ(+2,x,q)-pA.xfxQ(-2,x,q))+\
+                                              (pA.xfxQ(+3,x,q)-pA.xfxQ(-3,x,q)) ) / \
+                                              ( (pP.xfxQ(+1,x,q)-pP.xfxQ(-1,x,q))+\
+                                                (pP.xfxQ(+2,x,q)-pP.xfxQ(-2,x,q))+\
+                                                (pP.xfxQ(+3,x,q)-pP.xfxQ(-3,x,q)) )
+                    if(iset==2):
+                        fit3[i-1][ifl][k] = ( (pA.xfxQ(+1,x,q)-pA.xfxQ(-1,x,q))+\
                                               (pA.xfxQ(+2,x,q)-pA.xfxQ(-2,x,q))+\
                                               (pA.xfxQ(+3,x,q)-pA.xfxQ(-3,x,q)) ) / \
                                               ( (pP.xfxQ(+1,x,q)-pP.xfxQ(-1,x,q))+\
@@ -272,6 +303,13 @@ for iset in range(nset):
             p1_mid = ( p1_high + p1_low )/2.
             p1_mid = np.median(fit1,axis=0)
             p1_error = ( p1_high - p1_low )/2.
+
+        if(iset==2):
+            p3_high = np.nanpercentile(fit3,95,axis=0)
+            p3_low = np.nanpercentile(fit3,5,axis=0)
+            p3_mid = ( p3_high + p3_low )/2.
+            p3_mid = np.median(fit3,axis=0)
+            p3_error = ( p3_high - p3_low )/2.
             
     # CT: asymmetric Hessian with then normalisation to one-sigma
     elif(error_option[iset]=="ct"):
@@ -315,11 +353,13 @@ rescolors = py.rcParams['axes.prop_cycle'].by_key()['color']
 # First the absolute plots
 
 # pdflabels
-labelpdf=[r"$R^{\rm Pb}_{F_2^\nu}(x,Q)$",r"$R^{\rm Pb}_{F_2^{\bar{\nu}}}(x,Q)$",\
-          r"$R^{\rm Pb}_{F_2^{\nu+\bar{\nu}}}(x,Q)$",\
-          r"$R^{\rm Pb}_{F_3^\nu}(x,Q)$",r"$R^{\rm Pb}_{F_3^{\bar{\nu}}}(x,Q)$",\
-          r"$R^{\rm Pb}_{F_3^{\nu+\bar{\nu}}}(x,Q)$"]
-yranges=[[0.5,1.50],[0.5,1.50],[0.5,1.50],[0.2,2.2],[0.2,2.2],[0.2,2.2]]
+labelpdf=[r"$\widetilde{R}^{\rm (Pb)}_{F_2^\nu}(x,Q)$",\
+          r"$\widetilde{R}^{\rm (Pb)}_{F_2^{\bar{\nu}}}(x,Q)$",\
+          r"$\widetilde{R}^{\rm (Pb)}_{F_2^{\nu+\bar{\nu}}}(x,Q)$",\
+          r"$\widetilde{R}^{\rm (Pb)}_{F_3^\nu}(x,Q)$",\
+          r"$\widetilde{R}^{\rm (Pb)}_{F_3^{\bar{\nu}}}(x,Q)$",\
+          r"$\widetilde{R}^{\rm (Pb)}_{F_3^{\nu+\bar{\nu}}}(x,Q)$"]
+yranges=[[0.5,1.60],[0.5,1.50],[0.5,1.50],[0.0,2.5],[0.0,2.5],[0.6,1.8]]
 
 for ifl in range(nfl):
 
@@ -331,6 +371,9 @@ for ifl in range(nfl):
     p3=ax.plot(X,p2_mid[ifl],ls="solid")
     ax.fill_between(X,p2_high[ifl],p2_low[ifl],color=rescolors[1],alpha=0.2)
     p4=ax.fill(np.NaN,np.NaN,color=rescolors[1],alpha=0.2)
+    p5=ax.plot(X,p3_mid[ifl],ls="dotted")
+    ax.fill_between(X,p3_high[ifl],p3_low[ifl],color=rescolors[2],alpha=0.2)
+    p6=ax.fill(np.NaN,np.NaN,color=rescolors[2],alpha=0.2)
        
     ax.set_xscale('log')
     ax.set_xlim(10**(logxmin),xmax)
@@ -346,12 +389,12 @@ for ifl in range(nfl):
     ax.axhline(1, color='black', linewidth=0.8,ls="dashed")
 
     if(ifl==0):
-        ax.legend([(p1[0],p2[0]),(p3[0],p4[0])],[pdfsetlab[0],pdfsetlab[1]],\
-                  frameon=True,loc="best",prop={'size':15})
+        ax.legend([(p1[0],p2[0]),(p3[0],p4[0]),(p5[0],p6[0])],[pdfsetlab[0],pdfsetlab[1],pdfsetlab[2]],\
+                  frameon=True,loc="best",prop={'size':13})
     
     if(ifl==1):
         string=r'$Q='+str(q)+'~{\\rm GeV}$'
-        ax.text(0.40,0.85,string,fontsize=20,transform=ax.transAxes)
+        ax.text(0.35,0.87,string,fontsize=20,transform=ax.transAxes)
         
 py.tight_layout(pad=1, w_pad=1.3, h_pad=1.0)
 py.savefig('nuclearcorr'+filelabel+'.pdf')

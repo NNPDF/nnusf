@@ -119,64 +119,6 @@ print(genie_bgr_sf_f3_nubar)
 #exit()
 #print(genie_sf_f3)
 
-#---------------------------
-#---------------------------
-print("\n Reading the YADISM structure functions \n")
-
-# Read YADISM inputs
-# x=0.0126
-if( x > 0.0125 and x < 0.0127):
-    yadism_lo_sf_f2=np.loadtxt("Yadism_data/LO_NNPDF40_yadism/F2_rep0_x0p0126.txt")
-    yadism_nnlo_sf_f2=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism/F2_rep0_x0p0126.txt")
-    yadism_lo_sf_f3=np.loadtxt("Yadism_data/LO_NNPDF40_yadism/F3_rep0_x0p0126.txt")
-    yadism_nnlo_sf_f3=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism/F3_rep0_x0p0126.txt")
-
-    yadism_lo_sf_f2_nubar=np.loadtxt("Yadism_data/LO_NNPDF40_yadism_nubar/F2_rep0_x0p0126.txt")
-    yadism_nnlo_sf_f2_nubar=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism_nubar/F2_rep0_x0p0126.txt")
-    yadism_lo_sf_f3_nubar=np.loadtxt("Yadism_data/LO_NNPDF40_yadism_nubar/F3_rep0_x0p0126.txt")
-    yadism_nnlo_sf_f3_nubar=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism_nubar/F3_rep0_x0p0126.txt")
-
-# x =0.25
-if( x > 0.24 and x < 0.26):
-    # Neutrino
-    yadism_lo_sf_f2=np.loadtxt("Yadism_data/LO_NNPDF40_yadism/F2_rep0_x0p25.txt")
-    yadism_nnlo_sf_f2=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism/F2_rep0_x0p25.txt")
-    yadism_lo_sf_f3=np.loadtxt("Yadism_data/LO_NNPDF40_yadism/F3_rep0_x0p25.txt")
-    yadism_nnlo_sf_f3=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism/F3_rep0_x0p25.txt")
-
-    # Antineutrino
-    yadism_lo_sf_f2_nubar=np.loadtxt("Yadism_data/LO_NNPDF40_yadism_nubar/F2_rep0_x0p25_nubar.txt")
-    yadism_nnlo_sf_f2_nubar=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism_nubar/F2_rep0_x0p25_nubar.txt")
-    yadism_lo_sf_f3_nubar=np.loadtxt("Yadism_data/LO_NNPDF40_yadism_nubar/F3_rep0_x0p25_nubar.txt")
-    yadism_nnlo_sf_f3_nubar=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism_nubar/F3_rep0_x0p25_nubar.txt")
-
-nq2_yadism=20
-yadism_sf_q=np.zeros(nq2_yadism)
-yadism_f2=np.zeros(nq2_yadism)
-yadism_f3=np.zeros(nq2_yadism)
-yadism_nnlo_f2=np.zeros(nq2_yadism)
-yadism_nnlo_f3=np.zeros(nq2_yadism)
-yadism_f2_nubar=np.zeros(nq2_yadism)
-yadism_f3_nubar=np.zeros(nq2_yadism)
-yadism_nnlo_f2_nubar=np.zeros(nq2_yadism)
-yadism_nnlo_f3_nubar=np.zeros(nq2_yadism)
-
-for iq2 in range(nq2_yadism):
-    yadism_sf_q[iq2] = math.sqrt( yadism_lo_sf_f2[iq2][2] )
-    yadism_f2[iq2] = yadism_lo_sf_f2[iq2][3]
-    yadism_f3[iq2] = yadism_lo_sf_f3[iq2][3]
-    yadism_nnlo_f2[iq2] = yadism_nnlo_sf_f2[iq2][3]
-    yadism_nnlo_f3[iq2] = yadism_nnlo_sf_f3[iq2][3]
-    yadism_f2_nubar[iq2] = yadism_lo_sf_f2_nubar[iq2][3]
-    yadism_f3_nubar[iq2] = yadism_lo_sf_f3_nubar[iq2][3]
-    yadism_nnlo_f2_nubar[iq2] = yadism_nnlo_sf_f2_nubar[iq2][3]
-    yadism_nnlo_f3_nubar[iq2] = yadism_nnlo_sf_f3_nubar[iq2][3]
-   
-#print(yadism_sf_q)    
-#print(yadism_sf_f2)
-print(yadism_nnlo_f3)
-print(yadism_f3)
-#exit()
 
 #-------------------------------------------------------------
 #-------------------------------------------------------------
@@ -611,27 +553,31 @@ for isf in range(2):
     ax.set_ylim(yranges[isf][0],yranges[isf][1])
     ax.set_xlabel(r'$Q~({\rm GeV})$',fontsize=15)
     if( x > 0.0125 and x < 0.0127):
-        if(isf==1):
-            ax.text(0.75,0.90,r'$x=0.0126$',fontsize=14,transform=ax.transAxes)
+        if(isf==0):
+            ax.text(0.03,0.90,r'$x=0.0126$',fontsize=14,transform=ax.transAxes)
     if( x > 0.24 and x < 0.26):
         if(isf==0):
             ax.text(0.65,0.85,r'$x=0.25$',fontsize=17,transform=ax.transAxes)
 
     plt.axvline(6,lw=1.5,ls="dashed",color=rescolors[3])
-    if(isf==0):ax.text(0.46,0.90,r'$Q_{\rm I}$',fontsize=15,transform=ax.transAxes,color=rescolors[3])
+    ax.text(0.46,0.90,r'$Q_{\rm dat}$',fontsize=15,transform=ax.transAxes,color=rescolors[3])
     plt.axvline(40,lw=2,ls="dotted",color=rescolors[2])
-    if(isf==0):ax.text(0.74,0.90,r'$Q_{\rm II}$',fontsize=15,transform=ax.transAxes,color=rescolors[2])
+    ax.text(0.74,0.90,r'$Q_{\rm thres}$',fontsize=15,transform=ax.transAxes,color=rescolors[2])
 
     if(isf==0):
-        ax.text(0.55,0.20,r'$\rm pQCD$',fontsize=14,transform=ax.transAxes,color="black")
-        ax.text(0.21,0.20,r'$\rm SF\,data$',fontsize=14,transform=ax.transAxes,color="black")
+        ax.text(0.49,0.20,r'$\rm  ML~fitted$',fontsize=12,transform=ax.transAxes,color=rescolors[3])
+        ax.text(0.50,0.12,r'$\rm to~pQCD$',fontsize=12,transform=ax.transAxes,color=rescolors[3])
+        ax.text(0.21,0.20,r'$\rm ML~fitted$',fontsize=12,transform=ax.transAxes,color="black")
+        ax.text(0.21,0.12,r'$\rm to~SF\,data$',fontsize=12,transform=ax.transAxes,color="black")
+        ax.text(0.79,0.16,r'$\rm pQCD$',fontsize=12,transform=ax.transAxes,color=rescolors[2])
         ax.arrow(x=5, y=1, dx=-4.2, dy=0, width=.05)
-        ax.arrow(x=7, y=1, dx=75, dy=0, width=.05,head_length=30)
+        ax.arrow(x=45, y=1, dx=105, dy=0, width=.05,head_length=50)
+        ax.arrow(x=7.5, y=1, dx=20, dy=0, width=.05,head_length=7)
 
-    if(isf==0):
+    if(isf==0 or isf==1):
         ax.text(0.12,0.56,r'$\rm Region\,I$',fontsize=15,transform=ax.transAxes,color="black")
-        ax.text(0.47,0.56,r'$\rm Region\,II$',fontsize=15,transform=ax.transAxes,color="black")
-        ax.text(0.75,0.56,r'$\rm Region\,II$',fontsize=15,transform=ax.transAxes,color="black")
+        ax.text(0.47,0.56,r'$\rm Region\,II$',fontsize=15,transform=ax.transAxes,color=rescolors[3])
+        ax.text(0.75,0.56,r'$\rm Region\,III$',fontsize=15,transform=ax.transAxes,color=rescolors[2])
 
         
     
