@@ -3,7 +3,7 @@
 import click
 import numpy as np
 
-from ..scripts import integrate
+from ..scripts import integrate, isoscalar
 from . import base
 
 
@@ -57,3 +57,26 @@ def sub_integrate(pdfset, pid, x_grids, q2_grids):
         q2grid = None
 
     integrate.main(pdfset, pid, xgrid, q2grid)
+
+
+@subcommand.command("impose_isoscalar")
+@click.argument("pdfset", type=str)
+@click.option(
+    "--install/--no-install",
+    default=True,
+    help="Install the set into the LHAPDF directory",
+)
+@click.option(
+    "-a",
+    "--a_value",
+    type=int,
+    default=1,
+    help="""Atomic mass number value. Default: 1""",
+)
+@click.option(
+    "--install/--no-install",
+    default=True,
+    help="Install the set into the LHAPDF directory",
+)
+def sub_impose_isoscalar(pdfset, a_value, install):
+    isoscalar.main(pdfset, a_value, install)

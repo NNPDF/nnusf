@@ -3,8 +3,10 @@
 import logging
 import pathlib
 import tarfile
-from typing import Optional
+from typing import Optional, Union
 
+import lhapdf
+import numpy as np
 import pygit2
 import yaml
 
@@ -12,6 +14,8 @@ import yaml
 pkg = pathlib.Path(__file__).parent.absolute()
 
 _logger = logging.getLogger(__name__)
+
+ROUNDING = 6
 
 
 class GitVerionsNonMatchError(Exception):
@@ -171,3 +175,50 @@ def split_data_path(ds: pathlib.Path) -> tuple[str, pathlib.Path]:
     name = ds.stem.strip("DATA_")
 
     return name, ds.parents[1]
+
+
+def compute_lhapdf(
+    pdfname: str,
+    xgrid: Optional[Union[list, np.ndarray]] = None,
+    q2grid: Optional[Union[list, np.ndarray]] = None,
+    pid: Optional[list] = None,
+):
+    """Compute the high-Q2 Yadism predictions from a LHAPDF set.
+
+    Returns:
+    --------
+        tuple(np.ndarray, dict)
+            a tuple containing the predictions that has a shape
+            (nrep, n_q2, n_x, n_pid) and a dictionary containing
+            some metadata.
+    """
+
+    _logger.info("Computing the LHAPDF predictions.")
+    input_pdfset = lhapdf.mkPDFs(pdfname)
+    pdfinfo, n_rep = input_pdfset[0], len(input_pdfset)
+
+    if xgrid is None:
+        xgrid = np.geomspace(pdfinfo.xMin, pdfinfo.xMax, 100)
+
+    if q2grid is None:
+        q2grid = np.geomspace(pdfinfo.q2Min, pdfinfo.q2Max, 200)
+
+    pid = pdfinfo.flavors() if pid is None else pid
+
+    xmesh, q2mesh = np.meshgrid(xgrid, q2grid)
+    store_replicas = []
+    for replica in input_pdfset:
+        pred = replica.xfxQ2(pid, xmesh.flatten(), q2mesh.flatten())
+        pred = np.asarray(pred).reshape((*xmesh.shape, len(pid)))
+        store_replicas.append(pred)
+
+    if not isinstance(xgrid, list):
+        xgrid = xgrid.tolist()
+
+    if not isinstance(q2grid, list):
+        q2grid = q2grid.tolist()
+
+    q2grid = [round(q, ROUNDING) for q in q2grid]
+
+    metadata = dict(x_grids=xgrid, q2_grids=q2grid, pid=pid, nrep=n_rep)
+    return store_replicas, metadata
