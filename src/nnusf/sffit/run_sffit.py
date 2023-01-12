@@ -8,7 +8,7 @@ import yaml
 
 from ..utils import add_git_info
 from . import load_data
-from .compute_expchi2 import compute_exp_chi2
+from .expchi2 import compute_exp_chi2
 from .model_gen import generate_models
 from .train_model import perform_fit
 from .utils import add_dict_json, set_global_seeds, small_x_exp
@@ -44,6 +44,7 @@ def main(
     # Load fit run card
     runcard_content = yaml.safe_load(runcard.read_text())
     expdicts = runcard_content["experiments"]
+    nonfitted_expdicts = runcard_content.get("check_chi2_experiments", None)
 
     # Set global seeds
     set_global_seeds(global_seed=runcard_content["global_seeds"] + replica)
@@ -95,4 +96,21 @@ def main(
         **runcard_content["fit_parameters"],
     )
     extra_info = {"exp_chi2s": chi2s, "small_x": small_x}
+
+    # Compute the Chi2 of the datasets that were not included
+    # in the fit if there are, otherwise skip this part
+    if nonfitted_expdicts is not None:
+        _, nonfitted_data_info = load_data.load_experimental_data(
+            experiment_list=nonfitted_expdicts,
+            input_scaling=runcard_content.get("rescale_inputs", None),
+            kincuts=runcard_content.get("kinematic_cuts", {}),
+        )
+        nonfitted_chi2s = compute_exp_chi2(
+            nonfitted_data_info,
+            fit_dict["sf_model"],
+            **runcard_content["fit_parameters"],
+        )
+        extra_info["nonfitted_chi2"] = nonfitted_chi2s
+
+    # Dump all the information on the chi2s into json
     add_dict_json(replica_dir, extra_info)
