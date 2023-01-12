@@ -6,8 +6,7 @@ import logging
 import tensorflow as tf
 from rich.live import Live
 
-from .callbacks import (
-    AdaptLearningRate,
+from .callbacks import (  # AdaptLearningRate,
     EarlyStopping,
     GetTrainingInfo,
     LiveUpdater,
@@ -53,6 +52,7 @@ def perform_fit(
         datas_name[data.name] = 1
         tr_kinematics.append(data.kinematics[data.tr_filter])
         vl_kinematics.append(data.kinematics[~data.tr_filter])
+
     datas_name["loss"] = 1
     dummy_vl = [1 for _ in range(len(tr_kinematics))]
 
@@ -67,7 +67,7 @@ def perform_fit(
     train_info_class = TrainingStatusInfo(
         tr_dpts=fit_dict["tr_datpts"], vl_dpts=fit_dict["vl_datpts"]
     )
-    adapt_lr = AdaptLearningRate(train_info_class)
+    # adapt_lr = AdaptLearningRate(train_info_class)
     stopping = EarlyStopping(
         vl_model,
         stopping_patience,
@@ -93,7 +93,7 @@ def perform_fit(
             callbacks=[
                 get_train_info,
                 log_train_info,
-                adapt_lr,
+                # adapt_lr,
                 stopping,
                 live_updater,
             ],
