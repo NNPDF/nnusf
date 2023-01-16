@@ -10,6 +10,7 @@ import yaml
 from .genfiles import (
     additional_plots,
     chi2_tables,
+    nonfitted_chi2_tables,
     data_vs_predictions,
     summary_table,
 )
@@ -128,6 +129,7 @@ def main(fitfolder: pathlib.Path, **metadata) -> None:
     additional_plots(fitfolder=fitfolder)
     summtable = summary_table(fitfolder=fitfolder)
     chi2table = chi2_tables(fitfolder=fitfolder)
+    nonfitted_chi2 = nonfitted_chi2_tables(fitfolder=fitfolder)
     generate_metadata(fitfolder, **metadata)
 
     # Construct the paths to the corresponding folders
@@ -138,16 +140,16 @@ def main(fitfolder: pathlib.Path, **metadata) -> None:
     # Generate the different html files & store them
     chi2s_html = map(
         dump_table_html,
-        [summtable, chi2table],
-        ["summary", "chi2s"],
+        [summtable, chi2table, nonfitted_chi2],
+        ["summary", "chi2s", "postchi2"],
     )
-    summary_html, chi2s_html = list(chi2s_html)
-    comparison_data_html = data_comparison_html(figures)
+    summary_html, chi2s_html, nchi2 = list(chi2s_html)
+    comp_data_html = data_comparison_html(figures)
     trvl_split_html = split_trvl_html(others)
 
     # Combine all the resulted HTMLs into one
     combined = (
-        summary_html + chi2s_html + comparison_data_html + trvl_split_html
+        summary_html + chi2s_html + nchi2 + comp_data_html + trvl_split_html
     )
     index = CURRENT_PATH.parent.joinpath("assets/index.html")
     index_store = output_folder.joinpath("output/index.html")

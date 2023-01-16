@@ -27,6 +27,8 @@ COLUMN_LABELS = {
     "exp_chi2": r"\( < \chi^{2, \star}_{\mathrm{exp}} > \)",
 }
 
+EXP_CHI2_LABEL = {"exp_chi2": r"\( < \chi^{2, \star}_{\mathrm{exp}} > \)"}
+
 
 def rename_dic_keys(curr_dic, new_keys):
     """Rename the keys of a dictionary."""
@@ -120,6 +122,39 @@ def chi2_tables(fitfolder: pathlib.Path) -> pd.DataFrame:
     chi2table = pd.DataFrame.from_dict(chi2_dic, orient="index")
     chi2table.rename(columns=COLUMN_LABELS, inplace=True)
     dump_to_csv(fitfolder, chi2table, "chi2datasets")
+    return chi2table
+
+
+def nonfitted_chi2_tables(fitfolder: pathlib.Path) -> pd.DataFrame:
+    """Generate the table containing the chi2s info.
+
+    Parameters:
+    -----------
+        fitfolder: pathlib.Path
+            Path to the fit folder
+    """
+    # TODO: Add STDV to the averaged results
+    runcard = fitfolder.joinpath("runcard.yml")
+    runcard_content = yaml.load(runcard.read_text(), Loader=yaml.Loader)
+    datinfo = runcard_content["check_chi2_experiments"]
+    fitinfos = fitfolder.glob("**/replica_*/fitinfo.json")
+
+    # Initialize dictionary to store the chi2 values
+    chi2_dic = {d["dataset"]: {"exp_chi2": 0.0} for d in datinfo}
+
+    # Loop over the replica folder & extract chi2 info
+    for count, repinfo in enumerate(fitinfos, start=1):
+        jsonfile = json_loader(repinfo)
+        for dat in chi2_dic:
+            chi2_dic[dat]["exp_chi2"] += jsonfile["nonfitted_chi2"][dat]
+
+    # Average the chi2 over the nb of replicas
+    for dataset_name in chi2_dic:
+        chi2_dic[dataset_name]["exp_chi2"] /= count
+
+    chi2table = pd.DataFrame.from_dict(chi2_dic, orient="index")
+    chi2table.rename(columns=EXP_CHI2_LABEL, inplace=True)
+    dump_to_csv(fitfolder, chi2table, "nonfitted_chi2datasets")
     return chi2table
 
 
