@@ -119,10 +119,7 @@ def sub_kinematic(
     is_flag=True,
     help="Plot the individual datasets.",
 )
-@click.option(
-    "-l", "--symlog", is_flag=True, help="Plot in symmetric logarithmic scale."
-)
-def sub_covmat(data, destination, inverse, norm, cuts, individual_data, symlog):
+def sub_covmat(data, destination, inverse, norm, cuts, individual_data):
     """Generate covariance matrix heatmap.
 
     The operation is repeated for each DATA path provided (multiple values allowed),
@@ -146,7 +143,6 @@ def sub_covmat(data, destination, inverse, norm, cuts, individual_data, symlog):
         norm=norm,
         cuts=cuts,
         individual_data=individual_data,
-        symlog=symlog,
     )
 
 
