@@ -44,7 +44,7 @@ def generate_models(
     # make the dense layers
     dense_layers = []
     for i, (units, activation) in enumerate(
-        zip(units_per_layer, activation_per_layer)
+        zip(units_per_layer, activation_per_layer, strict=True)
     ):
         initializer = tf.keras.initializers.GlorotUniform(
             seed=np.random.randint(0, pow(2, 31)) + i
