@@ -50,7 +50,7 @@ def main(
     set_global_seeds(global_seed=runcard_content["global_seeds"] + replica)
 
     # Instantiate class that loads the datasets
-    _, data_info = load_data.load_experimental_data(
+    raw_data_info, data_info = load_data.load_experimental_data(
         experiment_list=expdicts,
         input_scaling=runcard_content.get("rescale_inputs", None),
         kincuts=runcard_content.get("kinematic_cuts", {}),
@@ -100,10 +100,20 @@ def main(
     # Compute the Chi2 of the datasets that were not included
     # in the fit if there are, otherwise skip this part
     if nonfitted_expdicts is not None:
+        _logger.info("Computing Chi2 for non-fitted datasets.")
+
+        # TODO: Organize the following better
+        from .scaling import extract_extreme_values
+
+        # Compute the maximum values of the kinematics using the
+        # inputs from the datasets included in the fit for scaling
+        max_kins = extract_extreme_values(raw_data_info)
+
         _, nonfitted_data_info = load_data.load_experimental_data(
             experiment_list=nonfitted_expdicts,
             input_scaling=runcard_content.get("rescale_inputs", None),
             kincuts=runcard_content.get("kinematic_cuts", {}),
+            max_kin=max_kins,
         )
         nonfitted_chi2s = compute_exp_chi2(
             nonfitted_data_info,
