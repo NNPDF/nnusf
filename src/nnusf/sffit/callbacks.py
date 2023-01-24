@@ -4,7 +4,7 @@ import logging
 
 import tensorflow as tf
 
-from .utils import chi2_logs, modify_lr
+from .utils import chi2_logs
 
 _logger = logging.getLogger(__name__)
 
@@ -37,21 +37,6 @@ class GetTrainingInfo(tf.keras.callbacks.Callback):
         self.traininfo_class.loss_value = (
             self.traininfo_class.tr_chi2 / self.traininfo_class.nbdpts
         )
-
-
-class AdaptLearningRate(tf.keras.callbacks.Callback):
-    def __init__(self, train_info_class):
-        super().__init__()
-        self.train_info_class = train_info_class
-
-    def on_epoch_begin(self, epoch, logs=None):
-        if not hasattr(self.model.optimizer, "lr"):
-            raise ValueError("Optimizer does not have LR attribute.")
-        lr = float(
-            tf.keras.backend.get_value(self.model.optimizer.learning_rate)
-        )
-        scheduled_lr = modify_lr(self.train_info_class.loss_value, lr)
-        tf.keras.backend.set_value(self.model.optimizer.lr, scheduled_lr)
 
 
 class EarlyStopping(tf.keras.callbacks.Callback):
