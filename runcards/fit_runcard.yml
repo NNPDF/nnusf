@@ -76,8 +76,8 @@ fit_parameters:
   activation_per_layer: [tanh, tanh, tanh, tanh, selu]
   optimizer_parameters:
     optimizer: Adam
-    clipnorm: 3.0e-6
-    learning_rate: 2.5e-3
+    clipnorm: 1.0e-05
+    learning_rate: 0.001
   val_chi2_threshold: 4
   small_x_exponent:
       f2nu  : [0.25, 2.0]
