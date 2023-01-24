@@ -141,14 +141,16 @@ def training_epochs_distribution(**kwargs):
             jsonfile = json.load(file_stream)
         tr_epochs.append(jsonfile["best_epochs"])
     tr_epochs = np.asarray(tr_epochs)
+    tr_epochs_std = np.std(tr_epochs)
     binning = np.linspace(tr_epochs.min(), tr_epochs.max(), 10, endpoint=True)
     bar_width = binning[1] - binning[0]
     freq, bins = np.histogram(tr_epochs, bins=binning, density=False)
 
     fig, ax = plt.subplots(figsize=(6, 6))
     center_bins = (bins[:-1] + bins[1:]) / 2
-    ax.bar(center_bins, freq, width=bar_width)
+    ax.bar(center_bins, freq, width=bar_width, color="C0", edgecolor="C0", alpha=0.5, linewidth=0.5)
     ax.axvline(x=tr_epochs.mean(), lw=2, color="C1")
+    ax.axvspan(tr_epochs.mean() - tr_epochs_std, tr_epochs.mean() + tr_epochs_std, alpha=0.1, color="C1", linewidth=0.5, zorder=0)
     ax.set_xlabel(r"$\rm{Epochs}$")
     ax.set_ylabel(r"$\rm{Frequency}$")
 
