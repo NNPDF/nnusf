@@ -70,14 +70,14 @@ global_seeds: 1865683875
 
 # Define Neural Network Parameters
 fit_parameters:
-  epochs: 100000
-  stopping_patience: 20000
+  epochs: 500_000
+  stopping_patience: 40_000
   units_per_layer: [70, 55, 40, 20, 20]
   activation_per_layer: [tanh, tanh, tanh, tanh, selu]
   optimizer_parameters:
     optimizer: Adam
-    clipnorm: 0.00001
-    learning_rate: 0.05
+    clipnorm: 1.0e-05
+    learning_rate: 0.001
   val_chi2_threshold: 4
   small_x_exponent:
       f2nu  : [0.25, 2.0]

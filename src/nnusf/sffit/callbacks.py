@@ -4,7 +4,7 @@ import logging
 
 import tensorflow as tf
 
-from .utils import chi2_logs, modify_lr
+from .utils import chi2_logs
 
 _logger = logging.getLogger(__name__)
 
@@ -33,28 +33,10 @@ class GetTrainingInfo(tf.keras.callbacks.Callback):
         self.traininfo_class.vl_loss_value = (
             vl_chi2 / self.traininfo_class.tot_vl
         )
-
-
-class AdaptLearningRate(tf.keras.callbacks.Callback):
-    def __init__(self, train_info_class):
-        super().__init__()
-        self.train_info_class = train_info_class
-
-    def on_batch_end(self, batch, logs={}):
-        """Update value of LR after each epochs"""
-        self.train_info_class.tr_chi2 = logs.get("loss")
-        self.train_info_class.loss_value = (
-            self.train_info_class.tr_chi2 / self.train_info_class.nbdpts
+        self.traininfo_class.tr_chi2 = logs.get("loss")
+        self.traininfo_class.loss_value = (
+            self.traininfo_class.tr_chi2 / self.traininfo_class.nbdpts
         )
-
-    def on_epoch_begin(self, epoch, logs=None):
-        if not hasattr(self.model.optimizer, "lr"):
-            raise ValueError("Optimizer does not have LR attribute.")
-        lr = float(
-            tf.keras.backend.get_value(self.model.optimizer.learning_rate)
-        )
-        scheduled_lr = modify_lr(self.train_info_class.loss_value, lr)
-        tf.keras.backend.set_value(self.model.optimizer.lr, scheduled_lr)
 
 
 class EarlyStopping(tf.keras.callbacks.Callback):
@@ -105,16 +87,12 @@ class LiveUpdater(tf.keras.callbacks.Callback):
 
     def on_epoch_end(self, epoch, logs={}):
         if (epoch % self.print_rate) == 0:
-            lr = float(
-                tf.keras.backend.get_value(self.model.optimizer.learning_rate)
-            )
             self.table = chi2_logs(
                 logs,
                 self.traininfo_class.chix,
                 self.traininfo_class.tr_dpts,
                 self.traininfo_class.vl_dpts,
                 epoch,
-                lr,
             )
             self.live.update(self.table, refresh=True)
 
