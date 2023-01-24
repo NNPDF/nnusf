@@ -9,6 +9,7 @@ import yaml
 from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
 
+from .utils import plot_point_cov
 from ..sffit.check_gls import check_gls_sumrules
 from ..sffit.load_data import load_experimental_data
 from ..sffit.load_fit_data import get_predictions_q, load_models
@@ -68,13 +69,35 @@ def training_validation_split(**kwargs):
     max_boundary = np.max([tr_chi2s, vl_chi2s]) + 0.05
 
     fig, ax = plt.subplots(figsize=(6, 6))
-    ax.scatter(tr_chi2s, vl_chi2s, s=30, marker="s")
-    ax.scatter(tr_chi2s.mean(), vl_chi2s.mean(), s=30, marker="s", color="C1")
+    ax.scatter(
+        tr_chi2s,
+        vl_chi2s,
+        s=60,
+        marker="o",
+        edgecolors="white",
+        alpha=0.5,
+    )
+    ax.scatter(
+        tr_chi2s.mean(),
+        vl_chi2s.mean(),
+        s=60,
+        marker="s",
+        color="C1",
+        edgecolors="white",
+    )
+    plot_point_cov(
+        np.array([tr_chi2s, vl_chi2s]).T,
+        nstd=2,
+        edgecolor="C1",
+        facecolor="white",
+        zorder=0,
+        linewidth=0.75,
+    )
     ax.set_xlabel(r"$\chi^2_{\rm tr}$")
     ax.set_ylabel(r"$\chi^2_{\rm vl}$")
     ax.set_xlim([min_boundary, max_boundary])
     ax.set_ylim([min_boundary, max_boundary])
-    ax.plot([0, 1], [0, 1], transform=ax.transAxes)
+    ax.plot([0, 1], [0, 1], color="C0", transform=ax.transAxes)
 
     save_path = pathlib.Path(kwargs["output"]) / "chi2_split"
     save_figs(fig, save_path)
