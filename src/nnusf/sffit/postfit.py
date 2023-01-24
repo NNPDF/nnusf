@@ -11,11 +11,14 @@ _logger = logging.getLogger(__name__)
 
 
 def perform_postfit(
-    model: pathlib.Path, chi2_threshold: Optional[dict[str, float]]
+    model: pathlib.Path,
+    chi2_threshold: Optional[dict[str, float]],
+    ntot_rep: Optional[int] = None,
 ) -> None:
     if chi2_threshold is not None:
         fitinfos = model.glob("replica_*")
-        count_replica_status_fail = 0
+        count_replica_status_pass = 0
+
         # Create a folder to store the results after postfit
         postfit = model.joinpath("postfit")
         # Overwrite completely the folder if it exists
@@ -53,10 +56,13 @@ def perform_postfit(
                 shutil.copytree(repinfo, dstname, dirs_exist_ok=True)
                 # Also copies the runcard for the report
                 shutil.copy(model.joinpath("runcard.yml"), postfit)
-                count_replica_status_fail += 1
+                count_replica_status_pass += 1
+
+            if count_replica_status_pass == ntot_rep:
+                break
 
         _logger.info(
-            f"{count_replica_status_fail} replica out of "
+            f"{count_replica_status_pass} replica out of "
             f"the original {nbrep} pass postfit selection."
         )
         _logger.info(
@@ -67,6 +73,8 @@ def perform_postfit(
 
 
 def main(
-    model: pathlib.Path, chi2_threshold: Optional[dict[str, float]]
+    model: pathlib.Path,
+    chi2_threshold: Optional[dict[str, float]],
+    ntot_rep: Optional[int] = None,
 ) -> None:
-    perform_postfit(model, chi2_threshold)
+    perform_postfit(model, chi2_threshold, ntot_rep)
