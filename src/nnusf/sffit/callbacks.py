@@ -87,16 +87,12 @@ class LiveUpdater(tf.keras.callbacks.Callback):
 
     def on_epoch_end(self, epoch, logs={}):
         if (epoch % self.print_rate) == 0:
-            lr = float(
-                tf.keras.backend.get_value(self.model.optimizer.learning_rate)
-            )
             self.table = chi2_logs(
                 logs,
                 self.traininfo_class.chix,
                 self.traininfo_class.tr_dpts,
                 self.traininfo_class.vl_dpts,
                 epoch,
-                lr,
             )
             self.live.update(self.table, refresh=True)
 
