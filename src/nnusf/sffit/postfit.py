@@ -11,11 +11,13 @@ _logger = logging.getLogger(__name__)
 
 
 def perform_postfit(
-    model: pathlib.Path, chi2_threshold: Optional[dict[str, float]]
+    model: pathlib.Path,
+    chi2_threshold: Optional[dict[str, float]],
+    ntot_rep: Optional[int] = None,
 ) -> None:
     if chi2_threshold is not None:
         fitinfos = model.glob("replica_*")
-        count_replica_status_fail = 0
+        count_replica_status_pass = 0
 
         # Create a folder to store the results after postfit
         postfit = model.joinpath("postfit")
@@ -26,8 +28,13 @@ def perform_postfit(
         postfit.mkdir(exist_ok=False)
 
         for nbrep, repinfo in enumerate(fitinfos, start=1):
-            with open(f"{repinfo}/fitinfo.json", "r") as file:
-                jsonfile = json.load(file)
+            fitinfo_path = f"{repinfo}/fitinfo.json"
+            try:
+                with open(fitinfo_path, "r") as file:
+                    jsonfile = json.load(file)
+            except FileNotFoundError:
+                _logger.warning(f"{fitinfo_path} does not exist!")
+                continue
             tr_chi2 = jsonfile["best_tr_chi2"]
             vl_chi2 = jsonfile["best_vl_chi2"]
 
@@ -49,10 +56,13 @@ def perform_postfit(
                 shutil.copytree(repinfo, dstname, dirs_exist_ok=True)
                 # Also copies the runcard for the report
                 shutil.copy(model.joinpath("runcard.yml"), postfit)
-                count_replica_status_fail += 1
+                count_replica_status_pass += 1
+
+            if count_replica_status_pass == ntot_rep:
+                break
 
         _logger.info(
-            f"{count_replica_status_fail} replica out of "
+            f"{count_replica_status_pass} replica out of "
             f"the original {nbrep} pass postfit selection."
         )
         _logger.info(
@@ -63,6 +73,8 @@ def perform_postfit(
 
 
 def main(
-    model: pathlib.Path, chi2_threshold: Optional[dict[str, float]]
+    model: pathlib.Path,
+    chi2_threshold: Optional[dict[str, float]],
+    ntot_rep: Optional[int] = None,
 ) -> None:
-    perform_postfit(model, chi2_threshold)
+    perform_postfit(model, chi2_threshold, ntot_rep)

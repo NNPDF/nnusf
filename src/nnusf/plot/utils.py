@@ -78,6 +78,8 @@ def group_data(
     for lds in data:
         if grouping == "exp":
             label = lds.exp
+        elif grouping == "dataset":
+            label = lds.name
         else:
             raise ValueError
 

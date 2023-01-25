@@ -4,7 +4,7 @@
 import numpy as np
 import tensorflow as tf
 
-from .layers import ObservableLayer, TheoryConstraint
+from .layers import ObservableLayer, SmallXPreprocessing, TheoryConstraint
 from .utils import chi2, mask_coeffs, mask_covmat, mask_expdata
 
 
@@ -12,6 +12,7 @@ def generate_models(
     data_info,
     units_per_layer,
     activation_per_layer,
+    small_x_exponent,
     output_units=6,
     output_activation="linear",
     **kwargs
@@ -43,7 +44,7 @@ def generate_models(
     # make the dense layers
     dense_layers = []
     for i, (units, activation) in enumerate(
-        zip(units_per_layer, activation_per_layer)
+        zip(units_per_layer, activation_per_layer, strict=True)
     ):
         initializer = tf.keras.initializers.GlorotUniform(
             seed=np.random.randint(0, pow(2, 31)) + i
@@ -63,11 +64,44 @@ def generate_models(
 
     # Connect all the HIDDEN dense layers in the model
     def sequential(layer_input):
-        dense_nest = dense_layers[0](layer_input)
+        # make x-grid logarithmic
+        unstacked_inputs = tf.unstack(layer_input, axis=2)
+        log_inp = tf.stack(
+            [
+                tf.math.log(unstacked_inputs[0]),
+                unstacked_inputs[1],
+                unstacked_inputs[2],
+            ],
+            axis=2,
+        )
+        dense_nest = dense_layers[0](log_inp)
         for dense_layer in dense_layers[1:]:
             dense_nest = dense_layer(dense_nest)
         dense_nest = sf_output(dense_nest)
+
         return dense_nest
+
+    preprocessing_layer = SmallXPreprocessing(
+        seed=np.random.randint(0, pow(2, 24)),
+        dic_specs=small_x_exponent,
+    )
+
+    # The pdf model: kinematics -> structure functions
+    def sf_model(input_layer):
+        nn_output = sequential(input_layer)
+
+        # Multiply the outputs with the small-x exp.
+        apply_preprocessing = tf.keras.layers.multiply(
+            [nn_output, preprocessing_layer(input_layer)]
+        )
+
+        # Ensure F_i(x=1)=0
+        x_equal_one_layer = TheoryConstraint()(input_layer)
+        nn_output_x_equal_one = sequential(x_equal_one_layer)
+        final_layer = tf.keras.layers.subtract(
+            [apply_preprocessing, nn_output_x_equal_one]
+        )
+        return final_layer
 
     model_inputs = []
     tr_data, vl_data = [], []
@@ -78,18 +112,6 @@ def generate_models(
         # Construct the input layer as placeholders
         input_layer = tf.keras.layers.Input(shape=(None, 3), batch_size=1)
         model_inputs.append(input_layer)
-
-        # The pdf model: kinematics -> structure functions
-        def sf_model(input_layer):
-            nn_output = sequential(input_layer)
-
-            # Ensure F_i(x=1)=0
-            x_equal_one_layer = TheoryConstraint()(input_layer)
-            nn_output_x_equal_one = sequential(x_equal_one_layer)
-            sf_basis = tf.keras.layers.subtract(
-                [nn_output, nn_output_x_equal_one]
-            )
-            return sf_basis
 
         # Extract theory grid coefficients & datasets
         tr_mask, vl_mask = data.tr_filter, ~data.tr_filter

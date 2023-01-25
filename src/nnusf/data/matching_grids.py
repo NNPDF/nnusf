@@ -15,7 +15,7 @@ import pineappl
 import yaml
 
 from .. import utils
-from ..theory.predictions import pdf_error
+from ..theory.predictions import pdf_error, theory_error
 from .utils import (
     MAP_OBS_PID,
     build_obs_dict,
@@ -46,7 +46,7 @@ def proton_boundary_conditions(
     Parameters
     ----------
     grids : list[pathlib.Path]
-        list of paths to the pineappl.tar.gz grids
+        list of paths to the pineappl.tar grids
     pdf : str
         name of the PDF set to convolute with
     destination : pathlib.Path
@@ -58,13 +58,14 @@ def proton_boundary_conditions(
     if grids is not None:
         obsdic_list = []
         for grid in grids:
-            grid_name = grid.stem[6:-13]
+            grid_name = grid.stem[6:]
             _logger.info(f"Generating BC data for '{grid_name}'.")
 
-            obstype = grid_name.split("_")[-1]
+            obstype = grid_name.split("_")[1]
             obspid = MAP_OBS_PID[obstype]
             obsdic = build_obs_dict(obstype, [None], obspid)
-            obsdic_list.append(obsdic)
+            if obsdic not in obsdic_list:
+                obsdic_list.append(obsdic)
             main(
                 grid,
                 pdf,
@@ -94,11 +95,22 @@ def proton_boundary_conditions(
 def kinamatics_grids(is_xsec: bool, kin: dict, exp: str) -> Tuple[dict, int]:
     """Generate the kinematic grids"""
     x_grid = np.array(kin[exp]["xgrids"])
-    q2_grid = np.linspace(
-        kin[exp]["q2spec"]["min"],
-        kin[exp]["q2spec"]["max"],
-        kin[exp]["q2spec"]["nbp"],
-    )
+
+    # Shift the Q2-points in case the observable in question is a cross-section
+    # in order to avoid the double counting.
+    if is_xsec:  # Shift by 10 GeV2?
+        q2_grid = np.linspace(
+            kin[exp]["q2spec"]["min"] + 10,
+            kin[exp]["q2spec"]["max"] + 10,
+            kin[exp]["q2spec"]["nbp"],
+        )
+    else:
+        q2_grid = np.linspace(
+            kin[exp]["q2spec"]["min"],
+            kin[exp]["q2spec"]["max"],
+            kin[exp]["q2spec"]["nbp"],
+        )
+
     y_grid = (
         np.array([0.0])
         if not is_xsec
@@ -164,7 +176,7 @@ def main(
     Parameters
     ----------
     grids : pathlib.Path
-        path to the pineappl.tar.gz grid
+        path to the pineappl.tar grid
     pdf : str
         name of the PDF set to convolute with
     destination : pathlib.Path
@@ -175,14 +187,12 @@ def main(
     with tempfile.TemporaryDirectory() as tmpdir:
         tmpdir = pathlib.Path(tmpdir).absolute()
 
-        grid_name = grids.stem[6:-13]
-        obs = grid_name.split("_")[-1]
-        new_name = f"{grid_name}_MATCHING"
-        experiment = grid_name.split("_")[0]
+        full_grid_name = grids.stem[6:]
+        experiment, obs, _, xif, xir = full_grid_name.split("_")
+        new_name = f"{experiment}_{obs}_MATCHING"
         new_experiment = f"{experiment}_MATCHING"
 
-        # if grids.suffix == ".tar.gz":
-        if str(grids).endswith(".tar.gz"):
+        if str(grids).endswith(".tar"):
             utils.extract_tar(grids, tmpdir)
             grids = tmpdir / "grids"
 
@@ -195,32 +205,40 @@ def main(
             if "pineappl" not in gpath.name:
                 continue
             grid = pineappl.grid.Grid.read(gpath)
-            prediction = pdf_error(grid, pdf, kin_grid["x"], reshape=False)
+            if xif == "xif1.0" and xir == "xir1.0":
+                prediction = pdf_error(grid, pdf, kin_grid["x"], reshape=False)
+            else:
+                prescription = [(float(xir[3:]), float(xif[3:]))]
+                prediction = theory_error(
+                    grid, pdf, prescription, kin_grid["x"], reshape=False
+                )
             full_pred.append(prediction[0])
         pred = np.average(full_pred, axis=0)
 
-        # Select only predictions for Replicas_0 in data
-        data_pd = pd.DataFrame({"data": pred[:, 0]})
+        # store data only for unvaried matching grids
+        if xif == "xif1.0" and xir == "xir1.0":
+            # data_pd = pd.DataFrame({"data": np.median(pred, axis=1)})
+            # Select only predictions for Replicas_0 to be the Central Value
+            data_pd = pd.DataFrame({"data": pred[:, 0]})
 
-        # Dump the kinematics into CSV
-        dump_kinematics(destination, kin_grid, new_experiment, is_xsec)
+            # Dump the kinematics into CSV
+            dump_kinematics(destination, kin_grid, new_experiment, is_xsec)
 
-        # Dump the central (replica) data into CSV
-        central_val_folder = destination.joinpath("data")
-        central_val_folder.mkdir(exist_ok=True)
-        write_to_csv(central_val_folder, f"DATA_{new_name}", data_pd)
+            # Dump the central (replica) data into CSV
+            central_val_folder = destination.joinpath("data")
+            central_val_folder.mkdir(exist_ok=True)
+            write_to_csv(central_val_folder, f"DATA_{new_name}", data_pd)
 
-        # Dump the dummy uncertainties into CSV
-        dump_uncertainties(destination, new_name, n_points)
+            # Dump the dummy uncertainties into CSV
+            dump_uncertainties(destination, new_name, n_points)
 
         # Dump the predictions for the REST of the replicas as NPY
         pred_folder = destination.joinpath("matching")
         pred_folder.mkdir(exist_ok=True)
-        mat_dest = (pred_folder / f"MATCH_{grid_name}").with_suffix(".npy")
-        np.save(mat_dest, pred)
+        np.save(pred_folder / f"{full_grid_name}.npy", pred)
 
-        msg = f"The matching/BC grid for {grid_name} are stored in "
-        msg += f"'{destination.absolute().relative_to(pathlib.Path.cwd())}'"
+        msg = f"The matching/BC grid for {full_grid_name} are stored in "
+        msg += f"'{destination.absolute()}'"
         _logger.info(msg)
 
 

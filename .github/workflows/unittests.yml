@@ -1,9 +1,7 @@
 # A Github workflow that runs the tests
 name: Run unit tests inside a container
 
-on:
-  push:
-  workflow_dispatch:
+on: workflow_dispatch
 
 jobs:
   py39:

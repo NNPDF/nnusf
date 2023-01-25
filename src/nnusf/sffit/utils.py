@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import json
+import logging
 import os
 import random
 from dataclasses import dataclass
@@ -11,24 +13,13 @@ from rich.style import Style
 from rich.table import Table
 
 console = Console()
-
-
-ADAPTIVE_LR = [
-    {"range": [100, 250], "lr": 0.025},
-    {"range": [50, 100], "lr": 0.01},
-    {"range": [40, 50], "lr": 0.0075},
-    {"range": [40, 50], "lr": 0.005},
-    {"range": [10, 30], "lr": 0.0025},
-    {"range": [5, 10], "lr": 0.0015},
-    {"range": [1, 5], "lr": 0.001},
-]
+_logger = logging.getLogger(__name__)
 
 
 @dataclass
 class TrainingStatusInfo:
-    """Class for storing info to be shared among callbacks
-    (in particular prevents evaluating multiple times for each individual
-    callback).
+    """Class for storing info to be shared among callbacks. In particular
+    it prevents evaluating multiple times for each individual callback.
     """
 
     tr_dpts: dict
@@ -53,13 +44,86 @@ def set_global_seeds(global_seed: int = 1234):
     np.random.seed(global_seed)
 
 
-def modify_lr(tr_loss_val, lr):
-    for dic in ADAPTIVE_LR:
-        range, lrval = dic["range"], dic["lr"]
-        check = range[0] <= tr_loss_val < range[1]
-        if check and (lr > lrval):
-            return lrval
-    return lr
+def add_dict_json(replica_dir, extra_dict):
+    """Dump the normalized experimental chi^2 values into the `fitinfo.json`.
+
+    Parameters:
+    -----------
+    replica_dir: pathlib.Path
+        path to the directory in which the results of a given replica is stored
+    extra_dict: dict
+        extra-dictionary to add to the existing .json file
+    """
+    with open(f"{replica_dir}/fitinfo.json", "r+") as fstream:
+        json_file = json.load(fstream)
+        json_file.update(extra_dict)
+        # Sets file's current position at offset.
+        fstream.seek(0)
+        json.dump(json_file, fstream, sort_keys=True, indent=4)
+
+
+def small_x_exp(model, w_name="small_x_preprocessing"):
+    """Extract the weights of a the Small-x Preprocessing layer.
+
+    Parameters:
+    -----------
+    model: tf.model
+        tensorflow model
+    w_name: str
+        name of the layer
+
+    Returns:
+    --------
+    list:
+        list containing the values of the weights
+    """
+    corresp_layers = []
+    _logger.info("Extracting small-x exponents from the weights.")
+    for layer in model.layers:
+        if w_name in layer.name and len(layer.weights) != 0:
+            corresp_layers.append(layer.weights)
+    # Select the first one as the second one correspond to
+    # the one presend in the TheoryConstraint
+    return [float(i) for i in corresp_layers[0]]
+
+
+def subset_q2points(kin_unique, scaling_target, q2points, kincuts):
+    """
+    In order to smoothen the interpolation when mapping Q2 into [0, 1]
+    we remove some of the Q2 points in the grid. This is done herein by
+    removing
+    """
+    assert kin_unique.shape[0] == len(scaling_target)
+
+    q2data_max = kincuts.get("q2max", 1e5)
+    sub_smallq2 = q2points.get("small_q2points", 500)
+    sub_largeq2 = q2points.get("large_q2points", 1e5)
+    nt_q2points = kin_unique.shape[0]
+
+    # Separate the Q2 from the real data to the matching
+    nb_q2real = (kin_unique <= q2data_max).sum()
+    nb_q2math = nt_q2points - nb_q2real
+
+    if sub_largeq2 < nb_q2math:
+        stepm = (nb_q2real // sub_smallq2) + 1
+        stepn = (nb_q2math // sub_largeq2) + 1
+        kin_unique = np.concatenate(
+            [
+                kin_unique[0:nb_q2real:stepm],
+                kin_unique[nb_q2real:nt_q2points:stepn],
+            ],
+            axis=0,
+        )
+        scaling_target = np.concatenate(
+            [
+                scaling_target[0:nb_q2real:stepm],
+                scaling_target[nb_q2real:nt_q2points:stepn],
+            ]
+        )
+    else:
+        _logger.error("Inconsistent values for number of sub-Q2 points")
+    assert kin_unique.shape[0] == len(scaling_target)
+    return kin_unique, scaling_target
 
 
 def mask_expdata(y, tr_mask, vl_mask):
@@ -152,11 +216,27 @@ def chi2(invcovmat):
     return chi2_loss
 
 
-def chi2_logs(train_info, vl_loss, tr_dpts, vl_dpts, epoch, lr):
+def chi2_logs(train_info, vl_loss, tr_dpts, vl_dpts, epoch):
+    """Instance of rich table that updates live the summary of
+    the training.
+
+    Parameters:
+    -----------
+    train_info: dict
+        dictionary containing information on the training
+    vl_loss: dict
+        dictionary containing information on the validatio losses
+    tr_dpts: dict
+        contains the number of datapoints for all the training set
+    vl_dpts:
+        contains the number of datapoints for the validation set
+    epoch: float
+        the number of epochs
+    """
     tot_trpts = sum(tr_dpts.values())
     tot_vlpts = sum(vl_dpts.values())
     style = Style(color="white")
-    title = f"Epoch {epoch:08d}: LR={lr:6.4f}"
+    title = f"Epoch {epoch:08d}"
     table = Table(
         show_header=True,
         header_style="bold green",
