@@ -28,8 +28,13 @@ def perform_postfit(
         postfit.mkdir(exist_ok=False)
 
         for nbrep, repinfo in enumerate(fitinfos, start=1):
-            with open(f"{repinfo}/fitinfo.json", "r") as file:
-                jsonfile = json.load(file)
+            fitinfo_path = f"{repinfo}/fitinfo.json"
+            try:
+                with open(fitinfo_path, "r") as file:
+                    jsonfile = json.load(file)
+            except FileNotFoundError:
+                _logger.warning(f"{fitinfo_path} does not exist!")
+                continue
             tr_chi2 = jsonfile["best_tr_chi2"]
             vl_chi2 = jsonfile["best_vl_chi2"]
 

@@ -7,7 +7,6 @@ import tensorflow as tf
 from rich.live import Live
 
 from .callbacks import (
-    AdaptLearningRate,
     EarlyStopping,
     GetTrainingInfo,
     LiveUpdater,
@@ -53,12 +52,12 @@ def perform_fit(
         datas_name[data.name] = 1
         tr_kinematics.append(data.kinematics[data.tr_filter])
         vl_kinematics.append(data.kinematics[~data.tr_filter])
+
     datas_name["loss"] = 1
     dummy_vl = [1 for _ in range(len(tr_kinematics))]
 
     # Initialize a placeholder table for `rich` outputs
-    lr = optimizer_parameters["learning_rate"]
-    table = chi2_logs(datas_name, dummy_vl, datas_name, datas_name, 0, lr)
+    table = chi2_logs(datas_name, dummy_vl, datas_name, datas_name, 0)
 
     tr_kinarray = [tf.expand_dims(i, axis=0) for i in tr_kinematics]
     vl_kinarray = [tf.expand_dims(i, axis=0) for i in vl_kinematics]
@@ -67,7 +66,6 @@ def perform_fit(
     train_info_class = TrainingStatusInfo(
         tr_dpts=fit_dict["tr_datpts"], vl_dpts=fit_dict["vl_datpts"]
     )
-    adapt_lr = AdaptLearningRate(train_info_class)
     stopping = EarlyStopping(
         vl_model,
         stopping_patience,
@@ -93,7 +91,6 @@ def perform_fit(
             callbacks=[
                 get_train_info,
                 log_train_info,
-                adapt_lr,
                 stopping,
                 live_updater,
             ],

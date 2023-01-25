@@ -16,17 +16,6 @@ console = Console()
 _logger = logging.getLogger(__name__)
 
 
-ADAPTIVE_LR = [
-    {"range": [100, 250], "lr": 0.025},
-    {"range": [50, 100], "lr": 0.01},
-    {"range": [40, 50], "lr": 0.0075},
-    {"range": [40, 50], "lr": 0.005},
-    {"range": [10, 30], "lr": 0.0025},
-    {"range": [5, 10], "lr": 0.0015},
-    {"range": [1, 5], "lr": 0.001},
-]
-
-
 @dataclass
 class TrainingStatusInfo:
     """Class for storing info to be shared among callbacks. In particular
@@ -53,15 +42,6 @@ def set_global_seeds(global_seed: int = 1234):
     random.seed(global_seed)
     tf.random.set_seed(global_seed)
     np.random.seed(global_seed)
-
-
-def modify_lr(tr_loss_val, lr):
-    for dic in ADAPTIVE_LR:
-        range, lrval = dic["range"], dic["lr"]
-        check = range[0] <= tr_loss_val < range[1]
-        if check and (lr > lrval):
-            return lrval
-    return lr
 
 
 def add_dict_json(replica_dir, extra_dict):
@@ -236,7 +216,7 @@ def chi2(invcovmat):
     return chi2_loss
 
 
-def chi2_logs(train_info, vl_loss, tr_dpts, vl_dpts, epoch, lr):
+def chi2_logs(train_info, vl_loss, tr_dpts, vl_dpts, epoch):
     """Instance of rich table that updates live the summary of
     the training.
 
@@ -252,13 +232,11 @@ def chi2_logs(train_info, vl_loss, tr_dpts, vl_dpts, epoch, lr):
         contains the number of datapoints for the validation set
     epoch: float
         the number of epochs
-    lr: float
-        value of the current learning rate
     """
     tot_trpts = sum(tr_dpts.values())
     tot_vlpts = sum(vl_dpts.values())
     style = Style(color="white")
-    title = f"Epoch {epoch:08d}: LR={lr:6.4f}"
+    title = f"Epoch {epoch:08d}"
     table = Table(
         show_header=True,
         header_style="bold green",
