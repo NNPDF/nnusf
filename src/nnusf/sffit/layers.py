@@ -86,7 +86,7 @@ class SmallXPreprocessing(tf.keras.layers.Layer):
             shape=(1,),
             initializer=init,
             trainable=True,
-            constraint=wconstr,
+            # constraint=wconstr,
         )
         self.kernel.append(kernel)
 
