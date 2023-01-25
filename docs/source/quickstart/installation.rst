@@ -4,7 +4,7 @@ Installation
 User installation
 -----------------
 
-The easiest way to install the latest stable version of NNSF:math:`\nu` is
+The easiest way to install the latest stable version of NNSFν is
 via the `Python Package Index <https://pypi.org/>`_ using the following command:
 
 .. code-block:: bash

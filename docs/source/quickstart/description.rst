@@ -1,7 +1,7 @@
 Description
 ===========
 
-NNSF:math:`\nu` is a python module that provides predictions for (anti-)neutrino structure
+NNSFν is a python package that provides predictions for (anti-)neutrino structure
 functions at all energies. It relies on `Yadism <https://github.com/N3PDF/yadism>`_
 for the description of the medium- and large-:math:`Q^2` regions while the 
 low-:math:`Q^2` regime is modelled in terms of a Neural Network (NN).

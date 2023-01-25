@@ -88,7 +88,7 @@ Generate a fit report
 
 Using the trained model, we can generate a report containing the summary
 of the :math:`\chi^2` values and the comparisons between the experimental
-data sets and the NNSF:math:`\nu` predictions. To generate the report
+data sets and the NNSFν predictions. To generate the report
 just run the following command:
 
 .. code-block:: bash
@@ -104,7 +104,7 @@ previous step, simply remove :mod:`/postfit` in the command above.
 Store NνSF predictions as LHAPDF
 --------------------------------
 
-For future convenience, the NNSF:math:`\nu` predictions can be stored as LHAPDF
+For future convenience, the NNSFν predictions can be stored as LHAPDF
 grids. The structure functions have the following LHAPDF IDs:
 
 .. list-table:: LHAPDF ID

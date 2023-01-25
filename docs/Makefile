@@ -8,6 +8,11 @@ SPHINXBUILD   ?= sphinx-build
 SOURCEDIR     = source
 BUILDDIR      = build
 
+# Folder paths from which the APIs will be build
+SFFIT_DIR 	= ../src/nnusf/sffit
+DATA_DIR 		= ../src/nnusf/data
+THEORY_DIR	= ../src/nnusf/theory
+
 # Put it first so that "make" without argument is like "make help".
 help:
 	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
