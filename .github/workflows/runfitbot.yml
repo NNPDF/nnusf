@@ -25,15 +25,19 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.9]
+        python-version: [3.10]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
+
       - name: Set up Python 🐍
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
           architecture: x64
+
+      - name: Install LHAPDF
+        uses: ./.github/actions/lhapdf
 
       - name: Install SSH key 🔑
         uses: shimataro/ssh-key-action@v2
