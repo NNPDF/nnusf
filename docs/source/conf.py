@@ -41,6 +41,13 @@ templates_path = ['_templates']
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = []
 
+# Title page
+html_title = "NNSFν"
+
+# Code block styling
+pygments_style = "sphinx"
+pygments_dark_style = "monokai"
+
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -55,6 +62,7 @@ html_theme_options = {
     "source_directory": "docs/",
     "sidebar_hide_name": False,
     "top_of_page_button": "edit",
+    "navigation_with_keys": True,
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,

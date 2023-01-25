@@ -1,15 +1,28 @@
-.. nnsfnu documentation master file, created by
-   sphinx-quickstart on Sun Jan 22 13:28:21 2023.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+Welcome to NNSFν
+================
 
-Welcome to nnsfnu's documentation!
-==================================
+Some introductory text...
+
+.. toctree::
+   :maxdepth: 2
+   :caption: 📑 Quick Start
+   :hidden:
+
+   quickstart/description
+   quickstart/installation
+
+.. toctree::
+   :maxdepth: 2
+   :caption: 🚀 Tutorials
+   :hidden:
+
+   tutorials/datasets
+   tutorials/yadism
+   tutorials/fitting
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
-
 
 
 Indices and tables
