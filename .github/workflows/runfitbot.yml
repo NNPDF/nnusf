@@ -14,7 +14,7 @@ env:
   REPORT_TITLE: REPORT
   AUTHOR_NAME: FITBOT
   KEYWORDS: CHECK
-  POETRY: https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py
+  POETRY: https://install.python-poetry.org
   FITCARD: ./runcards/bot_runcard.yml
   PLOTCARD: ./runcards/plot_runcard.yml
 

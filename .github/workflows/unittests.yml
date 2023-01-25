@@ -17,7 +17,7 @@ on:
 
 # Define global environment variables to access Poetry
 env:
-  POETRY: https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py
+  POETRY: https://install.python-poetry.org
 
 jobs:
   build:
