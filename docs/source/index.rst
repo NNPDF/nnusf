@@ -1,6 +1,8 @@
 Welcome to NNSFν
 ================
 
+.. include:: badges.rst
+
 NNSFν povides predictions for neutrino inelastic structure functions
 valid for the complete range of energies relevant for phenomenology
 involving :math:`\nu / \bar{\nu}`-experiments, from oscillation measurements
