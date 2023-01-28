@@ -15,40 +15,65 @@ on:
       - submitted
   workflow_dispatch:
 
-# Define global environment variables to access Poetry
-env:
-  POETRY: https://install.python-poetry.org
 
 jobs:
-  build:
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        python-version: ["3.10"]
-    runs-on: ${{ matrix.os }}
+  test:
+    name: 🔬 Test NNSFnu package 🐍
+    runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Set up Python 🐍
-        uses: actions/setup-python@v4
+        id: setup-python
+        uses: actions/setup-python@v2
         with:
-          python-version: ${{ matrix.python-version }}
-          architecture: x64
+          python-version: "3.9"
 
-      - name: Install LHAPDF
-        uses: ./.github/actions/lhapdf
-
-      - name: Install poetry and Dependencies 📦
-        shell: bash --login {0}
+      - name: Install LHAPDF 6.4.0
+        env:
+          VERSION: 6.4.0
         run: |
-          curl -sSL $POETRY | python -
+          wget --no-verbose https://lhapdf.hepforge.org/downloads/?f=LHAPDF-${VERSION}.tar.gz -O LHAPDF-${VERSION}.tar.gz
+          tar xzf LHAPDF-${VERSION}.tar.gz
+          cd LHAPDF-${VERSION}
+          ./configure --prefix=${HOME}/prefix --disable-static
+          make -j
+          make install
+        shell: bash
 
-      - name: Install nnusf package 🔨
-        shell: bash --login {0}
-        run: |
-          poetry install
+      - name: Install and configure Poetry
+        uses: snok/install-poetry@v1
+        with:
+          virtualenvs-path: ~/.virtualenvs
+          installer-parallel: true
 
-      - name: Run all the unit tests 🚀
-        shell: bash --login {0}
+      - name: Cache Poetry virtualenv
+        uses: actions/cache@v2
+        id: cache
+        with:
+          path: ~/.virtualenvs
+          key: ${{ runner.os }}-py-${{ steps.setup-python.outputs.python-version }}-poetry-${{ hashFiles('poetry.lock') }}
+
+      - name: Install version management tool
         run: |
-          poetry run pytest
+          PIP="$(head -n1 $(which poetry) | cut -c 3-) -m pip"
+          ${PIP} install poetry-dynamic-versioning
+
+      - name: Install dependencies 📦
+        run: poetry install --no-interaction --no-root --with test
+        if: steps.cache.outputs.cache-hit != 'true'
+
+      - name: Install task runner
+        run: pip install poethepoet
+
+      - name: Lint with pylint
+        run: |
+          poe lint
+          poe lint-warnings
+
+      - name: Test with pytest
+        run: |
+          poe test
