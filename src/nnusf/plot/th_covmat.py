@@ -7,7 +7,15 @@ import numpy as np
 
 from .. import utils
 from ..data import loader
-from .covmat import correlation_matrix, save_heatmap
+from .covmat import (
+    _EXP_ORD,
+    construct_ticklabels,
+    correlation_matrix,
+    order_dict_experiment,
+    save_heatmap,
+)
+
+_EXP_ORD.append("PROTONBC")
 
 
 def compute(
@@ -104,11 +112,13 @@ def main(
     central_values = []
     pdf_pred = []
     th_shift = []
+    predictions_dict = {}
     for ds in data:
         name, datapath = utils.split_data_path(ds)
         if "MATCHING" not in name:
             continue
         data_pred = load_predictions(name, datapath, cuts)
+        predictions_dict[name] = data_pred[0][0]
 
         # Build the big matrices
         central_values.extend(data_pred[0][0])
@@ -147,17 +157,21 @@ def main(
     total_corr = correlation_matrix(total_covmat)
 
     # PDF matrices
+    ordered_predictions = order_dict_experiment(predictions_dict, _EXP_ORD)
+    ticklabels_specs = construct_ticklabels(ordered_predictions)
     save_heatmap(
         covmat=pdf_covmat,
         individual_data=False,
         figname=destination / f"pdf_covmat{normsuf}{invsuf}.pdf",
         title=r"$\rm{PDF~Covariance~Matrix~}$",
+        tick_specs=ticklabels_specs,
     )
     save_heatmap(
         covmat=pdf_corr,
         individual_data=False,
         figname=destination / f"pdf_corrmat{normsuf}{invsuf}.pdf",
         title=r"$\rm{PDF~Correlation~Matrix~}$",
+        tick_specs=ticklabels_specs,
     )
 
     # TH matrices
@@ -166,12 +180,14 @@ def main(
         individual_data=False,
         figname=destination / f"th_covmat{normsuf}{invsuf}.pdf",
         title=r"$\rm{Theory~Covariance~Matrix~}$",
+        tick_specs=ticklabels_specs,
     )
     save_heatmap(
         covmat=th_corr,
         individual_data=False,
         figname=destination / f"th_corrmat{normsuf}{invsuf}.pdf",
         title=r"$\rm{Theory~Correlation~Matrix~}$",
+        tick_specs=ticklabels_specs,
     )
 
     # Total matrices
@@ -179,11 +195,13 @@ def main(
         covmat=total_covmat,
         individual_data=False,
         figname=destination / f"total_covmat{normsuf}{invsuf}.pdf",
-        title=r"$\rm{Total~Covariance~Matrix~}$",
+        title=r"$\rm{PDF+Theory~Covariance~Matrix~}$",
+        tick_specs=ticklabels_specs,
     )
     save_heatmap(
         covmat=total_corr,
         individual_data=False,
         figname=destination / f"total_corrmat{normsuf}{invsuf}.pdf",
-        title=r"$\rm{Total~Correlation~Matrix~}$",
+        title=r"$\rm{PDF+Theory~Correlation~Matrix~}$",
+        tick_specs=ticklabels_specs,
     )
