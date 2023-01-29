@@ -3,7 +3,6 @@
 import copy
 import logging
 import pathlib
-from math import sqrt
 from typing import Optional
 
 import matplotlib

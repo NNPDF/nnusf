@@ -147,10 +147,10 @@ def main(
         # need to invert total only at the end
         pdf_covmat = compute(pdf_pred, central_values, inverse=False, norm=norm)
         th_covmat = np.cov(th_shift, central_values, inverse=False, norm=norm)
-        total_covmat = np.sqrt(th_covmat**2 + pdf_covmat**2)
+        total_covmat = th_covmat + pdf_covmat
         total_covmat = np.linalg.inv(total_covmat)
     else:
-        total_covmat = np.sqrt(th_covmat**2 + pdf_covmat**2)
+        total_covmat = th_covmat + pdf_covmat
 
     pdf_corr = correlation_matrix(pdf_covmat)
     th_corr = correlation_matrix(th_covmat)
