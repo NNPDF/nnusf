@@ -4,6 +4,7 @@ import pathlib
 
 import numpy as np
 import pandas as pd
+import tensorflow as tf
 import yaml
 
 from ..plot.fit import (
@@ -11,20 +12,24 @@ from ..plot.fit import (
     training_epochs_distribution,
     training_validation_split,
 )
+from ..sffit.load_data import load_experimental_data
+from ..sffit.load_fit_data import load_models
 from ..utils import compare_git_versions
 
 MAP_LABELS = {
-    "expr": r"\( \langle \chi^{2, \rm real}_{\rm exp} \rangle \)",
-    "expt": r"\( \langle \chi^{2, \rm tot}_{\rm exp} \rangle \)",
+    "chi2tot": r"\( \chi^{2, \rm real}_{\rm total} \)",
+    "expr": r"\( \langle \chi^{2, \rm real}_{\mathrm{exp}, k} \rangle \)",
+    "expt": r"\( \langle \chi^{2, \rm tot}_{\mathrm{exp}, k} \rangle \)",
     "tr": r"\( \langle \chi^{2}_{\rm tr} \rangle \)",
     "vl": r"\( \langle \chi^{2}_{\rm vl} \rangle \)",
 }
 
 COLUMN_LABELS = {
+    "tot_chi2": r"\( \chi^{2}_\mathrm{total} \)",
     "Ndat": r"\( \mathrm{N}_\mathrm{dat} \)",
     "frac": r"\( \mathrm{frac} \)",
-    "tr_chi2": r"\( < \chi^{2, \star}_\mathrm{tr} > \)",
-    "exp_chi2": r"\( < \chi^{2, \star}_{\mathrm{exp}} > \)",
+    "tr_chi2": r"\( < \chi^{2, k}_\mathrm{tr} > \)",
+    "exp_chi2": r"\( < \chi^{2, k}_{\mathrm{exp}} > \)",
 }
 
 
@@ -46,12 +51,101 @@ def dump_to_csv(
 
 
 def json_loader(fitfolder: pathlib.Path) -> dict:
+    """Load a JSON file."""
     with open(fitfolder, "r") as fstream:
         jsonfile = json.load(fstream)
     return jsonfile
 
 
-def summary_table(fitfolder: pathlib.Path) -> pd.DataFrame:
+def addinfo_yaml(fitfolder: pathlib.Path) -> dict:
+    """Add required info to run the saved models."""
+    runcard = fitfolder.joinpath("runcard.yml")
+    runcard_content = yaml.load(runcard.read_text(), Loader=yaml.Loader)
+    compare_git_versions(runcard_content)
+    runcard_content["fit"] = str(fitfolder.absolute())
+    return runcard_content
+
+
+def _compute_chi2(expdata, fitpred, invcovmat) -> np.ndarray:
+    """Compute the Chi2 given the experimental data,
+    the fitted predictions, and the inverse covmats.
+
+    Parameters:
+    -----------
+    expdata: np.ndarray
+        array of experimental data
+    fitpred; np.array
+        array of NN fitted predictions
+    invcovmat: np.ndarray
+        array of covariance matrix
+
+    Returns:
+    --------
+    float:
+        value of the total chi2
+    """
+    diff_predictions = expdata - fitpred
+    right_dot = np.tensordot(invcovmat, tf.transpose(diff_predictions), axes=1)
+    return np.tensordot(diff_predictions, right_dot, axes=1)
+
+
+def compute_totchi2(**kwargs) -> tuple[float, dict]:
+    """Compute the total chi2 value. The total Chi2 is computed
+    by comparing the mean of the NN predictions with the central
+    data values.
+    """
+    models = load_models(**kwargs)
+
+    # Load the datasets all at once in order to rescale
+    _, datasets = load_experimental_data(
+        kwargs["experiments"],
+        input_scaling=kwargs.get("rescale_inputs", None),
+        kincuts=kwargs.get("kinematic_cuts", {}),
+        verbose=False,
+    )
+
+    # Compute the total Chi2 per dataset
+    totchi2_dataset = {"normalized": {}, "unnormalized": {}, "ndata": {}}
+    for _, data in datasets.items():
+        # NOTE: The kinematics below are scaled
+        kins = np.expand_dims(data.kinematics, axis=0)
+        # Loop over the Neural Network models
+        obs = []
+        for model in models:
+            prediction = model(kins)
+            prediction = prediction[0]  # remove batch dimension
+            obs.append(tf.einsum("ij,ij->i", prediction, data.coefficients))
+        obs_mean = np.asarray(obs).mean(axis=0)
+
+        # Compute the Inverse of the Covmat
+        invcovmat = np.linalg.inv(data.covmat)
+
+        # Compute the value of the Chi2
+        chi2tot = _compute_chi2(
+            expdata=data.central_values,
+            invcovmat=invcovmat,
+            fitpred=obs_mean,
+        )
+        totchi2_dataset["unnormalized"][data.name] = float(chi2tot)
+        totchi2_dataset["ndata"][data.name] = kins.shape[1]
+        totchi2_dataset["normalized"][data.name] = chi2tot / kins.shape[1]
+
+    # Compute total Chi2 for experimental datasets
+    totchi2_exp = sum(
+        [
+            v
+            for k, v in totchi2_dataset["unnormalized"].items()
+            if "_MATCHING" not in k
+        ]
+    )
+    totchi2_exp /= sum(
+        [v for k, v in totchi2_dataset["ndata"].items() if "_MATCHING" not in k]
+    )
+
+    return totchi2_exp, totchi2_dataset["normalized"]
+
+
+def summary_table(fitfolder: pathlib.Path, chi2tot: float) -> pd.DataFrame:
     """Generate the table containing the summary of chi2s info.
 
     Parameters:
@@ -72,6 +166,8 @@ def summary_table(fitfolder: pathlib.Path) -> pd.DataFrame:
 
     chi_real, chi_tot = np.asarray(chi_real), np.asarray(chi_tot)
     chi_tr, chi_vl = np.asarray(chi_tr), np.asarray(chi_vl)
+
+    summary["chi2tot"] = rf"{chi2tot:.4f}"
     summary["tr"] = rf"{chi_tr.mean():.4f} \( \pm \) {chi_tr.std():.4f}"
     summary["vl"] = rf"{chi_vl.mean():.4f} \( \pm \) {chi_vl.std():.4f}"
     summary["expr"] = rf"{chi_real.mean():.4f} \( \pm \) {chi_real.std():.4f}"
@@ -83,7 +179,7 @@ def summary_table(fitfolder: pathlib.Path) -> pd.DataFrame:
     return summtable
 
 
-def chi2_tables(fitfolder: pathlib.Path) -> pd.DataFrame:
+def chi2_tables(fitfolder: pathlib.Path, chi2_datasets: dict) -> pd.DataFrame:
     """Generate the table containing the chi2s info.
 
     Parameters:
@@ -116,6 +212,7 @@ def chi2_tables(fitfolder: pathlib.Path) -> pd.DataFrame:
     for dataset_name in chi2_dic:
         chi2_dic[dataset_name]["tr_chi2"] /= count
         chi2_dic[dataset_name]["exp_chi2"] /= count
+        chi2_dic[dataset_name]["tot_chi2"] = chi2_datasets[dataset_name]
 
     chi2table = pd.DataFrame.from_dict(chi2_dic, orient="index")
     chi2table.rename(columns=COLUMN_LABELS, inplace=True)
