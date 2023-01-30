@@ -26,16 +26,12 @@ experiments:
 - {dataset: BEBCWA59_F3_MATCHING, frac: 0.75}
 - {dataset: CCFR_F2_MATCHING, frac: 0.75}
 - {dataset: CCFR_F3_MATCHING, frac: 0.75}
-# - {dataset: CDHSW_DXDYNUU_MATCHING, frac: 0.75}
-# - {dataset: CDHSW_DXDYNUB_MATCHING, frac: 0.75}
+- {dataset: CDHSW_DXDYNUU_MATCHING, frac: 0.75}
+- {dataset: CDHSW_DXDYNUB_MATCHING, frac: 0.75}
 - {dataset: CHORUS_DXDYNUB_MATCHING, frac: 0.75}
 - {dataset: CHORUS_DXDYNUU_MATCHING, frac: 0.75}
-# - {dataset: CHORUS_F2_MATCHING, frac: 0.75}
-# - {dataset: CHORUS_F3_MATCHING, frac: 0.75}
 - {dataset: NUTEV_DXDYNUB_MATCHING, frac: 0.75}
 - {dataset: NUTEV_DXDYNUU_MATCHING, frac: 0.75}
-# - {dataset: NUTEV_F2_MATCHING, frac: 0.75}
-# - {dataset: NUTEV_F3_MATCHING, frac: 0.75}
 
 # Datasets not included in the fit but whose chi2
 # should be computed a posteriori
@@ -52,6 +48,7 @@ check_chi2_experiments:
 kinematic_cuts:
   q2max: 25.0 # Max-Q2 value for real datasets (to be named better)
   w2min: 3.50 # Minimum W2 value for all datasets
+  # q2yad_min: 40.0 # Minimum Q2 value of Yadism pseudodata
 
 # chi2 history stored for each `log_freq` epochs
 log_freq: 5000
