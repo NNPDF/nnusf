@@ -1,0 +1,6 @@
+sphinx
+furo
+m2r2
+sphinx-design
+sphinx-copybutton
+nbsphinx
