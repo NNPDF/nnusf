@@ -1,4 +1,4 @@
-Input datasets
+Adding new datasets
 ==============
 
 The following is not mandatory in order to run a fit given that all the
@@ -10,7 +10,7 @@ order to compute a given observable, and the matching predictions from
 Yadism.
 
 
-Adding a new dataset
+Implementation of the experimental dataset
 --------------------
 
 The implementation of a new data set starts by downloading the
@@ -49,12 +49,11 @@ To do so, just run the following:
 Yadism pseudo-data
 ------------------
 
-To generate the Yadism pseudo-data, we first need to generate the Yadism theory
-card, and in order to generate the run card we need to generate define the
+To generate the Yadism pseudo-data, we first need to generate a runcard for Yadism (also called a theory card) which requires us to define the
 kinematic grid :math:`\left(x, Q^2, y \right)` on which the predictions will
 be computed. Ideally, the kinematic grids should match a specific dataset for
 :math:`\left(x, y \right)` and only the :math:`Q^2` values are different since
-they have to be generate at medium-:math:`Q^2`. In order
+they have to be generated at medium-:math:`Q^2`. In order
 to generate the input kinematics, just run the following command:
 
 .. code-block:: bash
@@ -98,11 +97,11 @@ way:
 
 .. code-block:: bash
 
-   nu data proton_bc ./grids-PROTONBC_*_MATCHING.tar.gz ${PDF_NAME}
+   nnu data proton_bc ./grids-PROTONBC_*_MATCHING.tar.gz ${PDF_NAME}
 
 Once these are done the remaining thing to do is to generate the corresponding
 coefficients in the same way as for the real experimental data. For this we
-just need to run the same command as previously:
+just need to run the same command as before:
 
 .. code-block:: bash
 
