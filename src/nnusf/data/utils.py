@@ -480,6 +480,6 @@ def build_matching_covmat(
     # Build the actual covariance matrix
     pdf_covmat = np.cov(nrep_predictions[mask_predictions])
     th_covamt = np.cov(th_shift[mask_predictions])
-    covmat = np.sqrt(th_covamt**2 + pdf_covmat**2)
+    covmat = th_covamt + pdf_covmat
 
     return clip_covmat(covmat, dataset_name)
