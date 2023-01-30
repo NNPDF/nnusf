@@ -28,4 +28,4 @@ we fit the structure functions :math:`F_i^{k} \equiv F_i^{k} \left( x, Q^2, A \r
 for :math:`i=2, 3, L` and :math:`k =\nu, \bar{\nu}`. Note that for :math:`i = 3` we
 actually fit :math:`xF_3` instead of :math:`F_3`. The coefficients :math:`C_j` which
 depend on :math:`(x, Q^2, y)` are computed using Yadism and they have to match data
-point per data point to the experimental data sets.
+point per data point to the experimental datasets.

@@ -1,7 +1,7 @@
 Yadism predictions
 ==================
 
-Generating Yadism cards
+Generating Yadism theory cards
 -----------------------
 
 An alternative way to generate Yadism theory cards that will be used to
@@ -9,7 +9,7 @@ generate theory predictions is to use the :mod:`nnusf.theory.runcards` module.
 This is in particular convenient in order to generate standalone predictions
 that will be dumped into grids using the LHAPDF format.
 
-To generate the theory card for a given :math:`A` value, just run the following:
+To generate the theory card for a given atomic mass number :math:`A`, just run the following:
 
 .. code-block:: bash
 
@@ -31,7 +31,7 @@ the theory predictions will be computed.
 Generating PineAPPL grids
 -------------------------
 
-The theory card can now be passed to Yadism in order to generate the PineAPPL
+The theory card can now be passed to Yadism to calculate coefficients to be stored in PineAPPL
 grids. This can be done in the following way:
 
 .. code-block:: bash

@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Fit &amp; report" href="fitting.html" /><link rel="prev" title="Input datasets" href="datasets.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Fit &amp; report" href="fitting.html" /><link rel="prev" title="Adding new datasets" href="datasets.html" />
 
     <!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>Yadism predictions - NNSFν</title>
@@ -163,7 +163,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">🚀 Tutorials</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="datasets.html">Input datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets.html">Adding new datasets</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Yadism predictions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fitting.html">Fit &amp; report</a></li>
 </ul>
@@ -210,13 +210,13 @@
         <article role="main">
           <section id="yadism-predictions">
 <h1>Yadism predictions<a class="headerlink" href="#yadism-predictions" title="Permalink to this heading">#</a></h1>
-<section id="generating-yadism-cards">
-<h2>Generating Yadism cards<a class="headerlink" href="#generating-yadism-cards" title="Permalink to this heading">#</a></h2>
+<section id="generating-yadism-theory-cards">
+<h2>Generating Yadism theory cards<a class="headerlink" href="#generating-yadism-theory-cards" title="Permalink to this heading">#</a></h2>
 <p>An alternative way to generate Yadism theory cards that will be used to
 generate theory predictions is to use the <code class="xref py py-mod docutils literal notranslate"><span class="pre">nnusf.theory.runcards</span></code> module.
 This is in particular convenient in order to generate standalone predictions
 that will be dumped into grids using the LHAPDF format.</p>
-<p>To generate the theory card for a given <span class="math notranslate nohighlight">\(A\)</span> value, just run the following:</p>
+<p>To generate the theory card for a given atomic mass number <span class="math notranslate nohighlight">\(A\)</span>, just run the following:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nnu<span class="w"> </span>theory<span class="w"> </span>runcards<span class="w"> </span>yadknots<span class="w"> </span>-a<span class="w"> </span><span class="si">${</span><span class="nv">A_VALUE</span><span class="si">}</span><span class="w"> </span><span class="o">[</span>--q2_grids<span class="w"> </span><span class="s1">&#39;{&quot;min&quot;: 2, &quot;max&quot;: 1.96e8, &quot;num&quot;: 200}&#39;</span><span class="o">]</span>
 </pre></div>
 </div>
@@ -234,7 +234,7 @@ the numbers in the input dictionary.</p>
 </section>
 <section id="generating-pineappl-grids">
 <h2>Generating PineAPPL grids<a class="headerlink" href="#generating-pineappl-grids" title="Permalink to this heading">#</a></h2>
-<p>The theory card can now be passed to Yadism in order to generate the PineAPPL
+<p>The theory card can now be passed to Yadism to calculate coefficients to be stored in PineAPPL
 grids. This can be done in the following way:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nnu<span class="w"> </span>theory<span class="w"> </span>grids<span class="w"> </span>theory/runcards-yadknots_A<span class="si">${</span><span class="nv">A_VALUE</span><span class="si">}</span>.tar
 </pre></div>
@@ -276,7 +276,7 @@ which for use should be place in the LHAPDF data directory <code class="xref py 
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Input datasets</div>
+                <div class="title">Adding new datasets</div>
                 
               </div>
             </a>
@@ -311,7 +311,7 @@ which for use should be place in the LHAPDF data directory <code class="xref py 
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Yadism predictions</a><ul>
-<li><a class="reference internal" href="#generating-yadism-cards">Generating Yadism cards</a></li>
+<li><a class="reference internal" href="#generating-yadism-theory-cards">Generating Yadism theory cards</a></li>
 <li><a class="reference internal" href="#generating-pineappl-grids">Generating PineAPPL grids</a></li>
 <li><a class="reference internal" href="#dumping-predictions-as-lhapdf">Dumping predictions as LHAPDF</a></li>
 </ul>
