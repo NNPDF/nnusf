@@ -314,6 +314,7 @@ def apply_kinematic_cuts(table: pd.DataFrame, name: str, kincuts: dict):
     # Extract values of kinematic cuts if any
     w2min = kincuts.get("w2min", None)
     q2max = kincuts.get("q2max", None)
+    q2yad_min = kincuts.get("q2yad_min", None)
 
     # Perform cuts along the W2 direction
     table = table[table["W2"] >= w2min] if w2min else table
@@ -321,6 +322,10 @@ def apply_kinematic_cuts(table: pd.DataFrame, name: str, kincuts: dict):
     # For real datasets we also need to impose a maximum Q2 cut
     if "_MATCHING" not in name:
         table = table[table["Q2"] <= q2max] if q2max else table
+    # For Yadism Pseudodata we might want to select only Q2
+    # Values above some given threshold.
+    else:
+        table = table[table["Q2"] > q2yad_min] if q2yad_min else table
 
     return table
 
@@ -480,6 +485,6 @@ def build_matching_covmat(
     # Build the actual covariance matrix
     pdf_covmat = np.cov(nrep_predictions[mask_predictions])
     th_covamt = np.cov(th_shift[mask_predictions])
-    covmat = np.sqrt(th_covamt**2 + pdf_covmat**2)
+    covmat = th_covamt + pdf_covmat
 
     return clip_covmat(covmat, dataset_name)

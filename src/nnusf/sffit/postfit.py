@@ -16,7 +16,7 @@ def perform_postfit(
     ntot_rep: Optional[int] = None,
 ) -> None:
     if chi2_threshold is not None:
-        fitinfos = model.glob("replica_*")
+        fitinfos = sorted(model.glob("replica_*"))
         count_replica_status_pass = 0
 
         # Create a folder to store the results after postfit
