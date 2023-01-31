@@ -14,7 +14,7 @@ from pylab import *
 #---------------------------------------------------------
 #---------------------------------------------------------
 # General plot settings
-nx = 200
+nx = 500
 xmin = 1e-3
 xmax=1.0
 # set x grid
@@ -37,8 +37,8 @@ error_option=["mc_68cl","ct"]
 #----------------------------------------------
 #----------------------------------------------
 # Value of Q
-#q = 2 # gev
-q = 10 # gev
+q = 2 # gev
+#q = 10 # gev
 #----------------------------------------------
 #----------------------------------------------
 
@@ -835,33 +835,33 @@ for isf in range(nsf):
 
     # GENIE BY
     if(isf==0):
-        p1=ax.plot(genie_sf_x, genie_sf_f2,ls="solid",color=rescolors[3])
+        p1=ax.plot(genie_sf_x, genie_sf_f2,ls="solid",color=rescolors[3],lw=2)
     if(isf==1):
-        p1=ax.plot(genie_sf_x, genie_sf_f2_nubar,ls="solid",color=rescolors[3])
+        p1=ax.plot(genie_sf_x, genie_sf_f2_nubar,ls="solid",color=rescolors[3],lw=2)
     if(isf==2):
-        p1=ax.plot(genie_sf_x, genie_sf_f3,ls="solid",color=rescolors[3])
+        p1=ax.plot(genie_sf_x, genie_sf_f3,ls="solid",color=rescolors[3],lw=2)
     if(isf==3):
-        p1=ax.plot(genie_sf_x, genie_sf_f3_nubar,ls="solid",color=rescolors[3])
+        p1=ax.plot(genie_sf_x, genie_sf_f3_nubar,ls="solid",color=rescolors[3],lw=2)
 
     # GENIE BGR18
     if(isf==0):
-        p2=ax.plot(genie_sf_bgr_x, genie_sf_bgr_f2,ls="dashdot",color=rescolors[5])
+        p2=ax.plot(genie_sf_bgr_x, genie_sf_bgr_f2,ls="dashdot",color=rescolors[5],lw=2)
     if(isf==1):
-        p2=ax.plot(genie_sf_bgr_x, genie_sf_bgr_f2_nub,ls="dashdot",color=rescolors[5])
+        p2=ax.plot(genie_sf_bgr_x, genie_sf_bgr_f2_nub,ls="dashdot",color=rescolors[5],lw=2)
     if(isf==2):
-        p2=ax.plot(genie_sf_bgr_x, genie_sf_bgr_f3,ls="dashdot",color=rescolors[5])
+        p2=ax.plot(genie_sf_bgr_x, genie_sf_bgr_f3,ls="dashdot",color=rescolors[5],lw=2)
     if(isf==3):
-        p2=ax.plot(genie_sf_bgr_x, (-1)*genie_sf_bgr_f3_nub,ls="dashdot",color=rescolors[5])
+        p2=ax.plot(genie_sf_bgr_x, (-1)*genie_sf_bgr_f3_nub,ls="dashdot",color=rescolors[5],lw=2)
 
     # NNLO YADISM
     if(isf==0):
-        p3=ax.plot(yadism_sf_x, yadism_sf_f2_nnlo,ls="dashed",color=rescolors[4])
+        p3=ax.plot(yadism_sf_x, yadism_sf_f2_nlo,ls="dashed",color=rescolors[4],lw=2)
     if(isf==1):
-        p3=ax.plot(yadism_sf_x, yadism_sf_f2_nnlo_nubar,ls="dashed",color=rescolors[4])
+        p3=ax.plot(yadism_sf_x, yadism_sf_f2_nlo_nubar,ls="dashed",color=rescolors[4],lw=2)
     if(isf==2):
-        p3=ax.plot(yadism_sf_x, yadism_sf_f3_nnlo,ls="dashed",color=rescolors[4])
+        p3=ax.plot(yadism_sf_x, yadism_sf_f3_nlo,ls="dashed",color=rescolors[4],lw=2)
     if(isf==3):
-        p3=ax.plot(yadism_sf_x, yadism_sf_f3_nnlo_nubar,ls="dashed",color=rescolors[4])
+        p3=ax.plot(yadism_sf_x, yadism_sf_f3_nlo_nubar,ls="dashed",color=rescolors[4],lw=2)
     
     ax.set_xscale('log')
     ax.set_xlim(xmin,xmax)
@@ -871,18 +871,18 @@ for isf in range(nsf):
     ax.set_ylabel(labelpdf[isf],fontsize=17)
     ax.set_ylim(yranges[isf][0],yranges[isf][1])
     if(isf>-1):
-        ax.set_xlabel(r'$x$',fontsize=15)
+        ax.set_xlabel(r'$x$',fontsize=17)
     if(isf==0):
         if(q > 9.9 and q < 10.1):
-            ax.text(0.67,0.85,r'$Q=10~{\rm GeV}$',fontsize=14,transform=ax.transAxes)
+            ax.text(0.67,0.85,r'$Q=10~{\rm GeV}$',fontsize=17,transform=ax.transAxes)
         if(q > 1.9 and q < 2.1):
-            ax.text(0.67,0.85,r'$Q=2~{\rm GeV}$',fontsize=15,transform=ax.transAxes)
+            ax.text(0.67,0.85,r'$Q=2~{\rm GeV}$',fontsize=17,transform=ax.transAxes)
              
     if(isf==1):
         ax.legend([p1[0],p2[0],p3[0]],\
                   [r"{\sc Bodek-Yang}",\
                    r"{\sc BGR18}",\
-                   r"{\sc YADISM-NNLO}"],
+                   r"{\sc YADISM-NLO}"],
                   frameon="True",loc=3,prop={'size':12})
                         
 py.tight_layout(pad=1, w_pad=1, h_pad=1.0)
@@ -907,11 +907,11 @@ gs = gridspec.GridSpec(nrows,ncols)
 rescolors = py.rcParams['axes.prop_cycle'].by_key()['color']
 
 if(q > 1.9 and q < 2.1):
-    yranges=[[0,2.8],[0,1.0],[0,0.8],[0.7,1.30],[0.5,2.5],[0,1.5],\
-    [0,2.8],[-0.5,1.3],[0,0.8],[0.7,1.30],[0.5,2.0],[0,1.5]]
+    yranges=[[0.01,2.8],[0.001,1.0],[0.001,0.8],[0.71,1.30],[0.51,2.5],[0.001,1.5],\
+    [0.01,2.8],[-0.49,1.3],[0.01,0.8],[0.71,1.30],[0.51,2.0],[0.01,1.5]]
 if(q > 9.9 and q < 10.1):
-    yranges=[[0,4.8],[0,0.8],[0,1.0],[0.7,1.20],[0.5,1.3],[0,1.2],\
-    [0,4.8],[-0.8,1.5],[0,1.2],[0.7,1.20],[0.5,1.3],[0,1.2]]
+    yranges=[[0.01,4.5],[0.001,1.0],[0.001,0.8],[0.71,1.30],[0.51,2.5],[0.001,1.5],\
+    [0.01,4.5],[-0.49,1.3],[0.01,0.8],[0.71,1.30],[0.51,2.0],[0.01,1.5]]
 
 labelpdf=[r"$F_2^{\nu p}(x,Q)$",r"$xF_3^{\nu p}(x,Q)$",r"$F_L^{\nu p}(x,Q)$",\
           r"${\rm Ratio~to~NNLO}$",r"${\rm Ratio~to~NNLO}$",r"${\rm Ratio~to~NNLO}$",\
@@ -923,94 +923,94 @@ for isf in range(12):
     ax = py.subplot(gs[isf])
 
     if(isf==0):
-        p1=ax.plot(yadism_sf_x, yadism_sf_f2_lo,ls="dashed",color=rescolors[0])
-        p2=ax.plot(yadism_sf_x, yadism_sf_f2_nlo,ls="dashdot",color=rescolors[1])
-        p3=ax.plot(yadism_sf_x, yadism_sf_f2_nnlo,ls="solid",color=rescolors[2])
+        p1=ax.plot(yadism_sf_x, yadism_sf_f2_lo,ls="dashed",color=rescolors[0],lw=2)
+        p2=ax.plot(yadism_sf_x, yadism_sf_f2_nlo,ls="dashdot",color=rescolors[1],lw=2)
+        p3=ax.plot(yadism_sf_x, yadism_sf_f2_nnlo,ls="solid",color=rescolors[2],lw=2)
 
     if(isf==1):
-        p1=ax.plot(yadism_sf_x, yadism_sf_f3_lo,ls="dashed",color=rescolors[0])
-        p2=ax.plot(yadism_sf_x, yadism_sf_f3_nlo,ls="dashdot",color=rescolors[1])
-        p3=ax.plot(yadism_sf_x, yadism_sf_f3_nnlo,ls="solid",color=rescolors[2])
+        p1=ax.plot(yadism_sf_x, yadism_sf_f3_lo,ls="dashed",color=rescolors[0],lw=2)
+        p2=ax.plot(yadism_sf_x, yadism_sf_f3_nlo,ls="dashdot",color=rescolors[1],lw=2)
+        p3=ax.plot(yadism_sf_x, yadism_sf_f3_nnlo,ls="solid",color=rescolors[2],lw=2)
 
     if(isf==2):
-        p1=ax.plot(yadism_sf_x, yadism_sf_fl_lo,ls="dashed",color=rescolors[0])
-        p2=ax.plot(yadism_sf_x, yadism_sf_fl_nlo,ls="dashdot",color=rescolors[1])
-        p3=ax.plot(yadism_sf_x, yadism_sf_fl_nnlo,ls="solid",color=rescolors[2])
+        p1=ax.plot(yadism_sf_x, yadism_sf_fl_lo,ls="dashed",color=rescolors[0],lw=2)
+        p2=ax.plot(yadism_sf_x, yadism_sf_fl_nlo,ls="dashdot",color=rescolors[1],lw=2)
+        p3=ax.plot(yadism_sf_x, yadism_sf_fl_nnlo,ls="solid",color=rescolors[2],lw=2)
 
     if(isf==3):
-        p1=ax.plot(yadism_sf_x, yadism_sf_f2_lo/yadism_sf_f2_nnlo,ls="dashed",color=rescolors[0])
-        p2=ax.plot(yadism_sf_x, yadism_sf_f2_nlo/yadism_sf_f2_nnlo,ls="dashdot",color=rescolors[1])
-        p3=ax.plot(yadism_sf_x, yadism_sf_f2_nnlo/yadism_sf_f2_nnlo,ls="solid",color=rescolors[2])
+        p1=ax.plot(yadism_sf_x, yadism_sf_f2_lo/yadism_sf_f2_nnlo,ls="dashed",color=rescolors[0],lw=2)
+        p2=ax.plot(yadism_sf_x, yadism_sf_f2_nlo/yadism_sf_f2_nnlo,ls="dashdot",color=rescolors[1],lw=2)
+        p3=ax.plot(yadism_sf_x, yadism_sf_f2_nnlo/yadism_sf_f2_nnlo,ls="solid",color=rescolors[2],lw=2)
 
     if(isf==4):
-        p1=ax.plot(yadism_sf_x, yadism_sf_f3_lo/yadism_sf_f3_nnlo,ls="dashed",color=rescolors[0])
-        p2=ax.plot(yadism_sf_x, yadism_sf_f3_nlo/yadism_sf_f3_nnlo,ls="dashdot",color=rescolors[1])
-        p3=ax.plot(yadism_sf_x, yadism_sf_f3_nnlo/yadism_sf_f3_nnlo,ls="solid",color=rescolors[2])
+        p1=ax.plot(yadism_sf_x, yadism_sf_f3_lo/yadism_sf_f3_nnlo,ls="dashed",color=rescolors[0],lw=2)
+        p2=ax.plot(yadism_sf_x, yadism_sf_f3_nlo/yadism_sf_f3_nnlo,ls="dashdot",color=rescolors[1],lw=2)
+        p3=ax.plot(yadism_sf_x, yadism_sf_f3_nnlo/yadism_sf_f3_nnlo,ls="solid",color=rescolors[2],lw=2)
 
     if(isf==5):
-        p1=ax.plot(yadism_sf_x, yadism_sf_fl_lo/yadism_sf_fl_nnlo,ls="dashed",color=rescolors[0])
-        p2=ax.plot(yadism_sf_x, yadism_sf_fl_nlo/yadism_sf_fl_nnlo,ls="dashdot",color=rescolors[1])
-        p3=ax.plot(yadism_sf_x, yadism_sf_fl_nnlo/yadism_sf_fl_nnlo,ls="solid",color=rescolors[2])
+        p1=ax.plot(yadism_sf_x, yadism_sf_fl_lo/yadism_sf_fl_nnlo,ls="dashed",color=rescolors[0],lw=2)
+        p2=ax.plot(yadism_sf_x, yadism_sf_fl_nlo/yadism_sf_fl_nnlo,ls="dashdot",color=rescolors[1],lw=2)
+        p3=ax.plot(yadism_sf_x, yadism_sf_fl_nnlo/yadism_sf_fl_nnlo,ls="solid",color=rescolors[2],lw=2)
 
     if(isf==6):
-        p1=ax.plot(yadism_sf_x, yadism_sf_f2_lo_nubar,ls="dashed",color=rescolors[0])
-        p2=ax.plot(yadism_sf_x, yadism_sf_f2_nlo_nubar,ls="dashdot",color=rescolors[1])
-        p3=ax.plot(yadism_sf_x, yadism_sf_f2_nnlo_nubar,ls="solid",color=rescolors[2])
+        p1=ax.plot(yadism_sf_x, yadism_sf_f2_lo_nubar,ls="dashed",color=rescolors[0],lw=2)
+        p2=ax.plot(yadism_sf_x, yadism_sf_f2_nlo_nubar,ls="dashdot",color=rescolors[1],lw=2)
+        p3=ax.plot(yadism_sf_x, yadism_sf_f2_nnlo_nubar,ls="solid",color=rescolors[2],lw=2)
 
     if(isf==7):
-        p1=ax.plot(yadism_sf_x, yadism_sf_f3_lo_nubar,ls="dashed",color=rescolors[0])
-        p2=ax.plot(yadism_sf_x, yadism_sf_f3_nlo_nubar,ls="dashdot",color=rescolors[1])
-        p3=ax.plot(yadism_sf_x, yadism_sf_f3_nnlo_nubar,ls="solid",color=rescolors[2])
+        p1=ax.plot(yadism_sf_x, yadism_sf_f3_lo_nubar,ls="dashed",color=rescolors[0],lw=2)
+        p2=ax.plot(yadism_sf_x, yadism_sf_f3_nlo_nubar,ls="dashdot",color=rescolors[1],lw=2)
+        p3=ax.plot(yadism_sf_x, yadism_sf_f3_nnlo_nubar,ls="solid",color=rescolors[2],lw=2)
 
     if(isf==8):
-        p1=ax.plot(yadism_sf_x, yadism_sf_fl_lo_nubar,ls="dashed",color=rescolors[0])
-        p2=ax.plot(yadism_sf_x, yadism_sf_fl_nlo_nubar,ls="dashdot",color=rescolors[1])
-        p3=ax.plot(yadism_sf_x, yadism_sf_fl_nnlo_nubar,ls="solid",color=rescolors[2])
+        p1=ax.plot(yadism_sf_x, yadism_sf_fl_lo_nubar,ls="dashed",color=rescolors[0],lw=2)
+        p2=ax.plot(yadism_sf_x, yadism_sf_fl_nlo_nubar,ls="dashdot",color=rescolors[1],lw=2)
+        p3=ax.plot(yadism_sf_x, yadism_sf_fl_nnlo_nubar,ls="solid",color=rescolors[2],lw=2)
 
     if(isf==9):
-        p1=ax.plot(yadism_sf_x, yadism_sf_f2_lo_nubar/yadism_sf_f2_nnlo_nubar,ls="dashed",color=rescolors[0])
-        p2=ax.plot(yadism_sf_x, yadism_sf_f2_nlo_nubar/yadism_sf_f2_nnlo_nubar,ls="dashdot",color=rescolors[1])
-        p3=ax.plot(yadism_sf_x, yadism_sf_f2_nnlo_nubar/yadism_sf_f2_nnlo_nubar,ls="solid",color=rescolors[2])
+        p1=ax.plot(yadism_sf_x, yadism_sf_f2_lo_nubar/yadism_sf_f2_nnlo_nubar,ls="dashed",color=rescolors[0],lw=2)
+        p2=ax.plot(yadism_sf_x, yadism_sf_f2_nlo_nubar/yadism_sf_f2_nnlo_nubar,ls="dashdot",color=rescolors[1],lw=2)
+        p3=ax.plot(yadism_sf_x, yadism_sf_f2_nnlo_nubar/yadism_sf_f2_nnlo_nubar,ls="solid",color=rescolors[2],lw=2)
 
     if(isf==10):
-        p1=ax.plot(yadism_sf_x, yadism_sf_f3_lo_nubar/yadism_sf_f3_nnlo_nubar,ls="dashed",color=rescolors[0])
-        p2=ax.plot(yadism_sf_x, yadism_sf_f3_nlo_nubar/yadism_sf_f3_nnlo_nubar,ls="dashdot",color=rescolors[1])
-        p3=ax.plot(yadism_sf_x, yadism_sf_f3_nnlo_nubar/yadism_sf_f3_nnlo_nubar,ls="solid",color=rescolors[2])
+        p1=ax.plot(yadism_sf_x, yadism_sf_f3_lo_nubar/yadism_sf_f3_nnlo_nubar,ls="dashed",color=rescolors[0],lw=2)
+        p2=ax.plot(yadism_sf_x, yadism_sf_f3_nlo_nubar/yadism_sf_f3_nnlo_nubar,ls="dashdot",color=rescolors[1],lw=2)
+        p3=ax.plot(yadism_sf_x, yadism_sf_f3_nnlo_nubar/yadism_sf_f3_nnlo_nubar,ls="solid",color=rescolors[2],lw=2)
 
     if(isf==11):
-        p1=ax.plot(yadism_sf_x, yadism_sf_fl_lo_nubar/yadism_sf_fl_nnlo_nubar,ls="dashed",color=rescolors[0])
-        p2=ax.plot(yadism_sf_x, yadism_sf_fl_nlo_nubar/yadism_sf_fl_nnlo_nubar,ls="dashdot",color=rescolors[1])
-        p3=ax.plot(yadism_sf_x, yadism_sf_fl_nnlo_nubar/yadism_sf_fl_nnlo_nubar,ls="solid",color=rescolors[2])
+        p1=ax.plot(yadism_sf_x, yadism_sf_fl_lo_nubar/yadism_sf_fl_nnlo_nubar,ls="dashed",color=rescolors[0],lw=2)
+        p2=ax.plot(yadism_sf_x, yadism_sf_fl_nlo_nubar/yadism_sf_fl_nnlo_nubar,ls="dashdot",color=rescolors[1],lw=2)
+        p3=ax.plot(yadism_sf_x, yadism_sf_fl_nnlo_nubar/yadism_sf_fl_nnlo_nubar,ls="solid",color=rescolors[2],lw=2)
        
     
     ax.set_xscale('log')
     ax.set_xlim(xmin,0.7)
-    ax.tick_params(which='both',direction='in',labelsize=12,right=True)
+    ax.tick_params(which='both',direction='in',labelsize=14,right=True)
     ax.tick_params(which='major',length=7)
     ax.tick_params(which='minor',length=4)
     ax.set_ylabel(labelpdf[isf],fontsize=17)
     ax.set_ylim(yranges[isf][0],yranges[isf][1])
     if(isf>8):
-        ax.set_xlabel(r'$x$',fontsize=15)
+        ax.set_xlabel(r'$x$',fontsize=18)
     if(isf==0):
         if(q > 9.9 and q < 10.1):
             ax.text(0.57,0.87,r'$Q=10~{\rm GeV}$',\
-                    fontsize=16,transform=ax.transAxes)
+                    fontsize=18,transform=ax.transAxes)
         if(q > 1.9 and q < 2.1):
             ax.text(0.62,0.87,r'$Q=2~{\rm GeV}$',\
-                    fontsize=16,transform=ax.transAxes)
+                    fontsize=18,transform=ax.transAxes)
     if(isf==6):
         if(q > 9.9 and q < 10.1):
             ax.text(0.57,0.87,r'$Q=10~{\rm GeV}$',\
-                    fontsize=16,transform=ax.transAxes)
+                    fontsize=18,transform=ax.transAxes)
         if(q > 1.9 and q < 2.1):
             ax.text(0.62,0.87,r'$Q=2~{\rm GeV}$',\
-                    fontsize=16,transform=ax.transAxes)
+                    fontsize=18,transform=ax.transAxes)
 
     if(isf==0):
         ax.legend([p1[0],p2[0],p3[0]],\
                   [r"${\rm LO}$",r"${\rm NLO}$",r"${\rm NNLO}$"],
-                  frameon="True",loc=3,prop={'size':14})
+                  frameon="True",loc=3,prop={'size':16})
                         
 py.tight_layout(pad=1, w_pad=1, h_pad=1.0)
 py.savefig('StructureFunction-PerturbativeStab-xdep'+filelabel+'.pdf')
@@ -1240,10 +1240,10 @@ ax.set_ylim(0.8,1.3)
 ax.set_ylim(0.2,1.8)
 ax.set_xlabel(r'$x$',fontsize=15)
 #ax.text(0.70,0.10,r'$Q=10~{\rm GeV}$',fontsize=14,transform=ax.transAxes)
-ax.text(0.70,0.10,r'$Q=2~{\rm GeV}$',fontsize=14,transform=ax.transAxes)
+ax.text(0.68,0.10,r'$Q=2~{\rm GeV}$',fontsize=16,transform=ax.transAxes)
 
 ax.legend([p1[0],p2[0],p3[0],p4[0]],[r"$F_2^{\nu p}$",r"$F_2^{\bar{\nu} p}$",r"$xF_3^{\nu p}$",r"$xF_3^{\bar{\nu} p}$"], \
-          frameon="True",loc=2,prop={'size':11})
+          frameon="True",loc=2,prop={'size':12})
         
 py.tight_layout(pad=1, w_pad=1, h_pad=1.0)
 py.savefig('StructureFunction-xdep-Kfact'+filelabel+'.pdf')

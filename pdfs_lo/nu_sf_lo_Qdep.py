@@ -38,8 +38,8 @@ error_option=["mc_68cl","ct"]
 #----------------------------------------------
 #----------------------------------------------
 # Value of x
-x = 0.25
-#x = 0.0126
+#x = 0.25
+x = 0.0126
 #----------------------------------------------
 #----------------------------------------------
 
@@ -124,59 +124,94 @@ print(genie_bgr_sf_f3_nubar)
 print("\n Reading the YADISM structure functions \n")
 
 # Read YADISM inputs
-# x=0.0126
-if( x > 0.0125 and x < 0.0127):
-    yadism_lo_sf_f2=np.loadtxt("Yadism_data/LO_NNPDF40_yadism/F2_rep0_x0p0126.txt")
-    yadism_nnlo_sf_f2=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism/F2_rep0_x0p0126.txt")
-    yadism_lo_sf_f3=np.loadtxt("Yadism_data/LO_NNPDF40_yadism/F3_rep0_x0p0126.txt")
-    yadism_nnlo_sf_f3=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism/F3_rep0_x0p0126.txt")
 
-    yadism_lo_sf_f2_nubar=np.loadtxt("Yadism_data/LO_NNPDF40_yadism_nubar/F2_rep0_x0p0126.txt")
-    yadism_nnlo_sf_f2_nubar=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism_nubar/F2_rep0_x0p0126.txt")
-    yadism_lo_sf_f3_nubar=np.loadtxt("Yadism_data/LO_NNPDF40_yadism_nubar/F3_rep0_x0p0126.txt")
-    yadism_nnlo_sf_f3_nubar=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism_nubar/F3_rep0_x0p0126.txt")
+yadism_f2_lo_nu_p=np.loadtxt("Yadism_data_v2/neutrino/LO/predictions/F2.txt")
+yadism_f3_lo_nu_p=np.loadtxt("Yadism_data_v2/neutrino/LO/predictions/F3.txt")
+yadism_fl_lo_nu_p=np.loadtxt("Yadism_data_v2/neutrino/LO/predictions/FL.txt")
+yadism_f2_nlo_nu_p=np.loadtxt("Yadism_data_v2/neutrino/NLO/predictions/F2.txt")
+yadism_f3_nlo_nu_p=np.loadtxt("Yadism_data_v2/neutrino/NLO/predictions/F3.txt")
+yadism_fl_nlo_nu_p=np.loadtxt("Yadism_data_v2/neutrino/NLO/predictions/FL.txt")
+yadism_f2_nnlo_nu_p=np.loadtxt("Yadism_data_v2/neutrino/NNLO/predictions/F2.txt")
+yadism_f3_nnlo_nu_p=np.loadtxt("Yadism_data_v2/neutrino/NNLO/predictions/F3.txt")
+yadism_fl_nnlo_nu_p=np.loadtxt("Yadism_data_v2/neutrino/NNLO/predictions/FL.txt")
 
-# x =0.25
-if( x > 0.24 and x < 0.26):
-    # Neutrino
-    yadism_lo_sf_f2=np.loadtxt("Yadism_data/LO_NNPDF40_yadism/F2_rep0_x0p25.txt")
-    yadism_nnlo_sf_f2=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism/F2_rep0_x0p25.txt")
-    yadism_lo_sf_f3=np.loadtxt("Yadism_data/LO_NNPDF40_yadism/F3_rep0_x0p25.txt")
-    yadism_nnlo_sf_f3=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism/F3_rep0_x0p25.txt")
+yadism_f2_lo_nubar_p=np.loadtxt("Yadism_data_v2/antineutrino/LO/predictions/F2.txt")
+yadism_f3_lo_nubar_p=np.loadtxt("Yadism_data_v2/antineutrino/LO/predictions/F3.txt")
+yadism_fl_lo_nubar_p=np.loadtxt("Yadism_data_v2/antineutrino/LO/predictions/FL.txt")
+yadism_f2_nlo_nubar_p=np.loadtxt("Yadism_data_v2/antineutrino/NLO/predictions/F2.txt")
+yadism_f3_nlo_nubar_p=np.loadtxt("Yadism_data_v2/antineutrino/NLO/predictions/F3.txt")
+yadism_fl_nlo_nubar_p=np.loadtxt("Yadism_data_v2/antineutrino/NLO/predictions/FL.txt")
+yadism_f2_nnlo_nubar_p=np.loadtxt("Yadism_data_v2/antineutrino/NNLO/predictions/F2.txt")
+yadism_f3_nnlo_nubar_p=np.loadtxt("Yadism_data_v2/antineutrino/NNLO/predictions/F3.txt")
+yadism_fl_nnlo_nubar_p=np.loadtxt("Yadism_data_v2/antineutrino/NNLO/predictions/FL.txt")
 
-    # Antineutrino
-    yadism_lo_sf_f2_nubar=np.loadtxt("Yadism_data/LO_NNPDF40_yadism_nubar/F2_rep0_x0p25_nubar.txt")
-    yadism_nnlo_sf_f2_nubar=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism_nubar/F2_rep0_x0p25_nubar.txt")
-    yadism_lo_sf_f3_nubar=np.loadtxt("Yadism_data/LO_NNPDF40_yadism_nubar/F3_rep0_x0p25_nubar.txt")
-    yadism_nnlo_sf_f3_nubar=np.loadtxt("Yadism_data/NNLO_NNPDF40_yadism_nubar/F3_rep0_x0p25_nubar.txt")
 
 nq2_yadism=20
-yadism_sf_q=np.zeros(nq2_yadism)
-yadism_f2=np.zeros(nq2_yadism)
-yadism_f3=np.zeros(nq2_yadism)
-yadism_nnlo_f2=np.zeros(nq2_yadism)
-yadism_nnlo_f3=np.zeros(nq2_yadism)
-yadism_f2_nubar=np.zeros(nq2_yadism)
-yadism_f3_nubar=np.zeros(nq2_yadism)
-yadism_nnlo_f2_nubar=np.zeros(nq2_yadism)
-yadism_nnlo_f3_nubar=np.zeros(nq2_yadism)
+nx_yadism =30
+yadism_sf_q = np.zeros(nq2_yadism)
+yadism_sf_f2_lo=np.zeros(nq2_yadism)
+yadism_sf_f3_lo=np.zeros(nq2_yadism)
+yadism_sf_fl_lo=np.zeros(nq2_yadism)
+yadism_sf_f2_nlo=np.zeros(nq2_yadism)
+yadism_sf_f3_nlo=np.zeros(nq2_yadism)
+yadism_sf_fl_nlo=np.zeros(nq2_yadism)
+yadism_sf_f2_nnlo=np.zeros(nq2_yadism)
+yadism_sf_f3_nnlo=np.zeros(nq2_yadism)
+yadism_sf_fl_nnlo=np.zeros(nq2_yadism)
+yadism_sf_f2_lo_nubar=np.zeros(nq2_yadism)
+yadism_sf_f3_lo_nubar=np.zeros(nq2_yadism)
+yadism_sf_fl_lo_nubar=np.zeros(nq2_yadism)
+yadism_sf_f2_nlo_nubar=np.zeros(nq2_yadism)
+yadism_sf_f3_nlo_nubar=np.zeros(nq2_yadism)
+yadism_sf_fl_nlo_nubar=np.zeros(nq2_yadism)
+yadism_sf_f2_nnlo_nubar=np.zeros(nq2_yadism)
+yadism_sf_f3_nnlo_nubar=np.zeros(nq2_yadism)
+yadism_sf_fl_nnlo_nubar=np.zeros(nq2_yadism)
 
+
+if(x > 0.0125 and x < 0.0127):
+    ix_yadism=10
+if(x > 0.24 and x < 0.26):
+    ix_yadism=23  
+
+# Checkx
+print(yadism_f2_lo_nu_p)
+x_check=yadism_f2_lo_nu_p[nq2_yadism*ix_yadism][1]
+reldiff=abs( (x_check-x) /x )
+print(x_check," ",x)
+if(reldiff > 0.04):
+    print("x mismatch")
+    print(x_check," ",x, " ",reldiff)
+    exit()
+
+icount=0
 for iq2 in range(nq2_yadism):
-    yadism_sf_q[iq2] = math.sqrt( yadism_lo_sf_f2[iq2][2] )
-    yadism_f2[iq2] = yadism_lo_sf_f2[iq2][3]
-    yadism_f3[iq2] = yadism_lo_sf_f3[iq2][3]
-    yadism_nnlo_f2[iq2] = yadism_nnlo_sf_f2[iq2][3]
-    yadism_nnlo_f3[iq2] = yadism_nnlo_sf_f3[iq2][3]
-    yadism_f2_nubar[iq2] = yadism_lo_sf_f2_nubar[iq2][3]
-    yadism_f3_nubar[iq2] = yadism_lo_sf_f3_nubar[iq2][3]
-    yadism_nnlo_f2_nubar[iq2] = yadism_nnlo_sf_f2_nubar[iq2][3]
-    yadism_nnlo_f3_nubar[iq2] = yadism_nnlo_sf_f3_nubar[iq2][3]
-   
-#print(yadism_sf_q)    
-#print(yadism_sf_f2)
-print(yadism_nnlo_f3)
-print(yadism_f3)
-#exit()
+    index = nq2_yadism*ix_yadism + iq2
+    print(iq2," ",index," ",yadism_f2_lo_nu_p[index][1]," ",math.pow(yadism_f2_lo_nu_p[index][2],0.5))
+    # Neutrino SFs
+    yadism_sf_q[iq2] = math.pow(yadism_f2_lo_nu_p[index][2],0.5)
+    yadism_sf_f2_lo[iq2] = yadism_f2_lo_nu_p[index][3]
+    yadism_sf_f3_lo[iq2] = yadism_f3_lo_nu_p[index][3]
+    yadism_sf_fl_lo[iq2] = yadism_fl_lo_nu_p[index][3]
+    yadism_sf_f2_nlo[iq2] = yadism_f2_nlo_nu_p[index][3]
+    yadism_sf_f3_nlo[iq2] = yadism_f3_nlo_nu_p[index][3]
+    yadism_sf_fl_nlo[iq2] = yadism_fl_nlo_nu_p[index][3]
+    yadism_sf_f2_nnlo[iq2] = yadism_f2_nnlo_nu_p[index][3]
+    yadism_sf_f3_nnlo[iq2] = yadism_f3_nnlo_nu_p[index][3]
+    yadism_sf_fl_nnlo[iq2] = yadism_fl_nnlo_nu_p[index][3]
+    # Anti-Neutrino SFs
+    yadism_sf_f2_lo_nubar[iq2] = yadism_f2_lo_nubar_p[index][3]
+    yadism_sf_f3_lo_nubar[iq2] = yadism_f3_lo_nubar_p[index][3]
+    yadism_sf_fl_lo_nubar[iq2] = yadism_fl_lo_nubar_p[index][3]
+    yadism_sf_f2_nlo_nubar[iq2] = yadism_f2_nlo_nubar_p[index][3]
+    yadism_sf_f3_nlo_nubar[iq2] = yadism_f3_nlo_nubar_p[index][3]
+    yadism_sf_fl_nlo_nubar[iq2] = yadism_fl_nlo_nubar_p[index][3]
+    yadism_sf_f2_nnlo_nubar[iq2] = yadism_f2_nnlo_nubar_p[index][3]
+    yadism_sf_f3_nnlo_nubar[iq2] = yadism_f3_nnlo_nubar_p[index][3]
+    yadism_sf_fl_nnlo_nubar[iq2] = yadism_fl_nnlo_nubar_p[index][3] 
+    icount = icount+1
+
+
 
 #-------------------------------------------------------------
 #-------------------------------------------------------------
@@ -602,13 +637,13 @@ for isf in range(nsf):
     
     # LO YADISM
     if(isf==0):
-        p3=ax.plot(yadism_sf_q, yadism_f2,ls="dashed",color=rescolors[1])
+        p3=ax.plot(yadism_sf_q, yadism_sf_f2_lo,ls="dashed",color=rescolors[1])
     if(isf==1):
-        p3=ax.plot(yadism_sf_q, yadism_f2_nubar,ls="dashed",color=rescolors[1])
+        p3=ax.plot(yadism_sf_q, yadism_sf_f2_lo_nubar,ls="dashed",color=rescolors[1])
     if(isf==2):
-        p3=ax.plot(yadism_sf_q, yadism_f3,ls="dashed",color=rescolors[1])
+        p3=ax.plot(yadism_sf_q, yadism_sf_f3_lo,ls="dashed",color=rescolors[1])
     if(isf==3):
-        p3=ax.plot(yadism_sf_q, yadism_f3_nubar,ls="dashed",color=rescolors[1])
+        p3=ax.plot(yadism_sf_q, yadism_sf_f3_lo_nubar,ls="dashed",color=rescolors[1])
         
     # LO SF + GRV98
     p4=ax.plot(Q,p2_mid[isf],ls="dotted",color=rescolors[2],lw=3)
@@ -677,13 +712,13 @@ for isf in range(nsf):
 
     # LO YADISM
     if(isf==0):
-        p1=ax.plot(yadism_sf_q, yadism_f2,ls="dashed",color=rescolors[0])
+        p1=ax.plot(yadism_sf_q, yadism_sf_f2_lo,ls="dashed",color=rescolors[0])
     if(isf==1):
-        p1=ax.plot(yadism_sf_q, yadism_f2_nubar,ls="dashed",color=rescolors[0])
+        p1=ax.plot(yadism_sf_q, yadism_sf_f2_lo_nubar,ls="dashed",color=rescolors[0])
     if(isf==2):
-        p1=ax.plot(yadism_sf_q, yadism_f3,ls="dashed",color=rescolors[0])
+        p1=ax.plot(yadism_sf_q, yadism_sf_f3_lo,ls="dashed",color=rescolors[0])
     if(isf==3):
-        p1=ax.plot(yadism_sf_q, yadism_f3_nubar,ls="dashed",color=rescolors[0])
+        p1=ax.plot(yadism_sf_q, yadism_sf_f3_lo_nubar,ls="dashed",color=rescolors[0])
 
     # GENIE BGR18 (NNPDF3.1 NLO)
     if(isf==0):
@@ -697,13 +732,13 @@ for isf in range(nsf):
 
     # NNLO YADISM
     if(isf==0):
-        p3=ax.plot(yadism_sf_q, yadism_nnlo_f2,ls="solid",color=rescolors[2])
+        p3=ax.plot(yadism_sf_q, yadism_sf_f2_nnlo,ls="solid",color=rescolors[2])
     if(isf==1):
-        p3=ax.plot(yadism_sf_q, yadism_nnlo_f2_nubar,ls="solid",color=rescolors[2])
+        p3=ax.plot(yadism_sf_q, yadism_sf_f2_nnlo_nubar,ls="solid",color=rescolors[2])
     if(isf==2):
-        p3=ax.plot(yadism_sf_q, yadism_nnlo_f3,ls="solid",color=rescolors[2])
+        p3=ax.plot(yadism_sf_q, yadism_sf_f3_nnlo,ls="solid",color=rescolors[2])
     if(isf==3):
-        p3=ax.plot(yadism_sf_q, yadism_nnlo_f3_nubar,ls="solid",color=rescolors[2])
+        p3=ax.plot(yadism_sf_q, yadism_sf_f3_nnlo_nubar,ls="solid",color=rescolors[2])
         
     ax.set_xscale('linear')
     ax.set_xlim(qmin,qmax)
@@ -758,56 +793,56 @@ for isf in range(nsf):
         
     # GENIE BY
     if(isf==0):
-        p1=ax.plot(genie_sf_q, genie_sf_f2,ls="solid",color=rescolors[3])
+        p1=ax.plot(genie_sf_q, genie_sf_f2,ls="solid",color=rescolors[3],lw=2)
     if(isf==1):
-        p1=ax.plot(genie_sf_q, genie_sf_f2_nubar,ls="solid",color=rescolors[3])
+        p1=ax.plot(genie_sf_q, genie_sf_f2_nubar,ls="solid",color=rescolors[3],lw=2)
     if(isf==2):
-        p1=ax.plot(genie_sf_q, genie_sf_f3,ls="solid",color=rescolors[3])
+        p1=ax.plot(genie_sf_q, genie_sf_f3,ls="solid",color=rescolors[3],lw=2)
     if(isf==3):
-        p1=ax.plot(genie_sf_q, genie_sf_f3_nubar,ls="solid",color=rescolors[3])
+        p1=ax.plot(genie_sf_q, genie_sf_f3_nubar,ls="solid",color=rescolors[3],lw=2)
 
      # GENIE BGR18
     if(isf==0):
-        p2=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f2,ls="dashdot",color=rescolors[5])
+        p2=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f2,ls="dashdot",color=rescolors[5],lw=2)
     if(isf==1):
-        p2=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f2_nubar,ls="dashdot",color=rescolors[5])
+        p2=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f2_nubar,ls="dashdot",color=rescolors[5],lw=2)
     if(isf==2):
-        p2=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f3,ls="dashdot",color=rescolors[5])
+        p2=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f3,ls="dashdot",color=rescolors[5],lw=2)
     if(isf==3):
-        p2=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f3_nubar,ls="dashdot",color=rescolors[5])
+        p2=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f3_nubar,ls="dashdot",color=rescolors[5],lw=2)
 
     # NNLO YADISM
     if(isf==0):
-        p3=ax.plot(yadism_sf_q, yadism_nnlo_f2,ls="dashed",color=rescolors[4])
+        p3=ax.plot(yadism_sf_q, yadism_sf_f2_nlo,ls="dashed",color=rescolors[4],lw=2)
     if(isf==1):
-        p3=ax.plot(yadism_sf_q, yadism_nnlo_f2_nubar,ls="dashed",color=rescolors[4])
+        p3=ax.plot(yadism_sf_q, yadism_sf_f2_nlo_nubar,ls="dashed",color=rescolors[4],lw=2)
     if(isf==2):
-        p3=ax.plot(yadism_sf_q, yadism_nnlo_f3,ls="dashed",color=rescolors[4])
+        p3=ax.plot(yadism_sf_q, yadism_sf_f3_nlo,ls="dashed",color=rescolors[4],lw=2)
     if(isf==3):
-        p3=ax.plot(yadism_sf_q, yadism_nnlo_f3_nubar,ls="dashed",color=rescolors[4])
+        p3=ax.plot(yadism_sf_q, yadism_sf_f3_nlo_nubar,ls="dashed",color=rescolors[4],lw=2)
 
     ax.set_xscale('linear')
     ax.set_xlim(qmin,qmax)
-    ax.tick_params(which='both',direction='in',labelsize=12,right=True)
+    ax.tick_params(which='both',direction='in',labelsize=13,right=True)
     ax.tick_params(which='major',length=7)
     ax.tick_params(which='minor',length=4)
     ax.set_ylabel(labelpdf[isf],fontsize=17)
     ax.set_ylim(yranges[isf][0],yranges[isf][1])
-    ax.set_xlabel(r'$Q~({\rm GeV})$',fontsize=15)
+    ax.set_xlabel(r'$Q~({\rm GeV})$',fontsize=16)
 
     if( x > 0.0125 and x < 0.0127):
         if(isf==0):
-            ax.text(0.05,0.87,r'$x=0.0126$',fontsize=16,transform=ax.transAxes)
+            ax.text(0.05,0.87,r'$x=0.0126$',fontsize=18,transform=ax.transAxes)
     if( x > 0.24 and x < 0.26):
         if(isf==0):
-            ax.text(0.65,0.85,r'$x=0.25$',fontsize=17,transform=ax.transAxes)
+            ax.text(0.65,0.85,r'$x=0.25$',fontsize=18,transform=ax.transAxes)
     
     if(isf==1):
         ax.legend([p1[0],p2[0],p3[0]],\
                   [r"{\sc Bodek-Yang}",\
                    r"{\sc BGR18}",\
-                   r"{\sc YADISM-NNLO}"],
-                  frameon="True",loc=3,prop={'size':12})
+                   r"{\sc YADISM-NLO}"],
+                  frameon="True",loc=4,prop={'size':12})
 
 py.tight_layout(pad=1, w_pad=1, h_pad=1.0)
 py.savefig('StructureFunction-ComparisonsPreFit'+filelabel+'.pdf')
@@ -838,33 +873,33 @@ for isf in range(nsf):
         
     # GENIE BY
     if(isf==0):
-        p1=ax.plot(genie_sf_q, genie_sf_f2,ls="solid",color=rescolors[3])
+        p1=ax.plot(genie_sf_q, genie_sf_f2,ls="solid",color=rescolors[3],lw=2)
     if(isf==1):
-        p1=ax.plot(genie_sf_q, genie_sf_f2_nubar,ls="solid",color=rescolors[3])
+        p1=ax.plot(genie_sf_q, genie_sf_f2_nubar,ls="solid",color=rescolors[3],lw=2)
     if(isf==2):
-        p1=ax.plot(genie_sf_q, genie_sf_f3,ls="solid",color=rescolors[3])
+        p1=ax.plot(genie_sf_q, genie_sf_f3,ls="solid",color=rescolors[3],lw=2)
     if(isf==3):
-        p1=ax.plot(genie_sf_q, genie_sf_f3_nubar,ls="solid",color=rescolors[3])
+        p1=ax.plot(genie_sf_q, genie_sf_f3_nubar,ls="solid",color=rescolors[3],lw=2)
 
      # GENIE BGR18
     if(isf==0):
-        p2=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f2,ls="dashdot",color=rescolors[5])
+        p2=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f2,ls="dashdot",color=rescolors[5],lw=2)
     if(isf==1):
-        p2=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f2_nubar,ls="dashdot",color=rescolors[5])
+        p2=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f2_nubar,ls="dashdot",color=rescolors[5],lw=2)
     if(isf==2):
-        p2=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f3,ls="dashdot",color=rescolors[5])
+        p2=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f3,ls="dashdot",color=rescolors[5],lw=2)
     if(isf==3):
-        p2=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f3_nubar,ls="dashdot",color=rescolors[5])
+        p2=ax.plot(genie_bgr_sf_q, genie_bgr_sf_f3_nubar,ls="dashdot",color=rescolors[5],lw=2)
 
-    # NNLO YADISM
+    # NLO YADISM
     if(isf==0):
-        p3=ax.plot(yadism_sf_q, yadism_nnlo_f2,ls="dashed",color=rescolors[4])
+        p3=ax.plot(yadism_sf_q, yadism_sf_f2_nnlo,ls="dashed",color=rescolors[4],lw=2)
     if(isf==1):
-        p3=ax.plot(yadism_sf_q, yadism_nnlo_f2_nubar,ls="dashed",color=rescolors[4])
+        p3=ax.plot(yadism_sf_q, yadism_sf_f2_nnlo_nubar,ls="dashed",color=rescolors[4],lw=2)
     if(isf==2):
-        p3=ax.plot(yadism_sf_q, yadism_nnlo_f3,ls="dashed",color=rescolors[4])
+        p3=ax.plot(yadism_sf_q, yadism_sf_f3_nnlo,ls="dashed",color=rescolors[4],lw=2)
     if(isf==3):
-        p3=ax.plot(yadism_sf_q, yadism_nnlo_f3_nubar,ls="dashed",color=rescolors[4])
+        p3=ax.plot(yadism_sf_q, yadism_sf_f3_nnlo_nubar,ls="dashed",color=rescolors[4],lw=2)
 
     ## NNSF machine learning parametrisation
     if(isf==0):
