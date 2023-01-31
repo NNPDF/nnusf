@@ -4,9 +4,7 @@ import pathlib
 
 import click
 
-from nnusf.theory.bodek_yang.cuts import q2cut
-
-from ..plot import covmat, fit, kinematics, matching, sf
+from ..plot import covmat, fit, kinematics, matching, sf, th_covmat
 from ..theory import defs
 from . import base
 
@@ -16,17 +14,20 @@ def subcommand():
     """Provide plot utilities."""
 
 
-@subcommand.command("kin")
-@click.argument(
-    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
-)
-@click.option(
+dest = click.option(
     "-d",
     "--destination",
     type=click.Path(path_type=pathlib.Path),
     default=pathlib.Path.cwd().absolute() / "plots",
     help="Alternative destination path to store the resulting plots (default: $PWD/plots).",
 )
+
+
+@subcommand.command("kin")
+@click.argument(
+    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
+)
+@dest
 @click.option(
     "--grouping",
     type=click.Choice(["exp", "dataset"], case_sensitive=False),
@@ -84,45 +85,41 @@ def sub_kinematic(
     )
 
 
-@subcommand.command("covmat")
-@click.argument(
-    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
-)
-@click.option(
-    "-d",
-    "--destination",
-    type=click.Path(path_type=pathlib.Path),
-    default=pathlib.Path.cwd().absolute() / "plots",
-    help="Alternative destination path to store the resulting plots (default: $PWD/plots).",
-)
-@click.option(
+inverse = click.option(
     "-i",
     "--inverse",
     is_flag=True,
     help="Use inverse covariance matrix instead.",
 )
-@click.option(
+norm = click.option(
     "-n/-N",
     "--norm/--no-norm",
     default=True,
     help="Normalize covariance matrix with central values (default: True).",
 )
-@click.option(
+cuts = click.option(
     "-c",
     "--cuts",
     default=None,
     help="""Stringified dictionary of cuts, e.g. '{"Q2": {"min": 1.65}, "W2": {"min": 3.5}}'.""",
 )
+
+
+@subcommand.command("covmat")
+@click.argument(
+    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
+)
+@dest
+@inverse
+@norm
+@cuts
 @click.option(
     "-z",
     "--individual_data",
     is_flag=True,
     help="Plot the individual datasets.",
 )
-@click.option(
-    "-l", "--symlog", is_flag=True, help="Plot in symmetric logarithmic scale."
-)
-def sub_covmat(data, destination, inverse, norm, cuts, individual_data, symlog):
+def sub_covmat(data, destination, inverse, norm, cuts, individual_data):
     """Generate covariance matrix heatmap.
 
     The operation is repeated for each DATA path provided (multiple values allowed),
@@ -146,20 +143,13 @@ def sub_covmat(data, destination, inverse, norm, cuts, individual_data, symlog):
         norm=norm,
         cuts=cuts,
         individual_data=individual_data,
-        symlog=symlog,
     )
 
 
 @subcommand.command("fit")
 @click.argument("model", type=click.Path(exists=True, path_type=pathlib.Path))
 @click.argument("runcard", type=click.Path(exists=True, path_type=pathlib.Path))
-@click.option(
-    "-d",
-    "--destination",
-    type=click.Path(path_type=pathlib.Path),
-    default=pathlib.Path.cwd().absolute() / "plots",
-    help="Alternative destination path to store the resulting plots (default: $PWD/plots).",
-)
+@dest
 def sub_fit(model, runcard, destination):
     """Plot predictions from the fit and/or compare them to the experimental
     measurements. The command takes two positional arguments and one optional
@@ -183,13 +173,7 @@ sfkinds = list(defs.sfmap.keys())
     default=sfkinds,
     help="Structure functions kinds to be plotted",
 )
-@click.option(
-    "-d",
-    "--destination",
-    type=click.Path(path_type=pathlib.Path),
-    default=pathlib.Path.cwd().absolute() / "plots",
-    help="Alternative destination path to store the resulting plots (default: $PWD/plots).",
-)
+@dest
 def sub_sf(dataset, kind, destination):
     """Plots structure functions."""
 
@@ -198,16 +182,35 @@ def sub_sf(dataset, kind, destination):
 
 @subcommand.command("matching_dataset")
 @click.argument("dataset", type=click.Path(path_type=pathlib.Path, exists=True))
-@click.option(
-    "-d",
-    "--destination",
-    type=click.Path(path_type=pathlib.Path),
-    default=pathlib.Path.cwd().absolute() / "plots",
-    help="Alternative destination path to store the resulting plots (default: $PWD/plots).",
-)
+@dest
 def sub_matching_dataset(dataset, destination):
     """Plots the matching datasets along with the actual data.
 
     eg: nnu plot matching_dataset commondata/data/DATA_NUTEV_F2_MATCHING.csv
     """
     matching.main(dataset, destination)
+
+
+@subcommand.command("th_covmat")
+@click.argument(
+    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
+)
+@dest
+@inverse
+@norm
+@cuts
+def sub_covmat(data, destination, inverse, norm, cuts):
+    """Generate theory covariance matrix heatmap.
+
+    The operation is repeated for each MATCHING DATA path provided (multiple values allowed),
+    e.g.:
+
+        nnu plot th_covmat commondata/data/*
+    """
+    th_covmat.main(
+        data,
+        destination,
+        inverse=inverse,
+        norm=norm,
+        cuts=cuts,
+    )

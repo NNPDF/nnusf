@@ -35,19 +35,26 @@ def sub_run(runcard, replica, destination):
 @subcommand.command("postfit")
 @click.argument("model", type=click.Path(exists=True, path_type=pathlib.Path))
 @click.option(
+    "-n",
+    "--nrep",
+    default=None,
+    type=int,
+    help="""Number of of final replicas""",
+)
+@click.option(
     "-t",
     "--threshold",
     default=None,
     help="""Stringified dictionary containing chis threshold"""
     """" e.g. '{"tr_max": 5, "vl_max": 5}'.""",
 )
-def sub_postfit(model, threshold):
+def sub_postfit(model, threshold, nrep):
     """Perform a postfit on a fit folder by discarding the replica
     that does satisfy some criteria.
     """
     if threshold is not None:
         threshold = eval(threshold)
-    postfit.main(model, chi2_threshold=threshold)
+    postfit.main(model, chi2_threshold=threshold, ntot_rep=nrep)
 
 
 @subcommand.command("dump_grids")

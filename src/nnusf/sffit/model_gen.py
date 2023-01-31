@@ -44,7 +44,7 @@ def generate_models(
     # make the dense layers
     dense_layers = []
     for i, (units, activation) in enumerate(
-        zip(units_per_layer, activation_per_layer)
+        zip(units_per_layer, activation_per_layer, strict=True)
     ):
         initializer = tf.keras.initializers.GlorotUniform(
             seed=np.random.randint(0, pow(2, 31)) + i
@@ -64,7 +64,17 @@ def generate_models(
 
     # Connect all the HIDDEN dense layers in the model
     def sequential(layer_input):
-        dense_nest = dense_layers[0](layer_input)
+        # make x-grid logarithmic
+        unstacked_inputs = tf.unstack(layer_input, axis=2)
+        log_inp = tf.stack(
+            [
+                tf.math.log(unstacked_inputs[0]),
+                unstacked_inputs[1],
+                unstacked_inputs[2],
+            ],
+            axis=2,
+        )
+        dense_nest = dense_layers[0](log_inp)
         for dense_layer in dense_layers[1:]:
             dense_nest = dense_layer(dense_nest)
         dense_nest = sf_output(dense_nest)
