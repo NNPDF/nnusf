@@ -8,7 +8,6 @@ import pandas as pd
 import yaml
 
 from .genfiles import (
-    _compute_chi2,
     addinfo_yaml,
     additional_plots,
     chi2_tables,
@@ -132,11 +131,11 @@ def main(fitfolder: pathlib.Path, **metadata) -> None:
 
     # Compute the total Chi2 from the trained model
     cardrun = addinfo_yaml(fitfolder=fitfolder)
-    totchi2, nchi2 = compute_totchi2(**cardrun)
+    totchi2, normalized_chi2 = compute_totchi2(**cardrun)
 
     # Construct the Chi2 tables & generate metadata
     summtable = summary_table(fitfolder=fitfolder, chi2tot=totchi2)
-    chi2table = chi2_tables(fitfolder=fitfolder, chi2_datasets=nchi2)
+    chi2table = chi2_tables(fitfolder=fitfolder, chi2_datasets=normalized_chi2)
     generate_metadata(fitfolder, **metadata)
 
     # Construct the paths to the corresponding folders
