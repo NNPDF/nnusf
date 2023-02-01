@@ -45,6 +45,19 @@ class InputError(Exception):
     pass
 
 
+def _check_validity_models(models: list) -> None:
+    """Check if a model actually exists.
+
+    Parameters:
+    -----------
+    models: list
+        list of models
+    """
+    if len(models) == 0:
+        _logger.error("No model available")
+        return
+
+
 def save_figs(
     figure: Figure, filename: pathlib.Path, formats: list = [".png", ".pdf"]
 ) -> None:
@@ -256,11 +269,12 @@ def save_predictions_txt(**kwargs):
 
 
 def prediction_data_comparison(**kwargs):
+    """Producing plots comparing the data (experimental & Yadism) with
+    the Neural Network Predictions.
+    """
     models = load_models(**kwargs)
     _logger.info("Models successfully loaded.")
-    if len(models) == 0:
-        _logger.error("No model available")
-        return
+    _check_validity_models(models)
 
     # Load the datasets all at once in order to rescale
     raw_datasets, datasets = load_experimental_data(
@@ -274,7 +288,7 @@ def prediction_data_comparison(**kwargs):
 
     count_plots = 0
     for experiment, data in datasets.items():
-        _logger.info(f"Plotting data vs. NN for '{experiment}'")
+        _logger.info(f"'[{experiment:<25}]' Plotting NN predictions vs Data.")
         if "_MATCHING" not in experiment:
             obsname = experiment.split("_")[-1]
         else:
@@ -285,6 +299,7 @@ def prediction_data_comparison(**kwargs):
 
         kinematics = copy_kins[experiment]
         observable_predictions = []
+
         for model in models:
             kins = np.expand_dims(
                 data.kinematics, axis=0
@@ -297,6 +312,7 @@ def prediction_data_comparison(**kwargs):
         observable_predictions = np.array(observable_predictions)
         mean_observable_predictions = observable_predictions.mean(axis=0)
         std_observable_predictions = observable_predictions.std(axis=0)
+
         for x_slice in np.unique(kinematics[:, 0]):
             fig, ax = plt.subplots()
             ax.set_title(rf"{expt_name}:~$A$={kinematics[0,2]}, $x$={x_slice}")
