@@ -9,10 +9,10 @@ import yaml
 from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
 
-from .utils import plot_point_cov
 from ..sffit.check_gls import check_gls_sumrules
 from ..sffit.load_data import load_experimental_data
 from ..sffit.load_fit_data import get_predictions_q, load_models
+from .utils import plot_point_cov
 
 _logger = logging.getLogger(__name__)
 PARRENT_PATH = pathlib.Path(__file__).parents[1]
@@ -47,11 +47,18 @@ class InputError(Exception):
 
 
 def save_figs(
-    figure: Figure, filename: pathlib.Path, formats: list = [".png", ".pdf"]
+    figure: Figure,
+    filename: pathlib.Path,
+    formats: list = [".png", ".pdf"],
+    dpi=100,
 ) -> None:
     """Save all the figures into both PNG and PDF."""
     for format in formats:
-        figure.savefig(str(filename) + format)
+        figure.savefig(
+            str(filename) + format,
+            bbox_inches="tight",
+            dpi=dpi,
+        )
     plt.close(figure)
 
 
@@ -91,16 +98,20 @@ def training_validation_split(**kwargs):
         edgecolor="C1",
         facecolor="white",
         zorder=0,
+        alpha=0.75,
         linewidth=0.75,
+        label=r"$2\sigma~\rm{Ellipse}$",
     )
+    ax.grid(color="grey", alpha=0.2, linewidth=0.5, zorder=0)
     ax.set_xlabel(r"$\chi^2_{\rm tr}$")
     ax.set_ylabel(r"$\chi^2_{\rm vl}$")
     ax.set_xlim([min_boundary, max_boundary])
     ax.set_ylim([min_boundary, max_boundary])
-    ax.plot([0, 1], [0, 1], color="C0", transform=ax.transAxes)
+    ax.plot([0, 1], [0, 1], color="#3f7f93", transform=ax.transAxes)
+    ax.legend()
 
     save_path = pathlib.Path(kwargs["output"]) / "chi2_split"
-    save_figs(fig, save_path)
+    save_figs(fig, save_path, dpi=350)
 
 
 def smallx_exponent_distribution(**kwargs):
@@ -148,14 +159,25 @@ def training_epochs_distribution(**kwargs):
 
     fig, ax = plt.subplots(figsize=(6, 6))
     center_bins = (bins[:-1] + bins[1:]) / 2
-    ax.bar(center_bins, freq, width=bar_width, color="C0", edgecolor="C0", alpha=0.5, linewidth=0.5)
-    ax.axvline(x=tr_epochs.mean(), lw=2, color="C1")
-    ax.axvspan(tr_epochs.mean() - tr_epochs_std, tr_epochs.mean() + tr_epochs_std, alpha=0.1, color="C1", linewidth=0.5, zorder=0)
+    ax.bar(
+        center_bins,
+        freq,
+        width=bar_width,
+        color="C0",
+        edgecolor="C0",
+        alpha=0.45,
+        linewidth=1,
+    )
+    ax.axvline(x=tr_epochs.mean(), lw=2, color="C1", label=r"$\rm{Mean}$")
+    ax.axvline(x=tr_epochs.mean() - tr_epochs_std, lw=0.75, ls="--", color="C1")
+    ax.axvline(x=tr_epochs.mean() + tr_epochs_std, lw=0.75, ls="--", color="C1")
     ax.set_xlabel(r"$\rm{Epochs}$")
     ax.set_ylabel(r"$\rm{Frequency}$")
+    ax.grid(color="grey", alpha=0.2, linewidth=0.5, zorder=0)
+    ax.legend()
 
     save_path = pathlib.Path(kwargs["output"]) / "distr_epochs"
-    save_figs(fig, save_path)
+    save_figs(fig, save_path, dpi=350)
 
 
 def gls_sum_rules(**kwargs):
