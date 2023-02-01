@@ -20,12 +20,12 @@ MPLSTYLE = PARRENT_PATH.joinpath("plotstyle.mplstyle")
 plt.style.use(MPLSTYLE)
 
 basis = [
-    r"$F_2$",
-    r"$F_L$",
-    r"$xF_3$",
-    r"$\bar{F}_2$",
-    r"$\bar{F}_L$",
-    r"$x\bar{F}_3$",
+    r"$F_2^\nu$",
+    r"$F_L^\nu$",
+    r"$xF_3^\nu$",
+    r"$F_2^{\bar{\nu}}$",
+    r"$F_L^{\bar{\nu}}$",
+    r"$xF_3^{\bar{\nu}}$",
 ]
 
 MAP_OBS_LABEL = {
@@ -125,22 +125,41 @@ def smallx_exponent_distribution(**kwargs):
         distr_epochs.append(np.asarray(jsonfile["small_x"]))
     distr_epochs = np.asarray(distr_epochs)
 
+    fig, axs = plt.subplots(
+        figsize=(3 * 5, 2 * 3),
+        nrows=2,
+        ncols=3,
+        layout="constrained",
+    )
     # Loop over the exponent of the structure function
     for index, sf_dist in enumerate(distr_epochs.T):
+        sf_dist = sf_dist[sf_dist >= 0]
         binning = np.linspace(sf_dist.min(), sf_dist.max(), 10, endpoint=True)
         bar_width = binning[1] - binning[0]
         freq, bins = np.histogram(sf_dist, bins=binning, density=False)
 
-        fig, ax = plt.subplots(figsize=(6, 6))
+        ax = axs.flat[index]
         center_bins = (bins[:-1] + bins[1:]) / 2
-        ax.bar(center_bins, freq, width=bar_width, linewidth=2)
-        ax.set_title(basis[index])
-        ax.axvline(x=sf_dist.mean(), lw=2, color="C1")
-        ax.set_xlabel(r"$\alpha$")
-        ax.set_ylabel(r"$\rm{Frequency}$")
+        ax.bar(
+            center_bins,
+            freq,
+            width=bar_width,
+            color="C0",
+            edgecolor="C0",
+            alpha=0.45,
+            linewidth=1,
+        )
+        ax.axvline(x=sf_dist.mean(), lw=2, color="C1", label=r"$\rm{Mean}$")
+        ax.axvline(x=sf_dist.mean() - sf_dist.std(), lw=0.75, ls="--", color="C1")
+        ax.axvline(x=sf_dist.mean() + sf_dist.std(), lw=0.75, ls="--", color="C1")
 
-        save_path = pathlib.Path(kwargs["output"]) / f"smallx_exp_{index}"
-        save_figs(fig, save_path)
+        ax.text(0.88, 0.8, basis[index], size=16, transform=ax.transAxes)
+        if (index >= 3): ax.set_xlabel(r"$\alpha$")
+        if (index == 0 or index == 3): ax.set_ylabel(r"$\rm{Frequency}$")
+        if index == 0: ax.legend()
+
+    save_path = pathlib.Path(kwargs["output"]) / f"smallx_exponent"
+    save_figs(fig, save_path, dpi=350)
 
 
 def training_epochs_distribution(**kwargs):
