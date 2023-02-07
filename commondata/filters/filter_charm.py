@@ -20,8 +20,8 @@ console = Console()
 # Mass determined using pdg values
 M_NEUTRON = 939.565346 * 0.001
 M_PROTON = 938.272013 * 0.001
-A = 40 + 3 * 16 + 12  # A(CaCO3): Atomic MAss
-Z = 20 + 3 * 8 + 6  # Z(CaCO3): Atomic Number
+A = (40 + 3 * 16 + 12) / 5  # A(CaCO3): Atomic MAss
+Z = (20 + 3 * 8 + 6) / 5  # Z(CaCO3): Atomic Number
 M_NUCLEON = 100.08969 * 0.93149432 / (Z * M_PROTON + (A - Z) * M_NEUTRON)
 
 # Experiment metadata
