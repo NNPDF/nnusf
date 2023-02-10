@@ -32,6 +32,8 @@ COLUMN_LABELS = {
     "exp_chi2": r"\( < \chi^{2, k}_{\mathrm{exp}} > \)",
 }
 
+NFIT_LABELS = {"nonfit_chi2": r"\( < \chi^{2, \star}_{\mathrm{exp}} > \)"}
+
 
 def rename_dic_keys(curr_dic, new_keys):
     """Rename the keys of a dictionary."""
@@ -89,20 +91,26 @@ def _compute_chi2(expdata, fitpred, invcovmat) -> np.ndarray:
     return np.tensordot(diff_predictions, right_dot, axes=1)
 
 
-def compute_totchi2(**kwargs) -> tuple[float, dict]:
-    """Compute the total chi2 value. The total Chi2 is computed
-    by comparing the mean of the NN predictions with the central
-    data values.
-    """
+def build_data_models(**kwargs) -> tuple[list, dict, dict]:
+    """Build the data object and load the trained models."""
     models = load_models(**kwargs)
 
     # Load the datasets all at once in order to rescale
-    _, datasets = load_experimental_data(
+    raw_datasets, datasets = load_experimental_data(
         kwargs["experiments"],
         input_scaling=kwargs.get("rescale_inputs", None),
         kincuts=kwargs.get("kinematic_cuts", {}),
         verbose=False,
     )
+
+    return models, raw_datasets, datasets
+
+
+def compute_totchi2(models: list, datasets: dict) -> tuple[float, dict]:
+    """Compute the total chi2 value. The total Chi2 is computed
+    by comparing the mean of the NN predictions with the central
+    data values.
+    """
 
     # Compute the total Chi2 per dataset
     totchi2_dataset = {"normalized": {}, "unnormalized": {}, "ndata": {}}
@@ -145,6 +153,33 @@ def compute_totchi2(**kwargs) -> tuple[float, dict]:
     return totchi2_exp, totchi2_dataset["normalized"]
 
 
+def nonfitted_chi2(
+    models: list,
+    max_kins: np.ndarray,
+    fitfolder: pathlib.Path,
+    **kwargs,
+) -> pd.DataFrame:
+    """Compute the Chi2 of the datasets that were not included in
+    the fit using the saved pre-trained models."""
+
+    _, datasets = load_experimental_data(
+        kwargs["check_chi2_experiments"],
+        input_scaling=kwargs.get("rescale_inputs", None),
+        kincuts=kwargs.get("kinematic_cuts", {}),
+        verbose=False,
+        max_kin=max_kins,
+    )
+
+    _, nonfitted_chi2 = compute_totchi2(models, datasets)
+
+    chi2s = {n: {"nonfit_chi2": v} for n, v in nonfitted_chi2.items()}
+
+    chi2table = pd.DataFrame.from_dict(chi2s, orient="index")
+    chi2table.rename(columns=NFIT_LABELS, inplace=True)
+    dump_to_csv(fitfolder, chi2table, "nonfitted_chi2datasets")
+    return chi2table
+
+
 def summary_table(fitfolder: pathlib.Path, chi2tot: float) -> pd.DataFrame:
     """Generate the table containing the summary of chi2s info.
 
@@ -173,6 +208,7 @@ def summary_table(fitfolder: pathlib.Path, chi2tot: float) -> pd.DataFrame:
     summary["expr"] = rf"{chi_real.mean():.4f} \( \pm \) {chi_real.std():.4f}"
     summary["expt"] = rf"{chi_tot.mean():.4f} \( \pm \) {chi_tot.std():.4f}"
 
+    # TODO: Use pd.rename(columns=MAPPING, inplace=True) instead
     rename_dic_keys(summary, MAP_LABELS)
     summtable = pd.DataFrame.from_dict({"Values (STD)": summary})
     dump_to_csv(fitfolder, summtable, "summary")

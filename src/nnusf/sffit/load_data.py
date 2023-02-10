@@ -55,6 +55,7 @@ def load_experimental_data(
     input_scaling: Optional[bool] = None,
     kincuts: dict = {},
     verbose: bool = True,
+    max_kin: Optional[np.ndarray] = None,
 ):
     """Calls to `construct_expdata_instance` to construct the dataset
     instances and apply input scaling if needed.
@@ -86,7 +87,7 @@ def load_experimental_data(
     # Perform Input Scaling if required
     if input_scaling:
         _logger.info("Input kinematics are being scaled.")
-        rescale_inputs(experimental_data)
+        rescale_inputs(experimental_data, max_kin=max_kin)
     return raw_experimental_data, experimental_data
 
 

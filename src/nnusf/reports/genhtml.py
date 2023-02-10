@@ -11,11 +11,13 @@ from .genfiles import (
     _compute_chi2,
     addinfo_yaml,
     additional_plots,
+    build_data_models,
     chi2_tables,
     compute_totchi2,
     data_vs_predictions,
     summary_table,
 )
+from ..sffit.scaling import extract_extreme_values
 
 CURRENT_PATH = pathlib.Path(__file__)
 
@@ -132,12 +134,31 @@ def main(fitfolder: pathlib.Path, **metadata) -> None:
 
     # Compute the total Chi2 from the trained model
     cardrun = addinfo_yaml(fitfolder=fitfolder)
-    totchi2, nchi2 = compute_totchi2(**cardrun)
+    models, raw_data, scaled_data = build_data_models(**cardrun)
+
+    # Compute the total Chi2 for the real datasets
+    totchi2, nchi2 = compute_totchi2(models, scaled_data)
 
     # Construct the Chi2 tables & generate metadata
     summtable = summary_table(fitfolder=fitfolder, chi2tot=totchi2)
     chi2table = chi2_tables(fitfolder=fitfolder, chi2_datasets=nchi2)
     generate_metadata(fitfolder, **metadata)
+
+    # Define the list of tables to be constructed in the report
+    tabvalues = [summtable, chi2table]
+    tablabels = ["summary", "chi2"]
+
+    if cardrun["check_chi2_experiments"] is not None:
+        from .genfiles import nonfitted_chi2
+
+        # Compute the extremum from the raw datasets
+        max_kins = extract_extreme_values(raw_data)
+        # And use the information to Compute the Chi2 of nonfitted
+        xchi2 = nonfitted_chi2(models, max_kins, fitfolder, **cardrun)
+
+        # Append the tables to the lists above
+        tabvalues += [xchi2]
+        tablabels += ["postchi2"]
 
     # Construct the paths to the corresponding folders
     output_folder = fitfolder.absolute().parent
@@ -145,19 +166,13 @@ def main(fitfolder: pathlib.Path, **metadata) -> None:
     others = output_folder.joinpath("output/others")
 
     # Generate the different html files & store them
-    chi2s_html = map(
-        dump_table_html,
-        [summtable, chi2table],
-        ["summary", "chi2s"],
-    )
-    summary_html, chi2s_html = list(chi2s_html)
-    comparison_data_html = data_comparison_html(figures)
+    chi2_html = map(dump_table_html, tabvalues, tablabels)
+    comparison_data = data_comparison_html(figures)
     trvl_split_html = split_trvl_html(others)
 
     # Combine all the resulted HTMLs into one
-    combined = (
-        summary_html + chi2s_html + comparison_data_html + trvl_split_html
-    )
+    combined = "".join(list(chi2_html)) + comparison_data + trvl_split_html
+
     index = CURRENT_PATH.parent.joinpath("assets/index.html")
     index_store = output_folder.joinpath("output/index.html")
     shutil.copyfile(index, index_store)
