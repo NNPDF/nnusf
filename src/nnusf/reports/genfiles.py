@@ -62,7 +62,7 @@ def json_loader(fitfolder: pathlib.Path) -> dict:
 def addinfo_yaml(fitfolder: pathlib.Path) -> dict:
     """Add required info to run the saved models."""
     runcard = fitfolder.joinpath("runcard.yml")
-    runcard_content = yaml.load(runcard.read_text(), Loader=yaml.Loader)
+    runcard_content = yaml.load(runcard.read_text(), Loader=yaml.SafeLoader)
     compare_git_versions(runcard_content)
     runcard_content["fit"] = str(fitfolder.absolute())
     return runcard_content
@@ -87,7 +87,7 @@ def _compute_chi2(expdata, fitpred, invcovmat) -> np.ndarray:
         value of the total chi2
     """
     diff_predictions = expdata - fitpred
-    right_dot = np.tensordot(invcovmat, tf.transpose(diff_predictions), axes=1)
+    right_dot = np.tensordot(invcovmat, np.transpose(diff_predictions), axes=1)
     return np.tensordot(diff_predictions, right_dot, axes=1)
 
 

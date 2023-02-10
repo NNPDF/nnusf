@@ -8,7 +8,6 @@ import pandas as pd
 import yaml
 
 from .genfiles import (
-    _compute_chi2,
     addinfo_yaml,
     additional_plots,
     build_data_models,
@@ -137,11 +136,11 @@ def main(fitfolder: pathlib.Path, **metadata) -> None:
     models, raw_data, scaled_data = build_data_models(**cardrun)
 
     # Compute the total Chi2 for the real datasets
-    totchi2, nchi2 = compute_totchi2(models, scaled_data)
+    totchi2, normalized_chi2 = compute_totchi2(models, scaled_data)
 
     # Construct the Chi2 tables & generate metadata
     summtable = summary_table(fitfolder=fitfolder, chi2tot=totchi2)
-    chi2table = chi2_tables(fitfolder=fitfolder, chi2_datasets=nchi2)
+    chi2table = chi2_tables(fitfolder=fitfolder, chi2_datasets=normalized_chi2)
     generate_metadata(fitfolder, **metadata)
 
     # Define the list of tables to be constructed in the report
