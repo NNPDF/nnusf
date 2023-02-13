@@ -163,13 +163,20 @@ def smallx_exponent_distribution(**kwargs):
             linewidth=1,
         )
         ax.axvline(x=sf_dist.mean(), lw=2, color="C1", label=r"$\rm{Mean}$")
-        ax.axvline(x=sf_dist.mean() - sf_dist.std(), lw=0.75, ls="--", color="C1")
-        ax.axvline(x=sf_dist.mean() + sf_dist.std(), lw=0.75, ls="--", color="C1")
+        ax.axvline(
+            x=sf_dist.mean() - sf_dist.std(), lw=0.75, ls="--", color="C1"
+        )
+        ax.axvline(
+            x=sf_dist.mean() + sf_dist.std(), lw=0.75, ls="--", color="C1"
+        )
 
         ax.text(0.88, 0.8, basis[index], size=16, transform=ax.transAxes)
-        if (index >= 3): ax.set_xlabel(r"$\alpha$")
-        if (index == 0 or index == 3): ax.set_ylabel(r"$\rm{Frequency}$")
-        if index == 0: ax.legend()
+        if index >= 3:
+            ax.set_xlabel(r"$\alpha$")
+        if index == 0 or index == 3:
+            ax.set_ylabel(r"$\rm{Frequency}$")
+        if index == 0:
+            ax.legend()
 
     save_path = pathlib.Path(kwargs["output"]) / f"smallx_exponent"
     save_figs(fig, save_path, dpi=350)
