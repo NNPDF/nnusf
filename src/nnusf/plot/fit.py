@@ -46,6 +46,19 @@ class InputError(Exception):
     pass
 
 
+def _check_validity_models(models: list) -> None:
+    """Check if a model actually exists.
+
+    Parameters:
+    -----------
+    models: list
+        list of models
+    """
+    if len(models) == 0:
+        _logger.error("No model available")
+        return
+
+
 def save_figs(
     figure: Figure,
     filename: pathlib.Path,
@@ -206,20 +219,46 @@ def gls_sum_rules(**kwargs):
     xf3avg_int_stdev = np.std(xf3avg_int, axis=0)
 
     fig, ax = plt.subplots()
-    ax.scatter(q2grids, gls_results, color="C0", s=20, marker="s", label="GLS")
     ax.errorbar(
         q2grids,
         xf3avg_int_mean,
         yerr=xf3avg_int_stdev,
         color="C1",
         fmt=".",
-        label="NN Predictions",
-        capsize=5,
+        marker="s",
+        markersize=11,
+        mfc="w",
+        label=r"$\rm{NN~Predictions}$",
+        capsize=6,
+        zorder=0,
     )
-    ax.legend(title=f"Comparison for A={kwargs['a_value']}")
+    ax.scatter(
+        q2grids,
+        gls_results,
+        color="C0",
+        s=45,
+        marker="o",
+        label=r"$\rm{GLS}$",
+        zorder=1,
+    )
+
+    xmin_log = abs(kwargs["nx_specs"]["xmin_log"])
+    if xmin_log == 3:
+        xmin_label = r"$10^{-3}$"
+    elif xmin_log == 4:
+        xmin_label = r"$10^{-4}$"
+    elif xmin_log == 2:
+        xmin_label = r"$10^{-2}$"
+    else:
+        raise ValueError("Value non-recognised!!!")
+
+    ax.grid(alpha=0.1)
+    ax.legend(
+        title=rf"$A={kwargs['a_value']}$" + r",~$x_{\rm min}=$" + xmin_label
+    )
     ax.set_xlabel(r"$Q^2~[\rm{GeV}^2]$")
     ax.set_ylabel(r"$\rm{Value}$")
-    plotname = f"gls_sumrule_a{kwargs['a_value']}"
+    plotname = f"gls_sumrule_a{kwargs['a_value']}_xmin{abs(xmin_log)}"
     save_path = pathlib.Path(kwargs["output"]) / plotname
     save_figs(fig, save_path)
 
@@ -322,11 +361,12 @@ def save_predictions_txt(**kwargs):
 
 
 def prediction_data_comparison(**kwargs):
+    """Producing plots comparing the data (experimental & Yadism) with
+    the Neural Network Predictions.
+    """
     models = load_models(**kwargs)
     _logger.info("Models successfully loaded.")
-    if len(models) == 0:
-        _logger.error("No model available")
-        return
+    _check_validity_models(models)
 
     # Load the datasets all at once in order to rescale
     raw_datasets, datasets = load_experimental_data(
@@ -340,7 +380,7 @@ def prediction_data_comparison(**kwargs):
 
     count_plots = 0
     for experiment, data in datasets.items():
-        _logger.info(f"Plotting data vs. NN for '{experiment}'")
+        _logger.info(f"'[{experiment:<25}]' Plotting NN predictions vs Data.")
         if "_MATCHING" not in experiment:
             obsname = experiment.split("_")[-1]
         else:
@@ -351,6 +391,7 @@ def prediction_data_comparison(**kwargs):
 
         kinematics = copy_kins[experiment]
         observable_predictions = []
+
         for model in models:
             kins = np.expand_dims(
                 data.kinematics, axis=0
@@ -363,6 +404,7 @@ def prediction_data_comparison(**kwargs):
         observable_predictions = np.array(observable_predictions)
         mean_observable_predictions = observable_predictions.mean(axis=0)
         std_observable_predictions = observable_predictions.std(axis=0)
+
         for x_slice in np.unique(kinematics[:, 0]):
             fig, ax = plt.subplots()
             ax.set_title(rf"{expt_name}:~$A$={kinematics[0,2]}, $x$={x_slice}")
