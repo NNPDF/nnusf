@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 from rich.progress import track
+from eko.strong_coupling import StrongCoupling
 
 from .load_fit_data import get_predictions_q
 
@@ -61,11 +62,10 @@ def compute_integral(xgrid, weights_array, q2grids, xf3_avg):
     return np.array(results)
 
 
-def compute_gls_constant(nf_value, q2_value, n_loop=2):
+def compute_gls_constant(nf_value, q2_value, n_loop=3):
     """The definitions below are taken from the following
     paper https://arxiv.org/pdf/hep-ph/9405254.pdf
     """
-    lambda_msbar = 0.340  # in GeV
 
     def a_nf(nf_value):
         return 4.583 - 0.333 * nf_value
@@ -73,25 +73,27 @@ def compute_gls_constant(nf_value, q2_value, n_loop=2):
     def b_nf(nf_value):
         return 41.441 - 8.020 * nf_value + 0.177 * pow(nf_value, 2)
 
-    def alphas(nf_value, q2_value, n_loop):
-        beta_zero = 11 - (2 * nf_value) / 3
-        ratio_logscale = np.log(q2_value / lambda_msbar**2)
-        prefac = 4 * np.pi / (beta_zero * ratio_logscale)
+    def alphas_eko(q2_value, order=3):
+        scale_ref = 91**2
+        alpha_s_ref = 0.118
+        order = order
+        thresholds_ratios = np.power([1,1,1],2)
+        heavy_quark_masses = np.power([1.51,4.92,172],2)
 
-        mode_alphas = 0
-        if n_loop >= 1:
-            mode_alphas += 1
-        if n_loop >= 2:
-            beta_one = 102 - (38 * nf_value) / 3
-            num = beta_one * np.log(ratio_logscale)
-            den = pow(beta_zero, 2) * ratio_logscale
-            mode_alphas += num / den
-        if n_loop >= 3:
-            raise ValueError("Order not accounted yet!")
+        strong_coupling = StrongCoupling(
+            alpha_s_ref,
+            scale_ref,
+            heavy_quark_masses,
+            thresholds_ratios,
+            order,
+        )
 
-        return prefac * mode_alphas
+        results = [strong_coupling.a_s(q) for q in q2_value]
 
-    norm_alphas = alphas(nf_value, q2_value, n_loop) / np.pi
+        return 4 * np.pi * np.asarray(list(results))
+
+    norm_alphas = alphas_eko(q2_value, order=n_loop) / np.pi
+    print(norm_alphas)
     return 3 * (
         1
         - norm_alphas
@@ -110,6 +112,6 @@ def check_gls_sumrules(fit, nx_specs, q2_values_dic, a_value, *args, **kwargs):
     xf3avg_int = []
     for r in track(xf3avg, description="Looping over Replicas:"):
         xf3avg_int.append(compute_integral(xgrid, weights, q2grids, r))
-    gls_results = compute_gls_constant(3, q2grids, n_loop=2)
+    gls_results = compute_gls_constant(5, q2grids, n_loop=2)
 
     return q2grids, gls_results, np.stack(xf3avg_int)
