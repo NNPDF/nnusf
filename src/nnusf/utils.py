@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """File management utilities."""
+import sys
 import logging
 import pathlib
 import tarfile
@@ -16,10 +17,6 @@ pkg = pathlib.Path(__file__).parent.absolute()
 _logger = logging.getLogger(__name__)
 
 ROUNDING = 6
-
-
-class GitVerionsNonMatchError(Exception):
-    pass
 
 
 def add_git_info(runcard_dict: dict):
@@ -70,12 +67,13 @@ def compare_git_versions(runcard_dict: dict) -> None:
         _logger.info("Git versions checked successfully.")
 
         if fit_version != commit:
-            raise GitVerionsNonMatchError(
+            _logger.error(
                 f"The git version '{fit_version}' from which the fit was produced"
                 f" and the current git version '{commit}' from which the report is"
                 f" about to be generated are different. Please switch to the branch"
                 f" from the fit was generated."
             )
+            sys.exit()
     except pygit2._pygit2.GitError as msg:
         _logger.warning(f"Git version could not be retrieved! {msg}")
 
