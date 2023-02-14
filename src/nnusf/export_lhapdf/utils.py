@@ -18,8 +18,30 @@ import shutil
 import numpy as np
 import scipy.special as sp
 import yaml
+from particle import Particle
 
 _logger = logging.getLogger(__name__)
+
+
+# Map values of A -> Z
+MAP_A_Z = {
+    1: 1,
+    4: 2,
+    6: 3,
+    9: 4,
+    12: 6,
+    27: 13,
+    31: 15,
+    40: 20,
+    56: 26,
+    64: 29,
+    108: 47,
+    119: 50,
+    131: 54,
+    184: 74,
+    197: 79,
+    208: 82,
+}
 
 
 def generate_block(xfxQ2, xgrid, Q2grid, pids):
@@ -66,10 +88,18 @@ def create_info_file(sf_flavors, a_value, x_grids, q2_grids, nrep):
         info file in lhapdf format
     """
     template_info = {}
-    template_info["SetDesc"] = f"Structure Function PDFs for A={a_value}"
-    template_info["Authors"] = "NvSF"
+    template_info[
+        "SetDesc"
+    ] = f"Neural Network neutrino Structure Functions A={a_value}"
+    template_info[
+        "Authors"
+    ] = "NNSFv. A. Candido, A. Garcia, G. Magni, T. Rabemananjara, J. Rojo, and R. Stegeman"
+    template_info["Reference"] = ""
+    template_info["Particle"] = int(
+        Particle.from_nucleus_info(a=a_value, z=MAP_A_Z[a_value]).pdgid
+    )
     template_info["FlavorScheme"] = ""
-    template_info["NumFlavors"] = len(sf_flavors) + 1
+    template_info["NumFlavors"] = len(sf_flavors)
     template_info["Flavors"] = sf_flavors
     template_info["XMin"] = x_grids[0]
     template_info["XMax"] = x_grids[-1]
@@ -77,13 +107,6 @@ def create_info_file(sf_flavors, a_value, x_grids, q2_grids, nrep):
     template_info["OrderQCD"] = ""
     template_info["QMin"] = round(math.sqrt(q2_grids[0]), 4)
     template_info["QMax"] = round(math.sqrt(q2_grids[-1]), 4)
-    template_info["MZ"] = ""
-    template_info["MUp"] = 0.0
-    template_info["MDown"] = 0.0
-    template_info["MStrange"] = 0.0
-    template_info["MCharm"] = ""
-    template_info["MBottom"] = ""
-    template_info["MTop"] = ""
     template_info["AlphaS_MZ"] = 0.118000
     # The following Alphas entries are required by LHAPDF at loading
     template_info["AlphaS_OrderQCD"] = 0
