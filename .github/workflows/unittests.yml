@@ -5,7 +5,7 @@ name: Run unit tests
 # manually triggered through the `workflow_dispatch`
 on:
   push:
-    branches: [main]
+    branches: [main, container-workflow-v2]
   pull_request:
     types:
       - closed
