@@ -22,9 +22,9 @@ runs:
         echo "PYTHONPATH=${{ inputs.prefix }}/lib/python${{ inputs.pyversion }}/site-packages" >> $GITHUB_ENV
       shell: bash
 
-    - name: Install LHAPDF 6.4.0
+    - name: Install LHAPDF
       env:
-        VERSION: 6.4.0
+        VERSION: 6.5.3
       run: |
         # Download lhapdf
         wget --no-verbose https://lhapdf.hepforge.org/downloads/?f=LHAPDF-${VERSION}.tar.gz -O LHAPDF-${VERSION}.tar.gz
