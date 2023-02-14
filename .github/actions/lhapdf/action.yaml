@@ -1,17 +1,27 @@
-# Modified from https://github.com/NNPDF/pineappl/blob/master/.github/actions/lhapdf/action.yaml
+# Composite action that installs LHAPDF in a given environment
+name: "Install LHAPDF in a Poetry env"
+
+description: "Install LHAPDF given some Inputs"
+
+inputs:
+  prefix:
+    description: "Prefix of Poetry env"
+    required: true
+  pyversion:
+    description: "Python versions"
+    required: true
+
 runs:
   using: "composite"
   steps:
-    - uses: actions/setup-python@v2
-      with:
-        python-version: 3.7
-    - name: Set environment variables
-      run: |
-        echo "${HOME}/prefix/bin" >> $GITHUB_PATH
-        echo "LD_LIBRARY_PATH=${HOME}/prefix/lib" >> $GITHUB_ENV
-        echo "PKG_CONFIG_PATH=${HOME}/prefix/lib/pkgconfig" >> $GITHUB_ENV
-        echo "PYTHONPATH=${HOME}/prefix/lib/python3.7/site-packages" >> $GITHUB_ENV
-      shell: bash
+    # - name: Set environment variables
+    #   run: |
+    #     echo "${{ inputs.prefix }}/bin" >> $GITHUB_PATH
+    #     echo "LD_LIBRARY_PATH=${{ inputs.prefix }}/lib" >> $GITHUB_ENV
+    #     echo "PKG_CONFIG_PATH=${{ inputs.prefix }}/lib/pkgconfig" >> $GITHUB_ENV
+    #     echo "PYTHONPATH=${{ inputs.prefix }}/lib/python${{ inputs.pyversion }}/site-packages" >> $GITHUB_ENV
+    #   shell: bash
+
     - name: Install LHAPDF 6.4.0
       env:
         VERSION: 6.4.0
@@ -19,12 +29,16 @@ runs:
         wget --no-verbose https://lhapdf.hepforge.org/downloads/?f=LHAPDF-${VERSION}.tar.gz -O LHAPDF-${VERSION}.tar.gz
         tar xzf LHAPDF-${VERSION}.tar.gz
         cd LHAPDF-${VERSION}
-        ./configure --prefix=${HOME}/prefix --disable-static
+        touch wrappers/python/lhapdf.pyx
+        PYTHON="${{ inputs.prefix }}/bin/python3" ./configure --prefix=${{ inputs.prefix }}
+        make clean
         make -j
         make install
+        cd ..
       shell: bash
-    - name: Install PDF sets
-      run : |
-        lhapdf update
-        lhapdf install NNPDF40_nnlo_as_01180
-      shell: bash
+
+    # - name: Install PDF sets
+    #   run : |
+    #     lhapdf update
+    #     lhapdf install NNPDF40_nnlo_as_01180
+    #   shell: bash
