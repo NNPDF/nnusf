@@ -8,7 +8,7 @@ inputs:
     description: "Prefix of Poetry env"
     required: true
   pyversion:
-    description: "Python versions"
+    description: "Python version"
     required: true
 
 runs:
@@ -26,19 +26,17 @@ runs:
       env:
         VERSION: 6.4.0
       run: |
+        # Download lhapdf
         wget --no-verbose https://lhapdf.hepforge.org/downloads/?f=LHAPDF-${VERSION}.tar.gz -O LHAPDF-${VERSION}.tar.gz
         tar xzf LHAPDF-${VERSION}.tar.gz
         cd LHAPDF-${VERSION}
-        touch wrappers/python/lhapdf.pyx
+
+        # Configure & install
+        autoreconf -f -i
         PYTHON="${{ inputs.prefix }}/bin/python3" ./configure --prefix=${{ inputs.prefix }}
+        touch wrappers/python/lhapdf.pyx
         make clean
         make -j
         make install
         cd ..
       shell: bash
-
-    # - name: Install PDF sets
-    #   run : |
-    #     lhapdf update
-    #     lhapdf install NNPDF40_nnlo_as_01180
-    #   shell: bash
