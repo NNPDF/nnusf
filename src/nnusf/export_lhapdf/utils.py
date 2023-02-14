@@ -87,17 +87,14 @@ def create_info_file(sf_flavors, a_value, x_grids, q2_grids, nrep):
         : dict
         info file in lhapdf format
     """
+    pid = Particle.from_nucleus_info(a=a_value, z=MAP_A_Z[a_value]).pdgid
     template_info = {}
     template_info[
         "SetDesc"
     ] = f"Neural Network neutrino Structure Functions A={a_value}"
-    template_info[
-        "Authors"
-    ] = "NNSFv. A. Candido, A. Garcia, G. Magni, T. Rabemananjara, J. Rojo, and R. Stegeman"
+    template_info["Authors"] = "NNSFv"
     template_info["Reference"] = ""
-    template_info["Particle"] = int(
-        Particle.from_nucleus_info(a=a_value, z=MAP_A_Z[a_value]).pdgid
-    )
+    template_info["Particle"] = int(pid)
     template_info["FlavorScheme"] = ""
     template_info["NumFlavors"] = len(sf_flavors)
     template_info["Flavors"] = sf_flavors
