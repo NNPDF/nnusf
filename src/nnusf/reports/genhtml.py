@@ -147,7 +147,7 @@ def main(fitfolder: pathlib.Path, **metadata) -> None:
     tabvalues = [summtable, chi2table]
     tablabels = ["summary", "chi2"]
 
-    if cardrun["check_chi2_experiments"] is not None:
+    if cardrun.get("check_chi2_experiments", None) is not None:
         from .genfiles import nonfitted_chi2
 
         # Compute the extremum from the raw datasets
