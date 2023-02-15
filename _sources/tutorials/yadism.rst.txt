@@ -2,7 +2,7 @@ Yadism predictions
 ==================
 
 Generating Yadism theory cards
------------------------
+------------------------------
 
 An alternative way to generate Yadism theory cards that will be used to
 generate theory predictions is to use the :mod:`nnusf.theory.runcards` module.
