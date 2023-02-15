@@ -36,6 +36,7 @@ SQLAlchemy = "^1.4.39"
 termcolor = "1.1.0"
 pygit2 = "^1.10.1"
 setuptools = "^65.5.1"
+particle = "^0.21.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1"
