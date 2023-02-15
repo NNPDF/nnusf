@@ -95,6 +95,15 @@ If NNSFν proves to be useful in your work, please also reference the codes:
 
 .. toctree::
    :maxdepth: 2
+   :caption: 📦 Delivery
+   :hidden:
+
+   delivery/lhapdf
+   delivery/nn_model
+   delivery/scripts
+
+.. toctree::
+   :maxdepth: 2
    :caption: Contents:
 
 
