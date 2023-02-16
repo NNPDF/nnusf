@@ -99,8 +99,6 @@ If NNSFν proves to be useful in your work, please also reference the codes:
    :hidden:
 
    delivery/lhapdf
-   delivery/nn_model
-   delivery/scripts
 
 .. toctree::
    :maxdepth: 2

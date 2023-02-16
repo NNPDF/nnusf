@@ -108,28 +108,28 @@ For future convenience, the NNSFν predictions can be stored as LHAPDF
 grids. The structure functions have the following LHAPDF IDs:
 
 .. list-table:: LHAPDF ID
-   :widths: 60 50
+   :widths: 20 20 20 20 20 20 20 20 20 20
    :header-rows: 1
 
-   * - Structure Functions
-     - LHAPDF ID
-   * - :math:`F_2^{\nu}`
+   * - SFs
+     - :math:`F_2^{\nu}`
+     - :math:`F_L^{\nu}`
+     - :math:`xF_3^{\nu}`
+     - :math:`F_2^{\bar{\nu}}`
+     - :math:`F_L^{\bar{\nu}}`
+     - :math:`xF_3^{\bar{\nu}}`
+     - :math:`\langle F_2^{\bar{\nu}} \rangle`
+     - :math:`\langle F_L^{\bar{\nu}} \rangle`
+     - :math:`\langle xF_3^{\bar{\nu}} \rangle`
+   * - LHAID
      - 1001
-   * - :math:`F_L^{\nu}`
      - 1002
-   * - :math:`xF_3^{\nu}`
      - 1003
-   * - :math:`F_2^{\bar{\nu}}`
      - 2001
-   * - :math:`F_L^{\bar{\nu}}`
      - 2002
-   * - :math:`xF_3^{\bar{\nu}}`
      - 2003
-   * - :math:`\langle F_2^{\bar{\nu}} \rangle`
      - 3001
-   * - :math:`\langle F_L^{\bar{\nu}} \rangle`
      - 3002
-   * - :math:`\langle xF_3^{\bar{\nu}} \rangle`
      - 3003
 
 
@@ -137,7 +137,7 @@ The LHAPDF set can be generated using the following command:
 
 .. code-block:: bash
 
-   nnu fit dump_grids ${RUNCARD_NAME}/postfit -a ${A_VALUE} -o ${SET_NAME} [-q '{"min": 1e-3, "max": 400, "num": 100}]'
+   nnu fit dump_grids ${RUNCARD_NAME}/postfit -a ${A_VALUE} -o ${SET_NAME} [-q '{"min": 1e-3, "max": 500, "num": 100}]'
 
 .. note:: 
 
