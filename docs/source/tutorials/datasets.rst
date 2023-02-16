@@ -1,5 +1,5 @@
 Adding new datasets
-==============
+===================
 
 The following is not mandatory in order to run a fit given that all the
 necessary inputs in order to reproduce the published NNSFν have already
@@ -11,7 +11,7 @@ Yadism.
 
 
 Implementation of the experimental dataset
---------------------
+------------------------------------------
 
 The implementation of a new data set starts by downloading the
 `hepdata <https://www.hepdata.net/>`_ tables and store them in
@@ -79,9 +79,7 @@ We can now generate the grids containing the predictions using the following:
 
 .. code-block:: bash
 
-   nnu grids # for general matching
-    # or
-   nnu grids # for proton boundary condition
+   nnu theory grids ${path_to_data_card}
 
 In order to generate the central values and uncertainties for the matching data sets
 we need to convolute the grids with the corresponding nuclear PDFs (nPDFs). To do
