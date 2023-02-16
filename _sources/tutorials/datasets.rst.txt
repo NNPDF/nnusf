@@ -1,5 +1,5 @@
 Adding new datasets
-===================
+==============
 
 The following is not mandatory in order to run a fit given that all the
 necessary inputs in order to reproduce the published NNSFν have already
@@ -11,7 +11,7 @@ Yadism.
 
 
 Implementation of the experimental dataset
-------------------------------------------
+--------------------
 
 The implementation of a new data set starts by downloading the
 `hepdata <https://www.hepdata.net/>`_ tables and store them in
