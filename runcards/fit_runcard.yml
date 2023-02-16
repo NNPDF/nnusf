@@ -2,7 +2,7 @@
 # Configuration file for nnufit
 ############################################################
 
-description: runcard for nnufit
+description: NNSFnu Baseline
 
 # Datasets to be included in the fit
 experiments:
@@ -32,6 +32,17 @@ experiments:
 - {dataset: CHORUS_DXDYNUU_MATCHING, frac: 0.75}
 - {dataset: NUTEV_DXDYNUB_MATCHING, frac: 0.75}
 - {dataset: NUTEV_DXDYNUU_MATCHING, frac: 0.75}
+
+# Datasets not included in the fit but whose Chi2
+# should be evaluated when generating the report
+check_chi2_experiments:
+- {dataset: CDHSW_F2, frac: 0.75}
+- {dataset: CDHSW_F3, frac: 0.75}
+- {dataset: CDHSW_FW, frac: 0.75}
+- {dataset: CHORUS_F2, frac: 0.75}
+- {dataset: CHORUS_F3, frac: 0.75}
+- {dataset: NUTEV_F2, frac: 0.75}
+- {dataset: NUTEV_F3, frac: 0.75}
 
 # Define some kinematic cuts (Omit if not needed)
 kinematic_cuts:
