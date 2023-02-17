@@ -68,6 +68,10 @@ def parse_nn_predictions(
     # and the moveaxis transforms it into (nrep, n_q2, n_x, n_sfs)
     predictions = np.moveaxis(predictions, [0, 1, 2], [2, 0, 1])
 
+    # Compute central and preprend results to array -> (nrep+1, n_q2, n_x, n_sfs)
+    central = np.expand_dims(np.mean(predictions, axis=0), axis=0)
+    predictions = np.concatenate([central, predictions], axis=0)
+
     q2min = min_highq2 if min_highq2 is not None else 900  # in GeV
     # Check that the Q2min of the Yadism prediction is greater that Q2max
     # of the NNUSF predictions.
