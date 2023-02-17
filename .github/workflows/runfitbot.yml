@@ -3,6 +3,7 @@ name: Automatically perform a fit
 
 # start job only for PRs when a label is added.
 on:
+  push:
   workflow_dispatch:
 
 
