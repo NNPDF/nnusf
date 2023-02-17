@@ -5,14 +5,6 @@ name: Automatically perform a fit
 # manually triggered through the `workflow_dispatch`
 on:
   push:
-    branches: [main]
-  pull_request:
-    types:
-      - closed
-      - review_requested
-  pull_request_review:
-    types:
-      - submitted
   workflow_dispatch:
 
 # Define global environment variables

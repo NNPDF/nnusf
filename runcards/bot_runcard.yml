@@ -1,8 +1,8 @@
 ############################################################
-# Configuration file for nnufit
+# Configuration file for nnufit bot
 ############################################################
 
-description: runcard for nnufit
+description: NNSFnu Baseline
 
 # Datasets to be included in the fit
 experiments:
@@ -12,40 +12,71 @@ experiments:
 - {dataset: CCFR_F3, frac: 0.75}
 - {dataset: CDHSW_DXDYNUB, frac: 0.75}
 - {dataset: CDHSW_DXDYNUU, frac: 0.75}
-- {dataset: CDHSW_F2, frac: 0.75}
-- {dataset: CDHSW_F3, frac: 0.75}
-- {dataset: CDHSW_FW, frac: 0.75}
 - {dataset: CHARM_F2, frac: 0.75}
 - {dataset: CHARM_F3, frac: 0.75}
 - {dataset: CHORUS_DXDYNUB, frac: 0.75}
 - {dataset: CHORUS_DXDYNUU, frac: 0.75}
-- {dataset: CHORUS_F2, frac: 0.75}
-- {dataset: CHORUS_F3, frac: 0.75}
 - {dataset: NUTEV_DXDYNUB, frac: 0.75}
 - {dataset: NUTEV_DXDYNUU, frac: 0.75}
+# -- PROTON BC DATASETS (Matching A=1) --
+- {dataset: PROTONBC_DXDYNUU_MATCHING, frac: 0.75}
+- {dataset: PROTONBC_DXDYNUB_MATCHING, frac: 0.75}
+# -- MATCHING AT HIGH Q2 --
+- {dataset: BEBCWA59_F2_MATCHING, frac: 0.75}
+- {dataset: BEBCWA59_F3_MATCHING, frac: 0.75}
+- {dataset: CCFR_F2_MATCHING, frac: 0.75}
+- {dataset: CCFR_F3_MATCHING, frac: 0.75}
+- {dataset: CDHSW_DXDYNUU_MATCHING, frac: 0.75}
+- {dataset: CDHSW_DXDYNUB_MATCHING, frac: 0.75}
+- {dataset: CHORUS_DXDYNUB_MATCHING, frac: 0.75}
+- {dataset: CHORUS_DXDYNUU_MATCHING, frac: 0.75}
+- {dataset: NUTEV_DXDYNUB_MATCHING, frac: 0.75}
+- {dataset: NUTEV_DXDYNUU_MATCHING, frac: 0.75}
+
+# Datasets not included in the fit but whose Chi2
+# should be evaluated when generating the report
+check_chi2_experiments:
+- {dataset: CDHSW_F2, frac: 0.75}
+- {dataset: CDHSW_F3, frac: 0.75}
+- {dataset: CDHSW_FW, frac: 0.75}
+- {dataset: CHORUS_F2, frac: 0.75}
+- {dataset: CHORUS_F3, frac: 0.75}
 - {dataset: NUTEV_F2, frac: 0.75}
 - {dataset: NUTEV_F3, frac: 0.75}
 
 # Define some kinematic cuts (Omit if not needed)
-W2min: 3.5
+kinematic_cuts:
+  q2max: 25.0 # Max-Q2 value for real datasets (to be named better)
+  w2min: 3.50 # Minimum W2 value for all datasets
+  # q2yad_min: 40.0 # Minimum Q2 value of Yadism pseudodata
 
 # chi2 history stored for each `log_freq` epochs
-log_freq: 100
+log_freq: 5000
+
+# True: fit to pseudodata, False: fit to central values
+genrep: True
+
+# True: rescale the input kinematics
+rescale_inputs: True
 
 # Various seed values
-global_seeds: 456
-trvlseed: 123
-pseudodataseed: 2
+global_seeds: 1865683875
 
 # Define Neural Network Parameters
 fit_parameters:
-  epochs: 50000
-  stopping_patience: 2000
+  epochs: 10_000
+  stopping_patience: 2_000
   units_per_layer: [70, 55, 40, 20, 20]
   activation_per_layer: [tanh, tanh, tanh, tanh, selu]
   optimizer_parameters:
     optimizer: Adam
-    clipnorm: 0.00001
-    learning_rate: 0.05
-  val_chi2_threshold: 30
-  initializer_seed: 1
+    clipnorm: 1.0e-05
+    learning_rate: 0.001
+  val_chi2_threshold: 4
+  small_x_exponent:
+      f2nu  : [0.25, 2.0]
+      flnu  : [0.25, 2.0]
+      xf3nu : [0.25, 2.0]
+      f2nub : [0.25, 2.0]
+      flnub : [0.25, 2.0]
+      xf3nub: [0.25, 2.0]
