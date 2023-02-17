@@ -7,6 +7,17 @@ on:
   workflow_dispatch:
 
 
+# Define global environment variables
+env:
+  NUMBER_REPLICAS: 2
+  OUTPUT_FOLDER: RESULTS
+  PLOT_FOLDER: PLOTS
+  REPORT_TITLE: REPORT
+  AUTHOR_NAME: FITBOT
+  KEYWORDS: CHECK
+  FITCARD: ./runcards/fit_runcard.yml
+
+
 jobs:
   build:
     name: 🔬 Run Bot Fit 🐍
