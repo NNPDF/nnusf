@@ -1,19 +1,30 @@
-<h1 align="center">NNSFν</h1>
-<p align="center">
-  <img alt="Zenodo" src="https://zenodo.org/badge/DOI/10.1101/2023.02.15.204701.svg">
-  <img alt="arXiv" src="https://img.shields.io/badge/arXiv-2223.04638-b31b1b?labelColor=222222">
-  <img alt="Docs" src="https://assets.readthedocs.org/static/projects/badges/passing-flat.svg">
-  <img alt="Status" src="https://www.repostatus.org/badges/latest/active.svg">
-  <img alt="License" src="https://img.shields.io/badge/License-MIT-yellow.svg">
-</p>
+<table style="width:100%">
+  <tr>
+    <td rowspan="2" style="width:50px">
+      <b>NNSFν</b> 
+    </td>
+    <td>
+      <img alt="Zenodo" src="https://zenodo.org/badge/DOI/10.1101/2023.02.15.204701.svg">
+      <img alt="arXiv" src="https://img.shields.io/badge/arXiv-2223.04638-b31b1b?labelColor=222222">
+      <img alt="Docs" src="https://assets.readthedocs.org/static/projects/badges/passing-flat.svg">
+      <img alt="License" src="https://img.shields.io/badge/License-MIT-yellow.svg">
+    </td>
+  </tr>
+  <tr>
+    <td> 
+      <p align="justify">
+        <b>NNSFν</b> is a python module that provides predictions for neutrino structure functions. 
+        It relies on <a href="https://github.com/N3PDF/yadism">YADISM</a> for the large-Q region 
+        while the low-Q regime is modelled in terms of a Neural Network (NN). The NNSFν 
+        determination is also made available in terms of fast interpolation
+        <a href="https://lhapdf.hepforge.org/">LHAPDF</a> grids that can be accessed through an independent
+        driver code and directly interfaced to the <a href="http://www.genie-mc.org/">GENIE</a> Monte Carlo
+        neutrino event generators.
+      </p>
+    </td>
+  </tr>
+</table>
 
-NNSFν is a python module that provides predictions for neutrino structure functions. 
-It relies on [Yadism](https://github.com/N3PDF/yadism) for the large $Q^2$ region 
-while the low $Q^2$ regime is modelled in terms of a Neural Network (NN). The NNSFν 
-determination is also made available in terms of fast interpolation
-[LHAPDF](https://lhapdf.hepforge.org/) grids that can be accessed through an independent
-driver code and directly interfaced to the [GENIE](http://www.genie-mc.org/) neutrino 
-event generators.
 
 # Quick links
 
