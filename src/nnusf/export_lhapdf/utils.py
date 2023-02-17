@@ -14,6 +14,7 @@ import math
 import pathlib
 import re
 import shutil
+import lhapdf
 
 import numpy as np
 import scipy.special as sp
@@ -311,7 +312,6 @@ def install_pdf(name):
         name : str
             source pdf name
     """
-    import lhapdf  # pylint: disable=import-error, import-outside-toplevel
 
     target = pathlib.Path(lhapdf.paths()[0]).joinpath(name)
     src = pathlib.Path(name)

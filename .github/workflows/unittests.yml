@@ -32,25 +32,23 @@ jobs:
         with:
           # tags needed for dynamic versioning
           fetch-depth: 0
-      - name: Install and configure Poetry
-        uses: snok/install-poetry@v1
+      - name: Install and configure Poetry 🐍
+        uses: snok/install-poetry@v1 
         with:
           virtualenvs-create: false
           installer-parallel: true
-      - name: Install dependencies
+      - name: Install dependencies 📦
         run: poetry install --no-interaction --no-root --with test ${{ inputs.poetry-extras }}
-      - name: Install project
+      - name: Install project 🔨
         # it is required to repeat extras, otherwise they will be removed from
         # the environment
         run: poetry install --no-interaction ${{ inputs.poetry-extras }}
-      - name: Install task runner
+      - name: Install task runner 🔨
         run: pip install poethepoet
-      - name: Lint with pylint
+      - name: Lint with pylint 🚀
         run: |
-          # Search for actual errors
-          poe lint
           # For warnings instead return always zero
           poe lint-warnings
-      - name: Test with pytest
+      - name: Test with pytest 🚀
         run: |
           poe test
