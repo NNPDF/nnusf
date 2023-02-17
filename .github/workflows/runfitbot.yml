@@ -1,23 +1,10 @@
 # A Github workflow that automatically run a fit
 name: Automatically perform a fit
 
-# Define events when the workflow should be triggered or
-# manually triggered through the `workflow_dispatch`
+# start job only for PRs when a label is added.
 on:
-  push:
-  workflow_dispatch:
-
-# Define global environment variables
-env:
-  NUMBER_REPLICAS: 4
-  OUTPUT_FOLDER: bot_runcard
-  PLOT_FOLDER: PLOTS
-  REPORT_TITLE: REPORT
-  AUTHOR_NAME: FITBOT
-  KEYWORDS: CHECK
-  POETRY: https://install.python-poetry.org
-  FITCARD: ./runcards/bot_runcard.yml
-  PLOTCARD: ./runcards/plot_runcard.yml
+  pull_request:
+    types: [labeled]
 
 
 jobs:
