@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import numpy as np
+from eko.couplings import Couplings
+from eko.io import types as ekotypes
 from rich.progress import track
-from eko.strong_coupling import StrongCoupling
 
 from .load_fit_data import get_predictions_q
 
@@ -74,18 +75,30 @@ def compute_gls_constant(nf_value, q2_value, n_loop=3):
         return 41.441 - 8.020 * nf_value + 0.177 * pow(nf_value, 2)
 
     def alphas_eko(q2_value, order=3):
-        scale_ref = 91**2
-        alpha_s_ref = 0.118
-        order = order
-        thresholds_ratios = np.power([1,1,1],2)
-        heavy_quark_masses = np.power([1.51,4.92,172],2)
+        # set the (alpha_s, alpha_em) reference values
+        alphas_ref = ekotypes.FloatRef(value=0.118, scale=91.0)
+        alphaem_ref = ekotypes.FloatRef(value=0.007496252, scale=math.nan)
+        couplings_ref = ekotypes.CouplingsRef(
+            alphas=alphas_ref,
+            alphaem=alphaem_ref,
+            num_flavs_ref=None,
+            max_num_flavs=5,
+        )
 
-        strong_coupling = StrongCoupling(
-            alpha_s_ref,
-            scale_ref,
-            heavy_quark_masses,
-            thresholds_ratios,
+        # set heavy quark masses and their threshold ratios
+        heavy_quark_masses = np.power([1.51, 4.92, 172.0], 2)
+        thresholds_ratios = ekotypes.MatchingScales(c=1.0, b=1.0, t=1.0)
+
+        # set (QCD,QED) perturbative order
+        order = (order, 1)
+
+        strong_coupling = Couplings(
+            couplings_ref,
             order,
+            ekotypes.CouplingEvolutionMethod.EXACT,
+            heavy_quark_masses,
+            ekotypes.QuarkMassSchemes.POLE,
+            thresholds_ratios,
         )
 
         results = [strong_coupling.a_s(q) for q in q2_value]
