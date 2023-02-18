@@ -1,55 +1,48 @@
-<h1 align="center">NνSF</h1>
+<h1 align="center">NNSFν</h1>
+<p align="center">
+  <img alt="Zenodo" src="https://zenodo.org/badge/DOI/10.1101/2023.02.15.204701.svg">
+  <img alt="arXiv" src="https://img.shields.io/badge/arXiv-2223.04638-b31b1b?labelColor=222222">
+  <img alt="Docs" src="https://assets.readthedocs.org/static/projects/badges/passing-flat.svg">
+  <img alt="Status" src="https://www.repostatus.org/badges/latest/active.svg">
+  <img alt="License" src="https://img.shields.io/badge/License-GPL3-blue.svg">
+</p>
 
-NνSF is a python module that provides predictions for neutrino structure functions. It relies on [Yadism](https://github.com/N3PDF/yadism) for the large-$Q^2$ region while the low-$Q^2$ regime is modelled in terms of a Neural Network (NN).
+<p align="justify">
+  <b>NNSFν</b> is a python module that provides predictions for neutrino structure functions. 
+  It relies on <a href="https://github.com/N3PDF/yadism">YADISM</a> for the large-Q region 
+  while the low-Q regime is modelled in terms of a Neural Network (NN). The NNSFν 
+  determination is also made available in terms of fast interpolation
+  <a href="https://lhapdf.hepforge.org/">LHAPDF</a> grids that can be accessed through an independent
+  driver code and directly interfaced to the <a href="http://www.genie-mc.org/">GENIE</a> Monte Carlo
+  neutrino event generators.
+</p>
 
-## Installation & Development
 
-The package can be installed from source using the following commands:
+# Quick links
 
-```bash
-git clone https://github.com/NNPDF/nnusf.git --depth 1
-cd nnusf
-poetry install
+- [Installation instructions](https://nnpdf.github.io/nnusf/quickstart/installation.html)
+- [Tutorials](https://nnpdf.github.io/nnusf/tutorials/datasets.html)
+- [Delivery & Usage](https://nnpdf.github.io/nnusf/delivery/lhapdf.html)
+
+# Citation
+
+To refer to NNSFν in a scientific publication, please use the following:
+```bibtex
+@article {reference_id,
+   author = {A. Candido, A. Garcia, G. Magni, T. R. Rabemananjara, J. Rojo, R. Stegeman},
+   title = {Neutrino Structure Functions from GeV to EeV Energies},
+   year = {2023},
+   doi = {10.1101/2020.07.15.204701},
+   eprint = {https://arxiv.org/list/hep-ph/},
+   journal = {aRxiv}
+}
 ```
-
-This also provides the user the ability to develop on the codes.
-
-## Usage
-
-NνSF provides an extensive Command Line Interface (CLI) that permits the user to perform various classes of tasks. To know more about all the available options, just run `nnu --help`. For convenience, below we provide details on how the fitting part of the codes can be run.
-
-#### Perform a fit
-
-To run a fit, one can simplify type the following commands:
-
-```bash
-nnu fit run <runcard> <replica> -d <output_path>
+And if NNSFν proved to be useful in your work, consider also to reference the codes:
+```bibtex
+@article {reference_id,
+   author = {A. Candido, A. Garcia, G. Magni, T. R. Rabemananjara, J. Rojo, R. Stegeman},
+   title = {Neutrino Structure Functions from GeV to EeV Energies},
+   year = {2023},
+   doi = {10.1101/2020.07.15.204701},
+}
 ```
-An example of a runcard to perform a fit is [./runcards/fit_runcard.yml](./runcards/fit_runcard.yml).
-
-This will generate inside the folder `<output_path>` a folder named `replica_<replica>` which in turn contains a tensorflow model that can be used to generate predictions. In general, one needs to run the above command for `replica={1, ..., n}`.
-
-#### Perform a Postfit
-
-If needed, one can perform a post-selection on the replicas generated from the fit. For instance, one can only select the replicas whose $\chi^2$ values are below some thresholds. Below is an example in which we only select replicas with $\chi^2_{\rm tr}$ and $\chi^2_{\rm vl}$ below `10`:
-```bash
-nnu fit postfit <output_path> -t '{"tr_max": 10, "vl_max": 10}'
-```
-This will generate inside `<output_path>` a folder named `postfit` which contains the replicas that satisfy the selection criteria.
-
-#### Generate a report & Predictions
-
-To generate a report from a fit, one can simply run:
-```bash
-nnu report generate <output_path>/postfit -t "<Title>" -a "<author>" -k "<keyword>"
-```
-This will generate a folder called `output` inside `<output_path>` which contains an `index.html` summarizing the results. If `postfit` was not run in the previous step, simply remove `/postfit` in the command above.
-
-Finally, to generate predictions using the trained models, just run the following commands:
-
-```bash
-nnu plot fit <output_path> <runcard>
-```
-An example of such a runcard is [./runcards/generate_predictions.yml](./runcards/generate_predictions.yml).
-
-This will generate a `.txt` file containing the NN predictions for the different structure functions.

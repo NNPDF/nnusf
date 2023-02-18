@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
+import logging
 import numpy as np
+from typing import Optional
+
+_logger = logging.getLogger(__name__)
 
 
 def kinematics_mapping(dataset, max_kin_value):
@@ -13,6 +17,12 @@ def kinematics_mapping(dataset, max_kin_value):
         else:
             input_scaling = kin_var
         scaled_inputs.append(input_scaling)
+
+        # Check if the values ar indeed between [0, 1]. This is
+        # only useful when computing Chi2 of non-fitted data
+        if np.any((input_scaling < 0) | (input_scaling > 1)):
+            _logger.warning("Scaled inputs exceeds [0, 1]!")
+
     return scaled_inputs
 
 
@@ -50,7 +60,7 @@ def apply_mapping_datasets(datasets, max_kin_value):
         dataset.kinematics = np.array(scaled).T
 
 
-def rescale_inputs(datasets):
+def rescale_inputs(datasets, max_kin: Optional[np.ndarray] = None):
     """Apply the rescaling to all the datasets.
 
     Parameters:
@@ -59,4 +69,10 @@ def rescale_inputs(datasets):
         contains the dataset specs
     """
     max_kin_value = extract_extreme_values(datasets)
+
+    if max_kin is not None:
+        max_kin_value = max_kin
+    else:
+        max_kin_value = extract_extreme_values(datasets)
+
     apply_mapping_datasets(datasets, max_kin_value)

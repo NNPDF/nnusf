@@ -1,7 +1,11 @@
-# A value
-a_slice: 1
+############################################################
+# Dump NNSFnu predictions into .txt file
+############################################################
 
-# List of x values
+# Value of the Atomic mass number A
+a_slice: 56
+
+# List of x values for which the predictions will be computed
 x_slice:
   - 0.0126
   - 0.0256
@@ -10,5 +14,6 @@ x_slice:
   - 0.1250
   - 0.3160
 
+# Action to be performed--Refer to docs for more details
 actions:
   - save_predictions_txt

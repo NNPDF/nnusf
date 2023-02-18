@@ -91,7 +91,7 @@ wheel = ">=0.23.0,<1.0"
 name = "attrs"
 version = "22.2.0"
 description = "Classes Without Boilerplate"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 files = [
@@ -686,14 +686,14 @@ files = [
 
 [[package]]
 name = "google-auth"
-version = "2.16.0"
+version = "2.16.1"
 description = "Google Authentication Library"
 category = "main"
 optional = false
 python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*"
 files = [
-    {file = "google-auth-2.16.0.tar.gz", hash = "sha256:ed7057a101af1146f0554a769930ac9de506aeca4fd5af6543ebe791851a9fbd"},
-    {file = "google_auth-2.16.0-py2.py3-none-any.whl", hash = "sha256:5045648c821fb72384cdc0e82cc326df195f113a33049d9b62b74589243d2acc"},
+    {file = "google-auth-2.16.1.tar.gz", hash = "sha256:5fd170986bce6bfd7bb5c845c4b8362edb1e0cba901e062196e83f8bb5d5d32c"},
+    {file = "google_auth-2.16.1-py2.py3-none-any.whl", hash = "sha256:75d76ea857df65938e1f71dcbcd7d0cd48e3f80b34b8870ba229c9292081f7ef"},
 ]
 
 [package.dependencies]
@@ -920,6 +920,23 @@ files = [
 numpy = ">=1.14.5"
 
 [[package]]
+name = "hepunits"
+version = "2.3.1"
+description = "Units and constants in the HEP system of units"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "hepunits-2.3.1-py3-none-any.whl", hash = "sha256:e070c3145fb50526a9a5d2fb557faafdd8bb9b8cb0045a27d2d6ac489269b24d"},
+    {file = "hepunits-2.3.1.tar.gz", hash = "sha256:b1174bba4d575b9939c01f341e24d9bdbe0e0cd4cc4ce2e7d77692da19145cfb"},
+]
+
+[package.extras]
+all = ["pytest (>=6)", "pytest-cov (>=2.8.0)"]
+dev = ["pytest (>=6)", "pytest-cov (>=2.8.0)"]
+test = ["pytest (>=6)", "pytest-cov (>=2.8.0)"]
+
+[[package]]
 name = "idna"
 version = "3.4"
 description = "Internationalized Domain Names in Applications (IDNA)"
@@ -953,14 +970,14 @@ testing = ["flake8 (<5)", "flufl.flake8", "importlib-resources (>=1.3)", "packag
 
 [[package]]
 name = "importlib-resources"
-version = "5.10.2"
+version = "5.12.0"
 description = "Read resources from Python packages"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "importlib_resources-5.10.2-py3-none-any.whl", hash = "sha256:7d543798b0beca10b6a01ac7cafda9f822c54db9e8376a6bf57e0cbd74d486b6"},
-    {file = "importlib_resources-5.10.2.tar.gz", hash = "sha256:e4a96c8cc0339647ff9a5e0550d9f276fc5a01ffa276012b58ec108cfd7b8484"},
+    {file = "importlib_resources-5.12.0-py3-none-any.whl", hash = "sha256:7b1deeebbf351c7578e09bf2f63fa2ce8b5ffec296e0d349139d43cca061a81a"},
+    {file = "importlib_resources-5.12.0.tar.gz", hash = "sha256:4be82589bf5c1d7999aedf2a45159d10cb3ca4f19b2271f8792bc8e6da7b22f6"},
 ]
 
 [package.dependencies]
@@ -1691,6 +1708,26 @@ files = [
 [package.extras]
 qa = ["flake8 (==3.8.3)", "mypy (==0.782)"]
 testing = ["docopt", "pytest (<6.0.0)"]
+
+[[package]]
+name = "particle"
+version = "0.21.2"
+description = "Extended PDG particle data and MC identification codes"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "particle-0.21.2-py3-none-any.whl", hash = "sha256:b85aa51b4e993e58f672c61d8e43d03f0b45f072751868ec2f88f4f1d58c0e18"},
+    {file = "particle-0.21.2.tar.gz", hash = "sha256:0434d39aab4fc72bce452a11f822736f95937c5f4116b0e831254ebcef6cfcdb"},
+]
+
+[package.dependencies]
+attrs = ">=19.2"
+hepunits = ">=2.0.0"
+
+[package.extras]
+dev = ["pandas", "pytest (>=6)", "pytest-benchmark", "tabulate"]
+test = ["pandas", "pytest (>=6)", "pytest-benchmark", "pytest-cov", "tabulate"]
 
 [[package]]
 name = "pdbpp"
@@ -2765,14 +2802,14 @@ test = ["argcomplete (>=2.0)", "pre-commit", "pytest", "pytest-mock"]
 
 [[package]]
 name = "typing-extensions"
-version = "4.4.0"
+version = "4.5.0"
 description = "Backported and Experimental Type Hints for Python 3.7+"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "typing_extensions-4.4.0-py3-none-any.whl", hash = "sha256:16fa4864408f655d35ec496218b85f79b3437c829e93320c7c9215ccfd92489e"},
-    {file = "typing_extensions-4.4.0.tar.gz", hash = "sha256:1511434bb92bf8dd198c12b1cc812e800d4181cfcb867674e0f8279cc93087aa"},
+    {file = "typing_extensions-4.5.0-py3-none-any.whl", hash = "sha256:fb33085c39dd998ac16d1431ebc293a8b3eedd00fd4a32de0ff79002c19511b4"},
+    {file = "typing_extensions-4.5.0.tar.gz", hash = "sha256:5cb5f4a79139d699607b3ef622a1dedafa84e115ab0024e0d9c044a9479ca7cb"},
 ]
 
 [[package]]
@@ -2950,14 +2987,14 @@ pineappl = ["pineappl (==0.5.6)"]
 
 [[package]]
 name = "zipp"
-version = "3.13.0"
+version = "3.14.0"
 description = "Backport of pathlib-compatible object wrapper for zip files"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "zipp-3.13.0-py3-none-any.whl", hash = "sha256:e8b2a36ea17df80ffe9e2c4fda3f693c3dad6df1697d3cd3af232db680950b0b"},
-    {file = "zipp-3.13.0.tar.gz", hash = "sha256:23f70e964bc11a34cef175bc90ba2914e1e4545ea1e3e2f67c079671883f9cb6"},
+    {file = "zipp-3.14.0-py3-none-any.whl", hash = "sha256:188834565033387710d046e3fe96acfc9b5e86cbca7f39ff69cf21a4128198b7"},
+    {file = "zipp-3.14.0.tar.gz", hash = "sha256:9e5421e176ef5ab4c0ad896624e87a7b2f07aca746c9b2aa305952800cb8eecb"},
 ]
 
 [package.extras]
@@ -2967,4 +3004,4 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9,<3.11"
-content-hash = "a49e9ac9ea4834d9e8128a0de77bcd139a8f413798628787388a66849ef752d2"
+content-hash = "61d4b16448a2ad85afd0f08a3d1e0ecb14201fdbdb23cdb871f9d363c04dc3d6"

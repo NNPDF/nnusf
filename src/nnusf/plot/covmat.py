@@ -2,7 +2,6 @@
 """Generate heatmap plots for covariance matrices."""
 import copy
 import logging
-from math import sqrt
 import pathlib
 from typing import Optional
 
@@ -82,9 +81,7 @@ def compute(
     return covmat
 
 
-def order_dict_experiment(
-    dataspecs: dict, ordering: list = _EXP_ORD
-) -> dict:
+def order_dict_experiment(dataspecs: dict, ordering: list = _EXP_ORD) -> dict:
     """Ordering a dictionary with respect to name of the experiments.
 
     Parameters
@@ -111,7 +108,6 @@ def order_dict_experiment(
 def correlation_matrix(covmat: np.ndarray) -> np.ndarray:
     sqrt_diags = np.sqrt(np.diag(covmat))
     return covmat / sqrt_diags[:, np.newaxis] / sqrt_diags
-
 
 
 def construct_ticklabels(dataspecs: dict) -> dict:
@@ -143,7 +139,7 @@ def construct_ticklabels(dataspecs: dict) -> dict:
 
 
 def heatmap(
-        covmat: np.ndarray, title: str, specs: Optional[dict] = None
+    covmat: np.ndarray, title: str, specs: Optional[dict] = None
 ) -> matplotlib.figure.Figure:
     """Plot covariance matrix.
 
@@ -180,7 +176,7 @@ def heatmap(
     if specs is not None:
         plt.xticks(specs["tick_locs"], specs["tick_labels"], fontsize=18)
         plt.gca().xaxis.tick_bottom()
-        plt.yticks(specs["tick_locs"], specs["tick_labels"], rotation=90, fontsize=18)
+        plt.yticks(specs["tick_locs"], specs["tick_labels"], fontsize=18)
         startlocs_lines = [x - 0.5 for x in specs["separation_lines"]]
         ax.vlines(startlocs_lines, -0.5, covmat.shape[0] - 0.5, ls="dashed")
         ax.hlines(startlocs_lines, -0.5, covmat.shape[0] - 0.5, ls="dashed")
@@ -197,7 +193,7 @@ def save_heatmap(
     tick_specs: Optional[dict] = None,
 ):
     fig = heatmap(covmat, title, specs=tick_specs)
-    fig.savefig(figname, bbox_inches='tight', dpi=350)
+    fig.savefig(figname, bbox_inches="tight", dpi=350)
 
     if not individual_data:
         _logger.info(
