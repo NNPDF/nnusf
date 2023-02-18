@@ -36,3 +36,25 @@ Then, to install the NNSF:math:`\nu` package just type:
 .. code-block:: bash
 
    poetry install
+
+Note that when installing using :mod:`poetry` one has the choice of doing so in
+a :mod:`poetry` virtual environment or not. To install the package in the current
+active environment, before :mod:`poetry install` type the following command:
+
+.. code-block:: bash
+
+   poetry config virtualenvs.create false --local
+
+If instead you choose to install the package in a clean environment, first you
+need to save the path to the environment into an environment variable:
+
+.. code-block:: bash
+
+   export PREFIX=$(realpath $(poetry env --path))
+
+Then download the scripts from `N3PDF/workflows/packages/lhapdf <https://github.com/N3PDF/workflows/tree/v2/packages/lhapdf>`_
+and install :mod:`LHAPDF`:
+
+.. code-block:: bash
+
+   sh install.sh
