@@ -5,13 +5,30 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry]
 name = "nnusf"
 version = "0.1.0"
-description = ""
+description = "Predictions for all-energy neutrino structure functions"
+readme = "README.md"
 authors = [
   "Alessandro Candido <candido.ale@gmail.com>",
+  "Alfonso Garcia <pochoarus@msn.com>",
   "Giacomo Magni <giac.magni@gmail.com>",
   "Tanjona R. Rabemananjara <tanjona.lspc@gmail.com>",
+  "Juan Rojo <j.rojo@vu.nl>",
   "Roy Stegeman <roystegeman@live.nl>",
 ]
+classifiers = [
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering",
+  "Topic :: Scientific/Engineering :: Physics",
+  "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+]
+repository = "https://github.com/NNPDF/nnusf"
+include = [
+    { path = "tests", format = "sdist" },
+    { path = "commondata", format = ["sdist", "wheel"] },
+    { path = "coefficients", format = ["sdist", "wheel"] }
+]
+packages = [{ include = "nnusf", from = "src" },]
 
 [tool.poetry.dependencies]
 python = "^3.9,<3.11"
