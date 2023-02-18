@@ -51,7 +51,7 @@ kinematic_cuts:
   # q2yad_min: 40.0 # Minimum Q2 value of Yadism pseudodata
 
 # chi2 history stored for each `log_freq` epochs
-log_freq: 5000
+log_freq: 500
 
 # True: fit to pseudodata, False: fit to central values
 genrep: True
@@ -64,8 +64,8 @@ global_seeds: 1865683875
 
 # Define Neural Network Parameters
 fit_parameters:
-  epochs: 10_000
-  stopping_patience: 2_000
+  epochs: 1_000
+  stopping_patience: 500
   units_per_layer: [70, 55, 40, 20, 20]
   activation_per_layer: [tanh, tanh, tanh, tanh, selu]
   optimizer_parameters:
