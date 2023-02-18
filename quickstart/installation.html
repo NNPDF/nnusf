@@ -241,6 +241,22 @@ Once this is done, first clone the repository and enter into the directory:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>install
 </pre></div>
 </div>
+<p>Note that when installing using <code class="xref py py-mod docutils literal notranslate"><span class="pre">poetry</span></code> one has the choice of doing so in
+a <code class="xref py py-mod docutils literal notranslate"><span class="pre">poetry</span></code> virtual environment or not. To install the package in the current
+active environment, before <code class="xref py py-mod docutils literal notranslate"><span class="pre">poetry</span> <span class="pre">install</span></code> type the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>config<span class="w"> </span>virtualenvs.create<span class="w"> </span><span class="nb">false</span><span class="w"> </span>--local
+</pre></div>
+</div>
+<p>If instead you choose to install the package in a clean environment, first you
+need to save the path to the environment into an environment variable:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">PREFIX</span><span class="o">=</span><span class="k">$(</span>realpath<span class="w"> </span><span class="k">$(</span>poetry<span class="w"> </span>env<span class="w"> </span>--path<span class="k">))</span>
+</pre></div>
+</div>
+<p>Then download the scripts from <a class="reference external" href="https://github.com/N3PDF/workflows/tree/v2/packages/lhapdf">N3PDF/workflows/packages/lhapdf</a>
+and install <code class="xref py py-mod docutils literal notranslate"><span class="pre">LHAPDF</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sh<span class="w"> </span>install.sh
+</pre></div>
+</div>
 </section>
 </section>
 

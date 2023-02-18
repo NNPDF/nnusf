@@ -56,7 +56,7 @@ To reference NNSFν in a scientific publication please use the following:
 .. code-block:: latex
 
    @article {reference_id,
-      author = {Alessandro Candido, Alfonso Garcia, Giacomo Magni, Tanjona Rabemananjara, Juan Rojo, Roy Stegeman},
+      author = {A. Candido, A. Garcia, G. Magni, T. R. Rabemananjara, J. Rojo, R. Stegeman},
       title = {Neutrino Structure Functions from GeV to EeV Energies},
       year = {2023},
       doi = {10.1101/2020.07.15.204701},
@@ -69,7 +69,7 @@ If NNSFν proves to be useful in your work, please also reference the codes:
 .. code-block:: latex
 
    @article {reference_id,
-      author = {Alessandro Candido, Alfonso Garcia, Giacomo Magni, Tanjona Rabemananjara, Juan Rojo, Roy Stegeman},
+      author = {A. Candido, A. Garcia, G. Magni, T. R. Rabemananjara, J. Rojo, R. Stegeman},
       title = {Neutrino Structure Functions from GeV to EeV Energies},
       year = {2023},
       doi = {10.1101/2020.07.15.204701},
