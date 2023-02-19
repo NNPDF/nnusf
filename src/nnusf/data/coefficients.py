@@ -6,7 +6,7 @@ import numpy as np
 from yadism.esf.exs import xs_coeffs
 
 from ..theory import runcards
-from . import loader
+from . import loader, utils
 
 _logger = logging.getLogger(__name__)
 
@@ -20,7 +20,7 @@ def cross_section(
 ):
     exp = name.split("_")[0]
     try:
-        xs = loader.MAP_EXP_YADISM[exp]
+        xs = utils.MAP_EXP_YADISM[exp]
         if name == "CDHSW_FW":
             xs = "FW"
     except KeyError:
