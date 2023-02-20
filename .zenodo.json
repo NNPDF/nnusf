@@ -1,0 +1,46 @@
+{
+    "creators": [
+        {
+            "orcid": "0000-0002-1405-3205",
+            "affiliation": "Università degli Studi di Milano",
+            "name": "Candido, Alessandro"
+        },
+        {
+            "orcid": "0000-0002-8186-2459",
+            "affiliation": "Harvard University",
+            "name": "Garcia, Alfonson"
+        },
+        {
+            "orcid": "0000-0003-1699-4815",
+            "affiliation": "Nikhef",
+            "name": "Magni, Giacomo"
+        },
+        {
+            "orcid": "0000-0002-8395-8059",
+            "affiliation": "Nikhef",
+            "name": "Rabemananjara, Tanjona"
+        },
+        {
+            "orcid": "0000-0003-4279-2192",
+            "affiliation": "Nikhef",
+            "name": "Rojo, Juan"
+        },
+        {
+            "orcid": "0000-0002-3852-8009",
+            "affiliation": "University of Edinburgh",
+            "name": "Stegeman, Roy"
+        }
+    ],
+
+    "keywords": [
+      "machine-learning",
+      "neutrino",
+      "python",
+      "scientific-computing",
+      "open-science",
+      "open-source",
+      "reproducible-research"
+    ],
+
+    "license": "GPL-3.0"
+}
