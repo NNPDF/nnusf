@@ -66,7 +66,7 @@ nnu = "nnusf.cli:command"
 
 [tool.poe.tasks]
 coverage = "$BROWSER htmlcov/index.html"
-test = "pytest tests"
+test = "pytest -m 'not lhapdf'"
 test-cov = ["test", "coverage"]
 lint = "pylint src/**/*.py -E"
 lint-warnings = "pylint src/**/*.py --exit-zero"
@@ -76,6 +76,7 @@ testpaths = ['tests/']
 python_files = ['test_*.py', 'benchmark_*.py', 'regression.py']
 python_classes = ['Test*']
 python_functions = ['test_*']
+markers = ["lhapdf: tests that require LHAPDF, and possibly PDF sets"]
 addopts = [
   '--cov=nnusf',
   '--cov-report=html',
