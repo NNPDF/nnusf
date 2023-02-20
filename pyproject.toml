@@ -71,7 +71,7 @@ style = "semver"
 dirty = true
 
 [tool.poetry-dynamic-versioning.substitution]
-files = ["src/eko/version.py"]
+files = ["src/nnusf/__init__.py"]
 
 [tool.poe.tasks]
 coverage = "$BROWSER htmlcov/index.html"
