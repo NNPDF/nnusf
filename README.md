@@ -1,8 +1,9 @@
 <h1 align="center">NNSFν</h1>
 <p align="center">
-  <img alt="Zenodo" src="https://zenodo.org/badge/DOI/10.1101/2023.02.15.204701.svg">
-  <img alt="arXiv" src="https://img.shields.io/badge/arXiv-2223.04638-b31b1b?labelColor=222222">
+  <a href="https://zenodo.org/account/settings/github/repository/NNPDF/nnusf#"><img alt="Zenodo" src="https://zenodo.org/badge/DOI/10.5281/zenodo.7657132 .svg"></a>
+  <a href="https://arxiv.org/abs/2302.08527"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2302.08527-b31b1b?labelColor=222222"></a>
   <img alt="Docs" src="https://assets.readthedocs.org/static/projects/badges/passing-flat.svg">
+  <a href="https://pypi.org/project/nnusf/"><img alt="PyPI" src="https://img.shields.io/pypi/v/nnusf"/></a>
   <img alt="Status" src="https://www.repostatus.org/badges/latest/active.svg">
   <img alt="License" src="https://img.shields.io/badge/License-GPL3-blue.svg">
 </p>
@@ -28,21 +29,26 @@
 
 To refer to NNSFν in a scientific publication, please use the following:
 ```bibtex
-@article {reference_id,
-   author = {A. Candido, A. Garcia, G. Magni, T. R. Rabemananjara, J. Rojo, R. Stegeman},
-   title = {Neutrino Structure Functions from GeV to EeV Energies},
-   year = {2023},
-   doi = {10.1101/2020.07.15.204701},
-   eprint = {https://arxiv.org/list/hep-ph/},
-   journal = {aRxiv}
+@article{Candido:2023utz,
+    author = "Candido, Alessandro and Garcia, Alfonso and Magni, Giacomo and Rabemananjara, Tanjona and Rojo, Juan and Stegeman, Roy",
+    title = "{Neutrino Structure Functions from GeV to EeV Energies}",
+    eprint = "2302.08527",
+    archivePrefix = "arXiv",
+    primaryClass = "hep-ph",
+    reportNumber = "Nikhef 2022-014, Edinburgh 2022/27, TIF-UNIMI-2023-5",
+    month = "2",
+    year = "2023"
 }
 ```
 And if NNSFν proved to be useful in your work, consider also to reference the codes:
 ```bibtex
-@article {reference_id,
-   author = {A. Candido, A. Garcia, G. Magni, T. R. Rabemananjara, J. Rojo, R. Stegeman},
-   title = {Neutrino Structure Functions from GeV to EeV Energies},
-   year = {2023},
-   doi = {10.1101/2020.07.15.204701},
+@misc{https://doi.org/10.5281/zenodo.7657132,
+  doi = {10.5281/ZENODO.7657132},
+  url = {https://zenodo.org/record/7657132},
+  author = "Candido, Alessandro and Garcia, Alfonso and Magni, Giacomo and Rabemananjara, Tanjona and Rojo, Juan and Stegeman, Roy",
+   title = "{Neutrino Structure Functions from GeV to EeV Energies}",
+  publisher = {Zenodo},
+  year = {2023},
+  copyright = {Open Access}
 }
 ```
