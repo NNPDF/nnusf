@@ -110,7 +110,7 @@ def theory_error(
     )
 
     if reshape:
-        pred = np.array(pred).T.reshape((*xgrid.shape, len(pred)))
+        pred = np.array(pred).T.reshape((*xgrid.shape, 9))
     else:
         pred = np.array(pred).T
     return pred, 4, slice(0, -1), "9 pts."
@@ -134,7 +134,8 @@ def pdf_error(
         pred = np.array(pred).T.reshape((*xgrid.shape, len(pred)))
     else:
         pred = np.array(pred).T
-    return pred, 0, slice(1, -1), "PDF replicas"
+    # Make sure that `pred` does not include Member 0
+    return pred[:, :, 1:], 0, slice(1, -1), "PDF replicas"
 
 
 def combined_error(
@@ -186,6 +187,10 @@ def parse_yadism_predictions(
     q2_dic_specs: np.ndarray,
 ):
     prediction_infoq2 = [round(q, ROUNDING) for q in q2_dic_specs]
+
+    # Compute the central replicas and prepend to array
+    central = np.expand_dims(np.mean(predictions, axis=0), axis=0)
+    predictions = np.concatenate([central, predictions], axis=0)
 
     # Append the average to the array block
     copied_pred = np.copy(predictions)

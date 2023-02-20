@@ -10,7 +10,7 @@ import matplotlib.figure
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.linalg
-from matplotlib import cm, colors
+from matplotlib import colors
 
 from .. import utils
 from ..data import loader
@@ -159,7 +159,7 @@ def heatmap(
     fig, ax = plt.subplots(figsize=(12, 12))
     matrixplot = ax.matshow(
         covmat,
-        cmap=cm.coolwarm,
+        cmap='RdBu',
         norm=colors.SymLogNorm(
             linthresh=0.001,
             linscale=0.5,

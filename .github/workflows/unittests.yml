@@ -1,12 +1,46 @@
 # A Github workflow that runs the tests
 name: Run unit tests
 
-on: workflow_dispatch
+# Define events when the workflow should be triggered or
+# manually triggered through the `workflow_dispatch`
+on:
+  push:
+  workflow_dispatch:
+
 
 jobs:
-  py39:
-    uses: N3PDF/workflows/.github/workflows/python-poetry-tests.yml@main
-    with:
-      python-version: "3.9"
-    secrets:
-      codecov-token: ${{ secrets.CODECOV_TOKEN }}
+  test:
+    name: 🔬 Test NNSFnu package 🐍
+
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/nnpdf/lhapdf:v2
+      credentials:
+        username: ${{ github.repository_owner }}
+        password: ${{ github.token }}
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          # tags needed for dynamic versioning
+          fetch-depth: 0
+      - name: Install and configure Poetry 🐍
+        uses: snok/install-poetry@v1 
+        with:
+          virtualenvs-create: false
+          installer-parallel: true
+      - name: Install dependencies 📦
+        run: poetry install --no-interaction --no-root --with test ${{ inputs.poetry-extras }}
+      - name: Install project 🔨
+        # it is required to repeat extras, otherwise they will be removed from
+        # the environment
+        run: poetry install --no-interaction ${{ inputs.poetry-extras }}
+      - name: Install task runner 🔨
+        run: pip install poethepoet
+      - name: Lint with pylint 🚀
+        run: |
+          # For warnings instead return always zero
+          poe lint-warnings
+      - name: Test with pytest 🚀
+        run: |
+          poe test

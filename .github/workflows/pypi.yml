@@ -1,0 +1,12 @@
+name: deploy
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  publish:
+    uses: NNPDF/workflows/.github/workflows/python-poetry-pypi.yml@v2
+    secrets:
+      PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}

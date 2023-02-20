@@ -1,56 +1,52 @@
 # A Github workflow that automatically run a fit
 name: Automatically perform a fit
 
-# Trigger Workflow when PR is labelled
+# start job only for PRs when a label is added.
 on:
   pull_request:
     types: [labeled]
+  workflow_dispatch:
+
 
 # Define global environment variables
 env:
-  NUMBER_REPLICAS: 4
+  NUMBER_REPLICAS: 2
   OUTPUT_FOLDER: RESULTS
   PLOT_FOLDER: PLOTS
   REPORT_TITLE: REPORT
   AUTHOR_NAME: FITBOT
   KEYWORDS: CHECK
-  POETRY: https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py
-  FITCARD: ./runcards/bot_runcard.yml
-  PLOTCARD: ./runcards/plot_runcard.yml
+  FITCARD: ./runcards/fit_runcard.yml
 
 
 jobs:
   build:
     if: contains(github.event.pull_request.labels.*.name, 'run-fit-bot')
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        python-version: [3.9]
-    runs-on: ${{ matrix.os }}
+    name: 🔬 Run Bot Fit 🐍
+
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/nnpdf/lhapdf:v2
+      credentials:
+        username: ${{ github.repository_owner }}
+        password: ${{ github.token }}
+
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python 🐍
-        uses: actions/setup-python@v4
+      - uses: actions/checkout@v2
         with:
-          python-version: ${{ matrix.python-version }}
-          architecture: x64
-
-      - name: Install SSH key 🔑
-        uses: shimataro/ssh-key-action@v2
+          # tags needed for dynamic versioning
+          fetch-depth: 0
+      - name: Install and configure Poetry 🐍
+        uses: snok/install-poetry@v1 
         with:
-          key: ${{ secrets.SERVER_SSH }}
-          name: id_rsa
-          known_hosts: ${{ secrets.SERVER_HOSTS }}
-
-      - name: Install poetry and Dependencies 📦
-        shell: bash --login {0}
-        run: |
-          curl -sSL $POETRY | python -
-
-      - name: Install nnusf package 🔨
-        shell: bash --login {0}
-        run: |
-          poetry install
+          virtualenvs-create: false
+          installer-parallel: true
+      - name: Install dependencies 📦
+        run: poetry install --no-interaction --no-root --with test ${{ inputs.poetry-extras }}
+      - name: Install project 🔨
+        # it is required to repeat extras, otherwise they will be removed from
+        # the environment
+        run: poetry install --no-interaction ${{ inputs.poetry-extras }}
 
       - name: Perform a fit 🚀
         shell: bash --login {0}
@@ -58,7 +54,7 @@ jobs:
           mkdir $OUTPUT_FOLDER
           for ((i=1; i<=$NUMBER_REPLICAS; i+=1))
           do
-            poetry run nnu fit run $FITCARD $i -d $OUTPUT_FOLDER
+            nnu fit run $FITCARD $i
           done
 
       - name: Install base texlive 🔨
@@ -68,7 +64,7 @@ jobs:
       - name: Generate fit report 📘
         shell: bash --login {0}
         run: |
-          poetry run nnu report generate $OUTPUT_FOLDER -t $REPORT_TITLE -a $AUTHOR_NAME -k $KEYWORDS
+          nnu report generate $OUTPUT_FOLDER -t $REPORT_TITLE -a $AUTHOR_NAME -k $KEYWORDS
 
       - name: Upload the reports into the server 🚀
         shell: bash --login {0}

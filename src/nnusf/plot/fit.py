@@ -12,6 +12,7 @@ from matplotlib.figure import Figure
 from ..sffit.check_gls import check_gls_sumrules
 from ..sffit.load_data import load_experimental_data
 from ..sffit.load_fit_data import get_predictions_q, load_models
+from .utils import plot_point_cov
 
 _logger = logging.getLogger(__name__)
 PARRENT_PATH = pathlib.Path(__file__).parents[1]
@@ -19,12 +20,12 @@ MPLSTYLE = PARRENT_PATH.joinpath("plotstyle.mplstyle")
 plt.style.use(MPLSTYLE)
 
 basis = [
-    r"$F_2$",
-    r"$F_L$",
-    r"$xF_3$",
-    r"$\bar{F}_2$",
-    r"$\bar{F}_L$",
-    r"$x\bar{F}_3$",
+    r"$F_2^\nu$",
+    r"$F_L^\nu$",
+    r"$xF_3^\nu$",
+    r"$F_2^{\bar{\nu}}$",
+    r"$F_L^{\bar{\nu}}$",
+    r"$xF_3^{\bar{\nu}}$",
 ]
 
 MAP_OBS_LABEL = {
@@ -59,11 +60,18 @@ def _check_validity_models(models: list) -> None:
 
 
 def save_figs(
-    figure: Figure, filename: pathlib.Path, formats: list = [".png", ".pdf"]
+    figure: Figure,
+    filename: pathlib.Path,
+    formats: list = [".png", ".pdf"],
+    dpi=100,
 ) -> None:
     """Save all the figures into both PNG and PDF."""
     for format in formats:
-        figure.savefig(str(filename) + format)
+        figure.savefig(
+            str(filename) + format,
+            bbox_inches="tight",
+            dpi=dpi,
+        )
     plt.close(figure)
 
 
@@ -81,16 +89,42 @@ def training_validation_split(**kwargs):
     max_boundary = np.max([tr_chi2s, vl_chi2s]) + 0.05
 
     fig, ax = plt.subplots(figsize=(6, 6))
-    ax.scatter(tr_chi2s, vl_chi2s, s=30, marker="s")
-    ax.scatter(tr_chi2s.mean(), vl_chi2s.mean(), s=30, marker="s", color="C1")
+    ax.scatter(
+        tr_chi2s,
+        vl_chi2s,
+        s=60,
+        marker="o",
+        edgecolors="white",
+        alpha=0.5,
+    )
+    ax.scatter(
+        tr_chi2s.mean(),
+        vl_chi2s.mean(),
+        s=60,
+        marker="s",
+        color="C1",
+        edgecolors="white",
+    )
+    plot_point_cov(
+        np.array([tr_chi2s, vl_chi2s]).T,
+        nstd=2,
+        edgecolor="C1",
+        facecolor="white",
+        zorder=0,
+        alpha=0.75,
+        linewidth=0.75,
+        label=r"$2\sigma~\rm{Ellipse}$",
+    )
+    ax.grid(color="grey", alpha=0.2, linewidth=0.5, zorder=0)
     ax.set_xlabel(r"$\chi^2_{\rm tr}$")
     ax.set_ylabel(r"$\chi^2_{\rm vl}$")
     ax.set_xlim([min_boundary, max_boundary])
     ax.set_ylim([min_boundary, max_boundary])
-    ax.plot([0, 1], [0, 1], transform=ax.transAxes)
+    ax.plot([0, 1], [0, 1], color="#3f7f93", transform=ax.transAxes)
+    ax.legend()
 
     save_path = pathlib.Path(kwargs["output"]) / "chi2_split"
-    save_figs(fig, save_path)
+    save_figs(fig, save_path, dpi=350)
 
 
 def smallx_exponent_distribution(**kwargs):
@@ -104,22 +138,48 @@ def smallx_exponent_distribution(**kwargs):
         distr_epochs.append(np.asarray(jsonfile["small_x"]))
     distr_epochs = np.asarray(distr_epochs)
 
+    fig, axs = plt.subplots(
+        figsize=(3 * 5, 2 * 3),
+        nrows=2,
+        ncols=3,
+        layout="constrained",
+    )
     # Loop over the exponent of the structure function
     for index, sf_dist in enumerate(distr_epochs.T):
+        sf_dist = sf_dist[sf_dist >= 0]
         binning = np.linspace(sf_dist.min(), sf_dist.max(), 10, endpoint=True)
         bar_width = binning[1] - binning[0]
         freq, bins = np.histogram(sf_dist, bins=binning, density=False)
 
-        fig, ax = plt.subplots(figsize=(6, 6))
+        ax = axs.flat[index]
         center_bins = (bins[:-1] + bins[1:]) / 2
-        ax.bar(center_bins, freq, width=bar_width, linewidth=2)
-        ax.set_title(basis[index])
-        ax.axvline(x=sf_dist.mean(), lw=2, color="C1")
-        ax.set_xlabel(r"$\alpha$")
-        ax.set_ylabel(r"$\rm{Frequency}$")
+        ax.bar(
+            center_bins,
+            freq,
+            width=bar_width,
+            color="C0",
+            edgecolor="C0",
+            alpha=0.45,
+            linewidth=1,
+        )
+        ax.axvline(x=sf_dist.mean(), lw=2, color="C1", label=r"$\rm{Mean}$")
+        ax.axvline(
+            x=sf_dist.mean() - sf_dist.std(), lw=0.75, ls="--", color="C1"
+        )
+        ax.axvline(
+            x=sf_dist.mean() + sf_dist.std(), lw=0.75, ls="--", color="C1"
+        )
 
-        save_path = pathlib.Path(kwargs["output"]) / f"smallx_exp_{index}"
-        save_figs(fig, save_path)
+        ax.text(0.88, 0.8, basis[index], size=16, transform=ax.transAxes)
+        if index >= 3:
+            ax.set_xlabel(r"$\alpha$")
+        if index == 0 or index == 3:
+            ax.set_ylabel(r"$\rm{Frequency}$")
+        if index == 0:
+            ax.legend()
+
+    save_path = pathlib.Path(kwargs["output"]) / f"smallx_exponent"
+    save_figs(fig, save_path, dpi=350)
 
 
 def training_epochs_distribution(**kwargs):
@@ -131,19 +191,32 @@ def training_epochs_distribution(**kwargs):
             jsonfile = json.load(file_stream)
         tr_epochs.append(jsonfile["best_epochs"])
     tr_epochs = np.asarray(tr_epochs)
+    tr_epochs_std = np.std(tr_epochs)
     binning = np.linspace(tr_epochs.min(), tr_epochs.max(), 10, endpoint=True)
     bar_width = binning[1] - binning[0]
     freq, bins = np.histogram(tr_epochs, bins=binning, density=False)
 
     fig, ax = plt.subplots(figsize=(6, 6))
     center_bins = (bins[:-1] + bins[1:]) / 2
-    ax.bar(center_bins, freq, width=bar_width)
-    ax.axvline(x=tr_epochs.mean(), lw=2, color="C1")
+    ax.bar(
+        center_bins,
+        freq,
+        width=bar_width,
+        color="C0",
+        edgecolor="C0",
+        alpha=0.45,
+        linewidth=1,
+    )
+    ax.axvline(x=tr_epochs.mean(), lw=2, color="C1", label=r"$\rm{Mean}$")
+    ax.axvline(x=tr_epochs.mean() - tr_epochs_std, lw=0.75, ls="--", color="C1")
+    ax.axvline(x=tr_epochs.mean() + tr_epochs_std, lw=0.75, ls="--", color="C1")
     ax.set_xlabel(r"$\rm{Epochs}$")
     ax.set_ylabel(r"$\rm{Frequency}$")
+    ax.grid(color="grey", alpha=0.2, linewidth=0.5, zorder=0)
+    ax.legend()
 
     save_path = pathlib.Path(kwargs["output"]) / "distr_epochs"
-    save_figs(fig, save_path)
+    save_figs(fig, save_path, dpi=350)
 
 
 def gls_sum_rules(**kwargs):
@@ -153,20 +226,46 @@ def gls_sum_rules(**kwargs):
     xf3avg_int_stdev = np.std(xf3avg_int, axis=0)
 
     fig, ax = plt.subplots()
-    ax.scatter(q2grids, gls_results, color="C0", s=20, marker="s", label="GLS")
     ax.errorbar(
         q2grids,
         xf3avg_int_mean,
         yerr=xf3avg_int_stdev,
         color="C1",
         fmt=".",
-        label="NN Predictions",
-        capsize=5,
+        marker="s",
+        markersize=11,
+        mfc="w",
+        label=r"$\rm{NN~Predictions}$",
+        capsize=6,
+        zorder=0,
     )
-    ax.legend(title=f"Comparison for A={kwargs['a_value']}")
+    ax.scatter(
+        q2grids,
+        gls_results,
+        color="C0",
+        s=45,
+        marker="o",
+        label=r"$\rm{GLS}$",
+        zorder=1,
+    )
+
+    xmin_log = abs(kwargs["nx_specs"]["xmin_log"])
+    if xmin_log == 3:
+        xmin_label = r"$10^{-3}$"
+    elif xmin_log == 4:
+        xmin_label = r"$10^{-4}$"
+    elif xmin_log == 2:
+        xmin_label = r"$10^{-2}$"
+    else:
+        raise ValueError("Value non-recognised!!!")
+
+    ax.grid(alpha=0.1)
+    ax.legend(
+        title=rf"$A={kwargs['a_value']}$" + r",~$x_{\rm min}=$" + xmin_label
+    )
     ax.set_xlabel(r"$Q^2~[\rm{GeV}^2]$")
     ax.set_ylabel(r"$\rm{Value}$")
-    plotname = f"gls_sumrule_a{kwargs['a_value']}"
+    plotname = f"gls_sumrule_a{kwargs['a_value']}_xmin{abs(xmin_log)}"
     save_path = pathlib.Path(kwargs["output"]) / plotname
     save_figs(fig, save_path)
 

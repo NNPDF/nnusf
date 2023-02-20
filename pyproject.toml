@@ -4,20 +4,37 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "nnusf"
-version = "0.1.0"
-description = ""
+version = "0.0.0"
+description = "Predictions for all-energy neutrino structure functions"
+readme = "README.md"
 authors = [
   "Alessandro Candido <candido.ale@gmail.com>",
+  "Alfonso Garcia <pochoarus@msn.com>",
   "Giacomo Magni <giac.magni@gmail.com>",
   "Tanjona R. Rabemananjara <tanjona.lspc@gmail.com>",
+  "Juan Rojo <j.rojo@vu.nl>",
   "Roy Stegeman <roystegeman@live.nl>",
 ]
+classifiers = [
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering",
+  "Topic :: Scientific/Engineering :: Physics",
+  "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+]
+repository = "https://github.com/NNPDF/nnusf"
+include = [
+    { path = "tests", format = "sdist" },
+    { path = "commondata", format = ["sdist", "wheel"] },
+    { path = "coefficients", format = ["sdist", "wheel"] }
+]
+packages = [{ include = "nnusf", from = "src" },]
 
 [tool.poetry.dependencies]
 python = "^3.9,<3.11"
 h5py = "^3.7.0"
 PyYAML = "^6.0"
-yadism = "^0.12.2"
+yadism = "^0.12.3"
 pineappl = "^0.5.0"
 matplotlib = "^3.5.2"
 seaborn = "^0.11.2"
@@ -36,6 +53,7 @@ SQLAlchemy = "^1.4.39"
 termcolor = "1.1.0"
 pygit2 = "^1.10.1"
 setuptools = "^65.5.1"
+particle = "^0.21.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1"
@@ -46,9 +64,18 @@ pdbpp = "^0.10.3"
 [tool.poetry.scripts]
 nnu = "nnusf.cli:command"
 
+[tool.poetry-dynamic-versioning]
+enable = true
+vcs = "git"
+style = "semver"
+dirty = true
+
+[tool.poetry-dynamic-versioning.substitution]
+files = ["src/nnusf/__init__.py"]
+
 [tool.poe.tasks]
 coverage = "$BROWSER htmlcov/index.html"
-test = "pytest tests"
+test = "pytest -m 'not lhapdf'"
 test-cov = ["test", "coverage"]
 lint = "pylint src/**/*.py -E"
 lint-warnings = "pylint src/**/*.py --exit-zero"
@@ -58,6 +85,7 @@ testpaths = ['tests/']
 python_files = ['test_*.py', 'benchmark_*.py', 'regression.py']
 python_classes = ['Test*']
 python_functions = ['test_*']
+markers = ["lhapdf: tests that require LHAPDF, and possibly PDF sets"]
 addopts = [
   '--cov=nnusf',
   '--cov-report=html',

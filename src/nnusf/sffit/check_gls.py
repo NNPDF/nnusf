@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
+from eko.couplings import Couplings
+from eko.io import types as ekotypes
 from rich.progress import track
 
 from .load_fit_data import get_predictions_q
@@ -61,11 +63,10 @@ def compute_integral(xgrid, weights_array, q2grids, xf3_avg):
     return np.array(results)
 
 
-def compute_gls_constant(nf_value, q2_value, n_loop=2):
+def compute_gls_constant(nf_value, q2_value, n_loop=3):
     """The definitions below are taken from the following
     paper https://arxiv.org/pdf/hep-ph/9405254.pdf
     """
-    lambda_msbar = 0.340  # in GeV
 
     def a_nf(nf_value):
         return 4.583 - 0.333 * nf_value
@@ -73,25 +74,39 @@ def compute_gls_constant(nf_value, q2_value, n_loop=2):
     def b_nf(nf_value):
         return 41.441 - 8.020 * nf_value + 0.177 * pow(nf_value, 2)
 
-    def alphas(nf_value, q2_value, n_loop):
-        beta_zero = 11 - (2 * nf_value) / 3
-        ratio_logscale = np.log(q2_value / lambda_msbar**2)
-        prefac = 4 * np.pi / (beta_zero * ratio_logscale)
+    def alphas_eko(q2_value, order=3):
+        # set the (alpha_s, alpha_em) reference values
+        alphas_ref = ekotypes.FloatRef(value=0.118, scale=91.0)
+        alphaem_ref = ekotypes.FloatRef(value=0.007496252, scale=math.nan)
+        couplings_ref = ekotypes.CouplingsRef(
+            alphas=alphas_ref,
+            alphaem=alphaem_ref,
+            num_flavs_ref=None,
+            max_num_flavs=5,
+        )
 
-        mode_alphas = 0
-        if n_loop >= 1:
-            mode_alphas += 1
-        if n_loop >= 2:
-            beta_one = 102 - (38 * nf_value) / 3
-            num = beta_one * np.log(ratio_logscale)
-            den = pow(beta_zero, 2) * ratio_logscale
-            mode_alphas += num / den
-        if n_loop >= 3:
-            raise ValueError("Order not accounted yet!")
+        # set heavy quark masses and their threshold ratios
+        heavy_quark_masses = np.power([1.51, 4.92, 172.0], 2)
+        thresholds_ratios = ekotypes.MatchingScales(c=1.0, b=1.0, t=1.0)
 
-        return prefac * mode_alphas
+        # set (QCD,QED) perturbative order
+        order = (order, 1)
 
-    norm_alphas = alphas(nf_value, q2_value, n_loop) / np.pi
+        strong_coupling = Couplings(
+            couplings_ref,
+            order,
+            ekotypes.CouplingEvolutionMethod.EXACT,
+            heavy_quark_masses,
+            ekotypes.QuarkMassSchemes.POLE,
+            thresholds_ratios,
+        )
+
+        results = [strong_coupling.a_s(q) for q in q2_value]
+
+        return 4 * np.pi * np.asarray(list(results))
+
+    norm_alphas = alphas_eko(q2_value, order=n_loop) / np.pi
+    print(norm_alphas)
     return 3 * (
         1
         - norm_alphas
@@ -110,6 +125,6 @@ def check_gls_sumrules(fit, nx_specs, q2_values_dic, a_value, *args, **kwargs):
     xf3avg_int = []
     for r in track(xf3avg, description="Looping over Replicas:"):
         xf3avg_int.append(compute_integral(xgrid, weights, q2grids, r))
-    gls_results = compute_gls_constant(3, q2grids, n_loop=2)
+    gls_results = compute_gls_constant(5, q2grids, n_loop=2)
 
     return q2grids, gls_results, np.stack(xf3avg_int)
