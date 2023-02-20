@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "nnusf"
-version = "0.1.0"
+version = "0.0.0"
 description = "Predictions for all-energy neutrino structure functions"
 readme = "README.md"
 authors = [
@@ -63,6 +63,15 @@ pdbpp = "^0.10.3"
 
 [tool.poetry.scripts]
 nnu = "nnusf.cli:command"
+
+[tool.poetry-dynamic-versioning]
+enable = true
+vcs = "git"
+style = "semver"
+dirty = true
+
+[tool.poetry-dynamic-versioning.substitution]
+files = ["src/eko/version.py"]
 
 [tool.poe.tasks]
 coverage = "$BROWSER htmlcov/index.html"
