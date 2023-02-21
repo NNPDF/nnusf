@@ -25,6 +25,10 @@
 - [Tutorials](https://nnpdf.github.io/nnusf/tutorials/datasets.html)
 - [Delivery & Usage](https://nnpdf.github.io/nnusf/delivery/lhapdf.html)
 
+> **Note**
+> For the time being, we recommend the user to use the 
+> [development](https://nnpdf.github.io/nnusf/quickstart/installation.html#development-installation) installation.
+
 # Citation
 
 To refer to NNSFν in a scientific publication, please use the following:
