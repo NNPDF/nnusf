@@ -3,7 +3,7 @@
 import click
 import numpy as np
 
-from ..scripts import integrate, isoscalar
+from ..scripts import integrate, isoscalar, gettheory
 from . import base
 
 
@@ -80,3 +80,9 @@ def sub_integrate(pdfset, pid, x_grids, q2_grids):
 )
 def sub_impose_isoscalar(pdfset, a_value, install):
     isoscalar.main(pdfset, a_value, install)
+
+
+@subcommand.command("get_theory")
+def sub_get_theory():
+    """Download the theory and store in user directory."""
+    gettheory.main()
