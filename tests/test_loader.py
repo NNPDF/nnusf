@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
-import pathlib
-
+from pathlib import Path
+from appdirs import user_data_dir
 from nnusf.data.loader import Loader
 
-path_to_commondata = pathlib.Path(__file__).parents[1].joinpath("commondata")
-path_to_coefficients = (
-    pathlib.Path(__file__).parents[1].joinpath("coefficients")
-)
+path_to_commondata = Path(user_data_dir).joinpath("/nnusf/commondata")
+path_to_coefficients = Path(user_data_dir).joinpath("/nnusf/coefficients")
 
 
 class TestLoader:

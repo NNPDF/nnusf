@@ -6,13 +6,16 @@ import click
 
 from ..data import coefficients, combine_tables, filters, matching_grids
 from . import base
+from appdirs import user_data_dir
+
+USERDIR = pathlib.Path(user_data_dir())
 
 dataset_path = click.argument(
-    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
+    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path),
 )
 
 grid_path = click.argument(
-    "data", type=click.Path(exists=True, path_type=pathlib.Path)
+    "data", type=click.Path(exists=True, path_type=pathlib.Path),
 )
 
 obs_type = click.argument("obstype", type=str)
@@ -22,8 +25,8 @@ destination_path = click.option(
     "-d",
     "--destination",
     type=click.Path(exists=True, path_type=pathlib.Path),
-    default=pathlib.Path.cwd().absolute() / "commondata",
-    help="Alternative destination path (default: $PWD/commondata)",
+    default=USERDIR.joinppath("commondata"),
+    help="Alternative destination path (default: $NNUSF/commondata)",
 )
 
 
@@ -38,7 +41,8 @@ def subcommand():
 def sub_combine(data, destination):
     """Combine data tables into a unique one.
 
-    The operation is repeated for each DATA path provided (multiple values allowed),
+    The operation is repeated for each DATA path provided
+    (multiple values allowed),
     e.g.:
 
         nnu data combine commondata/data/*

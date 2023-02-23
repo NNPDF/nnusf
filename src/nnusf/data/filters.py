@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
 """Filter data from original raw tables.
 
-Data are then provided in a custom "CommonData" format (specific to this
-structure function project).
+Data are then provided in a custom "CommonData" format
+(specific to this structure function project).
 
 """
 
 import importlib
 import logging
 import sys
+
 from pathlib import Path
+from appdirs import user_data_dir
 
 _logger = logging.getLogger(__name__)
 
@@ -30,7 +32,7 @@ def main(list_of_datasets: list[Path]) -> None:
         exp = dataset.stem.strip("DATA_").lower()
         _logger.info(f"Filter dataset from the '{exp}' experiment")
 
-        path_to_commondata = dataset.parents[1]
+        path_to_commondata = path(user_data_dir()).joinpath("/commondata")
         mod_name = f"filter_{exp}"
 
         try:
