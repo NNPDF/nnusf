@@ -3,8 +3,9 @@ from pathlib import Path
 from appdirs import user_data_dir
 from nnusf.data.loader import Loader
 
-path_to_commondata = Path(user_data_dir).joinpath("/nnusf/commondata")
-path_to_coefficients = Path(user_data_dir).joinpath("/nnusf/coefficients")
+USERDIR = Path(user_data_dir())
+path_to_commondata = USERDIR.joinpath("/nnusf/commondata")
+path_to_coefficients = USERDIR.joinpath("/nnusf/coefficients")
 
 
 class TestLoader:
