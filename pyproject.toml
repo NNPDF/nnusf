@@ -24,9 +24,7 @@ classifiers = [
 ]
 repository = "https://github.com/NNPDF/nnusf"
 include = [
-    { path = "tests", format = "sdist" },
-    { path = "commondata", format = ["sdist", "wheel"] },
-    { path = "coefficients", format = ["sdist", "wheel"] }
+    { path = "tests", format = "sdist" }
 ]
 packages = [{ include = "nnusf", from = "src" },]
 
