@@ -235,7 +235,7 @@ def gls_sum_rules(**kwargs):
         marker="s",
         markersize=11,
         mfc="w",
-        label=r"$\rm{NN~Predictions}$",
+        label=r"$\rm{NNSF}\nu$",
         capsize=6,
         zorder=0,
     )
