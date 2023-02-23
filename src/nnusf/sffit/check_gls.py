@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import math
 import numpy as np
 from eko.couplings import Couplings
 from eko.io import types as ekotypes
@@ -87,7 +88,7 @@ def compute_gls_constant(nf_value, q2_value, n_loop=3):
 
         # set heavy quark masses and their threshold ratios
         heavy_quark_masses = np.power([1.51, 4.92, 172.0], 2)
-        thresholds_ratios = ekotypes.MatchingScales(c=1.0, b=1.0, t=1.0)
+        thresholds_ratios = [1.0, 1.0, 1.0]
 
         # set (QCD,QED) perturbative order
         order = (order, 1)
