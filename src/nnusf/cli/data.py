@@ -26,9 +26,16 @@ destination_path = click.option(
     "--destination",
     type=click.Path(exists=True, path_type=pathlib.Path),
     default=USERDIR.joinpath("nnusf/commondata"),
-    help="Alternative destination path (default: $NNUSF/commondata)",
+    help="Alternative destination path (default: ${NNUSF}/commondata)",
 )
 
+destination_coefficients = click.option(
+    "-d",
+    "--destination",
+    type=click.Path(exists=True, path_type=pathlib.Path),
+    default=USERDIR.joinpath("nnusf/coefficients"),
+    help="Alternative destination path (default: ${NNUSF}/coefficients",
+)
 
 @base.command.group("data")
 def subcommand():
@@ -45,10 +52,13 @@ def sub_combine(data, destination):
     (multiple values allowed),
     e.g.:
 
-        nnu data combine commondata/data/*
+        nnu data combine ${NNUSF}/commondata/data/*
 
     to repeat the operation for all dataset stored in `data`.
 
+    To know the ${NNUSF} path, just run the following:
+
+        nnu extra print_userdir_path
     """
     combine_tables.main(data, destination)
 
@@ -63,15 +73,18 @@ def filter_all_data(data):
 
     The command is run as follows:
 
-        nnu data filter commondata/rawdata/*
+        nnu data filter ${NNUSF}/commondata/rawdata/*
 
+    To know the ${NNUSF} path, just run the following:
+
+        nnu extra print_userdir_path
     """
     filters.main(data)
 
 
 @subcommand.command("coefficients")
 @dataset_path
-@destination_path
+@destination_coefficients
 def sub_coefficients(data, destination):
     """Provide coefficients for the observables.
 
@@ -81,10 +94,13 @@ def sub_coefficients(data, destination):
     The operation is repeated for each DATA path provided (multiple values allowed),
     e.g.:
 
-        nnu data coefficients commondata/data/*
+        nnu data coefficients ${NNUSF}/commondata/data/*
 
     to repeat the operation for all dataset stored in `data`.
 
+    To know the ${NNUSF} path, just run the following:
+
+        nnu extra print_userdir_path
     """
     coefficients.main(data, destination)
 
