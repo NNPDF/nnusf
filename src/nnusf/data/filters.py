@@ -15,6 +15,8 @@ from appdirs import user_data_dir
 
 _logger = logging.getLogger(__name__)
 
+USERDIR = Path(user_data_dir())
+
 
 def main(list_of_datasets: list[Path]) -> None:
     """Filter all the datasets at once.
@@ -32,7 +34,7 @@ def main(list_of_datasets: list[Path]) -> None:
         exp = dataset.stem.strip("DATA_").lower()
         _logger.info(f"Filter dataset from the '{exp}' experiment")
 
-        path_to_commondata = path(user_data_dir()).joinpath("/commondata")
+        path_to_commondata = USERDIR.joinpath("nnusf/commondata")
         mod_name = f"filter_{exp}"
 
         try:

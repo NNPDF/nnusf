@@ -25,7 +25,7 @@ destination_path = click.option(
     "-d",
     "--destination",
     type=click.Path(exists=True, path_type=pathlib.Path),
-    default=USERDIR.joinppath("commondata"),
+    default=USERDIR.joinppath("nnusf/commondata"),
     help="Alternative destination path (default: $NNUSF/commondata)",
 )
 

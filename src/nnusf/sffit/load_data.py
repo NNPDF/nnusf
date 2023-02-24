@@ -15,8 +15,8 @@ _logger = logging.getLogger(__name__)
 
 USERDIR = pathlib.Path(user_data_dir())
 
-path_to_commondata = USERDIR.joinpath("commondata")
-path_to_coefficients = USERDDIR.joinpath("coefficients")
+path_to_commondata = USERDIR.joinpath("nnusf/commondata")
+path_to_coefficients = USERDDIR.joinpath("nnusf/coefficients")
 
 
 def construct_expdata_instance(experiment_list, kincuts, verbose=True):
