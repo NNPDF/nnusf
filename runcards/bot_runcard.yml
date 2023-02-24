@@ -18,20 +18,6 @@ experiments:
 - {dataset: CHORUS_DXDYNUU, frac: 0.75}
 - {dataset: NUTEV_DXDYNUB, frac: 0.75}
 - {dataset: NUTEV_DXDYNUU, frac: 0.75}
-# -- PROTON BC DATASETS (Matching A=1) --
-- {dataset: PROTONBC_DXDYNUU_MATCHING, frac: 0.75}
-- {dataset: PROTONBC_DXDYNUB_MATCHING, frac: 0.75}
-# -- MATCHING AT HIGH Q2 --
-- {dataset: BEBCWA59_F2_MATCHING, frac: 0.75}
-- {dataset: BEBCWA59_F3_MATCHING, frac: 0.75}
-- {dataset: CCFR_F2_MATCHING, frac: 0.75}
-- {dataset: CCFR_F3_MATCHING, frac: 0.75}
-- {dataset: CDHSW_DXDYNUU_MATCHING, frac: 0.75}
-- {dataset: CDHSW_DXDYNUB_MATCHING, frac: 0.75}
-- {dataset: CHORUS_DXDYNUB_MATCHING, frac: 0.75}
-- {dataset: CHORUS_DXDYNUU_MATCHING, frac: 0.75}
-- {dataset: NUTEV_DXDYNUB_MATCHING, frac: 0.75}
-- {dataset: NUTEV_DXDYNUU_MATCHING, frac: 0.75}
 
 # Datasets not included in the fit but whose Chi2
 # should be evaluated when generating the report
@@ -64,8 +50,8 @@ global_seeds: 1865683875
 
 # Define Neural Network Parameters
 fit_parameters:
-  epochs: 50_000
-  stopping_patience: 2_000
+  epochs: 5_000
+  stopping_patience: 200
   units_per_layer: [70, 55, 40, 20, 20]
   activation_per_layer: [tanh, tanh, tanh, tanh, selu]
   optimizer_parameters:
