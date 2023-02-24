@@ -38,7 +38,8 @@ def main(list_of_datasets: list[Path]) -> None:
         mod_name = f"filter_{exp}"
 
         try:
-            sys.path.insert(0, str((path_to_commondata / "filters").absolute()))
+            path_to_filter = Path(__file__).parents[1].absolute()
+            sys.path.insert(0, str((path_to_filter / "filters").absolute()))
             mod = importlib.import_module(mod_name)
             mod.main(path_to_commondata)
         # We do not really want to fail at this point
