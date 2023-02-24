@@ -3,11 +3,8 @@
 import click
 import numpy as np
 
-from ..scripts import integrate, isoscalar, gettheory
+from ..scripts import integrate, isoscalar
 from . import base
-from appdirs import user_data_dir
-from pathlib import Path
-from rich.console import Console
 
 console = Console()
 
@@ -85,16 +82,3 @@ def sub_integrate(pdfset, pid, x_grids, q2_grids):
 )
 def sub_impose_isoscalar(pdfset, a_value, install):
     isoscalar.main(pdfset, a_value, install)
-
-
-@subcommand.command("get_theory")
-def sub_get_theory():
-    """Download the theory and store in user directory."""
-    gettheory.main()
-
-
-@subcommand.command("print_userdir_path")
-def sub_print_userdir():
-    """Print the user directory path."""
-    path = Path(user_data_dir()).joinpath("nnusf")
-    console.print(f"NNUSF USERDIR: '{path}'", style="bold red")
