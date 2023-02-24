@@ -58,7 +58,7 @@ def sub_combine(data, destination):
 
     To know the ${NNUSF} path, just run the following:
 
-        nnu extra print_userdir_path
+        nns get print_userdir_path
     """
     combine_tables.main(data, destination)
 
@@ -77,7 +77,7 @@ def filter_all_data(data):
 
     To know the ${NNUSF} path, just run the following:
 
-        nnu extra print_userdir_path
+        nns get print_userdir_path
     """
     filters.main(data)
 
@@ -100,7 +100,7 @@ def sub_coefficients(data, destination):
 
     To know the ${NNUSF} path, just run the following:
 
-        nnu extra print_userdir_path
+       nns get print_userdir_path
     """
     coefficients.main(data, destination)
 
