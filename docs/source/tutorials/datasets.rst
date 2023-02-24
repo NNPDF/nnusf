@@ -24,7 +24,7 @@ Once this is done run the following command:
 
 .. code-block:: bash
 
-   nnu data filter ./commondata/rawdata/*
+   nnu data filter ${NNUSF_USERDIR}/commondata/rawdata/*
 
 This will dump the pandas tables containing the input kinematics,
 central values, and uncertainties in :mod:`commondata/kinematics`,
@@ -43,7 +43,7 @@ To do so, just run the following:
 
 .. code-block:: bash
 
-   nnu data coefficients ./commondata/data/*
+   nnu data coefficients ${NNUSF_USERDIR}/commondata/data/*
 
 
 Yadism pseudo-data
@@ -58,7 +58,7 @@ to generate the input kinematics, just run the following command:
 
 .. code-block:: bash
 
-   nnu data matching_grids_empty ./commondata/data/DATA_${EXPERIMENT}_${OBSERVABLE}.csv
+   nnu data matching_grids_empty ${NNUSF_USERDIR}/commondata/data/DATA_${EXPERIMENT}_${OBSERVABLE}.csv
 
 This will generate inside :mod:`commondata/kinematics` a table named
 :mod:`KIN_${EXPERIMENT}_${OBSERVABLE}_MATCHING.csv` containing the input
@@ -103,4 +103,4 @@ just need to run the same command as before:
 
 .. code-block:: bash
 
-   nnu data coefficients ./commondata/data/*
+   nnu data coefficients ${NNUSF_USERDIR}/commondata/data/*

@@ -6,8 +6,6 @@ import numpy as np
 from ..scripts import integrate, isoscalar
 from . import base
 
-console = Console()
-
 
 @base.command.group("extra")
 def subcommand():
