@@ -221,6 +221,21 @@ via the <a class="reference external" href="https://pypi.org/">Python Package In
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>nnusf
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In order to use NNSFν one needs to download the the <code class="xref py py-mod docutils literal notranslate"><span class="pre">commondata</span></code>
+and <code class="xref py py-mod docutils literal notranslate"><span class="pre">theory</span></code> files and store them into the user directory
+(which is platform/system dependent).</p>
+<p>NNSFν provides an easy way to download and install these input data files
+by simply running the following commands:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">nns get theory</span>
+</pre></div>
+</div>
+<p>To see where the files have been installed, type the following commands:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">nns get print_userdir_path</span>
+</pre></div>
+</div>
+</div>
 <p>To check that the package has been installed correctly, just run the following
 which will print out all the available subcommands:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nnu<span class="w"> </span>--help
@@ -237,25 +252,39 @@ Once this is done, first clone the repository and enter into the directory:</p>
 <span class="nb">cd</span><span class="w"> </span>nnusf
 </pre></div>
 </div>
-<p>Then, to install the NNSF:math:<cite>nu</cite> package just type:</p>
+<p>Then, to install the NNSFν package just type:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>install
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <p>Note that when installing using <code class="xref py py-mod docutils literal notranslate"><span class="pre">poetry</span></code> one has the choice of doing so in
 a <code class="xref py py-mod docutils literal notranslate"><span class="pre">poetry</span></code> virtual environment or not. To install the package in the current
 active environment, before <code class="xref py py-mod docutils literal notranslate"><span class="pre">poetry</span> <span class="pre">install</span></code> type the following command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>config<span class="w"> </span>virtualenvs.create<span class="w"> </span><span class="nb">false</span><span class="w"> </span>--local
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">poetry config virtualenvs.create false --local</span>
 </pre></div>
 </div>
 <p>If instead you choose to install the package in a clean environment, first you
 need to save the path to the environment into an environment variable:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">PREFIX</span><span class="o">=</span><span class="k">$(</span>realpath<span class="w"> </span><span class="k">$(</span>poetry<span class="w"> </span>env<span class="w"> </span>--path<span class="k">))</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">export PREFIX=$(realpath $(poetry env --path))</span>
 </pre></div>
 </div>
-<p>Then download the scripts from <a class="reference external" href="https://github.com/N3PDF/workflows/tree/v2/packages/lhapdf">N3PDF/workflows/packages/lhapdf</a>
+<p>Then download the scripts from
+<a class="reference external" href="https://github.com/N3PDF/workflows/tree/v2/packages/lhapdf">N3PDF/workflows/packages/lhapdf</a>
 and install <code class="xref py py-mod docutils literal notranslate"><span class="pre">LHAPDF</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sh<span class="w"> </span>install.sh
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">sh install.sh</span>
 </pre></div>
+</div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>If NNSFv was instead installed in a <code class="xref py py-mod docutils literal notranslate"><span class="pre">poetry</span></code> virtual environment then
+it may be useful to enter in a <code class="xref py py-mod docutils literal notranslate"><span class="pre">poetry</span></code> shell by invoking the following
+command:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">poetry shell</span>
+</pre></div>
+</div>
+<p>otherwise prepending all the commands by <code class="xref py py-mod docutils literal notranslate"><span class="pre">poetry</span></code> will be required.</p>
 </div>
 </section>
 </section>
