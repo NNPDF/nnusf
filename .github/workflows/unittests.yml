@@ -31,6 +31,8 @@ jobs:
           installer-parallel: true
       - name: Install dependencies 📦
         run: poetry install --no-interaction --no-root --with test ${{ inputs.poetry-extras }}
+      - name: Download the theory
+        run: poetry nns get theory
       - name: Install project 🔨
         # it is required to repeat extras, otherwise they will be removed from
         # the environment
