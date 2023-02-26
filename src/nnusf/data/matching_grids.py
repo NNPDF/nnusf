@@ -23,9 +23,11 @@ from .utils import (
     dump_info_file,
     write_to_csv,
 )
+from appdirs import user_data_dir
 
 _logger = logging.getLogger(__name__)
-PARRENT_PATH = pathlib.Path(__file__).parents[3].joinpath("commondata")
+
+PARRENT_PATH = pathlib.Path(user_data_dir()).joinpath("nnusf/commondata")
 GRID_SPECS_PATH = PARRENT_PATH.joinpath("matching-grids.yml")
 GRID_SPECS_DICT = yaml.safe_load(GRID_SPECS_PATH.read_text())
 

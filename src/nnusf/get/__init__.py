@@ -1,4 +1,4 @@
 # -*- coding: utf-8 -*-
 """Provide 'nnu' CLI."""
-from . import extra, data, fit, log, plot, report, theory
+from . import gettheory, log
 from .base import command

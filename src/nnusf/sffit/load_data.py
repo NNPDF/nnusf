@@ -9,12 +9,14 @@ import numpy as np
 
 from ..data.loader import Loader
 from .scaling import rescale_inputs
+from appdirs import user_data_dir
 
 _logger = logging.getLogger(__name__)
 
-curr_path = pathlib.Path(__file__)
-path_to_commondata = curr_path.parents[3].joinpath("commondata")
-path_to_coefficients = curr_path.parents[3].joinpath("coefficients")
+USERDIR = pathlib.Path(user_data_dir())
+
+path_to_commondata = USERDIR.joinpath("nnusf/commondata")
+path_to_coefficients = USERDIR.joinpath("nnusf/coefficients")
 
 
 def construct_expdata_instance(experiment_list, kincuts, verbose=True):

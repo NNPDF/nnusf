@@ -6,13 +6,16 @@ import click
 
 from ..data import coefficients, combine_tables, filters, matching_grids
 from . import base
+from appdirs import user_data_dir
+
+USERDIR = pathlib.Path(user_data_dir())
 
 dataset_path = click.argument(
-    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path)
+    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path),
 )
 
 grid_path = click.argument(
-    "data", type=click.Path(exists=True, path_type=pathlib.Path)
+    "data", type=click.Path(exists=True, path_type=pathlib.Path),
 )
 
 obs_type = click.argument("obstype", type=str)
@@ -22,10 +25,17 @@ destination_path = click.option(
     "-d",
     "--destination",
     type=click.Path(exists=True, path_type=pathlib.Path),
-    default=pathlib.Path.cwd().absolute() / "commondata",
-    help="Alternative destination path (default: $PWD/commondata)",
+    default=USERDIR.joinpath("nnusf/commondata"),
+    help="Alternative destination path (default: ${NNUSF}/commondata)",
 )
 
+destination_coefficients = click.option(
+    "-d",
+    "--destination",
+    type=click.Path(exists=True, path_type=pathlib.Path),
+    default=USERDIR.joinpath("nnusf/coefficients"),
+    help="Alternative destination path (default: ${NNUSF}/coefficients",
+)
 
 @base.command.group("data")
 def subcommand():
@@ -38,13 +48,17 @@ def subcommand():
 def sub_combine(data, destination):
     """Combine data tables into a unique one.
 
-    The operation is repeated for each DATA path provided (multiple values allowed),
+    The operation is repeated for each DATA path provided
+    (multiple values allowed),
     e.g.:
 
-        nnu data combine commondata/data/*
+        nnu data combine ${NNUSF}/commondata/data/*
 
     to repeat the operation for all dataset stored in `data`.
 
+    To know the ${NNUSF} path, just run the following:
+
+        nns get print_userdir_path
     """
     combine_tables.main(data, destination)
 
@@ -59,15 +73,18 @@ def filter_all_data(data):
 
     The command is run as follows:
 
-        nnu data filter commondata/rawdata/*
+        nnu data filter ${NNUSF}/commondata/rawdata/*
 
+    To know the ${NNUSF} path, just run the following:
+
+        nns get print_userdir_path
     """
     filters.main(data)
 
 
 @subcommand.command("coefficients")
 @dataset_path
-@destination_path
+@destination_coefficients
 def sub_coefficients(data, destination):
     """Provide coefficients for the observables.
 
@@ -77,10 +94,13 @@ def sub_coefficients(data, destination):
     The operation is repeated for each DATA path provided (multiple values allowed),
     e.g.:
 
-        nnu data coefficients commondata/data/*
+        nnu data coefficients ${NNUSF}/commondata/data/*
 
     to repeat the operation for all dataset stored in `data`.
 
+    To know the ${NNUSF} path, just run the following:
+
+       nns get print_userdir_path
     """
     coefficients.main(data, destination)
 

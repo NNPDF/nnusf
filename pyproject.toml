@@ -24,9 +24,7 @@ classifiers = [
 ]
 repository = "https://github.com/NNPDF/nnusf"
 include = [
-    { path = "tests", format = "sdist" },
-    { path = "commondata", format = ["sdist", "wheel"] },
-    { path = "coefficients", format = ["sdist", "wheel"] }
+    { path = "tests", format = "sdist" }
 ]
 packages = [{ include = "nnusf", from = "src" },]
 
@@ -63,6 +61,7 @@ pdbpp = "^0.10.3"
 
 [tool.poetry.scripts]
 nnu = "nnusf.cli:command"
+nns = "nnusf.get:command"
 
 [tool.poetry-dynamic-versioning]
 enable = true

@@ -11,6 +11,25 @@ via the `Python Package Index <https://pypi.org/>`_ using the following command:
 
    pip install nnusf
 
+.. note::
+
+   In order to use NNSFν one needs to download the the :mod:`commondata`
+   and :mod:`theory` files and store them into the user directory
+   (which is platform/system dependent).
+
+   NNSFν provides an easy way to download and install these input data files
+   by simply running the following commands:
+
+   .. code-block:: console
+
+      nns get theory
+
+   To see where the files have been installed, type the following commands:
+
+   .. code-block:: console
+
+      nns get print_userdir_path
+
 To check that the package has been installed correctly, just run the following
 which will print out all the available subcommands:
 
@@ -31,30 +50,45 @@ Once this is done, first clone the repository and enter into the directory:
    git clone https://github.com/NNPDF/nnusf.git --depth 1
    cd nnusf
 
-Then, to install the NNSF:math:`\nu` package just type:
+Then, to install the NNSFν package just type:
 
 .. code-block:: bash
 
    poetry install
 
-Note that when installing using :mod:`poetry` one has the choice of doing so in
-a :mod:`poetry` virtual environment or not. To install the package in the current
-active environment, before :mod:`poetry install` type the following command:
+.. note::
 
-.. code-block:: bash
+   Note that when installing using :mod:`poetry` one has the choice of doing so in
+   a :mod:`poetry` virtual environment or not. To install the package in the current
+   active environment, before :mod:`poetry install` type the following command:
 
-   poetry config virtualenvs.create false --local
+   .. code-block:: console
 
-If instead you choose to install the package in a clean environment, first you
-need to save the path to the environment into an environment variable:
+      poetry config virtualenvs.create false --local
 
-.. code-block:: bash
+   If instead you choose to install the package in a clean environment, first you
+   need to save the path to the environment into an environment variable:
 
-   export PREFIX=$(realpath $(poetry env --path))
+   .. code-block:: console
 
-Then download the scripts from `N3PDF/workflows/packages/lhapdf <https://github.com/N3PDF/workflows/tree/v2/packages/lhapdf>`_
-and install :mod:`LHAPDF`:
+      export PREFIX=$(realpath $(poetry env --path))
 
-.. code-block:: bash
+   Then download the scripts from
+   `N3PDF/workflows/packages/lhapdf <https://github.com/N3PDF/workflows/tree/v2/packages/lhapdf>`_
+   and install :mod:`LHAPDF`:
 
-   sh install.sh
+   .. code-block:: console
+
+      sh install.sh
+
+.. tip::
+
+   If NNSFv was instead installed in a :mod:`poetry` virtual environment then
+   it may be useful to enter in a :mod:`poetry` shell by invoking the following
+   command:
+
+   .. code-block:: console
+
+      poetry shell
+
+   otherwise prepending all the commands by :mod:`poetry` will be required.
