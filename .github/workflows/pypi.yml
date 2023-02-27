@@ -40,7 +40,7 @@ jobs:
         run: poetry install --no-interaction --no-root --with test
         if: steps.cache.outputs.cache-hit != 'true'
       - name: Download and Install NNUSF theory
-        run: nns get theory
+        run: poetry run nns get theory
       - name: Install task runner
         run: pip install poethepoet
       - name: Test
