@@ -37,10 +37,10 @@ jobs:
           PIP="$(head -n1 $(which poetry) | cut -c 3-) -m pip"
           ${PIP} install poetry-dynamic-versioning
       - name: Install dependencies
-        run: poetry install --no-interaction --no-root --with test
+        run: | 
+          poetry install --no-interaction --no-root --with test
+          poetry run nns get theory
         if: steps.cache.outputs.cache-hit != 'true'
-      - name: Download and Install NNUSF theory
-        run: poetry run nns get theory
       - name: Install task runner
         run: pip install poethepoet
       - name: Test
