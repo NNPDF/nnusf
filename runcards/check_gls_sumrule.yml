@@ -2,6 +2,13 @@
 # Compare the GLS sum rules with N3NLO pQCD computation
 ############################################################
 
+# Sum Rules to Check
+rule: GLS  # Option: [GLS, Bjorken]
+
+# Compute the Sum Rules using a SF set instead of the NN model
+# Comment out if not need.
+# pdf: NNSFnu_D_highQ
+
 # Number of x-points to be used for the integration
 nx_specs:
   nx: 100
@@ -20,4 +27,4 @@ a_value: 56
 
 # Action to be performed--Refer to docs for more details
 actions:
-  - gls_sum_rules
+  - check_sum_rules
