@@ -9,7 +9,7 @@ import yaml
 from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
 
-from ..sffit.check_gls import check_gls_sumrules
+from ..sffit.sum_rules import check_sumrule
 from ..sffit.load_data import load_experimental_data
 from ..sffit.load_fit_data import get_predictions_q, load_models
 from .utils import plot_point_cov
@@ -219,17 +219,17 @@ def training_epochs_distribution(**kwargs):
     save_figs(fig, save_path, dpi=350)
 
 
-def gls_sum_rules(**kwargs):
-    q2grids, gls_results, xf3avg_int = check_gls_sumrules(**kwargs)
+def check_sum_rules(**kwargs):
+    q2grids, gls_results, preds_int = check_sumrule(**kwargs)
 
-    xf3avg_int_mean = np.mean(xf3avg_int, axis=0)
-    xf3avg_int_stdev = np.std(xf3avg_int, axis=0)
+    preds_int_mean = np.mean(preds_int, axis=0)
+    preds_int_stdev = np.std(preds_int, axis=0)
 
     fig, ax = plt.subplots()
     ax.errorbar(
         q2grids,
-        xf3avg_int_mean,
-        yerr=xf3avg_int_stdev,
+        preds_int_mean,
+        yerr=preds_int_stdev,
         color="C1",
         fmt=".",
         marker="s",
@@ -245,19 +245,12 @@ def gls_sum_rules(**kwargs):
         color="C0",
         s=45,
         marker="o",
-        label=r"$\rm{GLS}$",
+        label=r"$\rm{" + f"{kwargs['rule']}" + r"}$",
         zorder=1,
     )
 
     xmin_log = abs(kwargs["nx_specs"]["xmin_log"])
-    if xmin_log == 3:
-        xmin_label = r"$10^{-3}$"
-    elif xmin_log == 4:
-        xmin_label = r"$10^{-4}$"
-    elif xmin_log == 2:
-        xmin_label = r"$10^{-2}$"
-    else:
-        raise ValueError("Value non-recognised!!!")
+    xmin_label = r"$10^{" + f"-{xmin_log}" + r"}$"
 
     ax.grid(alpha=0.1)
     ax.legend(
@@ -265,7 +258,7 @@ def gls_sum_rules(**kwargs):
     )
     ax.set_xlabel(r"$Q^2~[\rm{GeV}^2]$")
     ax.set_ylabel(r"$\rm{Value}$")
-    plotname = f"gls_sumrule_a{kwargs['a_value']}_xmin{abs(xmin_log)}"
+    plotname = f"{kwargs['rule'].lower()}_sumrule_a{kwargs['a_value']}_xmin{xmin_log}"
     save_path = pathlib.Path(kwargs["output"]) / plotname
     save_figs(fig, save_path)
 
