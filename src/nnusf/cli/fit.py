@@ -7,7 +7,7 @@ import click
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 
-from ..export_lhapdf import dump_grids
+from ..lhapdf import dump_grids
 from ..sffit import postfit, run_sffit
 from . import base
 
