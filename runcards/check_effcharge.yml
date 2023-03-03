@@ -1,13 +1,9 @@
 ############################################################
-# Compare the GLS sum rules with N3NLO pQCD computation
+# Compare the Effective Charge with Experimental Data
 ############################################################
 
 # Sum Rules to Check
-rule: GLS  # Option: [GLS, Bjorken]
-
-# Compute the Sum Rules using a SF set instead of the NN model
-# Comment out if not need.
-# pdf: NNSFnu_D_highQ
+rule: GLS  # Option: [GLS, Bjorken, GDH]
 
 # Number of x-points to be used for the integration
 nx_specs:
@@ -18,13 +14,13 @@ nx_specs:
 # The grid will containg n points between
 # q2min and q2max
 q2_values_dic:
-  q2min: 2
-  q2max: 10
-  n: 10
+  q2min: 0.01
+  q2max: 5
+  n: 20
 
 # Value of the atomic mass number A
 a_value: 56
 
 # Action to be performed--Refer to docs for more details
 actions:
-  - check_sum_rules
+  - check_effective_charge
