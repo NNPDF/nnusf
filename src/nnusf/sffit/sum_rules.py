@@ -1,12 +1,17 @@
 # -*- coding: utf-8 -*-
 import lhapdf
+import logging
 import math
+import sys
 import numpy as np
 from eko.couplings import Couplings
 from eko.io import types as ekotypes
 from rich.progress import track
 
 from .load_fit_data import get_predictions_q
+
+
+_logger = logging.getLogger(__name__)
 
 M_PROTON = 0.938  # GeV
 NC, TF = 3, 0.5
@@ -20,7 +25,7 @@ def gen_integration_input(nx_specs):
     lognx = int(nb_points / 3)
     linnx = int(nb_points - lognx)
     xgrid_log = np.logspace(xmin_log, -1, lognx + 1)
-    xgrid_lin = np.linspace(0.1, 1, linnx)
+    xgrid_lin = np.linspace(0.1, 1, linnx, endpoint=False)
     xgrid = np.concatenate([xgrid_log[:-1], xgrid_lin])
 
     spacing = [0.0]
@@ -40,7 +45,6 @@ def compute_integrand_sfs(pdfname, xgrid, q2dic, a_value):
     """Compute the integrand by calling a PDF instead of using the
     NN models.
     """
-    print("*** COmputing from SFs")
     pdf_instances = lhapdf.mkPDFs(pdfname)
 
     q2grid = np.linspace(q2dic["q2min"], q2dic["q2max"], num=q2dic["n"])
@@ -82,8 +86,17 @@ def compute_integrand(model_path, rules, xgrid, q2_values, a_value):
         avg = [(p[:, :, 2] + p[:, :, 5]) / 2 for p in predictions]
     elif rules == "Bjorken":
         # Compute the F1 structure w/o Target Mass Corrections (TMC)
+        # The factor of 1/(2x) is accounted when computing the integral
         avg = [
             (p[:, :, 0] - p[:, :, 1]) - (p[:, :, 3] - p[:, :, 4])
+            for p in predictions
+        ]
+    elif rules == "GDH":
+        # Compute the F1 structure functions w/ extra factor w/o TMC
+        # See Eq. (4.5) of this paper https://arxiv.org/pdf/2303.00723
+        # The factor of 1/(2x) is accounted when computing the integral
+        avg = [
+            8 * (p[:, :, 0] - p[:, :, 1]) / q2_grids
             for p in predictions
         ]
     else:
@@ -166,13 +179,23 @@ def compute_gls_constant(nf_value, q2_value, n_loop=3):
         return 41.441 - 8.020 * nf_value + 0.177 * pow(nf_value, 2)
 
     norm_alphas = alphas_eko(q2_value, order=n_loop) / np.pi
-    print(norm_alphas)
     return 3 * (
         1
         - norm_alphas
         - a_nf(nf_value) * pow(norm_alphas, 2)
         - b_nf(nf_value) * pow(norm_alphas, 3)
     )
+
+
+def compute_gdh_constant(nf_value, q2_value, n_loop=3):
+    """Compute the GDH limit when Q2->0. The following implements
+    Eq. (45) from the following paper https://arxiv.org/pdf/2303.00723.
+    """
+    del nf_value, n_loop
+
+    magnetic_moment = 3.21  # Proton (neutron=3.66)
+    limit = -magnetic_moment / pow(M_PROTON, 2)
+    return np.repeat(limit, q2_value.size)
 
 
 def compute_bjorken_constant(nf_value, q2_value, n_loop=3):
@@ -230,7 +253,6 @@ def compute_bjorken_constant(nf_value, q2_value, n_loop=3):
         return (CF * TF) / 16 * (-8 / pow(epsilon, 2) * pow(ln, 2) + a + b + c)
 
     norm_alphas = alphas_eko(q2_value, order=n_loop) / np.pi
-    print(norm_alphas)
     return (
         z_nf_massive(q2_value)
         + a_nf_massive(q2_value) * norm_alphas
@@ -238,26 +260,71 @@ def compute_bjorken_constant(nf_value, q2_value, n_loop=3):
     )
 
 
-def check_sumrule(fit, rule, nx_specs, q2_values_dic, a_value, *args, **kwargs):
+def check_sumrule(fit, rule, nx_specs, q2_specs, a_value, *args, **kwargs):
     del args
 
-    assert rule in ["GLS", "Bjorken"]  # Make sure that value is in the list
+    assert rule in ["GLS", "Bjorken", "GDH"]  # Make sure value is in the list
     xgrid, weights = gen_integration_input(nx_specs)
 
     # Choose whether to compute the Integrand from NN model or SFs
     if kwargs.get("pdf", None) is not None:
-        q2grids, pred = compute_integrand_sfs(kwargs["pdf"], xgrid, q2_values_dic, a_value)
-        pass
+        q2grids, pred = compute_integrand_sfs(
+            pdfname=kwargs["pdf"],
+            xgrid=xgrid,
+            q2dic=q2_specs,
+            a_value=a_value,
+        )
     else:
-        q2grids, pred = compute_integrand(fit, rule, xgrid, q2_values_dic, a_value)
+        q2grids, pred = compute_integrand(
+            model_path=fit,
+            rules=rule,
+            xgrid=xgrid,
+            q2_values=q2_specs,
+            a_value=a_value,
+        )
+
+    if kwargs.get("pdf", None) is not None and rule != "Bjorken":
+        _logger.warning(
+            f"Using SF sets with {rule} sum rules is not supported. "
+            "If this is not intended, remove 'pdf' key in the card."
+        )
+        sys.exit()
 
     norm = 1 if rule == "GLS" else 2
     pred_int = []
     for r in track(pred, description="Looping over Replicas:"):
         pred_int.append(compute_integral(xgrid, weights, q2grids, r, norm))
 
-    nf = 5 if rule == "GLS" else 3
+    nf = 3 if rule == "Bjorken" else 5
     call_function = globals()[f"compute_{rule.lower()}_constant"]
     gls_results = call_function(nf, q2grids, n_loop=3)
 
     return q2grids, gls_results, np.stack(pred_int)
+
+
+def effective_charge(fit, rule, nx_specs, q2_specs, a_value, *args, **kwargs):
+    """Compute the Unpolarized effective charge."""
+
+    # Compute the Integral depending on the sum rule
+    q2grids, _, integral = check_sumrule(
+        fit=fit,
+        rule=rule,
+        nx_specs=nx_specs,
+        q2_specs=q2_specs,
+        a_value=a_value,
+        *args,
+        **kwargs,
+    )
+    _logger.info("Finished computing the intergal.")
+
+    if rule == "GLS":
+        # Expression below already normalized by Pi
+        effective_as = (1 - integral / 3)
+    elif rule == "Bjorken":
+        # Expression below already normalized by Pi
+        # effective_as = 3 / 2 * (1 - integral)
+        effective_as = (1 - (6 / 1.276) * integral)
+    else:
+        raise ValueError("Rule not supported for Effective Charge.")
+
+    return q2grids, effective_as

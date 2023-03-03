@@ -9,17 +9,19 @@ import yaml
 from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
 
-from ..sffit.sum_rules import check_sumrule
+from ..sffit.sum_rules import check_sumrule, effective_charge
 from ..sffit.load_data import load_experimental_data
 from ..sffit.load_fit_data import get_predictions_q, load_models
-from .utils import plot_point_cov
+from .utils import plot_point_cov, format_jlab
 
 _logger = logging.getLogger(__name__)
 PARRENT_PATH = pathlib.Path(__file__).parents[1]
 MPLSTYLE = PARRENT_PATH.joinpath("plotstyle.mplstyle")
 plt.style.use(MPLSTYLE)
 
-basis = [
+EQ_LABELS = {"GLS": r"$F_3$", "Bjorken": r"$F_1$"}
+
+BASIS = [
     r"$F_2^\nu$",
     r"$F_L^\nu$",
     r"$xF_3^\nu$",
@@ -170,7 +172,7 @@ def smallx_exponent_distribution(**kwargs):
             x=sf_dist.mean() + sf_dist.std(), lw=0.75, ls="--", color="C1"
         )
 
-        ax.text(0.88, 0.8, basis[index], size=16, transform=ax.transAxes)
+        ax.text(0.88, 0.8, BASIS[index], size=16, transform=ax.transAxes)
         if index >= 3:
             ax.set_xlabel(r"$\alpha$")
         if index == 0 or index == 3:
@@ -178,7 +180,7 @@ def smallx_exponent_distribution(**kwargs):
         if index == 0:
             ax.legend()
 
-    save_path = pathlib.Path(kwargs["output"]) / f"smallx_exponent"
+    save_path = pathlib.Path(kwargs["output"]) / "smallx_exponent"
     save_figs(fig, save_path, dpi=350)
 
 
@@ -258,8 +260,64 @@ def check_sum_rules(**kwargs):
     )
     ax.set_xlabel(r"$Q^2~[\rm{GeV}^2]$")
     ax.set_ylabel(r"$\rm{Value}$")
+
     plotname = f"{kwargs['rule'].lower()}_sumrule_a{kwargs['a_value']}_xmin{xmin_log}"
     save_path = pathlib.Path(kwargs["output"]) / plotname
+
+    save_figs(fig, save_path)
+
+
+def check_effective_charge(**kwargs):
+    # Compute a_eff as a function of Q2 using NN model
+    q2grids, preds_int = effective_charge(**kwargs)
+
+    # Load the experimental values including uncertainties
+    q_values, central, error = format_jlab(data="JLAB")
+
+    fig, ax = plt.subplots()
+    ax.errorbar(
+        q_values,
+        central / np.pi,
+        yerr=error,
+        color="C0",
+        # fmt=".",
+        marker="o",
+        markersize=11,
+        mfc="w",
+        label=r"$\rm{JLAB~(EG1,EG4,E97110)}$",
+        capsize=6,
+        zorder=0,
+        linestyle="none",
+    )
+
+    # Compute the 68% Confidence Level for NN predictions
+    lower_68 = np.sort(preds_int, axis=0)[int(.16 * preds_int.shape[0])]
+    upper_68 = np.sort(preds_int, axis=0)[int(.84 * preds_int.shape[0])]
+    mean_prd = np.mean(preds_int, axis=0)
+    ax.fill_between(
+        np.sqrt(q2grids),
+        lower_68,
+        upper_68,
+        color="C1",
+        alpha=0.15,
+        label=r"$\rm{NNSF}\nu$",
+    )
+    ax.plot(np.sqrt(q2grids), mean_prd, color="C1", lw=1.5)
+
+    xmin_log = abs(kwargs["nx_specs"]["xmin_log"])
+    xmin_label = r"$10^{" + f"-{xmin_log}" + r"}$"
+
+    ax.grid(alpha=0.1)
+    ax.legend(
+        title=rf"$A={kwargs['a_value']}$" + r",~$x_{\rm min}=$" + xmin_label
+    )
+    ax.set_xlim(left=np.sqrt(q2grids).min(), right=np.sqrt(q2grids).max())
+    ax.set_xlabel(r"$Q~[\rm{GeV}]$")
+    ax.set_ylabel(r"$\alpha_{\rm eff}$" + f"({EQ_LABELS[kwargs['rule']]})")
+
+    plotname = f"{kwargs['rule'].lower()}_aseff_a{kwargs['a_value']}_xmin{xmin_log}"
+    save_path = pathlib.Path(kwargs["output"]) / plotname
+
     save_figs(fig, save_path)
 
 
@@ -272,7 +330,7 @@ def sfs_q_replicas(**kwargs):
     for prediction_index in range(predictions.shape[2]):
         fig, ax = plt.subplots()
         ax.set_xlabel("Q2 (GeV)")
-        ax.set_ylabel(basis[prediction_index])
+        ax.set_ylabel(BASIS[prediction_index])
         ax.set_title(f"x={prediction_info.x}, A={prediction_info.A}")
         prediction = predictions[:, :, prediction_index]
         for replica_prediction in prediction:
@@ -298,7 +356,7 @@ def sf_q_band(**kwargs):
     for prediction_index in range(predictions.shape[2]):
         fig, ax = plt.subplots()
         ax.set_xlabel(r"$Q^2~[\mathrm{GeV^2}]$")
-        ax.set_ylabel(basis[prediction_index])
+        ax.set_ylabel(BASIS[prediction_index])
         ax.set_title(f"x={prediction_info.x}, A={prediction_info.A}")
         ax.plot(
             q_grid,
