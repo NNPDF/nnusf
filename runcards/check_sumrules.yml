@@ -18,7 +18,7 @@ nx_specs:
 # Details about the Q2-grid to be generated
 # The grid will containg n points between
 # q2min and q2max
-q2_values_dic:
+q2_specs:
   q2min: 2
   q2max: 10
   n: 10
