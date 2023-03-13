@@ -264,7 +264,7 @@ to generate the input kinematics, just run the following command:</p>
 <p>This will generate inside <code class="xref py py-mod docutils literal notranslate"><span class="pre">commondata/kinematics</span></code> a table named
 <code class="xref py py-mod docutils literal notranslate"><span class="pre">KIN_${EXPERIMENT}_${OBSERVABLE}_MATCHING.csv</span></code> containing the input
 kinematic values which will be used later to generate the theory card.</p>
-<p>The free proton <span class="math notranslate nohighlight">\(A=1\)</span> Yadism pseudo-data needs a special treatment
+<p>The isoscalar nucleon <span class="math notranslate nohighlight">\(A=1\)</span> Yadism pseudo-data needs a special treatment
 when generating the input kinematics, that is one needs to run the following
 command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nnu<span class="w"> </span>data<span class="w"> </span>proton_bc_empty
@@ -282,7 +282,7 @@ so, run the following command for a given dataset:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nnu<span class="w"> </span>data<span class="w"> </span>matching_grids<span class="w"> </span>./grids/grids-<span class="si">${</span><span class="nv">EXPERIMENT</span><span class="si">}</span>_<span class="si">${</span><span class="nv">OBSERVABLE</span><span class="si">}</span>.csv<span class="w"> </span><span class="si">${</span><span class="nv">NUCLEAR_PDF_NAME</span><span class="si">}</span>
 </pre></div>
 </div>
-<p>In the same way as before, the free-proton used as the boundary condition needs a
+<p>In the same way as before, the isoscalar nucleon used as the boundary condition needs a
 special treatment in that they have to be generated at the same time in the following
 way:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nnu<span class="w"> </span>data<span class="w"> </span>proton_bc<span class="w"> </span>./grids-PROTONBC_*_MATCHING.tar.gz<span class="w"> </span><span class="si">${</span><span class="nv">PDF_NAME</span><span class="si">}</span>
