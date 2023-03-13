@@ -41,7 +41,7 @@ def gen_integration_input(nx_specs):
     return xgrid, weights_array
 
 
-def compute_integrand_sfs(pdfname, xgrid, q2dic, a_value):
+def compute_integrand_sfs(pdfname, xgrid, q2dic, a_value, rule):
     """Compute the integrand by calling a PDF instead of using the
     NN models.
     """
@@ -49,21 +49,31 @@ def compute_integrand_sfs(pdfname, xgrid, q2dic, a_value):
 
     q2grid = np.linspace(q2dic["q2min"], q2dic["q2max"], num=q2dic["n"])
 
-    # Construct the 2D grids to compute LHAPDF
-    xg2, qg2 = np.meshgrid(xgrid, q2grid)
+    def _compute_gls(xgrid, q2grid, pdf_instances):
+        # Construct the 2D grids to compute LHAPDF
+        xg2, qg2 = np.meshgrid(xgrid, q2grid)
+        comb_pdfs = []
+        for pdf in pdf_instances:
+            xf3 = pdf.xfxQ2(3003, xg2.flatten(), qg2.flatten())
+            comb_pdfs.append(np.asarray(xf3).reshape((xgrid.size, q2grid.size)))
+        return comb_pdfs
 
-    comb_pdfs = []
-    for pdf in pdf_instances:
-        sf_comb = []
-        for pid in [[1001, 1002], [2001, 2002]]:
-            fn = pdf.xfxQ2(pid[0], xg2.flatten(), qg2.flatten())
-            fb = pdf.xfxQ2(pid[1], xg2.flatten(), qg2.flatten())
-            fn = np.asarray(fn).reshape((xgrid.size, q2grid.size))
-            fb = np.asarray(fb).reshape((xgrid.size, q2grid.size))
-            sf_comb.append(fn - fb)
+    def _compute_bjorken(xgrid, q2grid, pdf_instances):
+        # Construct the 2D grids to compute LHAPDF
+        xg2, qg2 = np.meshgrid(xgrid, q2grid)
+        comb_pdfs = []
+        for pdf in pdf_instances:
+            sf_comb = []
+            for pid in [[1001, 1002], [2001, 2002]]:
+                fn = pdf.xfxQ2(pid[0], xg2.flatten(), qg2.flatten())
+                fb = pdf.xfxQ2(pid[1], xg2.flatten(), qg2.flatten())
+                fn = np.asarray(fn).reshape((xgrid.size, q2grid.size))
+                fb = np.asarray(fb).reshape((xgrid.size, q2grid.size))
+                sf_comb.append(fn - fb)
+            comb_pdfs.append(sf_comb[0] - sf_comb[1])
+        return comb_pdfs
 
-        comb_pdfs.append(sf_comb[0] - sf_comb[1])
-
+    comb_pdfs = locals()[f'_compute_{rule.lower()}'](xgrid, q2grid, pdf_instances)
     return q2grid, np.asarray(comb_pdfs)
 
 
@@ -266,6 +276,14 @@ def check_sumrule(fit, rule, nx_specs, q2_specs, a_value, *args, **kwargs):
     assert rule in ["GLS", "Bjorken", "GDH"]  # Make sure value is in the list
     xgrid, weights = gen_integration_input(nx_specs)
 
+    sup_rules = ["Bjorken", "GLS"]
+    if kwargs.get("pdf", None) is not None and rule not in sup_rules:
+        _logger.warning(
+            f"Using SF sets with {rule} sum rules is not supported. "
+            "If this is not intended, remove 'pdf' key in the card."
+        )
+        sys.exit()
+
     # Choose whether to compute the Integrand from NN model or SFs
     if kwargs.get("pdf", None) is not None:
         q2grids, pred = compute_integrand_sfs(
@@ -273,6 +291,7 @@ def check_sumrule(fit, rule, nx_specs, q2_specs, a_value, *args, **kwargs):
             xgrid=xgrid,
             q2dic=q2_specs,
             a_value=a_value,
+            rule=rule,
         )
     else:
         q2grids, pred = compute_integrand(
@@ -282,13 +301,6 @@ def check_sumrule(fit, rule, nx_specs, q2_specs, a_value, *args, **kwargs):
             q2_values=q2_specs,
             a_value=a_value,
         )
-
-    if kwargs.get("pdf", None) is not None and rule != "Bjorken":
-        _logger.warning(
-            f"Using SF sets with {rule} sum rules is not supported. "
-            "If this is not intended, remove 'pdf' key in the card."
-        )
-        sys.exit()
 
     norm = 1 if rule == "GLS" else 2
     pred_int = []
