@@ -2,6 +2,14 @@
 # Compare the GLS sum rules with N3NLO pQCD computation
 ############################################################
 
+# Sum Rules to Check
+rule: GLS  # Option: [GLS, Bjorken, GDH]
+
+# Use SF set to compute rules instead of NN model
+# Comment out if not needed as it will always use
+# the SF set otherwise.
+# pdf:  NNSFnu_D_highQ
+
 # Number of x-points to be used for the integration
 nx_specs:
   nx: 100
@@ -10,7 +18,7 @@ nx_specs:
 # Details about the Q2-grid to be generated
 # The grid will containg n points between
 # q2min and q2max
-q2_values_dic:
+q2_specs:
   q2min: 2
   q2max: 10
   n: 10
@@ -20,4 +28,4 @@ a_value: 56
 
 # Action to be performed--Refer to docs for more details
 actions:
-  - gls_sum_rules
+  - check_sum_rules

@@ -1,0 +1,26 @@
+############################################################
+# Compare the Effective Charge with Experimental Data
+############################################################
+
+# Sum Rules to Check
+rule: GLS  # Option: [GLS, Bjorken, GDH]
+
+# Number of x-points to be used for the integration
+nx_specs:
+  nx: 100
+  xmin_log: -4
+
+# Details about the Q2-grid to be generated
+# The grid will containg n points between
+# q2min and q2max
+q2_specs:
+  q2min: 0.01
+  q2max: 5
+  n: 20
+
+# Value of the atomic mass number A
+a_value: 56
+
+# Action to be performed--Refer to docs for more details
+actions:
+  - check_effective_charge

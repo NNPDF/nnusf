@@ -43,6 +43,21 @@ Generally, it has the following structure:
          xf3nub: [0.25, 2.0]
 
 
+If one wants to compute the :math:`\chi^2` of datasets that were not included in
+the fit, then the list of such datasets need to be included in the :mod:`check_chi2_experiments`
+key:
+
+.. code-block:: yaml
+
+   check_chi2_experiments:
+   - {dataset: CDHSW_F2, frac: 0.75}
+   - {dataset: CDHSW_F3, frac: 0.75}
+
+.. note::
+   These datasets can be included in the runcard even after :mod:`postfit` given
+   that they are mainly useful for the report.
+
+
 Perform a fit
 -------------
 
@@ -118,9 +133,9 @@ grids. The structure functions have the following LHAPDF IDs:
      - :math:`F_2^{\bar{\nu}}`
      - :math:`F_L^{\bar{\nu}}`
      - :math:`xF_3^{\bar{\nu}}`
-     - :math:`\langle F_2^{\bar{\nu}} \rangle`
-     - :math:`\langle F_L^{\bar{\nu}} \rangle`
-     - :math:`\langle xF_3^{\bar{\nu}} \rangle`
+     - :math:`\langle F_2 \rangle`
+     - :math:`\langle F_L \rangle`
+     - :math:`\langle xF_3 \rangle`
    * - LHAID
      - 1001
      - 1002

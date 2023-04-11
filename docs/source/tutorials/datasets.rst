@@ -64,7 +64,7 @@ This will generate inside :mod:`commondata/kinematics` a table named
 :mod:`KIN_${EXPERIMENT}_${OBSERVABLE}_MATCHING.csv` containing the input
 kinematic values which will be used later to generate the theory card.
 
-The free proton :math:`A=1` Yadism pseudo-data needs a special treatment
+The isoscalar nucleon :math:`A=1` Yadism pseudo-data needs a special treatment
 when generating the input kinematics, that is one needs to run the following
 command:
 
@@ -89,7 +89,7 @@ so, run the following command for a given dataset:
 
    nnu data matching_grids ./grids/grids-${EXPERIMENT}_${OBSERVABLE}.csv ${NUCLEAR_PDF_NAME}
 
-In the same way as before, the free-proton used as the boundary condition needs a
+In the same way as before, the isoscalar nucleon used as the boundary condition needs a
 special treatment in that they have to be generated at the same time in the following
 way:
 

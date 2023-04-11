@@ -14,19 +14,16 @@ import numpy.typing as npt
 import pineappl
 import yaml
 
-from nnusf.export_lhapdf.dump_grids import ROUNDING
-
-from .. import utils
-from ..export_lhapdf.dump_grids import LHAPDF_ID, dump_pred_lhapdf
 from . import defs
 from .bodek_yang import load
+from .. import utils
+from ..lhapdf.dump_grids import LHAPDF_ID, dump_pred_lhapdf
+from ..utils import ROUNDING
 
 _logger = logging.getLogger(__name__)
 
-ROUNDING = 6
 # The labels and IDs elow have to match exactly
 SFS_LABEL = ["F2nu", "FLnu", "xF3nu", "F2nub", "FLnub", "xF3nub"]
-LHAPDF_ID = [1001, 1002, 1003, 2001, 2002, 2003, 3001, 3002, 3003]
 
 
 def plot(

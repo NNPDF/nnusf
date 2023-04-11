@@ -8,8 +8,8 @@ import logging
 
 import numpy as np
 
-from ..export_lhapdf.dump_grids import dump_pred_lhapdf
-from ..export_lhapdf.utils import install_pdf
+from ..lhapdf.dump_grids import dump_pred_lhapdf
+from ..lhapdf.utils import install_pdf
 from ..utils import ROUNDING, compute_lhapdf
 
 _logger = logging.getLogger(__name__)
