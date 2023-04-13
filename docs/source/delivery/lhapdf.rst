@@ -43,6 +43,9 @@ to a prescription described below.
    * - :math:`(15, 31)`
      - `NNSFnu\_Ea\_lowQ <https://data.nnpdf.science/NNSFnu/NNSFnu_Ea_lowQ.tar.gz>`_
      - `NNSFnu\_Ea\_highQ <https://data.nnpdf.science/NNSFnu/NNSFnu_Ea_highQ.tar.gz>`_
+   * - :math:`(18, 40)`
+     - `NNSFnu\_Ar\_lowQ <https://data.nnpdf.science/NNSFnu/NNSFnu_Ar_lowQ.tar.gz>`_
+     - `NNSFnu\_Ar\_highQ <https://data.nnpdf.science/NNSFnu/NNSFnu_Ar_highQ.tar.gz>`_
    * - :math:`(20, 40)`
      - `NNSFnu\_Ca\_lowQ <https://data.nnpdf.science/NNSFnu/NNSFnu_Ca_lowQ.tar.gz>`_
      - `NNSFnu\_Ca\_highQ <https://data.nnpdf.science/NNSFnu/NNSFnu_Ca_highQ.tar.gz>`_
