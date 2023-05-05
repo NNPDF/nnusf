@@ -6,19 +6,18 @@ import tempfile
 
 from appdirs import AppDirs
 from pathlib import Path
-from typing import Optional
 
 _logger = logging.getLogger(__name__)
 
 
 def setup_directory(dirname: str) -> Path:
     """Set up the user data directories.
-    
+
     Parameters:
     -----------
     dirname: str
         Name of the App directory
-    
+
     Returns:
     --------
     pathlib.Path:
@@ -63,14 +62,14 @@ def download_targz(response, tempdir: Path, filename: str) -> None:
 def get_theory(userdir: Path) -> None:
     """Download the theory in a temporary directory and
     extract it to the user data folder.
-    
+
     Parameters:
     -----------
     userdir: Path
         Path to the user data folder
     """
     name = "nnusf_data.tar.gz"
-    url = f"https://data.nnpdf.science/NNSFnu/data/{name}"
+    url = f"https://data.nnpdf.science/NNUSF/data/{name}"
 
     try:
         response = requests.get(url, stream=True)
