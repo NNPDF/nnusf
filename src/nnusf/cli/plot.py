@@ -4,7 +4,7 @@ import pathlib
 
 import click
 
-from ..plot import covmat, fit, kinematics, matching, sf, th_covmat
+from ..plot import covmat, fit, kinematics, matching, sf, th_covmat, sfs_lhapdf
 from ..theory import defs
 from . import base
 
@@ -19,7 +19,7 @@ dest = click.option(
     "--destination",
     type=click.Path(path_type=pathlib.Path),
     default=pathlib.Path.cwd().absolute() / "plots",
-    help="Alternative destination path to store the resulting plots (default: $PWD/plots).",
+    help="Alternative path to store results (default: $PWD/plots).",
 )
 
 
@@ -63,8 +63,8 @@ def sub_kinematic(
 ):
     """Generate kinematics plot.
 
-    The plot will include data from each DATA path provided (multiple values allowed),
-    to include all of them just run:
+    The plot will include data from each DATA path provided
+    (multiple values allowed), to include all of them just run:
 
         nnu plot kin commondata/data/*
 
@@ -122,15 +122,15 @@ cuts = click.option(
 def sub_covmat(data, destination, inverse, norm, cuts, individual_data):
     """Generate covariance matrix heatmap.
 
-    The operation is repeated for each DATA path provided (multiple values allowed),
-    e.g.:
+    The operation is repeated for each DATA path provided
+    (multiple values allowed), e.g.:
 
         nnu plot covmat commondata/data/*
 
     to repeat the operation for all datasets stored in `data`.
 
-    A further plot will be generated, including the full covariance matrix for
-    the union of the datasets selected.
+    A further plot will be generated, including the full covariance
+    matrix for the union of the datasets selected.
 
     """
     if cuts is not None:
@@ -151,11 +151,13 @@ def sub_covmat(data, destination, inverse, norm, cuts, individual_data):
 @click.argument("runcard", type=click.Path(exists=True, path_type=pathlib.Path))
 @dest
 def sub_fit(model, runcard, destination):
-    """Plot predictions from the fit and/or compare them to the experimental
-    measurements. The command takes two positional arguments and one optional
-    argument. The command should be run as follows:
+    """Plot predictions from the fit and/or compare them
+    to the experimental measurements. The command takes
+    two positional arguments and one optional argument.
+    The command should be run as follows:
 
-        nnu plot fit <path_fit_folder> <path_plot_yaml> [destination_foder]
+        nnu plot fit <path_fit_folder> <path_plot_yaml> [-d destination_foder]
+
     """
     fit.main(model, runcard, destination)
 
@@ -187,6 +189,7 @@ def sub_matching_dataset(dataset, destination):
     """Plots the matching datasets along with the actual data.
 
     eg: nnu plot matching_dataset commondata/data/DATA_NUTEV_F2_MATCHING.csv
+
     """
     matching.main(dataset, destination)
 
@@ -199,13 +202,14 @@ def sub_matching_dataset(dataset, destination):
 @inverse
 @norm
 @cuts
-def sub_covmat(data, destination, inverse, norm, cuts):
+def sub_th_covmat(data, destination, inverse, norm, cuts):
     """Generate theory covariance matrix heatmap.
 
-    The operation is repeated for each MATCHING DATA path provided (multiple values allowed),
-    e.g.:
+    The operation is repeated for each MATCHING DATA path provided
+    (multiple values allowed), e.g.:
 
         nnu plot th_covmat commondata/data/*
+
     """
     th_covmat.main(
         data,
@@ -214,3 +218,19 @@ def sub_covmat(data, destination, inverse, norm, cuts):
         norm=norm,
         cuts=cuts,
     )
+
+
+@subcommand.command("sfs_lhapdf")
+@click.argument("runcard", type=click.Path(exists=True, path_type=pathlib.Path))
+@dest
+def sub_sfs_lhapdf(runcard, destination):
+    """Plot and/or Compare Structure Function predictions
+    given a run card in which a list of the LHAPDF grid(s)
+    is specified.
+
+    To generate the plot, simply type the following command:
+
+        nnu plot fit <path_to_sfs_runcard> [-d destination]
+
+    """
+    sfs_lhapdf.main(runcard, destination)
