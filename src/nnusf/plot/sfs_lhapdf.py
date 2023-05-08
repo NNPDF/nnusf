@@ -1,13 +1,11 @@
-# -*- coding: utf-8 -*-
-import lhapdf
 import pathlib
-import yaml
 
-import numpy as np
+import lhapdf
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import seaborn as sns
-
+import yaml
 
 LHAPDF_ID = [1001, 2001, 3001, 1003, 2003, 3003]
 XGRID = dict(min=1e-3, max=1.0, num=100)

@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 """Provide plot subcommand."""
 import pathlib
 
 import click
 
-from ..plot import covmat, fit, kinematics, matching, sf, th_covmat, sfs_lhapdf
+from ..plot import covmat, fit, kinematics, matching, sf, sfs_lhapdf, th_covmat
 from ..theory import defs
 from . import base
 
