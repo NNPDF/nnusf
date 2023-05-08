@@ -40,13 +40,9 @@ def min_max_68_ci(data):
         interval.
 
     """
-    # Compute the mean and standard deviation of the data
-    # Set ddof=1 to compute the sample standard deviation
-    mean, std = np.mean(data), np.std(data, ddof=1)
-
-    # Compute the 68% confidence interval using the z-score
-    ci = mean + np.array([-1, 1]) * std / np.sqrt(len(data)) * 1.0
-    return min(ci), max(ci)
+    ci_loww = np.nanpercentile(data, 16, axis=0)
+    ci_high = np.nanpercentile(data, 84, axis=0)
+    return ci_loww, ci_high
 
 
 def construct_lhapdf(
@@ -178,7 +174,7 @@ def plot_sfs(df_pred: pd.DataFrame, dep_var: str, fixed_var) -> None:
             y="results",
             hue=new_label,
             ax=ax,
-            ci="sd",
+            errorbar=min_max_68_ci,
         )
 
         # Define some specifictions for the plots
