@@ -249,19 +249,6 @@ Generally, it has the following structure:</p>
 <span class="w">      </span><span class="nt">xf3nub</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0.25</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">2.0</span><span class="p p-Indicator">]</span>
 </pre></div>
 </div>
-<p>If one wants to compute the <span class="math notranslate nohighlight">\(\chi^2\)</span> of datasets that were not included in
-the fit, then the list of such datasets need to be included in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">check_chi2_experiments</span></code>
-key:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">check_chi2_experiments</span><span class="p">:</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="nv">CDHSW_F2</span><span class="p p-Indicator">,</span><span class="nt"> frac</span><span class="p">:</span><span class="w"> </span><span class="nv">0.75</span><span class="p p-Indicator">}</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="nv">CDHSW_F3</span><span class="p p-Indicator">,</span><span class="nt"> frac</span><span class="p">:</span><span class="w"> </span><span class="nv">0.75</span><span class="p p-Indicator">}</span>
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>These datasets can be included in the runcard even after <code class="xref py py-mod docutils literal notranslate"><span class="pre">postfit</span></code> given
-that they are mainly useful for the report.</p>
-</div>
 </section>
 <section id="perform-a-fit">
 <h2>Perform a fit<a class="headerlink" href="#perform-a-fit" title="Permalink to this heading">#</a></h2>
@@ -336,9 +323,9 @@ grids. The structure functions have the following LHAPDF IDs:</p>
 <th class="head"><p><span class="math notranslate nohighlight">\(F_2^{\bar{\nu}}\)</span></p></th>
 <th class="head"><p><span class="math notranslate nohighlight">\(F_L^{\bar{\nu}}\)</span></p></th>
 <th class="head"><p><span class="math notranslate nohighlight">\(xF_3^{\bar{\nu}}\)</span></p></th>
-<th class="head"><p><span class="math notranslate nohighlight">\(\langle F_2 \rangle\)</span></p></th>
-<th class="head"><p><span class="math notranslate nohighlight">\(\langle F_L \rangle\)</span></p></th>
-<th class="head"><p><span class="math notranslate nohighlight">\(\langle xF_3 \rangle\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(\langle F_2^{\bar{\nu}} \rangle\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(\langle F_L^{\bar{\nu}} \rangle\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(\langle xF_3^{\bar{\nu}} \rangle\)</span></p></th>
 </tr>
 </thead>
 <tbody>

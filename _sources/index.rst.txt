@@ -55,29 +55,24 @@ To reference NNSFν in a scientific publication please use the following:
 
 .. code-block:: latex
 
-   @article{Candido:2023utz,
-       author = "Candido, Alessandro and Garcia, Alfonso and Magni, Giacomo and Rabemananjara, Tanjona and Rojo, Juan and Stegeman, Roy",
-       title = "{Neutrino Structure Functions from GeV to EeV Energies}",
-       eprint = "2302.08527",
-       archivePrefix = "arXiv",
-       primaryClass = "hep-ph",
-       reportNumber = "Nikhef 2022-014, Edinburgh 2022/27, TIF-UNIMI-2023-5",
-       month = "2",
-       year = "2023"
+   @article {reference_id,
+      author = {A. Candido, A. Garcia, G. Magni, T. R. Rabemananjara, J. Rojo, R. Stegeman},
+      title = {Neutrino Structure Functions from GeV to EeV Energies},
+      year = {2023},
+      doi = {10.1101/2020.07.15.204701},
+      eprint = {https://arxiv.org/list/hep-ph/},
+      journal = {aRxiv}
    }
 
 If NNSFν proves to be useful in your work, please also reference the codes:
 
 .. code-block:: latex
 
-   @misc{https://doi.org/10.5281/zenodo.7657132,
-     doi = {10.5281/ZENODO.7657132},
-     url = {https://zenodo.org/record/7657132},
-     author = "Candido, Alessandro and Garcia, Alfonso and Magni, Giacomo and Rabemananjara, Tanjona and Rojo, Juan and Stegeman, Roy",
-     title = "{Neutrino Structure Functions from GeV to EeV Energies}",
-     publisher = {Zenodo},
-     year = {2023},
-     copyright = {Open Access}
+   @article {reference_id,
+      author = {A. Candido, A. Garcia, G. Magni, T. R. Rabemananjara, J. Rojo, R. Stegeman},
+      title = {Neutrino Structure Functions from GeV to EeV Energies},
+      year = {2023},
+      doi = {10.1101/2020.07.15.204701},
    }
 
 

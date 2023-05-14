@@ -231,7 +231,7 @@ values and the treatment of the statistical and/or systematic
 uncertainties. For some examples on how to create a filter, refer to
 the following <a class="reference external" href="https://github.com/NNPDF/nnusf/tree/main/commondata/filters">folder</a>.
 Once this is done run the following command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nnu<span class="w"> </span>data<span class="w"> </span>filter<span class="w"> </span><span class="si">${</span><span class="nv">NNUSF_USERDIR</span><span class="si">}</span>/commondata/rawdata/*
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nnu<span class="w"> </span>data<span class="w"> </span>filter<span class="w"> </span>./commondata/rawdata/*
 </pre></div>
 </div>
 <p>This will dump the pandas tables containing the input kinematics,
@@ -246,7 +246,7 @@ experiment such as the (nuclear) target.</p>
 <p>Now that we have the input datasets we need to generate the corresponding
 coefficients that connect the structure function bases to the desired observable.
 To do so, just run the following:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nnu<span class="w"> </span>data<span class="w"> </span>coefficients<span class="w"> </span><span class="si">${</span><span class="nv">NNUSF_USERDIR</span><span class="si">}</span>/commondata/data/*
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nnu<span class="w"> </span>data<span class="w"> </span>coefficients<span class="w"> </span>./commondata/data/*
 </pre></div>
 </div>
 </section>
@@ -258,13 +258,13 @@ be computed. Ideally, the kinematic grids should match a specific dataset for
 <span class="math notranslate nohighlight">\(\left(x, y \right)\)</span> and only the <span class="math notranslate nohighlight">\(Q^2\)</span> values are different since
 they have to be generated at medium-<span class="math notranslate nohighlight">\(Q^2\)</span>. In order
 to generate the input kinematics, just run the following command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nnu<span class="w"> </span>data<span class="w"> </span>matching_grids_empty<span class="w"> </span><span class="si">${</span><span class="nv">NNUSF_USERDIR</span><span class="si">}</span>/commondata/data/DATA_<span class="si">${</span><span class="nv">EXPERIMENT</span><span class="si">}</span>_<span class="si">${</span><span class="nv">OBSERVABLE</span><span class="si">}</span>.csv
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nnu<span class="w"> </span>data<span class="w"> </span>matching_grids_empty<span class="w"> </span>./commondata/data/DATA_<span class="si">${</span><span class="nv">EXPERIMENT</span><span class="si">}</span>_<span class="si">${</span><span class="nv">OBSERVABLE</span><span class="si">}</span>.csv
 </pre></div>
 </div>
 <p>This will generate inside <code class="xref py py-mod docutils literal notranslate"><span class="pre">commondata/kinematics</span></code> a table named
 <code class="xref py py-mod docutils literal notranslate"><span class="pre">KIN_${EXPERIMENT}_${OBSERVABLE}_MATCHING.csv</span></code> containing the input
 kinematic values which will be used later to generate the theory card.</p>
-<p>The isoscalar nucleon <span class="math notranslate nohighlight">\(A=1\)</span> Yadism pseudo-data needs a special treatment
+<p>The free proton <span class="math notranslate nohighlight">\(A=1\)</span> Yadism pseudo-data needs a special treatment
 when generating the input kinematics, that is one needs to run the following
 command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nnu<span class="w"> </span>data<span class="w"> </span>proton_bc_empty
@@ -282,7 +282,7 @@ so, run the following command for a given dataset:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nnu<span class="w"> </span>data<span class="w"> </span>matching_grids<span class="w"> </span>./grids/grids-<span class="si">${</span><span class="nv">EXPERIMENT</span><span class="si">}</span>_<span class="si">${</span><span class="nv">OBSERVABLE</span><span class="si">}</span>.csv<span class="w"> </span><span class="si">${</span><span class="nv">NUCLEAR_PDF_NAME</span><span class="si">}</span>
 </pre></div>
 </div>
-<p>In the same way as before, the isoscalar nucleon used as the boundary condition needs a
+<p>In the same way as before, the free-proton used as the boundary condition needs a
 special treatment in that they have to be generated at the same time in the following
 way:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nnu<span class="w"> </span>data<span class="w"> </span>proton_bc<span class="w"> </span>./grids-PROTONBC_*_MATCHING.tar.gz<span class="w"> </span><span class="si">${</span><span class="nv">PDF_NAME</span><span class="si">}</span>
@@ -291,7 +291,7 @@ way:</p>
 <p>Once these are done the remaining thing to do is to generate the corresponding
 coefficients in the same way as for the real experimental data. For this we
 just need to run the same command as before:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nnu<span class="w"> </span>data<span class="w"> </span>coefficients<span class="w"> </span><span class="si">${</span><span class="nv">NNUSF_USERDIR</span><span class="si">}</span>/commondata/data/*
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nnu<span class="w"> </span>data<span class="w"> </span>coefficients<span class="w"> </span>./commondata/data/*
 </pre></div>
 </div>
 </section>
