@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Installation" href="installation.html" /><link rel="prev" title="Welcome to NNSFν" href="../index.html" />
 
-    <!-- Generated with Sphinx 6.2.1 and Furo 2023.03.27 -->
+    <!-- Generated with Sphinx 6.2.1 and Furo 2023.05.20 -->
         <title>Description - NNSFν</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -214,15 +214,17 @@
         <article role="main">
           <section id="description">
 <h1>Description<a class="headerlink" href="#description" title="Permalink to this heading">#</a></h1>
-<p>NNSFν is a python package that can be used to compute (anti-)neutrino structure
-functions at all energies. It relies on <a class="reference external" href="https://github.com/N3PDF/yadism">Yadism</a>
+<p>NNSFν is a python package that can be used to compute neutrino structure
+functions at all momentum transfer energies in the inelastic regime. It
+relies on <a class="reference external" href="https://github.com/N3PDF/yadism">Yadism</a>
 for the description of the medium- and large-<span class="math notranslate nohighlight">\(Q^2\)</span> regions while the
 low-<span class="math notranslate nohighlight">\(Q^2\)</span> regime is modelled in terms of a Neural Network (NN).</p>
-<a class="reference internal image-reference" href="../_images/matching.png"><img alt="Strategy to parametrise the structure functions" class="align-center" src="../_images/matching.png" style="width: 800px;" /></a>
-<p>In the low- and intermediate-<span class="math notranslate nohighlight">\(Q^2\)</span> regions we construct a parametrisation of
-the neural network structure functions with its associated uncertainties by training
-a machine learning model to available experimental data. That is, given an observable
-<span class="math notranslate nohighlight">\(\mathcal{O}\)</span> that is defined as a linear combination of structure functions:</p>
+<a class="reference internal image-reference" href="../_images/matching.png"><img alt="Strategy to parametrise the structure functions" class="align-center" src="../_images/matching.png" style="width: 550px;" /></a>
+<p>In the low- and intermediate-<span class="math notranslate nohighlight">\(Q^2\)</span> regions the parametrisation of the
+neural network structure functions with their associated uncertainties are
+constructed by training a machine learning model to available experimental
+data. That is, given an observable <span class="math notranslate nohighlight">\(\mathcal{O}\)</span> that is defined as a
+linear combination of structure functions:</p>
 <div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
 \[\mathcal{O} = N
@@ -233,16 +235,16 @@ C_5 x F_3^{\nu} + C_6 x F_3^{\bar{\nu}}
 \right),\]</div>
 </div>
 <p>we fit the structure functions <span class="math notranslate nohighlight">\(F_i^{k} \equiv F_i^{k} \left( x, Q^2, A \right)\)</span>
-for <span class="math notranslate nohighlight">\(i=2, 3, L\)</span> and <span class="math notranslate nohighlight">\(k =\nu, \bar{\nu}\)</span>. Note that for <span class="math notranslate nohighlight">\(i = 3\)</span> we
-actually fit <span class="math notranslate nohighlight">\(xF_3\)</span> instead of <span class="math notranslate nohighlight">\(F_3\)</span>. The coefficients <span class="math notranslate nohighlight">\(C_j\)</span> which
-depend on <span class="math notranslate nohighlight">\((x, Q^2, y)\)</span> are computed using Yadism and they have to match data
+for <span class="math notranslate nohighlight">\(i=2, 3, L\)</span> and <span class="math notranslate nohighlight">\(k =\nu, \bar{\nu}\)</span>. It should be noted that for <span class="math notranslate nohighlight">\(i = 3\)</span>
+we actually fit <span class="math notranslate nohighlight">\(xF_3\)</span> instead of <span class="math notranslate nohighlight">\(F_3\)</span>. The coefficients <span class="math notranslate nohighlight">\(C_j\)</span> which
+depend on <span class="math notranslate nohighlight">\((x, Q^2, y)\)</span> are also computed using Yadism and they have to match data
 point per data point to the experimental datasets while the normalisation <span class="math notranslate nohighlight">\(N\)</span>
 depends on how the observable is measured experimentally.</p>
-<p>The resulting predictions from NNSFν is also made available in terms of fast interpolation
+<a class="reference internal image-reference" href="../_images/nnusf_xsec.png"><img alt="Strategy to parametrise the structure functions" class="align-center" src="../_images/nnusf_xsec.png" style="width: 550px;" /></a>
+<p>The resulting predictions from NNSFν are also made available in terms of fast interpolation
 <a class="reference external" href="https://lhapdf.hepforge.org/">LHAPDF</a> grids that can be accessed through an independent
 driver code and directly interfaced to the <a class="reference external" href="http://www.genie-mc.org/">GENIE</a> Monte Carlo
 event generator.</p>
-<a class="reference internal image-reference" href="../_images/nnusf_xsec.png"><img alt="Strategy to parametrise the structure functions" class="align-center" src="../_images/nnusf_xsec.png" style="width: 550px;" /></a>
 </section>
 
         </article>

@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Description" href="quickstart/description.html" />
 
-    <!-- Generated with Sphinx 6.2.1 and Furo 2023.03.27 -->
+    <!-- Generated with Sphinx 6.2.1 and Furo 2023.05.20 -->
         <title>NNSFν</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -215,10 +215,11 @@
           <section id="welcome-to-nnsf">
 <h1>Welcome to NNSFν<a class="headerlink" href="#welcome-to-nnsf" title="Permalink to this heading">#</a></h1>
 <p align="center">
-  <img alt="Zenodo" src="https://zenodo.org/badge/DOI/10.1101/2023.02.15.204701.svg">
-  <img alt="Docs" src="https://assets.readthedocs.org/static/projects/badges/passing-flat.svg">
+  <a href="https://zenodo.org/account/settings/github/repository/NNPDF/nnusf#"><img alt="Zenodo" src="https://zenodo.org/badge/DOI/10.5281/zenodo.7657132 .svg"></a>
+  <a href="https://arxiv.org/abs/2302.08527"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2302.08527-b31b1b?labelColor=222222"></a>
+  <a href="https://pypi.org/project/nnusf/"><img alt="PyPI" src="https://img.shields.io/pypi/v/nnusf"/></a>
   <img alt="Status" src="https://www.repostatus.org/badges/latest/active.svg">
-  <img alt="License" src="https://img.shields.io/badge/License-MIT-yellow.svg">
+  <img alt="License" src="https://img.shields.io/badge/License-GPL3-blue.svg">
 </p><p>NNSFν povides predictions for neutrino inelastic structure functions
 valid for the complete range of energies relevant for phenomenology
 involving <span class="math notranslate nohighlight">\(\nu / \bar{\nu}\)</span>-experiments, from oscillation measurements
@@ -264,22 +265,27 @@ generate predictions.</p>
 <section id="citing-nnsf">
 <h1>Citing NNSFν<a class="headerlink" href="#citing-nnsf" title="Permalink to this heading">#</a></h1>
 <p>To reference NNSFν in a scientific publication please use the following:</p>
-<div class="highlight-latex notranslate"><div class="highlight"><pre><span></span>@article <span class="nb">{</span>reference<span class="nb">_</span>id,
-   author = <span class="nb">{</span>A. Candido, A. Garcia, G. Magni, T. R. Rabemananjara, J. Rojo, R. Stegeman<span class="nb">}</span>,
-   title = <span class="nb">{</span>Neutrino Structure Functions from GeV to EeV Energies<span class="nb">}</span>,
-   year = <span class="nb">{</span>2023<span class="nb">}</span>,
-   doi = <span class="nb">{</span>10.1101/2020.07.15.204701<span class="nb">}</span>,
-   eprint = <span class="nb">{</span>https://arxiv.org/list/hep-ph/<span class="nb">}</span>,
-   journal = <span class="nb">{</span>aRxiv<span class="nb">}</span>
+<div class="highlight-latex notranslate"><div class="highlight"><pre><span></span>@article<span class="nb">{</span>Candido:2023utz,
+    author = &quot;Candido, Alessandro and Garcia, Alfonso and Magni, Giacomo and Rabemananjara, Tanjona and Rojo, Juan and Stegeman, Roy&quot;,
+    title = &quot;<span class="nb">{</span>Neutrino Structure Functions from GeV to EeV Energies<span class="nb">}</span>&quot;,
+    eprint = &quot;2302.08527&quot;,
+    archivePrefix = &quot;arXiv&quot;,
+    primaryClass = &quot;hep-ph&quot;,
+    reportNumber = &quot;Nikhef 2022-014, Edinburgh 2022/27, TIF-UNIMI-2023-5&quot;,
+    month = &quot;2&quot;,
+    year = &quot;2023&quot;
 <span class="nb">}</span>
 </pre></div>
 </div>
 <p>If NNSFν proves to be useful in your work, please also reference the codes:</p>
-<div class="highlight-latex notranslate"><div class="highlight"><pre><span></span>@article <span class="nb">{</span>reference<span class="nb">_</span>id,
-   author = <span class="nb">{</span>A. Candido, A. Garcia, G. Magni, T. R. Rabemananjara, J. Rojo, R. Stegeman<span class="nb">}</span>,
-   title = <span class="nb">{</span>Neutrino Structure Functions from GeV to EeV Energies<span class="nb">}</span>,
-   year = <span class="nb">{</span>2023<span class="nb">}</span>,
-   doi = <span class="nb">{</span>10.1101/2020.07.15.204701<span class="nb">}</span>,
+<div class="highlight-latex notranslate"><div class="highlight"><pre><span></span>@misc<span class="nb">{</span>https://doi.org/10.5281/zenodo.7657132,
+  doi = <span class="nb">{</span>10.5281/ZENODO.7657132<span class="nb">}</span>,
+  url = <span class="nb">{</span>https://zenodo.org/record/7657132<span class="nb">}</span>,
+  author = &quot;Candido, Alessandro and Garcia, Alfonso and Magni, Giacomo and Rabemananjara, Tanjona and Rojo, Juan and Stegeman, Roy&quot;,
+  title = &quot;<span class="nb">{</span>Neutrino Structure Functions from GeV to EeV Energies<span class="nb">}</span>&quot;,
+  publisher = <span class="nb">{</span>Zenodo<span class="nb">}</span>,
+  year = <span class="nb">{</span>2023<span class="nb">}</span>,
+  copyright = <span class="nb">{</span>Open Access<span class="nb">}</span>
 <span class="nb">}</span>
 </pre></div>
 </div>
