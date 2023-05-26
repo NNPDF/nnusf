@@ -54,10 +54,32 @@ setuptools = "^65.5.1"
 particle = "^0.21.2"
 
 [tool.poetry.dev-dependencies]
-pytest = "^7.1"
-pytest-cov = "^2.12.1"
+poethepoet = "^0.10.0"
+pylint = "^2.9.3"
 ipython = "^8.4.0"
 pdbpp = "^0.10.3"
+
+[tool.poetry.group.test]
+optional = true
+
+[tool.poetry.group.test.dependencies]
+pytest = "^6.2.4"
+pytest-cov = "^2.12.1"
+pytest-env = "^0.6.2"
+
+[tool.poetry.group.docs]
+optional = true
+
+[tool.poetry.group.docs.dependencies]
+Sphinx = ">6.0"
+recommonmark = "^0.7.1"
+sphinxcontrib-bibtex = "^2.3.0"
+sphinxcontrib-details-directive = "^0.1.0"
+nbsphinx = "^0.8.6"
+furo = "^2023.5.20"
+m2r2 = "^0.3.3.post2"
+sphinx-design = "^0.4.1"
+sphinx-copybutton = "^0.5.2"
 
 [tool.poetry.scripts]
 nnu = "nnusf.cli:command"
