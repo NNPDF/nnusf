@@ -1,7 +1,7 @@
 """Provide plot subcommand."""
 import pathlib
 
-import click
+import rich_click as click
 
 from ..plot import covmat, fit, kinematics, matching, sf, sfs_lhapdf, th_covmat
 from ..theory import defs

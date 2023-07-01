@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 """Provide fit subcommand."""
 import os
 import pathlib
 
-import click
+import rich_click as click
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 

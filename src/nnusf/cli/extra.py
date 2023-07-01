@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 """Provide extra scripts subcommand."""
-import click
 import numpy as np
+import rich_click as click
 
 from ..scripts import integrate, isoscalar
 from . import base

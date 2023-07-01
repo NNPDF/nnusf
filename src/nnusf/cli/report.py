@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 import pathlib
 
-import click
+import rich_click as click
 
 from ..reports import genhtml
 from . import base
