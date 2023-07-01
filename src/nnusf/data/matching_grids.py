@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Generate matching grids
 """
@@ -13,6 +12,7 @@ import numpy as np
 import pandas as pd
 import pineappl
 import yaml
+from appdirs import user_data_dir
 
 from .. import utils
 from ..theory.predictions import pdf_error, theory_error
@@ -23,7 +23,6 @@ from .utils import (
     dump_info_file,
     write_to_csv,
 )
-from appdirs import user_data_dir
 
 _logger = logging.getLogger(__name__)
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Generate runcards for large Q2 yadism predictions.
 
 There are actually two sections:

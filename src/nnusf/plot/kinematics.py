@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Generate heatmap plots for covariance matrices."""
 import logging
 import pathlib

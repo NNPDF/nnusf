@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Generate runcards for large yadism predictions.
 """
 import logging

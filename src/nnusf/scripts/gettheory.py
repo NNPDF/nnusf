@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
 import logging
-import requests
 import tarfile
 import tempfile
-
-from appdirs import AppDirs
 from pathlib import Path
+
+import requests
+from appdirs import AppDirs
 
 _logger = logging.getLogger(__name__)
 
@@ -54,7 +53,7 @@ def download_targz(response, tempdir: Path, filename: str) -> None:
     filename: str
         Name of the .tar.gz file
     """
-    with open(tempdir.joinpath(filename), 'wb') as ofile:
+    with open(tempdir.joinpath(filename), "wb") as ofile:
         ofile.write(response.raw.read())
     _logger.info(f"Theory downloaded succesfully in '{tempdir}'")
 

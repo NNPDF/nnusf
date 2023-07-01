@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Plot a dataset"""
 import logging
 import pathlib
@@ -65,7 +64,6 @@ def main(
         # plot data with same x
         data = data.reset_index()
         for x in np.unique(data["x"]):
-
             x_exp = find_nearest(data_exp["x"], x)
             fixed_x_data_exp = data_exp[data_exp["x"] == x_exp]
             fixed_x_data = data[data["x"] == x]

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import pathlib
 import shutil
 from fileinput import FileInput
@@ -7,6 +6,7 @@ from textwrap import dedent
 import pandas as pd
 import yaml
 
+from ..sffit.scaling import extract_extreme_values
 from .genfiles import (
     addinfo_yaml,
     additional_plots,
@@ -16,7 +16,6 @@ from .genfiles import (
     data_vs_predictions,
     summary_table,
 )
-from ..sffit.scaling import extract_extreme_values
 
 CURRENT_PATH = pathlib.Path(__file__)
 

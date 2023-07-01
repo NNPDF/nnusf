@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Compute the experimental chi2 on the central real data"""
 
 import numpy as np

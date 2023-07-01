@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Compute DIS predictions, out of given grids."""
 import logging
 import pathlib
@@ -14,11 +13,11 @@ import numpy.typing as npt
 import pineappl
 import yaml
 
-from . import defs
-from .bodek_yang import load
 from .. import utils
 from ..lhapdf.dump_grids import LHAPDF_ID, dump_pred_lhapdf
 from ..utils import ROUNDING
+from . import defs
+from .bodek_yang import load
 
 _logger = logging.getLogger(__name__)
 

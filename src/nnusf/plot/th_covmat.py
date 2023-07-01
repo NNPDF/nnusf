@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Generate heatmap plots for theory covariance matrix."""
 import pathlib
 from typing import Optional

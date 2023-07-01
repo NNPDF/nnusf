@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Compute DIS grids out of given runcards."""
 import logging
 import pathlib

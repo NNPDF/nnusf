@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Module that computes the Structure Function predictions from the NN and
 dump them as a LHAPDF-like grid.
@@ -14,8 +13,8 @@ import math
 import pathlib
 import re
 import shutil
-import lhapdf
 
+import lhapdf
 import numpy as np
 import scipy.special as sp
 import yaml

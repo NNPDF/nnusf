@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Compute DIS predictions, out of given grids and compare to data."""
 import logging
 import pathlib

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Utilities to write raw data filters."""
 import logging
 import pathlib

@@ -65,7 +65,7 @@ def sub_kinematic(
     The plot will include data from each DATA path provided
     (multiple values allowed), to include all of them just run:
 
-        nnu plot kin commondata/data/*
+        nnu plot kin ${NNUSF}/commondata/data/*
 
     """
     if cuts is not None:
@@ -124,7 +124,7 @@ def sub_covmat(data, destination, inverse, norm, cuts, individual_data):
     The operation is repeated for each DATA path provided
     (multiple values allowed), e.g.:
 
-        nnu plot covmat commondata/data/*
+        nnu plot covmat ${NNUSF}/commondata/data/*
 
     to repeat the operation for all datasets stored in `data`.
 
@@ -187,7 +187,7 @@ def sub_sf(dataset, kind, destination):
 def sub_matching_dataset(dataset, destination):
     """Plots the matching datasets along with the actual data.
 
-    eg: nnu plot matching_dataset commondata/data/DATA_NUTEV_F2_MATCHING.csv
+    eg: nnu plot matching_dataset ${NNUSF}/commondata/data/DATA_NUTEV_F2_MATCHING.csv
 
     """
     matching.main(dataset, destination)
@@ -207,7 +207,7 @@ def sub_th_covmat(data, destination, inverse, norm, cuts):
     The operation is repeated for each MATCHING DATA path provided
     (multiple values allowed), e.g.:
 
-        nnu plot th_covmat commondata/data/*
+        nnu plot th_covmat ${NNUSF}/commondata/data/*
 
     """
     th_covmat.main(
@@ -229,7 +229,7 @@ def sub_sfs_lhapdf(runcard, destination):
 
     To generate the plot, simply type the following command:
 
-        nnu plot fit <path_to_sfs_runcard> [-d destination]
+        nnu plot sfs_lhapdf <path_to_sfs_runcard> [-d destination]
 
     """
     sfs_lhapdf.main(runcard, destination)

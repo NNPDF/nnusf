@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Generate structure functions slices plots."""
 import logging
 import pathlib

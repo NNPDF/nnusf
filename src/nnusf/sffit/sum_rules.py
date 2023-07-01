@@ -1,15 +1,14 @@
-# -*- coding: utf-8 -*-
-import lhapdf
 import logging
 import math
 import sys
+
+import lhapdf
 import numpy as np
 from eko.couplings import Couplings
 from eko.io import types as ekotypes
 from rich.progress import track
 
 from .load_fit_data import get_predictions_q
-
 
 _logger = logging.getLogger(__name__)
 
@@ -73,7 +72,9 @@ def compute_integrand_sfs(pdfname, xgrid, q2dic, a_value, rule):
             comb_pdfs.append(sf_comb[0] - sf_comb[1])
         return comb_pdfs
 
-    comb_pdfs = locals()[f'_compute_{rule.lower()}'](xgrid, q2grid, pdf_instances)
+    comb_pdfs = locals()[f"_compute_{rule.lower()}"](
+        xgrid, q2grid, pdf_instances
+    )
     return q2grid, np.asarray(comb_pdfs)
 
 
@@ -105,10 +106,7 @@ def compute_integrand(model_path, rules, xgrid, q2_values, a_value):
         # Compute the F1 structure functions w/ extra factor w/o TMC
         # See Eq. (4.5) of this paper https://arxiv.org/pdf/2303.00723
         # The factor of 1/(2x) is accounted when computing the integral
-        avg = [
-            8 * (p[:, :, 0] - p[:, :, 1]) / q2_grids
-            for p in predictions
-        ]
+        avg = [8 * (p[:, :, 0] - p[:, :, 1]) / q2_grids for p in predictions]
     else:
         raise ValueError("The sum rule is unknown!")
     # Stack the list of x-values into a single np.array
@@ -234,7 +232,12 @@ def compute_bjorken_constant(nf_value, q2_value, n_loop=3):
 
     def d_nf_massless(nf_value):
         """Coefficients of the a_s^4 massless term in the expansion."""
-        return -457.0 + 83.09 * nf_value - 5.03 * nf_value**2 + 0.1 * nf_value**3
+        return (
+            -457.0
+            + 83.09 * nf_value
+            - 5.03 * nf_value**2
+            + 0.1 * nf_value**3
+        )
 
     # Massless coefficients up to 2-Loop/Order(a_s^2)
     def z_nf_massive(q2_value):
@@ -331,11 +334,11 @@ def effective_charge(fit, rule, nx_specs, q2_specs, a_value, *args, **kwargs):
 
     if rule == "GLS":
         # Expression below already normalized by Pi
-        effective_as = (1 - integral / 3)
+        effective_as = 1 - integral / 3
     elif rule == "Bjorken":
         # Expression below already normalized by Pi
         # effective_as = 3 / 2 * (1 - integral)
-        effective_as = (1 - (6 / 1.276) * integral)
+        effective_as = 1 - (6 / 1.276) * integral
     else:
         raise ValueError("Rule not supported for Effective Charge.")
 

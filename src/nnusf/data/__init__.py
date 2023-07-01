@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 MAP_DATASET_OBS = {
     "BEBCWA59": ["F2", "F3"],
     "CCFR": ["F2", "F3"],

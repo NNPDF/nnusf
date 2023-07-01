@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import json
 import pathlib
 
@@ -54,7 +53,7 @@ def dump_to_csv(
 
 def json_loader(fitfolder: pathlib.Path) -> dict:
     """Load a JSON file."""
-    with open(fitfolder, "r") as fstream:
+    with open(fitfolder) as fstream:
         jsonfile = json.load(fstream)
     return jsonfile
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Utilities and runners to generate yadism runcards."""
 import logging
 import pathlib
