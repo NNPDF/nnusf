@@ -131,7 +131,7 @@ def pdf_error(
         pred = np.array(pred).T
 
     # Make sure that `pred` does not include Member 0
-    return pred[:, :, 1:], 0, slice(1, -1), "PDF replicas"
+    return pred[:, :, 1:], 0, slice(1, -1), "PDF replicas"  # type: ignore
 
 
 def combined_error(
