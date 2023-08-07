@@ -108,10 +108,11 @@ def main(
     normsuf = "" if not norm else "-norm"
     invsuf = "" if not inverse else "-inv"
 
-    central_values = []
-    pdf_pred = []
-    th_shift = []
-    predictions_dict = {}
+    central_values: list = []
+    pdf_pred: list = []
+    th_shift: list = []
+    predictions_dict: dict = {}
+
     for ds in data:
         name, datapath = utils.split_data_path(ds)
         if "MATCHING" not in name:

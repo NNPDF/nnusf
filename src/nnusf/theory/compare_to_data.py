@@ -93,8 +93,8 @@ def main(
     """
     utils.mkdest(destination)
 
-    with tempfile.TemporaryDirectory() as tmpdir:
-        tmpdir = pathlib.Path(tmpdir).absolute()
+    with tempfile.TemporaryDirectory() as str_tmpdir:
+        tmpdir = pathlib.Path(str_tmpdir).absolute()
 
         # extract tar content
         if grids.suffix == ".tar":

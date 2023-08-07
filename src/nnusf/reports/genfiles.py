@@ -112,7 +112,7 @@ def compute_totchi2(models: list, datasets: dict) -> tuple[float, dict]:
     """
 
     # Compute the total Chi2 per dataset
-    totchi2_dataset = {"normalized": {}, "unnormalized": {}, "ndata": {}}
+    totchi2_dataset: dict = {"normalized": {}, "unnormalized": {}, "ndata": {}}
     for _, data in datasets.items():
         # NOTE: The kinematics below are scaled
         kins = np.expand_dims(data.kinematics, axis=0)
@@ -198,14 +198,14 @@ def summary_table(fitfolder: pathlib.Path, chi2tot: float) -> pd.DataFrame:
         chi_vl.append(jsonfile[f"best_vl_chi2"])
         chi_real.append(jsonfile["exp_chi2s"]["tot_chi2_real"])
 
-    chi_real, chi_tot = np.asarray(chi_real), np.asarray(chi_tot)
-    chi_tr, chi_vl = np.asarray(chi_tr), np.asarray(chi_vl)
+    chis_real, chis_tot = np.asarray(chi_real), np.asarray(chi_tot)
+    chis_tr, chis_vl = np.asarray(chi_tr), np.asarray(chi_vl)
 
     summary["chi2tot"] = rf"{chi2tot:.4f}"
-    summary["tr"] = rf"{chi_tr.mean():.4f} \( \pm \) {chi_tr.std():.4f}"
-    summary["vl"] = rf"{chi_vl.mean():.4f} \( \pm \) {chi_vl.std():.4f}"
-    summary["expr"] = rf"{chi_real.mean():.4f} \( \pm \) {chi_real.std():.4f}"
-    summary["expt"] = rf"{chi_tot.mean():.4f} \( \pm \) {chi_tot.std():.4f}"
+    summary["tr"] = rf"{chis_tr.mean():.4f} \( \pm \) {chis_tr.std():.4f}"
+    summary["vl"] = rf"{chis_vl.mean():.4f} \( \pm \) {chis_vl.std():.4f}"
+    summary["expr"] = rf"{chis_real.mean():.4f} \( \pm \) {chis_real.std():.4f}"
+    summary["expt"] = rf"{chis_tot.mean():.4f} \( \pm \) {chis_tot.std():.4f}"
 
     # TODO: Use pd.rename(columns=MAPPING, inplace=True) instead
     rename_dic_keys(summary, MAP_LABELS)

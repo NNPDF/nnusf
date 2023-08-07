@@ -47,12 +47,14 @@ def cross_section(
     yadcoeffs = np.array(yadcoeffs)
     idx = np.sum(np.meshgrid(np.arange(3), pos), axis=0).flatten()
 
-    coeffs = np.zeros((len(kinematics), 6))
+    coeffs = np.zeros((len(kinematics), 6))  # type: ignore
     coeffs[:, idx] = np.transpose(
         yadcoeffs[:, :, np.newaxis]
         * np.ones_like(pos)[np.newaxis, np.newaxis, :],
         [0, 2, 1],
-    ).reshape(yadcoeffs.shape[0], yadcoeffs.shape[1] * pos.size)
+    ).reshape(
+        yadcoeffs.shape[0], yadcoeffs.shape[1] * pos.size
+    )  # type: ignore
 
     return coeffs
 
@@ -77,7 +79,7 @@ def coefficients(name: str, datapath: pathlib.Path):
 
     if data.obs in ["F2", "F3"]:
         coeffs = np.zeros((data.n_data, 6))
-        pos += 0 if data.obs == "F2" else 2
+        pos += 0 if data.obs == "F2" else 2  # type: ignore
         coeffs[:, pos] = 1
     else:
         if "y" not in data.table:

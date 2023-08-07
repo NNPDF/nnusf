@@ -3,7 +3,7 @@ import logging
 import pathlib
 import tarfile
 import tempfile
-from typing import Optional
+from typing import Any, Optional
 
 import lhapdf
 import matplotlib.colors as clr
@@ -40,7 +40,6 @@ def plot(
     interactive: bool,
     preds_dest: pathlib.Path,
 ):
-    """"""
     plt.figure()
     plt.plot(
         q2grid[:, xpoint],
@@ -89,12 +88,12 @@ def plot(
         plt.show()
 
 
-Prediction = tuple[npt.NDArray[np.float_], int, slice, str]
+Prediction = tuple[npt.NDArray[Any], int, slice, str]
 
 
 def theory_error(
     grid: pineappl.grid.Grid,
-    pdf: str,
+    pdf: str | None,
     prescription: list[tuple[float, float]],
     xgrid: npt.NDArray[np.float_],
     reshape: Optional[bool] = True,
@@ -114,7 +113,7 @@ def theory_error(
 
 def pdf_error(
     grid: pineappl.grid.Grid,
-    pdf: str,
+    pdf: str | None,
     xgrid: npt.NDArray[np.float_],
     reshape: Optional[bool] = True,
 ) -> Prediction:
@@ -130,6 +129,7 @@ def pdf_error(
         pred = np.array(pred).T.reshape((*xgrid.shape, len(pred)))
     else:
         pred = np.array(pred).T
+
     # Make sure that `pred` does not include Member 0
     return pred[:, :, 1:], 0, slice(1, -1), "PDF replicas"
 
@@ -225,6 +225,7 @@ def generate_txt(predictions: list[dict]) -> None:
         pred_label.append(pred["obsname"])
         pred_results.append(pred["predictions"])
         nuc_types.append(pred["nucleus"])
+
     nuc_info = [i for i in list(set(nuc_types))]
     assert len(nuc_info) == 1
 
@@ -287,8 +288,8 @@ def main(
     if xpoint is None:
         xpoint = 20
 
-    with tempfile.TemporaryDirectory() as tmpdir:
-        tmpdir = pathlib.Path(tmpdir).absolute()
+    with tempfile.TemporaryDirectory() as str_tmpdir:
+        tmpdir = pathlib.Path(str_tmpdir).absolute()
 
         # extract tar content
         if grids.suffix == ".tar":
@@ -386,7 +387,7 @@ def main(
             )
             dump_pred_lhapdf(
                 f"YADISM_{nuc_info[0]}",
-                nuc_info[0],
+                int(nuc_info[0]),
                 cpred,
                 grid_info,
                 LHAPDF_ID,

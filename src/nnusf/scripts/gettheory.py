@@ -76,8 +76,8 @@ def get_theory(userdir: Path) -> None:
     except requests.exceptions.HTTPError as err:
         _logger.error(err)
 
-    with tempfile.TemporaryDirectory() as tmpdir:
-        tmpdir = Path(tmpdir)
+    with tempfile.TemporaryDirectory() as str_tmpdir:
+        tmpdir: Path = Path(str_tmpdir)
 
         download_targz(response, tmpdir, name)
 

@@ -2,14 +2,13 @@
 """
 import logging
 import pathlib
-from typing import Optional
 
 from ..highq import runcards
 
 _logger = logging.getLogger(__name__)
 
 
-def observables(datasets: list[str], path: Optional[pathlib.Path]) -> dict:
+def observables(datasets: list[str], path: pathlib.Path) -> dict:
     """Collect all yadism runcards.
 
     Returns

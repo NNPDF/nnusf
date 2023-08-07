@@ -132,7 +132,7 @@ def main(
         grouping=grouping,
     )
 
-    kingroups = {}
+    kingroups: dict = {}
     for name, grp in groups.items():
         kingroups[name] = []
         for k in ("x", "Q2"):
