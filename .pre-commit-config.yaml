@@ -32,6 +32,6 @@ repos:
     rev: v1.4.1
     hooks:
       - id: mypy
-        additional_dependencies: [types-PyYAML]
+        additional_dependencies: [types-PyYAML, types-requests]
         pass_filenames: false
         args: ["--ignore-missing-imports", "src/"]
