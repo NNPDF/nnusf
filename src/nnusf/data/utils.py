@@ -355,7 +355,7 @@ def append_target_info(
     number_datapoints = table.shape[0]
 
     # Extract the information on the cross section (FW is a special case)
-    data_spec = "FW" if obs == "FW" else MAP_EXP_YADISM[exp_name]
+    data_spec = "FW" if obs == "FW" else MAP_EXP_YADISM.get(exp_name, None)  # type: ignore
 
     # Append all the info columns to the `kin_df` table
     table["A"] = np.full(number_datapoints, info_df["target"][0])
