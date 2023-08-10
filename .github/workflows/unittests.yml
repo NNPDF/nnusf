@@ -25,7 +25,7 @@ jobs:
           # tags needed for dynamic versioning
           fetch-depth: 0
       - name: Install and configure Poetry 🐍
-        uses: snok/install-poetry@v1 
+        uses: snok/install-poetry@v1
         with:
           virtualenvs-create: false
           installer-parallel: true

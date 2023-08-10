@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Filter for BEBCWA59 experiment."""
 
 from pathlib import Path

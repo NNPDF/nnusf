@@ -1,12 +1,12 @@
-# -*- coding: utf-8 -*-
 """Provide extra scripts subcommand."""
+from pathlib import Path
+
 import click
+from appdirs import user_data_dir
+from rich.console import Console
 
 from ..scripts import gettheory
 from . import base
-from appdirs import user_data_dir
-from pathlib import Path
-from rich.console import Console
 
 console = Console()
 

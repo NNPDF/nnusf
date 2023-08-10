@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Filter data from original raw tables.
 
 Data are then provided in a custom "CommonData" format
@@ -9,8 +8,8 @@ Data are then provided in a custom "CommonData" format
 import importlib
 import logging
 import sys
-
 from pathlib import Path
+
 from appdirs import user_data_dir
 
 _logger = logging.getLogger(__name__)

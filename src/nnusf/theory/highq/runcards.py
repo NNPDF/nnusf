@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Generate runcards for large Q2 yadism predictions.
 
 There are actually two sections:
@@ -31,7 +30,7 @@ def overlap(datasets: list[str], path: pathlib.Path) -> dict:
         id to observables runcard mapping
 
     """
-    runcards = {}
+    runcards: dict = {}
 
     run_nu = copy.deepcopy(yadmark.data.observables.default_card)
     run_nu["prDIS"] = "CC"

@@ -90,7 +90,7 @@ def construct_lhapdf(
     return data_frame
 
 
-def compute_lhapdf(**kwargs) -> tuple[str, pd.DataFrame]:
+def compute_lhapdf(**kwargs) -> tuple[str, str, pd.DataFrame]:
     """Compute the LHAPDF predictions for all the SF sets requiered and
     concatenate the resulting predictions.
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Common definitions and data load."""
 import pathlib
 

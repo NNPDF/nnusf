@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import json
 import logging
 import pathlib
@@ -30,7 +29,7 @@ def perform_postfit(
         for nbrep, repinfo in enumerate(fitinfos, start=1):
             fitinfo_path = f"{repinfo}/fitinfo.json"
             try:
-                with open(fitinfo_path, "r") as file:
+                with open(fitinfo_path) as file:
                     jsonfile = json.load(file)
             except FileNotFoundError:
                 _logger.warning(f"{fitinfo_path} does not exist!")

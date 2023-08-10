@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Plot a dataset"""
 import logging
 import pathlib
@@ -49,6 +48,7 @@ def main(
                 nrep_predictions = np.load(variation)
             else:
                 sv_variations.append(np.load(variation))
+
     th_shift = (sv_variations - nrep_predictions[:, 0]).T
     data["sv_err"] = np.sqrt(np.diag(np.cov(th_shift)))
 
@@ -56,8 +56,8 @@ def main(
     # np.testing.assert_allclose(data["data"], nrep_predictions.mean(axis=1), atol=1e-6)
     # np.testing.assert_allclose(nrep_predictions.T[0], nrep_predictions.mean(axis=1), atol=1e-6)
 
-    with tempfile.TemporaryDirectory() as tmpdir:
-        tmpdir = pathlib.Path(tmpdir).absolute()
+    with tempfile.TemporaryDirectory() as str_tmpdir:
+        tmpdir = pathlib.Path(str_tmpdir).absolute()
 
         preds_dest = tmpdir / f"predictions-{data_name}"
         preds_dest.mkdir()
@@ -65,7 +65,6 @@ def main(
         # plot data with same x
         data = data.reset_index()
         for x in np.unique(data["x"]):
-
             x_exp = find_nearest(data_exp["x"], x)
             fixed_x_data_exp = data_exp[data_exp["x"] == x_exp]
             fixed_x_data = data[data["x"] == x]

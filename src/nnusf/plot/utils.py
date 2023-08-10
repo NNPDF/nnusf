@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
 """Common tools for plotting and handling related data."""
 import logging
 
 import matplotlib.colors as clr
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
 
 from ..data import loader

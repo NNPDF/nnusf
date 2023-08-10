@@ -9,9 +9,9 @@
 </p>
 
 <p align="justify">
-  <b>NNSFν</b> is a python module that provides predictions for neutrino structure functions. 
-  It relies on <a href="https://github.com/N3PDF/yadism">YADISM</a> for the large-Q region 
-  while the low-Q regime is modelled in terms of a Neural Network (NN). The NNSFν 
+  <b>NNSFν</b> is a python module that provides predictions for neutrino structure functions.
+  It relies on <a href="https://github.com/N3PDF/yadism">YADISM</a> for the large-Q region
+  while the low-Q regime is modelled in terms of a Neural Network (NN). The NNSFν
   determination is also made available in terms of fast interpolation
   <a href="https://lhapdf.hepforge.org/">LHAPDF</a> grids that can be accessed through an independent
   driver code and directly interfaced to the <a href="http://www.genie-mc.org/">GENIE</a> Monte Carlo

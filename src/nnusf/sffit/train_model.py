@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Compile and train the models."""
 
 import logging

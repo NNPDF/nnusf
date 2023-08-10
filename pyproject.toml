@@ -52,6 +52,7 @@ termcolor = "1.1.0"
 pygit2 = "^1.10.1"
 setuptools = "^65.5.1"
 particle = "^0.21.2"
+rich-click = "^1.6.1"
 
 [tool.poetry.dev-dependencies]
 poethepoet = "^0.10.0"

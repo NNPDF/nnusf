@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Provide a Loader class to retrieve data information."""
 import logging
 import pathlib

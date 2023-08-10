@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Physics constants and definitions."""
 
 import itertools

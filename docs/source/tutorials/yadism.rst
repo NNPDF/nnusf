@@ -55,4 +55,3 @@ do so, just run the following command:
 
 This will generate in the current directory a LHAPDF set called :mod:`YADISM_${A_VALUE}`
 which for use should be place in the LHAPDF data directory :mod:`lhapdf-config --datadir`.
-

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Executable to perform the structure function fit."""
 import logging
 import pathlib

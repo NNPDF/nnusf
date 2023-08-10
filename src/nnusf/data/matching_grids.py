@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Generate matching grids
 """
@@ -13,6 +12,7 @@ import numpy as np
 import pandas as pd
 import pineappl
 import yaml
+from appdirs import user_data_dir
 
 from .. import utils
 from ..theory.predictions import pdf_error, theory_error
@@ -23,7 +23,6 @@ from .utils import (
     dump_info_file,
     write_to_csv,
 )
-from appdirs import user_data_dir
 
 _logger = logging.getLogger(__name__)
 
@@ -135,7 +134,7 @@ def dump_kinematics(
     destination: pathlib.Path, kin_grid: dict, match_name: str, is_xsec: bool
 ) -> None:
     """Dump the kinematics into CSV"""
-    kinematics = {"x": [], "Q2": [], "y": []}
+    kinematics: dict = {"x": [], "Q2": [], "y": []}
     for x, q2, y in itertools.product(
         kin_grid["x"], kin_grid["q2"], kin_grid["y"]
     ):
@@ -168,7 +167,7 @@ def dump_uncertainties(
 
 def main(
     grids: pathlib.Path,
-    pdf: str,
+    pdf: str | None,
     destination: pathlib.Path,
     kin: dict = GRID_SPECS_DICT,
 ) -> None:
@@ -186,8 +185,8 @@ def main(
     """
     destination.mkdir(parents=True, exist_ok=True)
 
-    with tempfile.TemporaryDirectory() as tmpdir:
-        tmpdir = pathlib.Path(tmpdir).absolute()
+    with tempfile.TemporaryDirectory() as str_tmpdir:
+        tmpdir = pathlib.Path(str_tmpdir).absolute()
 
         full_grid_name = grids.stem[6:]
         experiment, obs, _, xif, xir = full_grid_name.split("_")

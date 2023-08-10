@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Generate heatmap plots for covariance matrices."""
 import copy
 import logging
@@ -159,7 +158,7 @@ def heatmap(
     fig, ax = plt.subplots(figsize=(12, 12))
     matrixplot = ax.matshow(
         covmat,
-        cmap='RdBu',
+        cmap="RdBu",
         norm=colors.SymLogNorm(
             linthresh=0.001,
             linscale=0.5,

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import click
 
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
