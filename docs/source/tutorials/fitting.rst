@@ -67,7 +67,7 @@ To run a fit, one can simplify type the following commands:
 
    nnu fit run ${PATH_RUNCARD} ${REPLICA_ID} [-d ${OUTPUT_PATH}]
 
-An example of a runcard to perform a fit is 
+An example of a runcard to perform a fit is
 `runcards/fit_runcard.yml <https://github.com/NNPDF/nnusf/blob/main/runcards/fit_runcard.yml>`_.
 
 This will generate inside a folder :mod:`RUNCARD_NAME` folders called
@@ -154,7 +154,7 @@ The LHAPDF set can be generated using the following command:
 
    nnu fit dump_grids ${RUNCARD_NAME}/postfit -a ${A_VALUE} -o ${SET_NAME} [-q '{"min": 1e-3, "max": 500, "num": 100}]'
 
-.. note:: 
+.. note::
 
    As before, the user can choose the ranges of :math:`x` and :math:`Q^2` from which
    the predictions will be generated. By default, the :math:`Q^2` range is defined to

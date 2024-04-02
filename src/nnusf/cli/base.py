@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-import click
+import rich_click as click
 
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 

@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 """Provide theory subcommand."""
 import logging
 import pathlib
 
-import click
+import rich_click as click
 
 from ..theory import bodek_yang, compare_to_data, grids, predictions, runcards
 from . import base

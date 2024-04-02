@@ -4,7 +4,7 @@ Description
 NNSFν is a python package that can be used to compute neutrino structure
 functions at all momentum transfer energies in the inelastic regime. It
 relies on `Yadism <https://github.com/N3PDF/yadism>`_
-for the description of the medium- and large-:math:`Q^2` regions while the 
+for the description of the medium- and large-:math:`Q^2` regions while the
 low-:math:`Q^2` regime is modelled in terms of a Neural Network (NN).
 
 .. image:: ../assets/matching.png

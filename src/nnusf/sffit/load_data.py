@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import copy
 import logging
 import pathlib
@@ -6,10 +5,10 @@ import random
 from typing import Optional
 
 import numpy as np
+from appdirs import user_data_dir
 
 from ..data.loader import Loader
 from .scaling import rescale_inputs
-from appdirs import user_data_dir
 
 _logger = logging.getLogger(__name__)
 

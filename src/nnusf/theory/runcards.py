@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Utilities and runners to generate yadism runcards."""
 import logging
 import pathlib
@@ -44,8 +43,8 @@ def dump(
         if destination is given, but it is not a directory
 
     """
-    with tempfile.TemporaryDirectory() as tmpdir:
-        tmpdir = pathlib.Path(tmpdir)
+    with tempfile.TemporaryDirectory() as str_tmpdir:
+        tmpdir = pathlib.Path(str_tmpdir)
 
         utils.write(theory_card, tmpdir / "theory.yaml")
         for name, observable in observables_cards.items():
@@ -146,8 +145,8 @@ def dvst(
         # loop on theories
         theory_cards = update_theory(data_name, path, activate_scale_var)
         for theory_card in theory_cards:
-            with tempfile.TemporaryDirectory() as tmpdir:
-                tmpdir = pathlib.Path(tmpdir)
+            with tempfile.TemporaryDirectory() as str_tmpdir:
+                tmpdir = pathlib.Path(str_tmpdir)
                 utils.write(theory_card, tmpdir / "theory.yaml")
                 for name, observable_card in ocards.items():
                     utils.write(observable_card, tmpdir / f"obs-{name}.yaml")
@@ -173,8 +172,9 @@ def yknots(x: dict, q2: dict, A: int, destination: pathlib.Path):
     utils.mkdest(destination)
     ocards = yadknots.runcards.observables(x, q2, A)
     theory_card = theory()
-    with tempfile.TemporaryDirectory() as tmpdir:
-        tmpdir = pathlib.Path(tmpdir)
+
+    with tempfile.TemporaryDirectory() as str_tmpdir:
+        tmpdir = pathlib.Path(str_tmpdir)
         utils.write(theory_card, tmpdir / "theory.yaml")
         for name, observable_card in ocards.items():
             utils.write(observable_card, tmpdir / f"obs-{name}.yaml")

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Generate the models parametrizing the structure functions."""
 
 import numpy as np

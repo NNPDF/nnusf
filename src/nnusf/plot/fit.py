@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import json
 import logging
 import pathlib
@@ -9,10 +8,10 @@ import yaml
 from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
 
-from ..sffit.sum_rules import check_sumrule, effective_charge
 from ..sffit.load_data import load_experimental_data
 from ..sffit.load_fit_data import get_predictions_q, load_models
-from .utils import plot_point_cov, format_jlab
+from ..sffit.sum_rules import check_sumrule, effective_charge
+from .utils import format_jlab, plot_point_cov
 
 _logger = logging.getLogger(__name__)
 PARRENT_PATH = pathlib.Path(__file__).parents[1]
@@ -82,7 +81,7 @@ def training_validation_split(**kwargs):
     tr_chi2s, vl_chi2s = [], []
 
     for repinfo in fitinfo:
-        with open(repinfo, "r") as file_stream:
+        with open(repinfo) as file_stream:
             jsonfile = json.load(file_stream)
         tr_chi2s.append(jsonfile["best_tr_chi2"])
         vl_chi2s.append(jsonfile["best_vl_chi2"])
@@ -135,7 +134,7 @@ def smallx_exponent_distribution(**kwargs):
 
     distr_epochs = []
     for repinfo in fitinfo:
-        with open(repinfo, "r") as file_stream:
+        with open(repinfo) as file_stream:
             jsonfile = json.load(file_stream)
         distr_epochs.append(np.asarray(jsonfile["small_x"]))
     distr_epochs = np.asarray(distr_epochs)
@@ -189,7 +188,7 @@ def training_epochs_distribution(**kwargs):
 
     tr_epochs = []
     for repinfo in fitinfo:
-        with open(repinfo, "r") as file_stream:
+        with open(repinfo) as file_stream:
             jsonfile = json.load(file_stream)
         tr_epochs.append(jsonfile["best_epochs"])
     tr_epochs = np.asarray(tr_epochs)
@@ -261,7 +260,9 @@ def check_sum_rules(**kwargs):
     ax.set_xlabel(r"$Q^2~[\rm{GeV}^2]$")
     ax.set_ylabel(r"$\rm{Value}$")
 
-    plotname = f"{kwargs['rule'].lower()}_sumrule_a{kwargs['a_value']}_xmin{xmin_log}"
+    plotname = (
+        f"{kwargs['rule'].lower()}_sumrule_a{kwargs['a_value']}_xmin{xmin_log}"
+    )
     save_path = pathlib.Path(kwargs["output"]) / plotname
 
     save_figs(fig, save_path)
@@ -291,8 +292,8 @@ def check_effective_charge(**kwargs):
     )
 
     # Compute the 68% Confidence Level for NN predictions
-    lower_68 = np.sort(preds_int, axis=0)[int(.16 * preds_int.shape[0])]
-    upper_68 = np.sort(preds_int, axis=0)[int(.84 * preds_int.shape[0])]
+    lower_68 = np.sort(preds_int, axis=0)[int(0.16 * preds_int.shape[0])]
+    upper_68 = np.sort(preds_int, axis=0)[int(0.84 * preds_int.shape[0])]
     mean_prd = np.mean(preds_int, axis=0)
     ax.fill_between(
         np.sqrt(q2grids),
@@ -315,7 +316,9 @@ def check_effective_charge(**kwargs):
     ax.set_xlabel(r"$Q~[\rm{GeV}]$")
     ax.set_ylabel(r"$\alpha_{\rm eff}$" + f"({EQ_LABELS[kwargs['rule']]})")
 
-    plotname = f"{kwargs['rule'].lower()}_aseff_a{kwargs['a_value']}_xmin{xmin_log}"
+    plotname = (
+        f"{kwargs['rule'].lower()}_aseff_a{kwargs['a_value']}_xmin{xmin_log}"
+    )
     save_path = pathlib.Path(kwargs["output"]) / plotname
 
     save_figs(fig, save_path)

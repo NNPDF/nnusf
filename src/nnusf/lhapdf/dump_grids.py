@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Module that computes the Structure Function predictions from the NN saved
 model and dump them as a LHAPDF-like grid.
@@ -164,7 +163,6 @@ def main(
     min_highq2: Optional[float] = None,
     install_lhapdf: bool = True,
 ):
-
     a_value = a_value_spec if a_value_spec is not None else A_VALUE
     _logger.info("Computing the blocks of the interpolation grids.")
     grid_info, prediction_allreplicas = parse_nn_predictions(

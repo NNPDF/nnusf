@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Generate runcards with x and A fixed."""
 import copy
 

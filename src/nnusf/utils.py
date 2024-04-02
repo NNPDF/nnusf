@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
 """File management utilities."""
-import sys
 import logging
 import pathlib
+import sys
 import tarfile
 from typing import Optional, Union
 

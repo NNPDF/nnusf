@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Generate structure functions slices plots."""
 import logging
 import pathlib
@@ -74,8 +73,6 @@ def plot(path: pathlib.Path) -> matplotlib.figure.Figure:
     ysize = ymax - ymin
     plt.ylim(ymin - ysize / 10, ymax + ysize / 10)
 
-    #  plt.show()
-
     return fig
 
 
@@ -84,8 +81,8 @@ def main(source: pathlib.Path, kind: str, destination: pathlib.Path):
     utils.mkdest(destination)
 
     observables = []
-    with tempfile.TemporaryDirectory() as tmpdir:
-        tmpdir = pathlib.Path(tmpdir).absolute()
+    with tempfile.TemporaryDirectory() as str_tmpdir:
+        tmpdir = pathlib.Path(str_tmpdir).absolute()
 
         with tarfile.open(source) as tarsrc:
             for name in tarsrc.getnames():

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Compute DIS grids out of given runcards."""
 import logging
 import pathlib
@@ -23,8 +22,8 @@ def main(cards: pathlib.Path, destination: pathlib.Path):
     destination: pathlib.Path
 
     """
-    with tempfile.TemporaryDirectory() as tmpdir:
-        tmpdir = pathlib.Path(tmpdir).absolute()
+    with tempfile.TemporaryDirectory() as str_tmpdir:
+        tmpdir = pathlib.Path(str_tmpdir).absolute()
         full_data_name = cards.stem.split("-")[1]
 
         # extract tar content

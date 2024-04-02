@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 """Utilities to write raw data filters."""
 import logging
 import pathlib
 from pathlib import Path
-from typing import Optional, Union
+from typing import Any, Optional, Union
 
 import numpy as np
 import pandas as pd
@@ -53,12 +52,14 @@ def write_to_csv(path: Path, exp_name: str, table: pd.DataFrame):
     table.to_csv(f"{path}/{exp_name}.csv", encoding="utf-8")
 
 
-def construct_uncertainties(full_obs_errors: list[float]) -> pd.DataFrame:
+def construct_uncertainties(
+    full_obs_errors: list[dict[str, Any]]
+) -> pd.DataFrame:
     """Load uncertainties from columns.
 
     Parameters
     ----------
-    full_obs_errors: list[float]
+    full_obs_errors: list[dict[str, Any]]
         error columns to be properly loaded
 
     Returns
@@ -80,9 +81,7 @@ def construct_uncertainties(full_obs_errors: list[float]) -> pd.DataFrame:
     return errors_pandas_table
 
 
-def build_obs_dict(
-    fx: str, tables: list[Union[pd.DataFrame, None]], pid: int
-) -> dict:
+def build_obs_dict(fx: str, tables: list[int] | list[None], pid: int) -> dict:
     """Add proper keys to arguments.
 
     Parameters
@@ -356,7 +355,7 @@ def append_target_info(
     number_datapoints = table.shape[0]
 
     # Extract the information on the cross section (FW is a special case)
-    data_spec = "FW" if obs == "FW" else MAP_EXP_YADISM.get(exp_name, None)
+    data_spec = "FW" if obs == "FW" else MAP_EXP_YADISM.get(exp_name, None)  # type: ignore
 
     # Append all the info columns to the `kin_df` table
     table["A"] = np.full(number_datapoints, info_df["target"][0])

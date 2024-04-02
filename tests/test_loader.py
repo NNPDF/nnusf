@@ -1,6 +1,7 @@
-# -*- coding: utf-8 -*-
 from pathlib import Path
+
 from appdirs import user_data_dir
+
 from nnusf.data.loader import Loader
 
 USERDIR = Path(user_data_dir())

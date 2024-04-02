@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
 import logging
-import numpy as np
 from typing import Optional
+
+import numpy as np
 
 _logger = logging.getLogger(__name__)
 

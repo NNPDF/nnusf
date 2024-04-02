@@ -1,21 +1,23 @@
-# -*- coding: utf-8 -*-
 """Provide data subcommand."""
 import pathlib
 
-import click
+import rich_click as click
+from appdirs import user_data_dir
 
 from ..data import coefficients, combine_tables, filters, matching_grids
 from . import base
-from appdirs import user_data_dir
 
 USERDIR = pathlib.Path(user_data_dir())
 
 dataset_path = click.argument(
-    "data", nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path),
+    "data",
+    nargs=-1,
+    type=click.Path(exists=True, path_type=pathlib.Path),
 )
 
 grid_path = click.argument(
-    "data", type=click.Path(exists=True, path_type=pathlib.Path),
+    "data",
+    type=click.Path(exists=True, path_type=pathlib.Path),
 )
 
 obs_type = click.argument("obstype", type=str)
@@ -36,6 +38,7 @@ destination_coefficients = click.option(
     default=USERDIR.joinpath("nnusf/coefficients"),
     help="Alternative destination path (default: ${NNUSF}/coefficients",
 )
+
 
 @base.command.group("data")
 def subcommand():
