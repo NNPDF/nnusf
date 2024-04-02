@@ -1,11 +1,11 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Yadism predictions" href="yadism.html" /><link rel="prev" title="Installation" href="../quickstart/installation.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2023.07.26 -->
+    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
         <title>Adding new datasets - NNSFν</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
@@ -213,7 +213,7 @@
         </div>
         <article role="main">
           <section id="adding-new-datasets">
-<h1>Adding new datasets<a class="headerlink" href="#adding-new-datasets" title="Permalink to this heading">#</a></h1>
+<h1>Adding new datasets<a class="headerlink" href="#adding-new-datasets" title="Link to this heading">#</a></h1>
 <p>The following is not mandatory in order to run a fit given that all the
 necessary inputs in order to reproduce the published NNSFν have already
 been generated. The following is more useful in case the user wants to
@@ -222,7 +222,7 @@ experimental data sets, the coefficients of the structure functions in
 order to compute a given observable, and the matching predictions from
 Yadism.</p>
 <section id="implementation-of-the-experimental-dataset">
-<h2>Implementation of the experimental dataset<a class="headerlink" href="#implementation-of-the-experimental-dataset" title="Permalink to this heading">#</a></h2>
+<h2>Implementation of the experimental dataset<a class="headerlink" href="#implementation-of-the-experimental-dataset" title="Link to this heading">#</a></h2>
 <p>The implementation of a new data set starts by downloading the
 <a class="reference external" href="https://www.hepdata.net/">hepdata</a> tables and store them in
 <code class="xref py py-mod docutils literal notranslate"><span class="pre">commondata/rawdata</span></code> using the experiment as the folder name.
@@ -242,7 +242,7 @@ respectively. In addition, this will also generate inside
 experiment such as the (nuclear) target.</p>
 </section>
 <section id="building-the-coefficients">
-<h2>Building the coefficients<a class="headerlink" href="#building-the-coefficients" title="Permalink to this heading">#</a></h2>
+<h2>Building the coefficients<a class="headerlink" href="#building-the-coefficients" title="Link to this heading">#</a></h2>
 <p>Now that we have the input datasets we need to generate the corresponding
 coefficients that connect the structure function bases to the desired observable.
 To do so, just run the following:</p>
@@ -251,7 +251,7 @@ To do so, just run the following:</p>
 </div>
 </section>
 <section id="yadism-pseudo-data">
-<h2>Yadism pseudo-data<a class="headerlink" href="#yadism-pseudo-data" title="Permalink to this heading">#</a></h2>
+<h2>Yadism pseudo-data<a class="headerlink" href="#yadism-pseudo-data" title="Link to this heading">#</a></h2>
 <p>To generate the Yadism pseudo-data, we first need to generate a runcard for Yadism (also called a theory card) which requires us to define the
 kinematic grid <span class="math notranslate nohighlight">\(\left(x, Q^2, y \right)\)</span> on which the predictions will
 be computed. Ideally, the kinematic grids should match a specific dataset for
@@ -374,9 +374,9 @@ just need to run the same command as before:</p>
       
     </aside>
   </div>
-</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=40769cce"></script>
+</div><script src="../_static/documentation_options.js?v=38b66d78"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=32e29ea5"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
